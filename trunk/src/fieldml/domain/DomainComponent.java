@@ -1,6 +1,12 @@
 package fieldml.domain;
 
-public class DomainComponent
+public abstract class DomainComponent
 {
-    public String name;
+    public final String name;
+    
+    
+    DomainComponent( String name )
+    {
+        this.name = name;
+    }
 }

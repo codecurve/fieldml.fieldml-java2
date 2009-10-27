@@ -1,9 +1,15 @@
 package fieldml.domain;
 
-public class Domain
+public abstract class Domain
 {
-    public String name;
+    public final String name;
     
     
-    public int componentCount;
+    Domain( String name )
+    {
+        this.name = name;
+    }
+    
+    
+    public abstract int getComponentCount();
 }
