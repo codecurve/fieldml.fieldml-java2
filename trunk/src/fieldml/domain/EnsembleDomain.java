@@ -23,6 +23,20 @@ public class EnsembleDomain
     }
 
 
+    public EnsembleDomainComponent getComponent( String name )
+    {
+        for( EnsembleDomainComponent c : components )
+        {
+            if( c.name.equals( name ) )
+            {
+                return c;
+            }
+        }
+
+        return null;
+    }
+
+
     @Override
     public int getComponentCount()
     {
