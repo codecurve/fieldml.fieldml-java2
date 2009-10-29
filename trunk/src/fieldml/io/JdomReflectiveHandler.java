@@ -1,6 +1,7 @@
 package fieldml.io;
 
 import org.jdom.Element;
+import org.jdom.Text;
 
 public class JdomReflectiveHandler
     implements ReflectiveHandler
@@ -47,18 +48,16 @@ public class JdomReflectiveHandler
     @Override
     public void onIntListElement( Object o2 )
     {
-        Element e = new Element( "Integer" );
-        e.setAttribute( "value", o2.toString() );
-        currentElement.addContent( e );
+        Text t = new Text( o2.toString() + "  " );
+        currentElement.addContent( t );
     }
 
 
     @Override
     public void onStringListElement( Object o2 )
     {
-        Element e = new Element( "String" );
-        e.setAttribute( "value", o2.toString() );
-        currentElement.addContent( e );
+        Text t = new Text( "\"" + o2.toString() + "\"  " );
+        currentElement.addContent( t );
     }
 
 

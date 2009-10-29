@@ -3,6 +3,9 @@ package fieldml.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import fieldml.value.DomainValue;
+import fieldml.value.EnsembleDomainValue;
+
 public class EnsembleDomain
     extends Domain
 {
@@ -41,5 +44,17 @@ public class EnsembleDomain
     public int getComponentCount()
     {
         return components.size();
+    }
+
+
+    public DomainValue getValue( double[] componentValues )
+    {
+        // TODO One day, this will be a lot more rigorous.
+        if( componentValues.length < components.size() )
+        {
+            return null;
+        }
+
+        return new EnsembleDomainValue( this, componentValues );
     }
 }

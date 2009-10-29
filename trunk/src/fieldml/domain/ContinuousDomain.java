@@ -12,7 +12,7 @@ public class ContinuousDomain
     public ContinuousDomain( String name )
     {
         super( name );
-        
+
         components = new ArrayList<ContinuousDomainComponent>();
     }
 

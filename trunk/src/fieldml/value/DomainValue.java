@@ -2,9 +2,13 @@ package fieldml.value;
 
 import fieldml.domain.Domain;
 
-public class DomainValue
+public abstract class DomainValue
 {
-    public Domain domain;
+    public final Domain domain;
 
-    public Object value;
+
+    DomainValue( Domain domain )
+    {
+        this.domain = domain;
+    }
 }
