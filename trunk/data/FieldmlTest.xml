@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <EnsembleDomain name="mesh.element_domain">
+    <components>
+      <DirectEnsembleDomainComponent name="e">
+        <values>1 2 3 4</values>
+      </DirectEnsembleDomainComponent>
+    </components>
+  </EnsembleDomain>
+  <EnsembleDomain name="mesh.triangle_nodes">
+    <components>
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node1" />
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node2" />
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node3" />
+    </components>
+  </EnsembleDomain>
+  <EnsembleDomain name="mesh.quad_nodes">
+    <components>
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node1" />
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node2" />
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node3" />
+      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node4" />
+    </components>
+  </EnsembleDomain>
+</fieldml>
