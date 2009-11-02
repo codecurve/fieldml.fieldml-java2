@@ -9,7 +9,4 @@ public abstract class Domain
     {
         this.name = name;
     }
-    
-    
-    public abstract int getComponentCount();
 }

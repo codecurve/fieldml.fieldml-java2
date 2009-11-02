@@ -7,9 +7,8 @@ import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
-import fieldml.domain.DirectEnsembleDomainComponent;
 import fieldml.domain.EnsembleDomain;
-import fieldml.domain.ImportedEnsembleDomainComponent;
+import fieldml.domain.MeshDomain;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 
@@ -17,25 +16,22 @@ public class FieldmlTest
 {
     public static void main( String[] args )
     {
-        DirectEnsembleDomainComponent component1 = new DirectEnsembleDomainComponent( "e" );
-        component1.addValue( 1 );
-        component1.addValue( 2 );
-        component1.addValue( 3 );
-        component1.addValue( 4 );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2 );
+        meshDomain.addValue( 1 );
+        meshDomain.addValue( 2 );
+        meshDomain.addValue( 3 );
+        meshDomain.addValue( 4 );
+        
+        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "global.triangle.local_node" );
+        triangleNodeDomain.addValue( 1 );
+        triangleNodeDomain.addValue( 2 );
+        triangleNodeDomain.addValue( 3 );
 
-        EnsembleDomain elementDomain = new EnsembleDomain( "mesh.element_domain" );
-        elementDomain.addComponent( component1 );
-
-        EnsembleDomain triangleNodesDomain = new EnsembleDomain( "mesh.triangle_nodes" );
-        triangleNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node1", elementDomain, "e" ) );
-        triangleNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node2", elementDomain, "e" ) );
-        triangleNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node3", elementDomain, "e" ) );
-
-        EnsembleDomain quadNodesDomain = new EnsembleDomain( "mesh.quad_nodes" );
-        quadNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node1", elementDomain, "e" ) );
-        quadNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node2", elementDomain, "e" ) );
-        quadNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node3", elementDomain, "e" ) );
-        quadNodesDomain.addComponent( new ImportedEnsembleDomainComponent( "node4", elementDomain, "e" ) );
+        EnsembleDomain quadNodeDomain = new EnsembleDomain( "global.quad.local_node" );
+        quadNodeDomain.addValue( 1 );
+        quadNodeDomain.addValue( 2 );
+        quadNodeDomain.addValue( 3 );
+        quadNodeDomain.addValue( 4 );
 
         
         
@@ -46,9 +42,9 @@ public class FieldmlTest
         doc.setRootElement( root );
 
         JdomReflectiveHandler handler = new JdomReflectiveHandler( doc.getRootElement() );
-        ReflectiveWalker.Walk( elementDomain, handler );
-        ReflectiveWalker.Walk( triangleNodesDomain, handler );
-        ReflectiveWalker.Walk( quadNodesDomain, handler );
+        ReflectiveWalker.Walk( meshDomain, handler );
+        ReflectiveWalker.Walk( triangleNodeDomain, handler );
+        ReflectiveWalker.Walk( quadNodeDomain, handler );
 
         XMLOutputter outputter = new XMLOutputter( Format.getPrettyFormat() );
         try
