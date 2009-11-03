@@ -1,25 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fieldml>
-  <EnsembleDomain name="mesh.element_domain">
-    <components>
-      <DirectEnsembleDomainComponent name="e">
-        <values>1 2 3 4</values>
-      </DirectEnsembleDomainComponent>
-    </components>
-  </EnsembleDomain>
-  <EnsembleDomain name="mesh.triangle_nodes">
-    <components>
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node1" />
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node2" />
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node3" />
-    </components>
-  </EnsembleDomain>
-  <EnsembleDomain name="mesh.quad_nodes">
-    <components>
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node1" />
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node2" />
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node3" />
-      <ImportedEnsembleDomainComponent sourceDomain="mesh.element_domain" sourceComponent="e" name="node4" />
-    </components>
-  </EnsembleDomain>
+  <!--
+1___2___3
+|   |2 /|
+| 1 | / |
+|   |/ 3|
+4___5___6
+-->
+  <ContinuousDomain dimensionality="2" name="global.plane">
+    <values />
+  </ContinuousDomain>
+  <SimpleEnsembleDomain name="test_mesh.nodes">
+    <values>1 2 3 4 5 6</values>
+  </SimpleEnsembleDomain>
+  <ContinuousDomain dimensionality="1" name="global.line">
+    <values />
+  </ContinuousDomain>
+  <SimpleEnsembleDomain name="global.quad.local_node">
+    <values>1 2 3 4</values>
+  </SimpleEnsembleDomain>
+  <ContinuousDomain dimensionality="1" name="global.temperature">
+    <values />
+  </ContinuousDomain>
+  <SimpleEnsembleDomain name="global.triangle.local_node">
+    <values>1 2 3</values>
+  </SimpleEnsembleDomain>
+  <MeshDomain dimensionality="2" name="test_mesh.domain">
+    <values>1 2 3</values>
+  </MeshDomain>
+  <MappingField valueDomain="global.line" name="test_mesh.node.x">
+    <parameterDomains>"test_mesh.nodes"</parameterDomains>
+    <entries>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>1.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>1</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>1.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>2</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>1.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>3</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>0.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>4</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>0.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>5</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>0.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>6</keys>
+      </MapEntry>
+    </entries>
+  </MappingField>
+  <MappingField valueDomain="global.line" name="test_mesh.node.y">
+    <parameterDomains>"test_mesh.nodes"</parameterDomains>
+    <entries>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>0.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>1</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>1.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>2</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>2.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>3</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>0.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>4</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>1.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>5</keys>
+      </MapEntry>
+      <MapEntry>
+        <ContinuousDomainValue domain="global.line">
+          <chartValues>2.0</chartValues>
+        </ContinuousDomainValue>
+        <keys>6</keys>
+      </MapEntry>
+    </entries>
+  </MappingField>
+  <FEMField domain="test_mesh.domain" valueDomain="global.plane" name="test_mesh.coordinates" />
+  <MappingField valueDomain="test_mesh.nodes" name="test_mesh.quad_nodes">
+    <parameterDomains>"test_mesh.domain" "global.quad.local_node"</parameterDomains>
+    <entries>
+      <MapEntry>
+        <EnsembleDomainValue value="1" domain="test_mesh.nodes" />
+        <keys>1 1</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="4" domain="test_mesh.nodes" />
+        <keys>1 2</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="5" domain="test_mesh.nodes" />
+        <keys>1 3</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="2" domain="test_mesh.nodes" />
+        <keys>1 4</keys>
+      </MapEntry>
+    </entries>
+  </MappingField>
+  <MappingField valueDomain="test_mesh.nodes" name="test_mesh.triangle_nodes">
+    <parameterDomains>"test_mesh.domain" "global.triangle.local_node"</parameterDomains>
+    <entries>
+      <MapEntry>
+        <EnsembleDomainValue value="2" domain="test_mesh.nodes" />
+        <keys>2 1</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="5" domain="test_mesh.nodes" />
+        <keys>2 2</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="3" domain="test_mesh.nodes" />
+        <keys>2 3</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="6" domain="test_mesh.nodes" />
+        <keys>3 1</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="3" domain="test_mesh.nodes" />
+        <keys>3 2</keys>
+      </MapEntry>
+      <MapEntry>
+        <EnsembleDomainValue value="5" domain="test_mesh.nodes" />
+        <keys>3 3</keys>
+      </MapEntry>
+    </entries>
+  </MappingField>
 </fieldml>
+
