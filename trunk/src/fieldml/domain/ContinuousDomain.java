@@ -1,15 +1,15 @@
 package fieldml.domain;
 
+import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
-import fieldml.value.MeshDomainValue;
 
-public class MeshDomain
+public class ContinuousDomain
     extends EnsembleDomain
 {
     public final int dimensionality;
 
 
-    public MeshDomain( String name, int dimensionality )
+    public ContinuousDomain( String name, int dimensionality )
     {
         super( name );
 
@@ -17,13 +17,13 @@ public class MeshDomain
     }
 
 
-    public DomainValue getValue( int ensembleValue, double[] chartValues )
+    public DomainValue getValue( double[] chartValues )
     {
         if( chartValues.length > dimensionality )
         {
             return null;
         }
 
-        return new MeshDomainValue( this, ensembleValue, chartValues );
+        return new ContinuousDomainValue( this, chartValues );
     }
 }

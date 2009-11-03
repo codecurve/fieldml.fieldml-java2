@@ -3,7 +3,7 @@ package fieldml.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnsembleDomain
+public abstract class EnsembleDomain
     extends Domain
 {
     public final List<Integer> values;
@@ -12,8 +12,14 @@ public class EnsembleDomain
     public EnsembleDomain( String name )
     {
         super( name );
-        
+
         values = new ArrayList<Integer>();
+    }
+
+
+    public int getValueCount()
+    {
+        return values.size();
     }
 
 

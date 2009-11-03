@@ -6,11 +6,14 @@ import org.jdom.Text;
 public class JdomReflectiveHandler
     implements ReflectiveHandler
 {
+    private Element rootElement;
+
     private Element currentElement;
 
 
     public JdomReflectiveHandler( Element rootElement )
     {
+        this.rootElement = rootElement;
         this.currentElement = rootElement;
     }
 
@@ -19,6 +22,8 @@ public class JdomReflectiveHandler
     public void onEndInstance( Class<?> class1 )
     {
         currentElement = currentElement.getParentElement();
+        
+        System.err.println( "<<< " + currentElement);
     }
 
 
@@ -42,11 +47,20 @@ public class JdomReflectiveHandler
         Element e = new Element( class1.getSimpleName() );
         currentElement.addContent( e );
         currentElement = e;
+        System.err.println( ">>> " + currentElement);
     }
 
 
     @Override
     public void onIntListElement( Object o2 )
+    {
+        Text t = new Text( o2.toString() + "  " );
+        currentElement.addContent( t );
+    }
+
+
+    @Override
+    public void onDoubleListElement( Object o2 )
     {
         Text t = new Text( o2.toString() + "  " );
         currentElement.addContent( t );
@@ -67,6 +81,7 @@ public class JdomReflectiveHandler
         Element e = new Element( name );
         currentElement.addContent( e );
         currentElement = e;
+        System.err.println(">>> " + currentElement);
     }
 
 
@@ -74,5 +89,6 @@ public class JdomReflectiveHandler
     public void onEndList( Object o )
     {
         currentElement = currentElement.getParentElement();
+        System.err.println("<<< " + currentElement);
     }
 }

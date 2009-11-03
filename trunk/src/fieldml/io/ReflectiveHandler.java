@@ -20,6 +20,9 @@ public interface ReflectiveHandler
     void onIntListElement( Object o2 );
 
 
+    void onDoubleListElement( Object value );
+
+
     void onStartList( Object o, String name );
 
 
