@@ -1,8 +1,19 @@
 package fieldml.field;
 
-import fieldml.domain.Domain;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Field
 {
-    public Domain valueDomain;
+    public static final Map<String, Field> fields = new HashMap<String, Field>();
+
+    public final String name;
+
+
+    public Field( String name )
+    {
+        this.name = name;
+
+        fields.put( name, this );
+    }
 }
