@@ -3,6 +3,8 @@ package fieldml.domain;
 import java.util.HashMap;
 import java.util.Map;
 
+import fieldml.value.DomainValue;
+
 public abstract class Domain
 {
     public static final Map<String, Domain> domains = new HashMap<String, Domain>();
@@ -24,4 +26,7 @@ public abstract class Domain
     {
         return name;
     }
+    
+    
+    public abstract DomainValue getValue( int indexValue, double... chartValues ); 
 }

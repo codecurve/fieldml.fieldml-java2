@@ -1,17 +1,17 @@
 package fieldml.value;
 
-import fieldml.domain.EnsembleDomain;
+import fieldml.domain.Domain;
 
 public class EnsembleDomainValue
     extends DomainValue
 {
-    public int value;
+    public int indexValue;
 
 
-    public EnsembleDomainValue( EnsembleDomain domain, int value )
+    public EnsembleDomainValue( Domain domain, int indexValue )
     {
         super( domain );
         
-        this.value = value;
+        this.indexValue = indexValue;
     }
 }
