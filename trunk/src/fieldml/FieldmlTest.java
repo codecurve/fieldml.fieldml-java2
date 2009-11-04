@@ -14,6 +14,7 @@ import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.domain.SimpleEnsembleDomain;
+import fieldml.evaluator.Evaluator;
 import fieldml.evaluator.NodeDofEvaluator;
 import fieldml.field.FEMField;
 import fieldml.field.Field;
@@ -53,6 +54,11 @@ public class FieldmlTest
             ReflectiveWalker.Walk( field, handler );
         }
 
+        for( Evaluator evaluator : Evaluator.evaluators.values() )
+        {
+            ReflectiveWalker.Walk( evaluator, handler );
+        }
+
         Format format = Format.getPrettyFormat();
         format.setTextMode( TextMode.PRESERVE );
         XMLOutputter outputter = new XMLOutputter( format );
@@ -73,46 +79,46 @@ public class FieldmlTest
         Field<?> meshX = Field.fields.get( "test_mesh.coordinates.x" );
 
         ContinuousDomainValue output;
-        
-        //Test element 1
+
+        // Test element 1
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.0, 0.0 ) );
         assert output.chartValues[0] == 0;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.0, 1.0 ) );
         assert output.chartValues[0] == 0;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.5, 0.0 ) );
         assert output.chartValues[0] == 5;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 1.0, 0.0 ) );
         assert output.chartValues[0] == 10;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 1.0, 1.0 ) );
         assert output.chartValues[0] == 10;
-        
-        //Test element 2
+
+        // Test element 2
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.0, 0.0 ) );
         assert output.chartValues[0] == 10;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 1.0, 0.0 ) );
         assert output.chartValues[0] == 10;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.0, 1.0 ) );
         assert output.chartValues[0] == 20;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.5, 0.5 ) );
         assert output.chartValues[0] == 15;
-        
-        //Test element 3
+
+        // Test element 3
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.0, 0.0 ) );
         assert output.chartValues[0] == 20;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 1.0, 0.0 ) );
         assert output.chartValues[0] == 20;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.0, 1.0 ) );
         assert output.chartValues[0] == 10;
-        
+
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.5, 0.5 ) );
         assert output.chartValues[0] == 15;
     }
@@ -187,8 +193,10 @@ public class FieldmlTest
         meshY.setValue( globalLine.getValue( 00.0 ), 5 );
         meshY.setValue( globalLine.getValue( 00.0 ), 6 );
 
-        NodeDofEvaluator meshXQuadBilinear = new NodeDofEvaluator( meshX, quadNodeList, "library::quad_bilinear" );
-        NodeDofEvaluator meshXSimplexBilinear = new NodeDofEvaluator( meshX, triangleNodeList, "library::triangle_bilinear" );
+        NodeDofEvaluator meshXQuadBilinear = new NodeDofEvaluator( "test_mesh.evaluator.x.quad_bilinear", meshX, quadNodeList,
+            "library::quad_bilinear" );
+        NodeDofEvaluator meshXSimplexBilinear = new NodeDofEvaluator( "test_mesh.evaluator.x.simplex_bilinear", meshX,
+            triangleNodeList, "library::triangle_bilinear" );
 
         FEMField<ContinuousDomainValue> meshCoordinatesX = new FEMField<ContinuousDomainValue>( "test_mesh.coordinates.x",
             globalLine, meshDomain );
@@ -196,8 +204,10 @@ public class FieldmlTest
         meshCoordinatesX.setEvaluator( 2, meshXSimplexBilinear );
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
 
-        NodeDofEvaluator meshYQuadBilinear = new NodeDofEvaluator( meshY, quadNodeList, "library::quad_bilinear" );
-        NodeDofEvaluator meshYSimplexBilinear = new NodeDofEvaluator( meshY, triangleNodeList, "library::triangle_bilinear" );
+        NodeDofEvaluator meshYQuadBilinear = new NodeDofEvaluator( "test_mesh.evaluator.y.quad_bilinear", meshY, quadNodeList,
+            "library::quad_bilinear" );
+        NodeDofEvaluator meshYSimplexBilinear = new NodeDofEvaluator( "test_mesh.evaluator.y.simplex_bilinear", meshY,
+            triangleNodeList, "library::triangle_bilinear" );
 
         FEMField<ContinuousDomainValue> meshCoordinatesY = new FEMField<ContinuousDomainValue>( "test_mesh.coordinates.y",
             globalLine, meshDomain );

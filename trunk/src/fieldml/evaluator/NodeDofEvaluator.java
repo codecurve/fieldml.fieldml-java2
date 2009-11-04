@@ -1,5 +1,6 @@
 package fieldml.evaluator;
 
+import fieldml.annotations.SerializeToString;
 import fieldml.field.MappingField;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.EnsembleDomainValue;
@@ -8,8 +9,10 @@ import fieldml.value.MeshDomainValue;
 public class NodeDofEvaluator
     extends Evaluator
 {
+    @SerializeToString
     public final MappingField<ContinuousDomainValue> nodeDofs;
 
+    @SerializeToString
     public final MappingField<EnsembleDomainValue> elementNodes;
 
     public final String interpolation;
@@ -37,9 +40,11 @@ public class NodeDofEvaluator
     }
 
 
-    public NodeDofEvaluator( MappingField<ContinuousDomainValue> nodeDofs, MappingField<EnsembleDomainValue> elementNodes,
+    public NodeDofEvaluator( String name, MappingField<ContinuousDomainValue> nodeDofs, MappingField<EnsembleDomainValue> elementNodes,
         String interpolation )
     {
+        super( name );
+        
         // TODO Assert that elementNode's value domain is nodeDof's node parameter domain
         // TODO Assert that elementNode's index domain has the right cardinality for the given interpolation.
         this.nodeDofs = nodeDofs;
