@@ -1,6 +1,5 @@
 package fieldml.domain;
 
-import fieldml.value.DomainValue;
 import fieldml.value.EnsembleDomainValue;
 
 public class SimpleEnsembleDomain
@@ -12,8 +11,15 @@ public class SimpleEnsembleDomain
     }
 
 
-    public DomainValue getValue( int value )
+    public EnsembleDomainValue getValue( int indexValue )
     {
-        return new EnsembleDomainValue( this, value );
+        return new EnsembleDomainValue( this, indexValue );
+    }
+
+
+    @Override
+    public EnsembleDomainValue getValue( int indexValue, double... chartValues )
+    {
+        return getValue( indexValue );
     }
 }

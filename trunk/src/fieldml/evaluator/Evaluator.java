@@ -1,6 +1,8 @@
 package fieldml.evaluator;
 
-public class Evaluator
-{
+import fieldml.value.MeshDomainValue;
 
+public abstract class Evaluator
+{
+    public abstract double evaluate( MeshDomainValue value );
 }

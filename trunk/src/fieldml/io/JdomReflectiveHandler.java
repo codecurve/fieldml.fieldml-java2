@@ -22,8 +22,10 @@ public class JdomReflectiveHandler
     public void onEndInstance( Class<?> class1 )
     {
         currentElement = currentElement.getParentElement();
-        
-        System.err.println( "<<< " + currentElement);
+        if( currentElement == rootElement )
+        {
+            currentElement.addContent( new Text( "\n" ) );
+        }
     }
 
 
@@ -47,7 +49,6 @@ public class JdomReflectiveHandler
         Element e = new Element( class1.getSimpleName() );
         currentElement.addContent( e );
         currentElement = e;
-        System.err.println( ">>> " + currentElement);
     }
 
 
@@ -81,7 +82,6 @@ public class JdomReflectiveHandler
         Element e = new Element( name );
         currentElement.addContent( e );
         currentElement = e;
-        System.err.println(">>> " + currentElement);
     }
 
 
@@ -89,6 +89,5 @@ public class JdomReflectiveHandler
     public void onEndList( Object o )
     {
         currentElement = currentElement.getParentElement();
-        System.err.println("<<< " + currentElement);
     }
 }

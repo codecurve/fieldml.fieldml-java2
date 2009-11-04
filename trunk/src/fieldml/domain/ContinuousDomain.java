@@ -1,29 +1,35 @@
 package fieldml.domain;
 
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.DomainValue;
 
 public class ContinuousDomain
     extends EnsembleDomain
 {
-    public final int dimensionality;
+    public final int dimensions;
 
 
     public ContinuousDomain( String name, int dimensionality )
     {
         super( name );
 
-        this.dimensionality = dimensionality;
+        this.dimensions = dimensionality;
     }
 
 
-    public DomainValue getValue( double[] chartValues )
+    public ContinuousDomainValue getValue( double...chartValues )
     {
-        if( chartValues.length > dimensionality )
+        if( chartValues.length > dimensions )
         {
             return null;
         }
 
         return new ContinuousDomainValue( this, chartValues );
+    }
+
+
+    @Override
+    public ContinuousDomainValue getValue( int indexValue, double... chartValues )
+    {
+        return getValue( chartValues );
     }
 }

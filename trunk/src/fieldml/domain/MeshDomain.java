@@ -1,6 +1,5 @@
 package fieldml.domain;
 
-import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
 
 public class MeshDomain
@@ -17,13 +16,13 @@ public class MeshDomain
     }
 
 
-    public DomainValue getValue( int ensembleValue, double[] chartValues )
+    public MeshDomainValue getValue( int indexValue, double... chartValues )
     {
         if( chartValues.length > dimensionality )
         {
             return null;
         }
 
-        return new MeshDomainValue( this, ensembleValue, chartValues );
+        return new MeshDomainValue( this, indexValue, chartValues );
     }
 }
