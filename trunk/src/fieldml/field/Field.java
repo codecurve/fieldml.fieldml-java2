@@ -26,5 +26,11 @@ public abstract class Field<D extends DomainValue>
     }
 
 
+    public String toString()
+    {
+        return name;
+    }
+
+
     public abstract D evaluate( DomainValue... input );
 }

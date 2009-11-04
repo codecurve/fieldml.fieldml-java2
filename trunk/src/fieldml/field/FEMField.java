@@ -1,7 +1,7 @@
 package fieldml.field;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import fieldml.annotations.SerializeToString;
 import fieldml.domain.Domain;
@@ -17,7 +17,22 @@ public class FEMField<D extends DomainValue>
     @SerializeToString
     public final MeshDomain meshDomain;
 
-    private final Map<Integer, Evaluator> evaluators;
+    public final List<MapEntry> evaluators;
+
+    public class MapEntry
+    {
+        public final int key;
+
+        @SerializeToString
+        public final Evaluator evaluator;
+
+
+        private MapEntry( int key, Evaluator evaluator )
+        {
+            this.key = key;
+            this.evaluator = evaluator;
+        }
+    }
 
 
     public FEMField( String name, Domain valueDomain, MeshDomain meshDomain )
@@ -26,18 +41,18 @@ public class FEMField<D extends DomainValue>
 
         this.meshDomain = meshDomain;
 
-        evaluators = new HashMap<Integer, Evaluator>();
+        evaluators = new ArrayList<MapEntry>();
     }
 
 
     public void setEvaluator( int indexValue, NodeDofEvaluator evaluator )
     {
-        evaluators.put( indexValue, evaluator );
+        evaluators.add( new MapEntry( indexValue, evaluator ) );
     }
 
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings( "unchecked" )
     public D evaluate( DomainValue... input )
     {
         if( input[0].domain != meshDomain )
@@ -47,12 +62,14 @@ public class FEMField<D extends DomainValue>
 
         MeshDomainValue v = (MeshDomainValue)input[0];
 
-        Evaluator e = evaluators.get( v.indexValue );
-        if( e == null )
+        for( MapEntry e : evaluators )
         {
-            return null;
+            if( e.key == v.indexValue )
+            {
+                return (D)valueDomain.getValue( 0, e.evaluator.evaluate( v ) );
+            }
         }
 
-        return (D)valueDomain.getValue( 0, e.evaluate( v ) );
+        return null;
     }
 }
