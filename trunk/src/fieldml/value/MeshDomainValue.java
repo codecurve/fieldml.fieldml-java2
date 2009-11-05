@@ -3,15 +3,15 @@ package fieldml.value;
 import fieldml.domain.MeshDomain;
 
 public class MeshDomainValue
-    extends EnsembleDomainValue
+    extends ContinuousDomainValue
 {
-    public double[] chartValues;
+    public int indexValue;
 
 
-    public MeshDomainValue( MeshDomain domain, int ensembleValue, double[] chartValues )
+    public MeshDomainValue( MeshDomain domain, int indexValue, double[] chartValues )
     {
-        super( domain, ensembleValue );
+        super( domain, chartValues );
 
-        this.chartValues = chartValues;
+        this.indexValue = indexValue;
     }
 }

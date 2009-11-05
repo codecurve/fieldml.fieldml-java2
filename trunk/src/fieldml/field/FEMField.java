@@ -3,7 +3,7 @@ package fieldml.field;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.Evaluator;
@@ -14,7 +14,7 @@ import fieldml.value.MeshDomainValue;
 public class FEMField<D extends DomainValue>
     extends Field<D>
 {
-    @SerializeToString
+    @SerializationAsString
     public final MeshDomain meshDomain;
 
     public final List<MapEntry> evaluators;
@@ -23,7 +23,7 @@ public class FEMField<D extends DomainValue>
     {
         public final int key;
 
-        @SerializeToString
+        @SerializationAsString
         public final Evaluator evaluator;
 
 

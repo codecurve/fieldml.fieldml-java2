@@ -1,6 +1,6 @@
 package fieldml.evaluator;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationAsString;
 import fieldml.field.MappingField;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.EnsembleDomainValue;
@@ -9,10 +9,10 @@ import fieldml.value.MeshDomainValue;
 public class NodeDofEvaluator
     extends Evaluator
 {
-    @SerializeToString
+    @SerializationAsString
     public final MappingField<ContinuousDomainValue> nodeDofs;
 
-    @SerializeToString
+    @SerializationAsString
     public final MappingField<EnsembleDomainValue> elementNodes;
 
     public final String interpolation;

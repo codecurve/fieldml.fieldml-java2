@@ -3,7 +3,7 @@ package fieldml.field;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
@@ -12,7 +12,7 @@ import fieldml.value.EnsembleDomainValue;
 public class MappingField<D extends DomainValue>
     extends Field<D>
 {
-    @SerializeToString
+    @SerializationAsString
     public EnsembleDomain[] parameterDomains;
 
     public class MapEntry

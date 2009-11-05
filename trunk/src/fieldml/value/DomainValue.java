@@ -1,11 +1,11 @@
 package fieldml.value;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationBlocked;
 import fieldml.domain.Domain;
 
 public abstract class DomainValue
 {
-    @SerializeToString
+    @SerializationBlocked
     public final Domain domain;
 
 
