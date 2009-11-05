@@ -20,6 +20,7 @@ public abstract class Evaluator
     }
 
 
+    @Override
     public String toString()
     {
         return name;
