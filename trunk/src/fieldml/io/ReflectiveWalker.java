@@ -3,7 +3,8 @@ package fieldml.io;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationAsString;
+import fieldml.annotations.SerializationBlocked;
 
 /**
  * Uses reflection to walk an object's instantiation graph.
@@ -58,7 +59,7 @@ public class ReflectiveWalker
         {
             for( Object o2 : (Object[])o )
             {
-                if( ( o2.getClass() == String.class ) || f.isAnnotationPresent( SerializeToString.class ) )
+                if( ( o2.getClass() == String.class ) || f.isAnnotationPresent( SerializationAsString.class ) )
                 {
                     handler.onStringListElement( o2 );
                 }
@@ -89,6 +90,10 @@ public class ReflectiveWalker
             {
                 continue;
             }
+            if( f.isAnnotationPresent( SerializationBlocked.class ) )
+            {
+                continue;
+            }
 
             Class<?> type = f.getType();
 
@@ -108,7 +113,7 @@ public class ReflectiveWalker
                     handler.onEndList( o );
                     continue;
                 }
-                if( type == String.class || f.isAnnotationPresent( SerializeToString.class ) )
+                if( type == String.class || f.isAnnotationPresent( SerializationAsString.class ) )
                 {
                     handler.onStringField( f.getName(), f.get( o ).toString() );
                     continue;
@@ -129,7 +134,7 @@ public class ReflectiveWalker
 
             try
             {
-                if( f.isAnnotationPresent( SerializeToString.class ) )
+                if( f.isAnnotationPresent( SerializationAsString.class ) )
                 {
                     handler.onStringField( f.getName(), f.get( o ).toString() );
                     continue;

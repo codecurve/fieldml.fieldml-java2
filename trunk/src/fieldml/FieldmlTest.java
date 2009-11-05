@@ -13,7 +13,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.domain.SimpleEnsembleDomain;
 import fieldml.evaluator.Evaluator;
 import fieldml.evaluator.NodeDofEvaluator;
 import fieldml.field.FEMField;
@@ -132,12 +131,14 @@ public class FieldmlTest
 
         ContinuousDomain globalPlane = new ContinuousDomain( "global.plane", 2 );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2 );
-        meshDomain.addValue( 1 );
-        meshDomain.addValue( 2 );
-        meshDomain.addValue( 3 );
+        EnsembleDomain testMeshElements = new EnsembleDomain( "test_mesh.elements" );
+        testMeshElements.addValue( 1 );
+        testMeshElements.addValue( 2 );
+        testMeshElements.addValue( 3 );
 
-        SimpleEnsembleDomain meshNodes = new SimpleEnsembleDomain( "test_mesh.nodes" );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElements );
+
+        EnsembleDomain meshNodes = new EnsembleDomain( "test_mesh.nodes" );
         meshNodes.addValue( 1 );
         meshNodes.addValue( 2 );
         meshNodes.addValue( 3 );
@@ -145,19 +146,19 @@ public class FieldmlTest
         meshNodes.addValue( 5 );
         meshNodes.addValue( 6 );
 
-        EnsembleDomain triangleNodeDomain = new SimpleEnsembleDomain( "global.triangle.local_node" );
+        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "global.triangle.local_node" );
         triangleNodeDomain.addValue( 1 );
         triangleNodeDomain.addValue( 2 );
         triangleNodeDomain.addValue( 3 );
 
-        EnsembleDomain quadNodeDomain = new SimpleEnsembleDomain( "global.quad.local_node" );
+        EnsembleDomain quadNodeDomain = new EnsembleDomain( "global.quad.local_node" );
         quadNodeDomain.addValue( 1 );
         quadNodeDomain.addValue( 2 );
         quadNodeDomain.addValue( 3 );
         quadNodeDomain.addValue( 4 );
 
         MappingField<EnsembleDomainValue> triangleNodeList = new MappingField<EnsembleDomainValue>( "test_mesh.triangle_nodes",
-            meshNodes, meshDomain, triangleNodeDomain );
+            meshNodes, testMeshElements, triangleNodeDomain );
 
         triangleNodeList.setValue( meshNodes.getValue( 2 ), 2, 1 );
         triangleNodeList.setValue( meshNodes.getValue( 5 ), 2, 2 );
@@ -168,7 +169,7 @@ public class FieldmlTest
         triangleNodeList.setValue( meshNodes.getValue( 5 ), 3, 3 );
 
         MappingField<EnsembleDomainValue> quadNodeList = new MappingField<EnsembleDomainValue>( "test_mesh.quad_nodes",
-            meshNodes, meshDomain, quadNodeDomain );
+            meshNodes, testMeshElements, quadNodeDomain );
 
         quadNodeList.setValue( meshNodes.getValue( 4 ), 1, 1 );
         quadNodeList.setValue( meshNodes.getValue( 5 ), 1, 2 );

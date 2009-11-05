@@ -3,7 +3,7 @@ package fieldml.field;
 import java.util.HashMap;
 import java.util.Map;
 
-import fieldml.annotations.SerializeToString;
+import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.value.DomainValue;
 
@@ -13,7 +13,7 @@ public abstract class Field<D extends DomainValue>
 
     public final String name;
 
-    @SerializeToString
+    @SerializationAsString
     public final Domain valueDomain;
 
 

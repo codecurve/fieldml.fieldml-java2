@@ -3,7 +3,9 @@ package fieldml.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class EnsembleDomain
+import fieldml.value.EnsembleDomainValue;
+
+public class EnsembleDomain
     extends Domain
 {
     public final List<Integer> values;
@@ -26,5 +28,18 @@ public abstract class EnsembleDomain
     public void addValue( int value )
     {
         values.add( value );
+    }
+
+
+    public EnsembleDomainValue getValue( int indexValue )
+    {
+        return new EnsembleDomainValue( this, indexValue );
+    }
+
+
+    @Override
+    public EnsembleDomainValue getValue( int indexValue, double... chartValues )
+    {
+        return getValue( indexValue );
     }
 }
