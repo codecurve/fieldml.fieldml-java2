@@ -55,13 +55,16 @@ public class NodeDofEvaluator
 
     public double evaluate( MeshDomainValue value )
     {
+        final int elementIndex = value.indexValue;
         if( interpolation.equals( "library::quad_bilinear" ) )
         {
             double[] params = new double[4];
             for( int i = 0; i < 4; i++ )
             {
-                ContinuousDomainValue v = nodeDofs.evaluate( elementNodes.evaluate( value.indexValue, i + 1 ) );
-                params[i] = v.chartValues[0];
+                final int localNodeIndex = i + 1;
+                final EnsembleDomainValue indexOfGlobalNode = elementNodes.evaluate( elementIndex,localNodeIndex);
+                ContinuousDomainValue dofValue = nodeDofs.evaluate( indexOfGlobalNode );
+                params[i] = dofValue.chartValues[0];
             }
 
             return QuadBilinear( params, value.chartValues );
@@ -71,8 +74,10 @@ public class NodeDofEvaluator
             double[] params = new double[3];
             for( int i = 0; i < 3; i++ )
             {
-                ContinuousDomainValue v = nodeDofs.evaluate( elementNodes.evaluate( value.indexValue, i + 1 ) );
-                params[i] = v.chartValues[0];
+                final int localNodeIndex = i + 1;
+                final EnsembleDomainValue indexOfGlobalNode = elementNodes.evaluate(elementIndex, localNodeIndex);
+                ContinuousDomainValue dofValue = nodeDofs.evaluate( indexOfGlobalNode);
+                params[i] = dofValue.chartValues[0];
             }
 
             return SimplexBilinear( params, value.chartValues );
