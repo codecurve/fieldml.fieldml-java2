@@ -14,15 +14,21 @@ public class MeshDomain
     public final int dimensions;
 
     @SerializationAsString
-    public final EnsembleDomain discretization;
+    public final EnsembleDomain elementDomain;
+    
+    public final Map<Integer, String> shapes;
+    
+    public String defaultShape; 
 
 
-    public MeshDomain( String name, int dimensions, EnsembleDomain discretization )
+    public MeshDomain( String name, int dimensions, EnsembleDomain elementDomain )
     {
         super( name );
 
         this.dimensions = dimensions;
-        this.discretization = discretization;
+        this.elementDomain = elementDomain;
+        
+        shapes = new HashMap<Integer, String>();
 
         domains.put( name, this );
     }
@@ -36,5 +42,17 @@ public class MeshDomain
         }
 
         return new MeshDomainValue( this, indexValue, chartValues );
+    }
+    
+    
+    public void setDefaultShape( String shape )
+    {
+        defaultShape = shape;
+    }
+    
+    
+    public void setShape( int element, String shapeName )
+    {
+        shapes.put( element, shapeName );
     }
 }

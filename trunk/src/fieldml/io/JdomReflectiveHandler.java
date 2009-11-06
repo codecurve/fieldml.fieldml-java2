@@ -61,6 +61,16 @@ public class JdomReflectiveHandler
 
 
     @Override
+    public void onMapEntry( String key, String value )
+    {
+        Element e = new Element( "entry" );
+        e.setAttribute( "key", key );
+        e.setAttribute( "value", value );
+        currentElement.addContent( e );
+    }
+
+
+    @Override
     public void onDoubleListElement( Object o2 )
     {
         Text t = new Text( o2.toString() + "  " );
