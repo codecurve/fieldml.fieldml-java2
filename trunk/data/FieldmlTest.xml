@@ -33,7 +33,13 @@
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="2" discretization="test_mesh.elements" name="test_mesh.domain" />
+  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <shapes>
+      <entry key="1" value="library.shape.quad.00_10_01_11" />
+      <entry key="2" value="library.shape.triangle.00_10_01" />
+      <entry key="3" value="library.shape.triangle.00_10_01" />
+    </shapes>
+  </MeshDomain>
   
 
   <MappingField name="test_mesh.node.x" valueDomain="library.line">
@@ -204,7 +210,7 @@
       <MapEntry key="3" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
     </evaluators>
   </FEMField>
-
+  
 
 </fieldml>
 
