@@ -27,4 +27,7 @@ public interface ReflectiveHandler
 
 
     void onEndList( Object o );
+
+
+    void onMapEntry( String key, String value );
 }

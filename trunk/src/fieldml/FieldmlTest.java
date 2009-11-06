@@ -159,6 +159,9 @@ public class FieldmlTest
         testMeshElementDomain.addValue( 3 );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
+        meshDomain.setShape( 2, "library.shape.triangle.00_10_01" );
+        meshDomain.setShape( 3, "library.shape.triangle.00_10_01" );
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
         globalNodesDomain.addValue( 1 );
