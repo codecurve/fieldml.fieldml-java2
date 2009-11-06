@@ -8,7 +8,7 @@ public class ContinuousDomainValue
     public double[] chartValues;
 
 
-    public ContinuousDomainValue( ContinuousDomain domain, double[] chartValues )
+    public ContinuousDomainValue( ContinuousDomain domain, double... chartValues )
     {
         super( domain );
 

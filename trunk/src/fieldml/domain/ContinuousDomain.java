@@ -1,10 +1,15 @@
 package fieldml.domain;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fieldml.value.ContinuousDomainValue;
 
 public class ContinuousDomain
     extends Domain
 {
+    public static final Map<String, ContinuousDomain> domains = new HashMap<String, ContinuousDomain>();
+    
     public final int dimensions;
 
 
@@ -13,23 +18,18 @@ public class ContinuousDomain
         super( name );
 
         this.dimensions = dimensions;
+
+        domains.put( name, this );
     }
 
 
-    public ContinuousDomainValue getValue( double...chartValues )
+    public ContinuousDomainValue makeValue( double...chartValues )
     {
-        if( chartValues.length > dimensions )
+        if( chartValues.length < dimensions )
         {
             return null;
         }
 
         return new ContinuousDomainValue( this, chartValues );
-    }
-
-
-    @Override
-    public ContinuousDomainValue getValue( int indexValue, double... chartValues )
-    {
-        return getValue( chartValues );
     }
 }

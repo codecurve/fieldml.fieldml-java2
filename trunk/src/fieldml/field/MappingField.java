@@ -17,9 +17,9 @@ public class MappingField<D extends DomainValue>
 
     public class MapEntry
     {
-        public D value;
-
         public int[] keys;
+
+        public D value;
 
 
         private MapEntry( D value, int[] keys )
@@ -95,6 +95,7 @@ public class MappingField<D extends DomainValue>
     }
 
 
+    @Override
     public D evaluate( DomainValue... values )
     {
         for( MapEntry m : entries )
