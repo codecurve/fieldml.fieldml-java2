@@ -7,7 +7,10 @@
 |   |/ 3|
 4___5___6
 -->
-  <ContinuousDomain dimensions="2" name="global.plane" />
+  <ContinuousDomain dimensions="1" name="library.line" />
+  
+
+  <ContinuousDomain dimensions="2" name="library.plane" />
   
 
   <EnsembleDomain name="test_mesh.nodes">
@@ -15,19 +18,13 @@
   </EnsembleDomain>
   
 
-  <ContinuousDomain dimensions="1" name="global.line" />
-  
-
-  <EnsembleDomain name="global.quad.local_node">
-    <values>1  2  3  4  </values>
+  <EnsembleDomain name="library.triangle.local_node">
+    <values>1  2  3  </values>
   </EnsembleDomain>
   
 
-  <ContinuousDomain dimensions="1" name="global.temperature" />
-  
-
-  <EnsembleDomain name="global.triangle.local_node">
-    <values>1  2  3  </values>
+  <EnsembleDomain name="library.quad.local_node">
+    <values>1  2  3  4  </values>
   </EnsembleDomain>
   
 
@@ -36,144 +33,144 @@
   </EnsembleDomain>
   
 
-  <MeshDomain discretization="test_mesh.elements" dimensions="2" name="test_mesh.domain" />
+  <MeshDomain dimensions="2" discretization="test_mesh.elements" name="test_mesh.domain" />
   
 
-  <MappingField name="test_mesh.node.x" valueDomain="global.line">
+  <MappingField name="test_mesh.node.x" valueDomain="library.line">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
-        <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
-        </ContinuousDomainValue>
         <keys>1  </keys>
-      </MapEntry>
-      <MapEntry>
-        <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
-        </ContinuousDomainValue>
-        <keys>2  </keys>
-      </MapEntry>
-      <MapEntry>
-        <ContinuousDomainValue>
-          <chartValues>20.0  </chartValues>
-        </ContinuousDomainValue>
-        <keys>3  </keys>
-      </MapEntry>
-      <MapEntry>
         <ContinuousDomainValue>
           <chartValues>0.0  </chartValues>
         </ContinuousDomainValue>
-        <keys>4  </keys>
       </MapEntry>
       <MapEntry>
+        <keys>2  </keys>
         <ContinuousDomainValue>
           <chartValues>10.0  </chartValues>
         </ContinuousDomainValue>
-        <keys>5  </keys>
       </MapEntry>
       <MapEntry>
+        <keys>3  </keys>
         <ContinuousDomainValue>
           <chartValues>20.0  </chartValues>
         </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <ContinuousDomainValue>
+          <chartValues>0.0  </chartValues>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <ContinuousDomainValue>
+          <chartValues>10.0  </chartValues>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
         <keys>6  </keys>
+        <ContinuousDomainValue>
+          <chartValues>20.0  </chartValues>
+        </ContinuousDomainValue>
       </MapEntry>
     </entries>
   </MappingField>
   
 
-  <MappingField name="test_mesh.node.y" valueDomain="global.line">
+  <MappingField name="test_mesh.node.y" valueDomain="library.line">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
-        <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
-        </ContinuousDomainValue>
         <keys>1  </keys>
-      </MapEntry>
-      <MapEntry>
         <ContinuousDomainValue>
           <chartValues>10.0  </chartValues>
         </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
         <keys>2  </keys>
-      </MapEntry>
-      <MapEntry>
         <ContinuousDomainValue>
           <chartValues>10.0  </chartValues>
         </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
         <keys>3  </keys>
+        <ContinuousDomainValue>
+          <chartValues>10.0  </chartValues>
+        </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
-        <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
-        </ContinuousDomainValue>
         <keys>4  </keys>
-      </MapEntry>
-      <MapEntry>
         <ContinuousDomainValue>
           <chartValues>0.0  </chartValues>
         </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
         <keys>5  </keys>
-      </MapEntry>
-      <MapEntry>
         <ContinuousDomainValue>
           <chartValues>0.0  </chartValues>
         </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
         <keys>6  </keys>
+        <ContinuousDomainValue>
+          <chartValues>0.0  </chartValues>
+        </ContinuousDomainValue>
       </MapEntry>
     </entries>
   </MappingField>
   
 
   <MappingField name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "global.quad.local_node"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.quad.local_node"  </parameterDomains>
     <entries>
       <MapEntry>
-        <EnsembleDomainValue indexValue="4" />
         <keys>1  1  </keys>
+        <EnsembleDomainValue indexValue="4" />
       </MapEntry>
       <MapEntry>
-        <EnsembleDomainValue indexValue="5" />
         <keys>1  2  </keys>
+        <EnsembleDomainValue indexValue="5" />
       </MapEntry>
       <MapEntry>
-        <EnsembleDomainValue indexValue="1" />
         <keys>1  3  </keys>
+        <EnsembleDomainValue indexValue="1" />
       </MapEntry>
       <MapEntry>
-        <EnsembleDomainValue indexValue="2" />
         <keys>1  4  </keys>
+        <EnsembleDomainValue indexValue="2" />
       </MapEntry>
     </entries>
   </MappingField>
   
 
   <MappingField name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "global.triangle.local_node"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.triangle.local_node"  </parameterDomains>
     <entries>
       <MapEntry>
-        <EnsembleDomainValue indexValue="2" />
         <keys>2  1  </keys>
+        <EnsembleDomainValue indexValue="2" />
       </MapEntry>
       <MapEntry>
-        <EnsembleDomainValue indexValue="5" />
         <keys>2  2  </keys>
-      </MapEntry>
-      <MapEntry>
-        <EnsembleDomainValue indexValue="3" />
-        <keys>2  3  </keys>
-      </MapEntry>
-      <MapEntry>
-        <EnsembleDomainValue indexValue="6" />
-        <keys>3  1  </keys>
-      </MapEntry>
-      <MapEntry>
-        <EnsembleDomainValue indexValue="3" />
-        <keys>3  2  </keys>
-      </MapEntry>
-      <MapEntry>
         <EnsembleDomainValue indexValue="5" />
+      </MapEntry>
+      <MapEntry>
+        <keys>2  3  </keys>
+        <EnsembleDomainValue indexValue="3" />
+      </MapEntry>
+      <MapEntry>
+        <keys>3  1  </keys>
+        <EnsembleDomainValue indexValue="6" />
+      </MapEntry>
+      <MapEntry>
+        <keys>3  2  </keys>
+        <EnsembleDomainValue indexValue="3" />
+      </MapEntry>
+      <MapEntry>
         <keys>3  3  </keys>
+        <EnsembleDomainValue indexValue="5" />
       </MapEntry>
     </entries>
   </MappingField>
@@ -191,7 +188,7 @@
   <NodeDofEvaluator nodeDofs="test_mesh.node.y" elementNodes="test_mesh.triangle_nodes" interpolation="library::triangle_bilinear" name="test_mesh.evaluator.y.simplex_bilinear" />
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="global.line">
+  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="library.line">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.x.quad_bilinear" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
@@ -200,7 +197,7 @@
   </FEMField>
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="global.line">
+  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="library.line">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.y.quad_bilinear" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.y.simplex_bilinear" />

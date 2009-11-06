@@ -7,7 +7,7 @@ import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
 
 public class NodeDofEvaluator
-    extends Evaluator
+    extends ContinuousEvaluator
 {
     @SerializationAsString
     public final MappingField<ContinuousDomainValue> nodeDofs;
@@ -53,6 +53,7 @@ public class NodeDofEvaluator
     }
 
 
+    @Override
     public double evaluate( MeshDomainValue value )
     {
         if( interpolation.equals( "library::quad_bilinear" ) )

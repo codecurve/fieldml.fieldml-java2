@@ -10,9 +10,10 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.Evaluator;
 import fieldml.evaluator.NodeDofEvaluator;
 import fieldml.field.FEMField;
@@ -43,7 +44,15 @@ public class FieldmlTest
         root.addContent( comment1 );
 
         JdomReflectiveHandler handler = new JdomReflectiveHandler( doc.getRootElement() );
-        for( Domain domain : Domain.domains.values() )
+        for( ContinuousDomain domain : ContinuousDomain.domains.values() )
+        {
+            ReflectiveWalker.Walk( domain, handler );
+        }
+        for( EnsembleDomain domain : EnsembleDomain.domains.values() )
+        {
+            ReflectiveWalker.Walk( domain, handler );
+        }
+        for( MeshDomain domain : MeshDomain.domains.values() )
         {
             ReflectiveWalker.Walk( domain, handler );
         }
@@ -53,7 +62,11 @@ public class FieldmlTest
             ReflectiveWalker.Walk( field, handler );
         }
 
-        for( Evaluator evaluator : Evaluator.evaluators.values() )
+        for( Evaluator evaluator : ContinuousEvaluator.evaluators.values() )
+        {
+            ReflectiveWalker.Walk( evaluator, handler );
+        }
+        for( Evaluator evaluator : EnsembleEvaluator.evaluators.values() )
         {
             ReflectiveWalker.Walk( evaluator, handler );
         }
@@ -74,125 +87,123 @@ public class FieldmlTest
 
     private static void test()
     {
-        Domain meshDomain = Domain.domains.get( "test_mesh.domain" );
+        MeshDomain meshDomain = MeshDomain.domains.get( "test_mesh.domain" );
         Field<?> meshX = Field.fields.get( "test_mesh.coordinates.x" );
 
         ContinuousDomainValue output;
 
         // Test element 1
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 1, 0.0, 0.0 ) );
         assert output.chartValues[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 1, 0.0, 1.0 ) );
         assert output.chartValues[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 0.5, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 1, 0.5, 0.0 ) );
         assert output.chartValues[0] == 5;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 1, 1.0, 0.0 ) );
         assert output.chartValues[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 1, 1.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 1, 1.0, 1.0 ) );
         assert output.chartValues[0] == 10;
 
         // Test element 2
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 2, 0.0, 0.0 ) );
         assert output.chartValues[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 2, 1.0, 0.0 ) );
         assert output.chartValues[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 2, 0.0, 1.0 ) );
         assert output.chartValues[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 2, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 2, 0.5, 0.5 ) );
         assert output.chartValues[0] == 15;
 
         // Test element 3
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 3, 0.0, 0.0 ) );
         assert output.chartValues[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 3, 1.0, 0.0 ) );
         assert output.chartValues[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 3, 0.0, 1.0 ) );
         assert output.chartValues[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.getValue( 3, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain.makeValue( 3, 0.5, 0.5 ) );
         assert output.chartValues[0] == 15;
     }
 
 
     public static void main( String[] args )
     {
-        ContinuousDomain globalLine = new ContinuousDomain( "global.line", 1 );
+        ContinuousDomain libraryLine = new ContinuousDomain( "library.line", 1 );
 
-        ContinuousDomain temperature = new ContinuousDomain( "global.temperature", 1 );
+        ContinuousDomain libraryPlane = new ContinuousDomain( "library.plane", 2 );
 
-        ContinuousDomain globalPlane = new ContinuousDomain( "global.plane", 2 );
-
-        EnsembleDomain testMeshElements = new EnsembleDomain( "test_mesh.elements" );
-        testMeshElements.addValue( 1 );
-        testMeshElements.addValue( 2 );
-        testMeshElements.addValue( 3 );
-
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElements );
-
-        EnsembleDomain meshNodes = new EnsembleDomain( "test_mesh.nodes" );
-        meshNodes.addValue( 1 );
-        meshNodes.addValue( 2 );
-        meshNodes.addValue( 3 );
-        meshNodes.addValue( 4 );
-        meshNodes.addValue( 5 );
-        meshNodes.addValue( 6 );
-
-        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "global.triangle.local_node" );
+        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "library.triangle.local_node" );
         triangleNodeDomain.addValue( 1 );
         triangleNodeDomain.addValue( 2 );
         triangleNodeDomain.addValue( 3 );
 
-        EnsembleDomain quadNodeDomain = new EnsembleDomain( "global.quad.local_node" );
+        EnsembleDomain quadNodeDomain = new EnsembleDomain( "library.quad.local_node" );
         quadNodeDomain.addValue( 1 );
         quadNodeDomain.addValue( 2 );
         quadNodeDomain.addValue( 3 );
         quadNodeDomain.addValue( 4 );
 
+        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
+        testMeshElementDomain.addValue( 1 );
+        testMeshElementDomain.addValue( 2 );
+        testMeshElementDomain.addValue( 3 );
+
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
+        globalNodesDomain.addValue( 1 );
+        globalNodesDomain.addValue( 2 );
+        globalNodesDomain.addValue( 3 );
+        globalNodesDomain.addValue( 4 );
+        globalNodesDomain.addValue( 5 );
+        globalNodesDomain.addValue( 6 );
+
         MappingField<EnsembleDomainValue> triangleNodeList = new MappingField<EnsembleDomainValue>( "test_mesh.triangle_nodes",
-            meshNodes, testMeshElements, triangleNodeDomain );
+            globalNodesDomain, testMeshElementDomain, triangleNodeDomain );
 
-        triangleNodeList.setValue( meshNodes.getValue( 2 ), 2, 1 );
-        triangleNodeList.setValue( meshNodes.getValue( 5 ), 2, 2 );
-        triangleNodeList.setValue( meshNodes.getValue( 3 ), 2, 3 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 2 ), 2, 1 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 5 ), 2, 2 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 3 ), 2, 3 );
 
-        triangleNodeList.setValue( meshNodes.getValue( 6 ), 3, 1 );
-        triangleNodeList.setValue( meshNodes.getValue( 3 ), 3, 2 );
-        triangleNodeList.setValue( meshNodes.getValue( 5 ), 3, 3 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 6 ), 3, 1 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 3 ), 3, 2 );
+        triangleNodeList.setValue( globalNodesDomain.makeValue( 5 ), 3, 3 );
 
         MappingField<EnsembleDomainValue> quadNodeList = new MappingField<EnsembleDomainValue>( "test_mesh.quad_nodes",
-            meshNodes, testMeshElements, quadNodeDomain );
+            globalNodesDomain, testMeshElementDomain, quadNodeDomain );
 
-        quadNodeList.setValue( meshNodes.getValue( 4 ), 1, 1 );
-        quadNodeList.setValue( meshNodes.getValue( 5 ), 1, 2 );
-        quadNodeList.setValue( meshNodes.getValue( 1 ), 1, 3 );
-        quadNodeList.setValue( meshNodes.getValue( 2 ), 1, 4 );
+        quadNodeList.setValue( globalNodesDomain.makeValue( 4 ), 1, 1 );
+        quadNodeList.setValue( globalNodesDomain.makeValue( 5 ), 1, 2 );
+        quadNodeList.setValue( globalNodesDomain.makeValue( 1 ), 1, 3 );
+        quadNodeList.setValue( globalNodesDomain.makeValue( 2 ), 1, 4 );
 
-        MappingField<ContinuousDomainValue> meshX = new MappingField<ContinuousDomainValue>( "test_mesh.node.x", globalLine,
-            meshNodes );
-        meshX.setValue( globalLine.getValue( 00.0 ), 1 );
-        meshX.setValue( globalLine.getValue( 10.0 ), 2 );
-        meshX.setValue( globalLine.getValue( 20.0 ), 3 );
-        meshX.setValue( globalLine.getValue( 00.0 ), 4 );
-        meshX.setValue( globalLine.getValue( 10.0 ), 5 );
-        meshX.setValue( globalLine.getValue( 20.0 ), 6 );
+        MappingField<ContinuousDomainValue> meshX = new MappingField<ContinuousDomainValue>( "test_mesh.node.x", libraryLine,
+            globalNodesDomain );
+        meshX.setValue( libraryLine.makeValue( 00.0 ), 1 );
+        meshX.setValue( libraryLine.makeValue( 10.0 ), 2 );
+        meshX.setValue( libraryLine.makeValue( 20.0 ), 3 );
+        meshX.setValue( libraryLine.makeValue( 00.0 ), 4 );
+        meshX.setValue( libraryLine.makeValue( 10.0 ), 5 );
+        meshX.setValue( libraryLine.makeValue( 20.0 ), 6 );
 
-        MappingField<ContinuousDomainValue> meshY = new MappingField<ContinuousDomainValue>( "test_mesh.node.y", globalLine,
-            meshNodes );
-        meshY.setValue( globalLine.getValue( 10.0 ), 1 );
-        meshY.setValue( globalLine.getValue( 10.0 ), 2 );
-        meshY.setValue( globalLine.getValue( 10.0 ), 3 );
-        meshY.setValue( globalLine.getValue( 00.0 ), 4 );
-        meshY.setValue( globalLine.getValue( 00.0 ), 5 );
-        meshY.setValue( globalLine.getValue( 00.0 ), 6 );
+        MappingField<ContinuousDomainValue> meshY = new MappingField<ContinuousDomainValue>( "test_mesh.node.y", libraryLine,
+            globalNodesDomain );
+        meshY.setValue( libraryLine.makeValue( 10.0 ), 1 );
+        meshY.setValue( libraryLine.makeValue( 10.0 ), 2 );
+        meshY.setValue( libraryLine.makeValue( 10.0 ), 3 );
+        meshY.setValue( libraryLine.makeValue( 00.0 ), 4 );
+        meshY.setValue( libraryLine.makeValue( 00.0 ), 5 );
+        meshY.setValue( libraryLine.makeValue( 00.0 ), 6 );
 
         NodeDofEvaluator meshXQuadBilinear = new NodeDofEvaluator( "test_mesh.evaluator.x.quad_bilinear", meshX, quadNodeList,
             "library::quad_bilinear" );
@@ -200,7 +211,7 @@ public class FieldmlTest
             triangleNodeList, "library::triangle_bilinear" );
 
         FEMField<ContinuousDomainValue> meshCoordinatesX = new FEMField<ContinuousDomainValue>( "test_mesh.coordinates.x",
-            globalLine, meshDomain );
+            libraryLine, meshDomain );
         meshCoordinatesX.setEvaluator( 1, meshXQuadBilinear );
         meshCoordinatesX.setEvaluator( 2, meshXSimplexBilinear );
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
@@ -211,7 +222,7 @@ public class FieldmlTest
             triangleNodeList, "library::triangle_bilinear" );
 
         FEMField<ContinuousDomainValue> meshCoordinatesY = new FEMField<ContinuousDomainValue>( "test_mesh.coordinates.y",
-            globalLine, meshDomain );
+            libraryLine, meshDomain );
         meshCoordinatesY.setEvaluator( 1, meshYQuadBilinear );
         meshCoordinatesY.setEvaluator( 2, meshYSimplexBilinear );
         meshCoordinatesY.setEvaluator( 3, meshYSimplexBilinear );
