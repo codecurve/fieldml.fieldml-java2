@@ -142,21 +142,17 @@ public class FieldmlTest
 
         ContinuousDomain libraryPlane = new ContinuousDomain( "library.plane", 2 );
 
-        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "library.triangle.local_node" );
-        triangleNodeDomain.addValue( 1 );
-        triangleNodeDomain.addValue( 2 );
-        triangleNodeDomain.addValue( 3 );
+        EnsembleDomain triangleNodeDomain = new EnsembleDomain( "library.local_nodes.simplex.bilinear" );
+        triangleNodeDomain.addValues( 1, 2, 3 );
 
-        EnsembleDomain quadNodeDomain = new EnsembleDomain( "library.quad.local_node" );
-        quadNodeDomain.addValue( 1 );
-        quadNodeDomain.addValue( 2 );
-        quadNodeDomain.addValue( 3 );
-        quadNodeDomain.addValue( 4 );
+        EnsembleDomain quadNodeDomain = new EnsembleDomain( "library.local_nodes.quad.bilinear" );
+        quadNodeDomain.addValues( 1, 2, 3, 4 );
+
+        EnsembleDomain biquadNodeDomain = new EnsembleDomain( "library.local_nodes.quad.biquadratic" );
+        biquadNodeDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
-        testMeshElementDomain.addValue( 1 );
-        testMeshElementDomain.addValue( 2 );
-        testMeshElementDomain.addValue( 3 );
+        testMeshElementDomain.addValues( 1, 2, 3 );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -164,12 +160,7 @@ public class FieldmlTest
         meshDomain.setShape( 3, "library.shape.triangle.00_10_01" );
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
-        globalNodesDomain.addValue( 1 );
-        globalNodesDomain.addValue( 2 );
-        globalNodesDomain.addValue( 3 );
-        globalNodesDomain.addValue( 4 );
-        globalNodesDomain.addValue( 5 );
-        globalNodesDomain.addValue( 6 );
+        globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6 );
 
         MappingField<EnsembleDomainValue> triangleNodeList = new MappingField<EnsembleDomainValue>( "test_mesh.triangle_nodes",
             globalNodesDomain, testMeshElementDomain, triangleNodeDomain );
