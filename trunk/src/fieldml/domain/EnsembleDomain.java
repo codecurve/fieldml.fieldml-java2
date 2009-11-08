@@ -1,13 +1,17 @@
 package fieldml.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsembleDomain
     extends Domain
 {
+    public static final Map<String, EnsembleDomain> domains = new HashMap<String, EnsembleDomain>();
+
     public final List<Integer> values;
 
 
@@ -16,6 +20,8 @@ public class EnsembleDomain
         super( name );
 
         values = new ArrayList<Integer>();
+
+        domains.put( name, this );
     }
 
 
@@ -31,15 +37,17 @@ public class EnsembleDomain
     }
 
 
-    public EnsembleDomainValue getValue( int indexValue )
+    public void addValues( int... values )
     {
-        return new EnsembleDomainValue( this, indexValue );
+        for( int value : values )
+        {
+            addValue( value );
+        }
     }
 
 
-    @Override
-    public EnsembleDomainValue getValue( int indexValue, double... chartValues )
+    public EnsembleDomainValue makeValue( int indexValue )
     {
-        return getValue( indexValue );
+        return new EnsembleDomainValue( this, indexValue );
     }
 }

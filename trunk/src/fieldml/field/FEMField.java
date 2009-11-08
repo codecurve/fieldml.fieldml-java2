@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.Domain;
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.Evaluator;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.NodeDofEvaluator;
+import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
 
-public class FEMField<D extends DomainValue>
-    extends Field<D>
+public class FEMField<D extends ContinuousDomainValue>
+    extends Field<ContinuousDomainValue>
 {
     @SerializationAsString
     public final MeshDomain meshDomain;
@@ -24,10 +25,10 @@ public class FEMField<D extends DomainValue>
         public final int key;
 
         @SerializationAsString
-        public final Evaluator evaluator;
+        public final ContinuousEvaluator evaluator;
 
 
-        private MapEntry( int key, Evaluator evaluator )
+        private MapEntry( int key, ContinuousEvaluator evaluator )
         {
             this.key = key;
             this.evaluator = evaluator;
@@ -35,7 +36,7 @@ public class FEMField<D extends DomainValue>
     }
 
 
-    public FEMField( String name, Domain valueDomain, MeshDomain meshDomain )
+    public FEMField( String name, ContinuousDomain valueDomain, MeshDomain meshDomain )
     {
         super( name, valueDomain );
 
@@ -52,8 +53,7 @@ public class FEMField<D extends DomainValue>
 
 
     @Override
-    @SuppressWarnings( "unchecked" )
-    public D evaluate( DomainValue... input )
+    public ContinuousDomainValue evaluate( DomainValue... input )
     {
         if( input[0].domain != meshDomain )
         {
@@ -66,7 +66,7 @@ public class FEMField<D extends DomainValue>
         {
             if( e.key == v.indexValue )
             {
-                return (D)valueDomain.getValue( 0, e.evaluator.evaluate( v ) );
+                return new ContinuousDomainValue( (ContinuousDomain)valueDomain, e.evaluator.evaluate( v ) );
             }
         }
 

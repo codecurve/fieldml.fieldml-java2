@@ -17,9 +17,9 @@ public class MappingField<D extends DomainValue>
 
     public class MapEntry
     {
-        public D value;
-
         public int[] keys;
+
+        public D value;
 
 
         private MapEntry( D value, int[] keys )

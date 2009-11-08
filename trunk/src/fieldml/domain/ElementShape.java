@@ -1,14 +1,10 @@
 package fieldml.domain;
 
-
-public abstract class Domain
+public class ElementShape
 {
     public final String name;
     
-    public Object units;
-
-
-    Domain( String name )
+    public ElementShape( String name )
     {
         this.name = name;
     }
