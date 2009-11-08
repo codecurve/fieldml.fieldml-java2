@@ -37,6 +37,15 @@ public class EnsembleDomain
     }
 
 
+    public void addValues( int... values )
+    {
+        for( int value : values )
+        {
+            addValue( value );
+        }
+    }
+
+
     public EnsembleDomainValue makeValue( int indexValue )
     {
         return new EnsembleDomainValue( this, indexValue );
