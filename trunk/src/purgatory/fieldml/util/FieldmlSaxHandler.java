@@ -159,6 +159,7 @@ public class FieldmlSaxHandler
     }
 
 
+    @Override
     public void characters( char[] ch, int start, int length )
     {
         characters.append( String.copyValueOf( ch, start, length ) );

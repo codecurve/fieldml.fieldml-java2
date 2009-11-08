@@ -11,6 +11,7 @@ public class FieldMLJavaFieldTest
     private int continuousDomainId;
 
 
+    @Override
     protected void setUp()
         throws Exception
     {
@@ -24,6 +25,7 @@ public class FieldMLJavaFieldTest
     }
 
 
+    @Override
     protected void tearDown()
         throws Exception
     {
