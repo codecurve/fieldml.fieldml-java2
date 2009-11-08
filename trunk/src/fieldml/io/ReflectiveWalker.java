@@ -2,6 +2,8 @@ package fieldml.io;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.annotations.SerializationBlocked;
@@ -75,6 +77,14 @@ public class ReflectiveWalker
         }
     }
 
+    
+    private static <K,V> void WalkMap( Map<K,V> o, ReflectiveHandler handler )
+    {
+        for( Entry<K,V> e : o.entrySet() )
+        {
+            handler.onMapEntry( e.getKey().toString(), e.getValue().toString() );
+        }
+    }
 
     public static void Walk( Object o, ReflectiveHandler handler )
     {
@@ -103,6 +113,13 @@ public class ReflectiveWalker
                 {
                     handler.onStartList( o, f.getName() );
                     WalkList( f, f.get( o ), handler );
+                    handler.onEndList( o );
+                    continue;
+                }
+                if( Map.class.isAssignableFrom( type ) )
+                {
+                    handler.onStartList( o, f.getName() );
+                    WalkMap( (Map<?,?>)f.get( o ), handler );
                     handler.onEndList( o );
                     continue;
                 }
