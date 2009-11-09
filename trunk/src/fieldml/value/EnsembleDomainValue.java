@@ -1,6 +1,6 @@
 package fieldml.value;
 
-import fieldml.domain.Domain;
+import fieldml.domain.EnsembleDomain;
 
 public class EnsembleDomainValue
     extends DomainValue
@@ -8,10 +8,16 @@ public class EnsembleDomainValue
     public int indexValue;
 
 
-    public EnsembleDomainValue( Domain domain, int indexValue )
+    private EnsembleDomainValue( EnsembleDomain domain, int indexValue )
     {
         super( domain );
-        
+
         this.indexValue = indexValue;
+    }
+
+
+    public static EnsembleDomainValue makeValue( EnsembleDomain domain, int indexValue )
+    {
+        return new EnsembleDomainValue( domain, indexValue );
     }
 }

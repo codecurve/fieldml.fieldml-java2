@@ -4,5 +4,5 @@ import fieldml.field.Field;
 
 public class NodalMesh
 {
-    public Field<?> elementNodes;
+    public Field<?, ?> elementNodes;
 }

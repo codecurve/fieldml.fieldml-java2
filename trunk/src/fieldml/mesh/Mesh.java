@@ -6,7 +6,7 @@ public class Mesh
 {
     public int elementCount;
     
-    public Field<?> elementShapes;
+    public Field<?, ?> elementShapes;
     
     public Object points;
 }

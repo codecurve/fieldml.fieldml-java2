@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.value.MeshDomainValue;
 
 public class MeshDomain
     extends Domain
@@ -31,17 +30,6 @@ public class MeshDomain
         shapes = new HashMap<Integer, String>();
 
         domains.put( name, this );
-    }
-
-
-    public MeshDomainValue makeValue( int indexValue, double... chartValues )
-    {
-        if( chartValues.length < dimensions )
-        {
-            return null;
-        }
-
-        return new MeshDomainValue( this, indexValue, chartValues );
     }
     
     
