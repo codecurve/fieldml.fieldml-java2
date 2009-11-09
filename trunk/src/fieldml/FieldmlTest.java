@@ -143,6 +143,10 @@ public class FieldmlTest
         output = (ContinuousDomainValue)meshXY.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 0.5, 0.5 ) );
         assert output.chartValues[0] == 15;
         assert output.chartValues[1] == 5;
+
+        output = (ContinuousDomainValue)meshXY.evaluate( MeshDomainValue.makeValue( meshDomain, 4, 0.5, 0.5 ) );
+        assert output.chartValues[0] == 25;
+        assert output.chartValues[1] == 5;
     }
 
 
@@ -187,6 +191,11 @@ public class FieldmlTest
         quadNodeList.setValue( 1, 1, 3 );
         quadNodeList.setValue( 2, 1, 4 );
 
+        quadNodeList.setValue( 6, 4, 1 );
+        quadNodeList.setValue( 13, 4, 2 );
+        quadNodeList.setValue( 3, 4, 3 );
+        quadNodeList.setValue( 7, 4, 4 );
+
         EnsembleMappingField biquadNodeList = new EnsembleMappingField( "test_mesh.biquad_nodes", globalNodesDomain,
             testMeshElementDomain, bilinearQuadLocalNodeDomain );
 
@@ -212,6 +221,8 @@ public class FieldmlTest
         meshX.setValue( 00.0, 4 );
         meshX.setValue( 10.0, 5 );
         meshX.setValue( 20.0, 6 );
+        meshX.setValue( 30.0, 7 );
+        meshX.setValue( 30.0, 13 );
 
         ContinuousMappingField meshY = new ContinuousMappingField( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( 10.0, 1 );
@@ -237,9 +248,12 @@ public class FieldmlTest
         meshCoordinatesX.setEvaluator( 1, meshXQuadBilinear );
         meshCoordinatesX.setEvaluator( 2, meshXSimplexBilinear );
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
+        meshCoordinatesX.setEvaluator( 4, meshXQuadBilinear );
 
+        BilinearQuadEvaluator meshYQuadBilinear = new BilinearQuadEvaluator( "test_mesh.evaluator.y.quad_bilinear", meshY,
+            quadNodeList, bilinearQuadLocalNodeDomain );
         BiquadQuadEvaluator meshYQuadBiquad = new BiquadQuadEvaluator( "test_mesh.evaluator.y.quad_biquad", meshY,
-            quadNodeList, biquadraticQuadLocalNodeDomain );
+            biquadNodeList, biquadraticQuadLocalNodeDomain );
         BilinearSimplexEvaluator meshYSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.y.simplex_bilinear",
             meshY, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
@@ -247,6 +261,7 @@ public class FieldmlTest
         meshCoordinatesY.setEvaluator( 1, meshYQuadBiquad );
         meshCoordinatesY.setEvaluator( 2, meshYSimplexBilinear );
         meshCoordinatesY.setEvaluator( 3, meshYSimplexBilinear );
+        meshCoordinatesY.setEvaluator( 4, meshYQuadBilinear );
 
         ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates.xy", meshXYdomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
