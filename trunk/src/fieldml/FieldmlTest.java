@@ -14,6 +14,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.BilinearQuadEvaluator;
 import fieldml.evaluator.BilinearSimplexEvaluator;
+import fieldml.evaluator.BiquadQuadEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.Evaluator;
@@ -165,7 +166,7 @@ public class FieldmlTest
         meshDomain.setShape( 3, "library.shape.triangle.00_10_01" );
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
-        globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6 );
+        globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
 
         EnsembleMappingField triangleNodeList = new EnsembleMappingField( "test_mesh.triangle_nodes", globalNodesDomain,
             testMeshElementDomain, bilinearSimplexLocalNodeDomain );
@@ -219,6 +220,13 @@ public class FieldmlTest
         meshY.setValue( 00.0, 4 );
         meshY.setValue( 00.0, 5 );
         meshY.setValue( 00.0, 6 );
+        meshY.setValue( 10.0, 7 );
+        meshY.setValue( 05.0, 8 );
+        meshY.setValue( 05.0, 9 );
+        meshY.setValue( 05.0, 10 );
+        meshY.setValue( 10.0, 11 );
+        meshY.setValue( 00.0, 12 );
+        meshY.setValue( 00.0, 13 );
 
         BilinearQuadEvaluator meshXQuadBilinear = new BilinearQuadEvaluator( "test_mesh.evaluator.x.quad_bilinear", meshX,
             quadNodeList, bilinearQuadLocalNodeDomain );
@@ -230,13 +238,13 @@ public class FieldmlTest
         meshCoordinatesX.setEvaluator( 2, meshXSimplexBilinear );
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
 
-        BilinearQuadEvaluator meshYQuadBilinear = new BilinearQuadEvaluator( "test_mesh.evaluator.y.quad_bilinear", meshY,
-            quadNodeList, bilinearQuadLocalNodeDomain );
+        BiquadQuadEvaluator meshYQuadBiquad = new BiquadQuadEvaluator( "test_mesh.evaluator.y.quad_biquad", meshY,
+            quadNodeList, biquadraticQuadLocalNodeDomain );
         BilinearSimplexEvaluator meshYSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.y.simplex_bilinear",
             meshY, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
         FEMField meshCoordinatesY = new FEMField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
-        meshCoordinatesY.setEvaluator( 1, meshYQuadBilinear );
+        meshCoordinatesY.setEvaluator( 1, meshYQuadBiquad );
         meshCoordinatesY.setEvaluator( 2, meshYSimplexBilinear );
         meshCoordinatesY.setEvaluator( 3, meshYSimplexBilinear );
 

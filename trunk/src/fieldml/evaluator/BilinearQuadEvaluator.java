@@ -9,12 +9,12 @@ public class BilinearQuadEvaluator
 {
     protected double evaluate( double[] params, double[] xi )
     {
-        double p3 = xi[0] * xi[1];
-        double p2 = ( 1 - xi[0] ) * xi[1];
-        double p1 = xi[0] * ( 1 - xi[1] );
-        double p0 = ( 1 - xi[0] ) * ( 1 - xi[1] );
+        double x1_1 = ( 1 - xi[0] );
+        double x1_2 = ( xi[0] );
+        double x2_1 = ( 1 - xi[1] );
+        double x2_2 = ( xi[1] );
 
-        return params[0] * p0 + params[1] * p1 + params[2] * p2 + params[3] * p3;
+        return params[0] * x1_1 * x2_1 + params[1] * x1_2 * x2_1 + params[2] * x1_1 * x2_2 + params[3] * x1_2 * x2_2;
     }
 
 
