@@ -23,7 +23,7 @@ public class ReflectiveWalker
     {
         for( Object o2 : (Iterable<? extends Object>)o )
         {
-            if( o2.getClass() == String.class )
+            if( ( o2.getClass() == String.class ) || f.isAnnotationPresent( SerializationAsString.class ) )
             {
                 handler.onStringListElement( o2 );
             }
@@ -77,14 +77,15 @@ public class ReflectiveWalker
         }
     }
 
-    
-    private static <K,V> void WalkMap( Map<K,V> o, ReflectiveHandler handler )
+
+    private static <K, V> void WalkMap( Map<K, V> o, ReflectiveHandler handler )
     {
-        for( Entry<K,V> e : o.entrySet() )
+        for( Entry<K, V> e : o.entrySet() )
         {
             handler.onMapEntry( e.getKey().toString(), e.getValue().toString() );
         }
     }
+
 
     public static void Walk( Object o, ReflectiveHandler handler )
     {
@@ -119,7 +120,7 @@ public class ReflectiveWalker
                 if( Map.class.isAssignableFrom( type ) )
                 {
                     handler.onStartList( o, f.getName() );
-                    WalkMap( (Map<?,?>)f.get( o ), handler );
+                    WalkMap( (Map<?, ?>)f.get( o ), handler );
                     handler.onEndList( o );
                     continue;
                 }
