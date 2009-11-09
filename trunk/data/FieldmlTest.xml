@@ -7,10 +7,13 @@
 |   |/ 3|
 4___5___6
 -->
-  <ContinuousDomain dimensions="1" name="library.line" />
+  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.x" />
   
 
-  <ContinuousDomain dimensions="2" name="library.plane" />
+  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.y" />
+  
+
+  <ContinuousDomain dimensions="2" name="test_mesh.co-ordinates.xy" />
   
 
   <EnsembleDomain name="test_mesh.nodes">
@@ -18,18 +21,23 @@
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="library.triangle.local_node">
+  <EnsembleDomain name="library.local_nodes.simplex.bilinear">
     <values>1  2  3  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="library.quad.local_node">
+  <EnsembleDomain name="library.local_nodes.quad.bilinear">
     <values>1  2  3  4  </values>
   </EnsembleDomain>
   
 
   <EnsembleDomain name="test_mesh.elements">
     <values>1  2  3  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleDomain name="library.local_nodes.quad.biquadratic">
+    <values>1  2  3  4  5  6  7  8  9  </values>
   </EnsembleDomain>
   
 
@@ -42,7 +50,7 @@
   </MeshDomain>
   
 
-  <MappingField name="test_mesh.node.x" valueDomain="library.line">
+  <MappingField name="test_mesh.node.x" valueDomain="test_mesh.co-ordinates.x">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -85,7 +93,7 @@
   </MappingField>
   
 
-  <MappingField name="test_mesh.node.y" valueDomain="library.line">
+  <MappingField name="test_mesh.node.y" valueDomain="test_mesh.co-ordinates.y">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -129,7 +137,7 @@
   
 
   <MappingField name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.quad.local_node"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.bilinear"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  1  </keys>
@@ -152,7 +160,7 @@
   
 
   <MappingField name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.triangle.local_node"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.simplex.bilinear"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>2  1  </keys>
@@ -194,7 +202,7 @@
   <NodeDofEvaluator nodeDofs="test_mesh.node.y" elementNodes="test_mesh.triangle_nodes" interpolation="library::triangle_bilinear" name="test_mesh.evaluator.y.simplex_bilinear" />
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="library.line">
+  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="test_mesh.co-ordinates.x">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.x.quad_bilinear" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
@@ -203,13 +211,18 @@
   </FEMField>
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="library.line">
+  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="test_mesh.co-ordinates.y">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.y.quad_bilinear" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
       <MapEntry key="3" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
     </evaluators>
   </FEMField>
+  
+
+  <ContinuousAggregateField name="test_mesh.coordinates.xy" valueDomain="test_mesh.co-ordinates.xy">
+    <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
+  </ContinuousAggregateField>
   
 
 </fieldml>
