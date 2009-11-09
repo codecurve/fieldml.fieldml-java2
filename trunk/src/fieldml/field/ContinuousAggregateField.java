@@ -9,10 +9,10 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 
 public class ContinuousAggregateField
-    extends Field<ContinuousDomainValue>
+    extends Field<ContinuousDomain, ContinuousDomainValue>
 {
     @SerializationAsString
-    public final List<Field<ContinuousDomainValue>> sourceFields;
+    public final List<Field<ContinuousDomain, ContinuousDomainValue>> sourceFields;
 
     private int count;
 
@@ -22,7 +22,7 @@ public class ContinuousAggregateField
         super( name, valueDomain );
 
         count = valueDomain.dimensions;
-        sourceFields = new ArrayList<Field<ContinuousDomainValue>>();
+        sourceFields = new ArrayList<Field<ContinuousDomain, ContinuousDomainValue>>();
         for( int i = 0; i < valueDomain.dimensions; i++ )
         {
             sourceFields.add( null );
@@ -30,7 +30,7 @@ public class ContinuousAggregateField
     }
 
 
-    public void setSourceField( int destinationDimension, Field<ContinuousDomainValue> sourceField )
+    public void setSourceField( int destinationDimension, Field<ContinuousDomain, ContinuousDomainValue> sourceField )
     {
         // TODO For simplicity, we're just taking the source field's first component.
         sourceFields.set( destinationDimension - 1, sourceField );
@@ -47,6 +47,6 @@ public class ContinuousAggregateField
             value[i] = sourceFields.get( i ).evaluate( input ).chartValues[0];
         }
 
-        return new ContinuousDomainValue( (ContinuousDomain)valueDomain, value );
+        return ContinuousDomainValue.makeValue( valueDomain, value );
     }
 }

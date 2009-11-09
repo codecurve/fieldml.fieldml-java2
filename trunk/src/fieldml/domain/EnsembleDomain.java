@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fieldml.value.EnsembleDomainValue;
-
 public class EnsembleDomain
     extends Domain
 {
@@ -43,11 +41,5 @@ public class EnsembleDomain
         {
             addValue( value );
         }
-    }
-
-
-    public EnsembleDomainValue makeValue( int indexValue )
-    {
-        return new EnsembleDomainValue( this, indexValue );
     }
 }

@@ -12,8 +12,8 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
 
-public class FEMField<D extends ContinuousDomainValue>
-    extends Field<ContinuousDomainValue>
+public class FEMField
+    extends Field<ContinuousDomain, ContinuousDomainValue>
 {
     @SerializationAsString
     public final MeshDomain meshDomain;
@@ -66,7 +66,7 @@ public class FEMField<D extends ContinuousDomainValue>
         {
             if( e.key == v.indexValue )
             {
-                return new ContinuousDomainValue( (ContinuousDomain)valueDomain, e.evaluator.evaluate( v ) );
+                return ContinuousDomainValue.makeValue( (ContinuousDomain)valueDomain, e.evaluator.evaluate( v ) );
             }
         }
 

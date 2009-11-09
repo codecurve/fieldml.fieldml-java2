@@ -3,8 +3,6 @@ package fieldml.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-import fieldml.value.ContinuousDomainValue;
-
 public class ContinuousDomain
     extends Domain
 {
@@ -20,16 +18,5 @@ public class ContinuousDomain
         this.dimensions = dimensions;
 
         domains.put( name, this );
-    }
-
-
-    public ContinuousDomainValue makeValue( double...chartValues )
-    {
-        if( chartValues.length < dimensions )
-        {
-            return null;
-        }
-
-        return new ContinuousDomainValue( this, chartValues );
     }
 }

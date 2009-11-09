@@ -9,20 +9,20 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
 import fieldml.value.EnsembleDomainValue;
 
-public class MappingField<D extends DomainValue>
-    extends Field<D>
+public abstract class MappingField<D extends Domain, V extends DomainValue>
+    extends Field<D, V>
 {
     @SerializationAsString
-    public EnsembleDomain[] parameterDomains;
+    public final EnsembleDomain[] parameterDomains;
 
     public class MapEntry
     {
         public int[] keys;
 
-        public D value;
+        public V value;
 
 
-        private MapEntry( D value, int[] keys )
+        private MapEntry( V value, int[] keys )
         {
             this.value = value;
             this.keys = keys;
@@ -65,7 +65,7 @@ public class MappingField<D extends DomainValue>
     public final List<MapEntry> entries;
 
 
-    public MappingField( String name, Domain valueDomain, EnsembleDomain... parameterDomains )
+    public MappingField( String name, D valueDomain, EnsembleDomain... parameterDomains )
     {
         super( name, valueDomain );
 
@@ -75,13 +75,13 @@ public class MappingField<D extends DomainValue>
     }
 
 
-    public void setValue( D value, int... keys )
+    public void setValue( V value, int... keys )
     {
         entries.add( new MapEntry( value, keys ) );
     }
 
 
-    public D evaluate( int... values )
+    public V evaluate( int... values )
     {
         for( MapEntry m : entries )
         {
@@ -96,7 +96,7 @@ public class MappingField<D extends DomainValue>
 
 
     @Override
-    public D evaluate( DomainValue... values )
+    public V evaluate( DomainValue... values )
     {
         for( MapEntry m : entries )
         {
