@@ -221,9 +221,9 @@ public class FieldmlTest
         meshY.setValue( 00.0, 6 );
 
         BilinearQuadEvaluator meshXQuadBilinear = new BilinearQuadEvaluator( "test_mesh.evaluator.x.quad_bilinear", meshX,
-            quadNodeList );
+            quadNodeList, bilinearQuadLocalNodeDomain );
         BilinearSimplexEvaluator meshXSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.x.simplex_bilinear",
-            meshX, triangleNodeList );
+            meshX, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
         FEMField meshCoordinatesX = new FEMField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
         meshCoordinatesX.setEvaluator( 1, meshXQuadBilinear );
@@ -231,9 +231,9 @@ public class FieldmlTest
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
 
         BilinearQuadEvaluator meshYQuadBilinear = new BilinearQuadEvaluator( "test_mesh.evaluator.y.quad_bilinear", meshY,
-            quadNodeList );
+            quadNodeList, bilinearQuadLocalNodeDomain );
         BilinearSimplexEvaluator meshYSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.y.simplex_bilinear",
-            meshY, triangleNodeList );
+            meshY, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
         FEMField meshCoordinatesY = new FEMField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
         meshCoordinatesY.setEvaluator( 1, meshYQuadBilinear );
