@@ -7,7 +7,6 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.NodeDofEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
@@ -46,7 +45,7 @@ public class FEMField
     }
 
 
-    public void setEvaluator( int indexValue, NodeDofEvaluator evaluator )
+    public void setEvaluator( int indexValue, ContinuousEvaluator evaluator )
     {
         evaluators.add( new MapEntry( indexValue, evaluator ) );
     }
@@ -66,7 +65,7 @@ public class FEMField
         {
             if( e.key == v.indexValue )
             {
-                return ContinuousDomainValue.makeValue( (ContinuousDomain)valueDomain, e.evaluator.evaluate( v ) );
+                return ContinuousDomainValue.makeValue( valueDomain, e.evaluator.evaluate( v ) );
             }
         }
 
