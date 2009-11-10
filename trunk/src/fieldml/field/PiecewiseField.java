@@ -11,7 +11,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
 
-public class FEMField
+public class PiecewiseField
     extends Field<ContinuousDomain, ContinuousDomainValue>
 {
     @SerializationAsString
@@ -35,7 +35,7 @@ public class FEMField
     }
 
 
-    public FEMField( String name, ContinuousDomain valueDomain, MeshDomain meshDomain )
+    public PiecewiseField( String name, ContinuousDomain valueDomain, MeshDomain meshDomain )
     {
         super( name, valueDomain );
 

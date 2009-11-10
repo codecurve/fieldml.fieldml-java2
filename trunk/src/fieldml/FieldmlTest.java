@@ -19,9 +19,9 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.Evaluator;
 import fieldml.field.ContinuousAggregateField;
-import fieldml.field.ContinuousMappingField;
-import fieldml.field.EnsembleMappingField;
-import fieldml.field.FEMField;
+import fieldml.field.ContinuousParameters;
+import fieldml.field.EnsembleParameters;
+import fieldml.field.PiecewiseField;
 import fieldml.field.Field;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
@@ -172,7 +172,7 @@ public class FieldmlTest
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
         globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
 
-        EnsembleMappingField triangleNodeList = new EnsembleMappingField( "test_mesh.triangle_nodes", globalNodesDomain,
+        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesDomain,
             testMeshElementDomain, bilinearSimplexLocalNodeDomain );
 
         triangleNodeList.setValue( 2, 2, 1 );
@@ -183,7 +183,7 @@ public class FieldmlTest
         triangleNodeList.setValue( 3, 3, 2 );
         triangleNodeList.setValue( 5, 3, 3 );
 
-        EnsembleMappingField quadNodeList = new EnsembleMappingField( "test_mesh.quad_nodes", globalNodesDomain,
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain,
             testMeshElementDomain, bilinearQuadLocalNodeDomain );
 
         quadNodeList.setValue( 4, 1, 1 );
@@ -196,7 +196,7 @@ public class FieldmlTest
         quadNodeList.setValue( 3, 4, 3 );
         quadNodeList.setValue( 7, 4, 4 );
 
-        EnsembleMappingField biquadNodeList = new EnsembleMappingField( "test_mesh.biquad_nodes", globalNodesDomain,
+        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesDomain,
             testMeshElementDomain, bilinearQuadLocalNodeDomain );
 
         biquadNodeList.setValue( 6, 4, 1 );
@@ -214,7 +214,7 @@ public class FieldmlTest
 
         ContinuousDomain meshXYdomain = new ContinuousDomain( "test_mesh.co-ordinates.xy", 2 );
 
-        ContinuousMappingField meshX = new ContinuousMappingField( "test_mesh.node.x", meshXdomain, globalNodesDomain );
+        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", meshXdomain, globalNodesDomain );
         meshX.setValue( 00.0, 1 );
         meshX.setValue( 10.0, 2 );
         meshX.setValue( 20.0, 3 );
@@ -224,7 +224,7 @@ public class FieldmlTest
         meshX.setValue( 30.0, 7 );
         meshX.setValue( 30.0, 13 );
 
-        ContinuousMappingField meshY = new ContinuousMappingField( "test_mesh.node.y", meshYdomain, globalNodesDomain );
+        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( 10.0, 1 );
         meshY.setValue( 10.0, 2 );
         meshY.setValue( 10.0, 3 );
@@ -244,7 +244,7 @@ public class FieldmlTest
         BilinearSimplexEvaluator meshXSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.x.simplex_bilinear",
             meshX, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
-        FEMField meshCoordinatesX = new FEMField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
         meshCoordinatesX.setEvaluator( 1, meshXQuadBilinear );
         meshCoordinatesX.setEvaluator( 2, meshXSimplexBilinear );
         meshCoordinatesX.setEvaluator( 3, meshXSimplexBilinear );
@@ -257,7 +257,7 @@ public class FieldmlTest
         BilinearSimplexEvaluator meshYSimplexBilinear = new BilinearSimplexEvaluator( "test_mesh.evaluator.y.simplex_bilinear",
             meshY, triangleNodeList, bilinearSimplexLocalNodeDomain );
 
-        FEMField meshCoordinatesY = new FEMField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
         meshCoordinatesY.setEvaluator( 1, meshYQuadBiquad );
         meshCoordinatesY.setEvaluator( 2, meshYSimplexBilinear );
         meshCoordinatesY.setEvaluator( 3, meshYSimplexBilinear );

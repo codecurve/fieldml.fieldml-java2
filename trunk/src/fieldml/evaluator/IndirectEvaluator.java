@@ -2,8 +2,8 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousMappingField;
-import fieldml.field.EnsembleMappingField;
+import fieldml.field.ContinuousParameters;
+import fieldml.field.EnsembleParameters;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
@@ -12,15 +12,15 @@ public abstract class IndirectEvaluator
     extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final ContinuousMappingField dofs;
+    public final ContinuousParameters dofs;
 
     @SerializationAsString
-    public final EnsembleMappingField dofIndexes;
+    public final EnsembleParameters dofIndexes;
 
     private final EnsembleDomain iteratedDomain;
 
 
-    public IndirectEvaluator( String name, ContinuousMappingField dofs, EnsembleMappingField dofIndexes,
+    public IndirectEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name );
