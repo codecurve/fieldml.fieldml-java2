@@ -51,7 +51,7 @@
   </MeshDomain>
   
 
-  <ContinuousMappingField name="test_mesh.node.x" valueDomain="test_mesh.co-ordinates.x">
+  <ContinuousParameters name="test_mesh.node.x" valueDomain="test_mesh.co-ordinates.x">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -103,10 +103,10 @@
         </ContinuousDomainValue>
       </MapEntry>
     </entries>
-  </ContinuousMappingField>
+  </ContinuousParameters>
   
 
-  <ContinuousMappingField name="test_mesh.node.y" valueDomain="test_mesh.co-ordinates.y">
+  <ContinuousParameters name="test_mesh.node.y" valueDomain="test_mesh.co-ordinates.y">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -188,11 +188,11 @@
         </ContinuousDomainValue>
       </MapEntry>
     </entries>
-  </ContinuousMappingField>
+  </ContinuousParameters>
   
 
-  <EnsembleMappingField name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains />
+  <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes">
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.bilinear"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>4  1  </keys>
@@ -231,11 +231,11 @@
         <EnsembleDomainValue indexValue="7" />
       </MapEntry>
     </entries>
-  </EnsembleMappingField>
+  </EnsembleParameters>
   
 
-  <EnsembleMappingField name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains />
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.bilinear"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  1  </keys>
@@ -270,11 +270,11 @@
         <EnsembleDomainValue indexValue="7" />
       </MapEntry>
     </entries>
-  </EnsembleMappingField>
+  </EnsembleParameters>
   
 
-  <EnsembleMappingField name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains />
+  <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.simplex.bilinear"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>2  1  </keys>
@@ -301,7 +301,7 @@
         <EnsembleDomainValue indexValue="5" />
       </MapEntry>
     </entries>
-  </EnsembleMappingField>
+  </EnsembleParameters>
   
 
   <BiquadQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.biquad_nodes" name="test_mesh.evaluator.y.quad_biquad" />
@@ -319,24 +319,24 @@
   <BilinearSimplexEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.triangle_nodes" name="test_mesh.evaluator.y.simplex_bilinear" />
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="test_mesh.co-ordinates.x">
+  <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="test_mesh.co-ordinates.x">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.x.quad_bilinear" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
       <MapEntry key="3" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
       <MapEntry key="4" evaluator="test_mesh.evaluator.x.quad_bilinear" />
     </evaluators>
-  </FEMField>
+  </PiecewiseField>
   
 
-  <FEMField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="test_mesh.co-ordinates.y">
+  <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="test_mesh.co-ordinates.y">
     <evaluators>
       <MapEntry key="1" evaluator="test_mesh.evaluator.y.quad_biquad" />
       <MapEntry key="2" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
       <MapEntry key="3" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
       <MapEntry key="4" evaluator="test_mesh.evaluator.y.quad_bilinear" />
     </evaluators>
-  </FEMField>
+  </PiecewiseField>
   
 
   <ContinuousAggregateField name="test_mesh.coordinates.xy" valueDomain="test_mesh.co-ordinates.xy">

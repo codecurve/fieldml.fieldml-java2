@@ -1,8 +1,8 @@
 package fieldml.evaluator;
 
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousMappingField;
-import fieldml.field.EnsembleMappingField;
+import fieldml.field.ContinuousParameters;
+import fieldml.field.EnsembleParameters;
 
 public class BiquadQuadEvaluator
     extends IndirectEvaluator
@@ -24,7 +24,7 @@ public class BiquadQuadEvaluator
     }
 
 
-    public BiquadQuadEvaluator( String name, ContinuousMappingField dofs, EnsembleMappingField dofIndexes,
+    public BiquadQuadEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );

@@ -3,12 +3,12 @@ package fieldml.field;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.EnsembleDomainValue;
 
-public class EnsembleMappingField
+public class EnsembleParameters
     extends MappingField<EnsembleDomain, EnsembleDomainValue>
 {
-    public EnsembleMappingField( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )
+    public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )
     {
-        super( name, valueDomain );
+        super( name, valueDomain, parameterDomains );
     }
 
 
