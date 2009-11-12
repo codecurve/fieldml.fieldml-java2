@@ -192,7 +192,7 @@
   
 
   <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.bilinear"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.biquadratic"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>4  1  </keys>
@@ -304,38 +304,32 @@
   </EnsembleParameters>
   
 
-  <BiquadQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.biquad_nodes" name="test_mesh.evaluator.y.quad_biquad" />
-  
-
-  <BilinearQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.quad_nodes" name="test_mesh.evaluator.y.quad_bilinear" />
-  
-
-  <BilinearQuadEvaluator dofs="test_mesh.node.x" dofIndexes="test_mesh.quad_nodes" name="test_mesh.evaluator.x.quad_bilinear" />
-  
-
-  <BilinearSimplexEvaluator dofs="test_mesh.node.x" dofIndexes="test_mesh.triangle_nodes" name="test_mesh.evaluator.x.simplex_bilinear" />
-  
-
-  <BilinearSimplexEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.triangle_nodes" name="test_mesh.evaluator.y.simplex_bilinear" />
-  
-
   <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.x" valueDomain="test_mesh.co-ordinates.x">
-    <evaluators>
-      <MapEntry key="1" evaluator="test_mesh.evaluator.x.quad_bilinear" />
-      <MapEntry key="2" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
-      <MapEntry key="3" evaluator="test_mesh.evaluator.x.simplex_bilinear" />
-      <MapEntry key="4" evaluator="test_mesh.evaluator.x.quad_bilinear" />
-    </evaluators>
+    <evaluatorList>
+      <BilinearQuadEvaluator dofs="test_mesh.node.x" dofIndexes="test_mesh.quad_nodes" name="bilinear_quad" />
+      <BilinearSimplexEvaluator dofs="test_mesh.node.x" dofIndexes="test_mesh.triangle_nodes" name="bilinear_simplex" />
+    </evaluatorList>
+    <elementEvaluators>
+      <SimpleMapEntry key="1" value="bilinear_quad" />
+      <SimpleMapEntry key="2" value="bilinear_simplex" />
+      <SimpleMapEntry key="3" value="bilinear_simplex" />
+      <SimpleMapEntry key="4" value="bilinear_quad" />
+    </elementEvaluators>
   </PiecewiseField>
   
 
   <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.y" valueDomain="test_mesh.co-ordinates.y">
-    <evaluators>
-      <MapEntry key="1" evaluator="test_mesh.evaluator.y.quad_biquad" />
-      <MapEntry key="2" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
-      <MapEntry key="3" evaluator="test_mesh.evaluator.y.simplex_bilinear" />
-      <MapEntry key="4" evaluator="test_mesh.evaluator.y.quad_bilinear" />
-    </evaluators>
+    <evaluatorList>
+      <BilinearQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.quad_nodes" name="bilinear_quad" />
+      <BilinearSimplexEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.triangle_nodes" name="bilinear_simplex" />
+      <BiquadQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.biquad_nodes" name="biquadratic_quad" />
+    </evaluatorList>
+    <elementEvaluators>
+      <SimpleMapEntry key="1" value="biquadratic_quad" />
+      <SimpleMapEntry key="2" value="bilinear_simplex" />
+      <SimpleMapEntry key="3" value="bilinear_simplex" />
+      <SimpleMapEntry key="4" value="bilinear_quad" />
+    </elementEvaluators>
   </PiecewiseField>
   
 
