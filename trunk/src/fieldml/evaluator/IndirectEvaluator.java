@@ -24,7 +24,6 @@ public abstract class IndirectEvaluator
         EnsembleDomain iteratedDomain )
     {
         super( name );
-
         // TODO Assert that dofIndexes value domain is dofs only parameter domain
         // TODO Assert that dofIndexes's parameter domain has the right cardinality for the given interpolation.
         this.dofs = dofs;

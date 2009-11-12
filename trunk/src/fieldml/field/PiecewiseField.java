@@ -7,6 +7,7 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValue;
 import fieldml.value.MeshDomainValue;
@@ -17,22 +18,9 @@ public class PiecewiseField
     @SerializationAsString
     public final MeshDomain meshDomain;
 
-    public final List<MapEntry> evaluators;
+    public final List<ContinuousEvaluator> evaluatorList;
 
-    public class MapEntry
-    {
-        public final int key;
-
-        @SerializationAsString
-        public final ContinuousEvaluator evaluator;
-
-
-        private MapEntry( int key, ContinuousEvaluator evaluator )
-        {
-            this.key = key;
-            this.evaluator = evaluator;
-        }
-    }
+    public final SimpleMap<Integer, String> elementEvaluators;
 
 
     public PiecewiseField( String name, ContinuousDomain valueDomain, MeshDomain meshDomain )
@@ -41,15 +29,29 @@ public class PiecewiseField
 
         this.meshDomain = meshDomain;
 
-        evaluators = new ArrayList<MapEntry>();
+        elementEvaluators = new SimpleMap<Integer, String>();
+        evaluatorList = new ArrayList<ContinuousEvaluator>();
     }
 
 
-    public void setEvaluator( int indexValue, ContinuousEvaluator evaluator )
+    public void setEvaluator( int indexValue, String evaluatorName )
     {
-        evaluators.add( new MapEntry( indexValue, evaluator ) );
+        elementEvaluators.put( indexValue, evaluatorName );
     }
 
+    
+    private ContinuousEvaluator getEvaluator( String name )
+    {
+        for( ContinuousEvaluator e : evaluatorList )
+        {
+            if(e.name.equals( name ) )
+            {
+                return e;
+            }
+        }
+        
+        return null;
+    }
 
     @Override
     public ContinuousDomainValue evaluate( DomainValue... input )
@@ -61,14 +63,18 @@ public class PiecewiseField
 
         MeshDomainValue v = (MeshDomainValue)input[0];
 
-        for( MapEntry e : evaluators )
+        ContinuousEvaluator e = getEvaluator( elementEvaluators.get( v.indexValue ) );
+        if( e != null )
         {
-            if( e.key == v.indexValue )
-            {
-                return ContinuousDomainValue.makeValue( valueDomain, e.evaluator.evaluate( v ) );
-            }
+            return ContinuousDomainValue.makeValue( valueDomain, e.evaluate( v ) );
         }
 
         return null;
+    }
+
+
+    public void addEvaluator( ContinuousEvaluator evaluator )
+    {
+        evaluatorList.add( evaluator );
     }
 }
