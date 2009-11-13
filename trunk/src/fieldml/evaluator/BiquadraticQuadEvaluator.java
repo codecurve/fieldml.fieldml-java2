@@ -4,7 +4,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 
-public class BiquadQuadEvaluator
+public class BiquadraticQuadEvaluator
     extends IndirectEvaluator
 {
     protected double evaluate( double[] params, double[] xi )
@@ -24,7 +24,7 @@ public class BiquadQuadEvaluator
     }
 
 
-    public BiquadQuadEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BiquadraticQuadEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );
