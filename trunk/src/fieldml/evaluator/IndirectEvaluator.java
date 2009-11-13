@@ -39,14 +39,14 @@ public abstract class IndirectEvaluator
     public double evaluate( MeshDomainValue value )
     {
         final int elementIndex = value.indexValue;
-        double[] params = new double[4];
+        double[] params = new double[iteratedDomain.getValueCount()];
 
         for( int i = 0; i < iteratedDomain.getValueCount(); i++ )
         {
             final int localNodeIndex = i + 1;
             final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( elementIndex, localNodeIndex );
             ContinuousDomainValue dofValue = dofs.evaluate( indexOfGlobalNode );
-            params[i] = dofValue.chartValues[0];
+            params[i] = dofValue.values[0];
         }
 
         return evaluate( params, value.chartValues );

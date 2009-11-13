@@ -5,24 +5,24 @@ import fieldml.domain.ContinuousDomain;
 public class ContinuousDomainValue
     extends DomainValue
 {
-    public double[] chartValues;
+    public double[] values;
 
 
-    private ContinuousDomainValue( ContinuousDomain domain, double... chartValues )
+    private ContinuousDomainValue( ContinuousDomain domain, double... values )
     {
         super( domain );
 
-        this.chartValues = chartValues;
+        this.values = values;
     }
 
 
-    public static ContinuousDomainValue makeValue( ContinuousDomain domain, double... chartValues )
+    public static ContinuousDomainValue makeValue( ContinuousDomain domain, double... values )
     {
-        if( chartValues.length < domain.dimensions )
+        if( values.length < domain.dimensions )
         {
             return null;
         }
 
-        return new ContinuousDomainValue( domain, chartValues );
+        return new ContinuousDomainValue( domain, values );
     }
 }
