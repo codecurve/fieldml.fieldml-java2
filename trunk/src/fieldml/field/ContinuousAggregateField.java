@@ -44,7 +44,7 @@ public class ContinuousAggregateField
 
         for( int i = 0; i < count; i++ )
         {
-            value[i] = sourceFields.get( i ).evaluate( input ).chartValues[0];
+            value[i] = sourceFields.get( i ).evaluate( input ).values[0];
         }
 
         return ContinuousDomainValue.makeValue( valueDomain, value );

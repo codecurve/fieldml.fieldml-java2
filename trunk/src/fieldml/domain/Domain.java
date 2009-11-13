@@ -1,12 +1,9 @@
 package fieldml.domain;
 
-
-
-
 public abstract class Domain
 {
     public final String name;
-    
+
     public Object units;
 
 
@@ -14,8 +11,8 @@ public abstract class Domain
     {
         this.name = name;
     }
-    
-    
+
+
     @Override
     public String toString()
     {

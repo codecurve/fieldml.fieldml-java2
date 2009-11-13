@@ -22,23 +22,23 @@
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="library.local_nodes.simplex.bilinear">
+  <EnsembleDomain name="library.local_nodes.quad.2x2">
+    <values>1  2  3  4  5  6  7  8  9  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleDomain name="library.local_nodes.triangle.1x1">
     <values>1  2  3  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="library.local_nodes.quad.bilinear">
+  <EnsembleDomain name="library.local_nodes.quad.1x1">
     <values>1  2  3  4  </values>
   </EnsembleDomain>
   
 
   <EnsembleDomain name="test_mesh.elements">
-    <values>1  2  3  </values>
-  </EnsembleDomain>
-  
-
-  <EnsembleDomain name="library.local_nodes.quad.biquadratic">
-    <values>1  2  3  4  5  6  7  8  9  </values>
+    <values>1  2  3  4  </values>
   </EnsembleDomain>
   
 
@@ -47,6 +47,7 @@
       <entry key="1" value="library.shape.quad.00_10_01_11" />
       <entry key="2" value="library.shape.triangle.00_10_01" />
       <entry key="3" value="library.shape.triangle.00_10_01" />
+      <entry key="4" value="library.shape.quad.00_10_01_11" />
     </shapes>
   </MeshDomain>
   
@@ -57,49 +58,49 @@
       <MapEntry>
         <keys>1  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
         <ContinuousDomainValue>
-          <chartValues>20.0  </chartValues>
+          <values>20.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
         <ContinuousDomainValue>
-          <chartValues>20.0  </chartValues>
+          <values>20.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
         <ContinuousDomainValue>
-          <chartValues>30.0  </chartValues>
+          <values>30.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>13  </keys>
         <ContinuousDomainValue>
-          <chartValues>30.0  </chartValues>
+          <values>30.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
     </entries>
@@ -112,79 +113,79 @@
       <MapEntry>
         <keys>1  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>8  </keys>
         <ContinuousDomainValue>
-          <chartValues>5.0  </chartValues>
+          <values>5.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>9  </keys>
         <ContinuousDomainValue>
-          <chartValues>5.0  </chartValues>
+          <values>5.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>10  </keys>
         <ContinuousDomainValue>
-          <chartValues>5.0  </chartValues>
+          <values>5.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>11  </keys>
         <ContinuousDomainValue>
-          <chartValues>10.0  </chartValues>
+          <values>10.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>12  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
       <MapEntry>
         <keys>13  </keys>
         <ContinuousDomainValue>
-          <chartValues>0.0  </chartValues>
+          <values>0.0  </values>
         </ContinuousDomainValue>
       </MapEntry>
     </entries>
@@ -192,7 +193,7 @@
   
 
   <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.biquadratic"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.2x2"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>4  1  </keys>
@@ -235,7 +236,7 @@
   
 
   <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.bilinear"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  1  </keys>
@@ -274,7 +275,7 @@
   
 
   <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.simplex.bilinear"  </parameterDomains>
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.triangle.1x1"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>2  1  </keys>
@@ -322,13 +323,13 @@
     <evaluatorList>
       <BilinearQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.quad_nodes" name="bilinear_quad" />
       <BilinearSimplexEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.triangle_nodes" name="bilinear_simplex" />
-      <BiquadQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.biquad_nodes" name="biquadratic_quad" />
+      <BiquadraticQuadEvaluator dofs="test_mesh.node.y" dofIndexes="test_mesh.biquad_nodes" name="biquadratic_quad" />
     </evaluatorList>
     <elementEvaluators>
-      <SimpleMapEntry key="1" value="biquadratic_quad" />
+      <SimpleMapEntry key="1" value="bilinear_quad" />
       <SimpleMapEntry key="2" value="bilinear_simplex" />
       <SimpleMapEntry key="3" value="bilinear_simplex" />
-      <SimpleMapEntry key="4" value="bilinear_quad" />
+      <SimpleMapEntry key="4" value="biquadratic_quad" />
     </elementEvaluators>
   </PiecewiseField>
   
