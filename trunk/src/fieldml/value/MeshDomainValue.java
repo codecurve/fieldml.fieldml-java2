@@ -3,7 +3,7 @@ package fieldml.value;
 import fieldml.domain.MeshDomain;
 
 public class MeshDomainValue
-    extends DomainValue
+    extends DomainValue<MeshDomain>
 {
     public int indexValue;
     
@@ -28,5 +28,12 @@ public class MeshDomainValue
         }
 
         return new MeshDomainValue( domain, indexValue, chartValues );
+    }
+    
+    
+    @Override
+    public String toString()
+    {
+        return "" + indexValue + "+(" + chartValues +")";
     }
 }

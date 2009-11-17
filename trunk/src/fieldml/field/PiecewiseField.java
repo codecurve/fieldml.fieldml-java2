@@ -9,7 +9,7 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.DomainValue;
+import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class PiecewiseField
@@ -54,14 +54,9 @@ public class PiecewiseField
     }
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValue... input )
+    public ContinuousDomainValue evaluate( DomainValues input )
     {
-        if( input[0].domain != meshDomain )
-        {
-            return null;
-        }
-
-        MeshDomainValue v = (MeshDomainValue)input[0];
+        MeshDomainValue v = input.get( meshDomain );
 
         ContinuousEvaluator e = getEvaluator( elementEvaluators.get( v.indexValue ) );
         if( e != null )

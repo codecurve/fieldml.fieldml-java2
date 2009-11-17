@@ -1,15 +1,11 @@
 package fieldml.domain;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class EnsembleDomain
     extends Domain
 {
-    public static final Map<String, EnsembleDomain> domains = new HashMap<String, EnsembleDomain>();
-
     public final List<Integer> values;
 
 
@@ -18,8 +14,6 @@ public class EnsembleDomain
         super( name );
 
         values = new ArrayList<Integer>();
-
-        domains.put( name, this );
     }
 
 

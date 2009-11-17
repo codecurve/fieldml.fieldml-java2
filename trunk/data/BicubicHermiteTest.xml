@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1____2
+|    |
+|    |
+|  1 |
+|    |
+3____4
+-->
+  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.d2z/ds1ds2" />
+  
+
+  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.z" />
+  
+
+  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.dz/ds" />
+  
+
+  <EnsembleDomain name="test_mesh.nodes">
+    <values>1  2  3  4  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleDomain name="test_mesh.elements">
+    <values>1  </values>
+  </EnsembleDomain>
+  
+
+  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <shapes>
+      <entry key="1" value="library.shape.quad.00_10_01_11" />
+    </shapes>
+  </MeshDomain>
+  
+
+  <EnsembleParameters name="test_mesh.node.direction.ds1" valueDomain="library.edge_direction.quad">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <EnsembleDomainValue indexValue="1" />
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <EnsembleDomainValue indexValue="1" />
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <EnsembleDomainValue indexValue="1" />
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <EnsembleDomainValue indexValue="1" />
+      </MapEntry>
+    </entries>
+  </EnsembleParameters>
+  
+
+  <ContinuousParameters name="test_mesh.node.z" valueDomain="test_mesh.co-ordinates.z">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
+  <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2z/ds1ds2">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
+  <EnsembleParameters name="test_mesh.node.direction.ds2" valueDomain="library.edge_direction.quad">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <EnsembleDomainValue indexValue="2" />
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <EnsembleDomainValue indexValue="2" />
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <EnsembleDomainValue indexValue="2" />
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <EnsembleDomainValue indexValue="2" />
+      </MapEntry>
+    </entries>
+  </EnsembleParameters>
+  
+
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
+    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <EnsembleDomainValue indexValue="1" />
+      </MapEntry>
+      <MapEntry>
+        <keys>1  2  </keys>
+        <EnsembleDomainValue indexValue="2" />
+      </MapEntry>
+      <MapEntry>
+        <keys>1  3  </keys>
+        <EnsembleDomainValue indexValue="3" />
+      </MapEntry>
+      <MapEntry>
+        <keys>1  4  </keys>
+        <EnsembleDomainValue indexValue="4" />
+      </MapEntry>
+    </entries>
+  </EnsembleParameters>
+  
+
+  <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.co-ordinates.dz/ds">
+    <parameterDomains>"test_mesh.nodes"  "library.edge_direction.quad"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <ContinuousDomainValue>
+          <values>-1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  2  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  1  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  2  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  1  </keys>
+        <ContinuousDomainValue>
+          <values>-1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  2  </keys>
+        <ContinuousDomainValue>
+          <values>-1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  1  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  2  </keys>
+        <ContinuousDomainValue>
+          <values>-1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
+  <ContinuousCompositeField name="test_mesh.node.dz/ds1" valueDomain="test_mesh.co-ordinates.dz/ds">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <operations>
+      <FieldImport field="test_mesh.node.direction.ds1" />
+      <FieldImport field="test_mesh.node.dz/ds" />
+    </operations>
+  </ContinuousCompositeField>
+  
+
+  <ContinuousCompositeField name="test_mesh.node.dz/ds2" valueDomain="test_mesh.co-ordinates.dz/ds">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <operations>
+      <FieldImport field="test_mesh.node.direction.ds2" />
+      <FieldImport field="test_mesh.node.dz/ds" />
+    </operations>
+  </ContinuousCompositeField>
+  
+
+  <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.z" valueDomain="test_mesh.co-ordinates.z">
+    <evaluatorList>
+      <HermiteQuadEvaluator dofs="test_mesh.node.z" ds1dofs="test_mesh.node.dz/ds1" ds2dofs="test_mesh.node.dz/ds2" ds1ds2dofs="test_mesh.node.d2z/ds1ds2" dofIndexes="test_mesh.quad_nodes" name="hermite_quad" />
+    </evaluatorList>
+    <elementEvaluators>
+      <SimpleMapEntry key="1" value="hermite_quad" />
+    </elementEvaluators>
+  </PiecewiseField>
+  
+
+</fieldml>
+

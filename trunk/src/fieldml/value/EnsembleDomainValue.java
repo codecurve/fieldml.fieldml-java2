@@ -3,7 +3,7 @@ package fieldml.value;
 import fieldml.domain.EnsembleDomain;
 
 public class EnsembleDomainValue
-    extends DomainValue
+    extends DomainValue<EnsembleDomain>
 {
     public int indexValue;
 
@@ -19,5 +19,12 @@ public class EnsembleDomainValue
     public static EnsembleDomainValue makeValue( EnsembleDomain domain, int indexValue )
     {
         return new EnsembleDomainValue( domain, indexValue );
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "" + indexValue;
     }
 }
