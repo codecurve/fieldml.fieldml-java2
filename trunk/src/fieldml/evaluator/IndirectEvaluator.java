@@ -5,6 +5,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
 
@@ -20,8 +21,7 @@ public abstract class IndirectEvaluator
     private final EnsembleDomain iteratedDomain;
 
 
-    public IndirectEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
-        EnsembleDomain iteratedDomain )
+    public IndirectEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes, EnsembleDomain iteratedDomain )
     {
         super( name );
         // TODO Assert that dofIndexes value domain is dofs only parameter domain
@@ -38,15 +38,25 @@ public abstract class IndirectEvaluator
     @Override
     public double evaluate( MeshDomainValue value )
     {
+        int parameterCount;
         final int elementIndex = value.indexValue;
         double[] params = new double[iteratedDomain.getValueCount()];
+        
+        DomainValues input = new DomainValues();
+        input.set( value.domain.elementDomain, elementIndex );
 
-        for( int i = 0; i < iteratedDomain.getValueCount(); i++ )
+        parameterCount = 0;
+        for( int localNodeIndex = 1; localNodeIndex <= iteratedDomain.getValueCount(); localNodeIndex++ )
         {
-            final int localNodeIndex = i + 1;
-            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( elementIndex, localNodeIndex );
-            ContinuousDomainValue dofValue = dofs.evaluate( indexOfGlobalNode );
-            params[i] = dofValue.values[0];
+            input.set( iteratedDomain, localNodeIndex );
+            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( input );
+            if( ( indexOfGlobalNode == null ) || ( indexOfGlobalNode.indexValue == 0 ) )
+            {
+                continue;
+            }
+            input.set( indexOfGlobalNode );
+            ContinuousDomainValue dofValue = dofs.evaluate( input );
+            params[parameterCount++] = dofValue.values[0];
         }
 
         return evaluate( params, value.chartValues );

@@ -1,15 +1,16 @@
 package fieldml.field;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
-import fieldml.value.EnsembleDomainValue;
+import fieldml.value.DomainValues;
 
-public abstract class MappingField<D extends Domain, V extends DomainValue>
+public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
     extends Field<D, V>
 {
     @SerializationAsString
@@ -29,11 +30,11 @@ public abstract class MappingField<D extends Domain, V extends DomainValue>
         }
 
 
-        private boolean match( int[] values )
+        private boolean match( DomainValues values )
         {
-            for( int i = 0; i < values.length; i++ )
+            for( int i = 0; i < parameterDomains.length; i++ )
             {
-                if( keys[i] != values[i] )
+                if( values.get( parameterDomains[i] ).indexValue != keys[i] )
                 {
                     return false;
                 }
@@ -41,24 +42,12 @@ public abstract class MappingField<D extends Domain, V extends DomainValue>
 
             return true;
         }
-
-
-        public boolean match( DomainValue[] values )
+        
+        
+        @Override
+        public String toString()
         {
-            for( int i = 0; i < values.length; i++ )
-            {
-                if( parameterDomains[i] != values[i].domain )
-                {
-                    return false;
-                }
-                //TODO Icky
-                if( keys[i] != ((EnsembleDomainValue)values[i]).indexValue )
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            return "" + Arrays.toString( keys ) + " -> " + value;
         }
     }
 
@@ -81,22 +70,8 @@ public abstract class MappingField<D extends Domain, V extends DomainValue>
     }
 
 
-    public V evaluate( int... values )
-    {
-        for( MapEntry m : entries )
-        {
-            if( m.match( values ) )
-            {
-                return m.value;
-            }
-        }
-
-        return null;
-    }
-
-
     @Override
-    public V evaluate( DomainValue... values )
+    public V evaluate( DomainValues values )
     {
         for( MapEntry m : entries )
         {

@@ -20,14 +20,12 @@ import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 import fieldml.field.Field;
 import fieldml.field.PiecewiseField;
-import fieldml.io.JdomReflectiveHandler;
-import fieldml.io.ReflectiveWalker;
+import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.MeshDomainValue;
 
 public class FieldmlTest
 {
-    private static void serialize()
+    private static void serialize( Region region )
     {
         Document doc = new Document();
         Element root = new Element( "fieldml" );
@@ -45,24 +43,7 @@ public class FieldmlTest
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
 
-        JdomReflectiveHandler handler = new JdomReflectiveHandler( doc.getRootElement() );
-        for( ContinuousDomain domain : ContinuousDomain.domains.values() )
-        {
-            ReflectiveWalker.Walk( domain, handler );
-        }
-        for( EnsembleDomain domain : EnsembleDomain.domains.values() )
-        {
-            ReflectiveWalker.Walk( domain, handler );
-        }
-        for( MeshDomain domain : MeshDomain.domains.values() )
-        {
-            ReflectiveWalker.Walk( domain, handler );
-        }
-
-        for( Field<?, ?> field : Field.fields.values() )
-        {
-            ReflectiveWalker.Walk( field, handler );
-        }
+        region.serializeToXml( root );
 
         Format format = Format.getPrettyFormat();
         format.setTextMode( TextMode.PRESERVE );
@@ -78,61 +59,61 @@ public class FieldmlTest
     }
 
 
-    private static void test()
+    private static void test( Region region )
     {
-        MeshDomain meshDomain = MeshDomain.domains.get( "test_mesh.domain" );
-        Field<?, ?> meshX = Field.fields.get( "test_mesh.coordinates.x" );
-        Field<?, ?> meshXY = Field.fields.get( "test_mesh.coordinates.xy" );
+        MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
+        Field<?, ?> meshX = region.getField( "test_mesh.coordinates.x" );
+        Field<?, ?> meshXY = region.getField( "test_mesh.coordinates.xy" );
 
         ContinuousDomainValue output;
 
         // Test element 1
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 1, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.0, 0.0 );
         assert output.values[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 1, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.0, 1.0 );
         assert output.values[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 1, 0.5, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.5, 0.0 );
         assert output.values[0] == 5;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 1, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 1.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 1, 1.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 1.0, 1.0 );
         assert output.values[0] == 10;
 
         // Test element 2
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 2, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 2, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 1.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 2, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.0, 1.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 2, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.5, 0.5 );
         assert output.values[0] == 15;
 
         // Test element 3
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 0.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.0, 0.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 1.0, 0.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 1.0, 0.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 0.0, 1.0 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.0, 1.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.5, 0.5 );
         assert output.values[0] == 15;
 
-        output = (ContinuousDomainValue)meshXY.evaluate( MeshDomainValue.makeValue( meshDomain, 3, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshXY.evaluate( meshDomain, 3, 0.5, 0.5 );
         assert output.values[0] == 15;
         assert output.values[1] == 5;
 
-        output = (ContinuousDomainValue)meshXY.evaluate( MeshDomainValue.makeValue( meshDomain, 4, 0.5, 0.5 ) );
+        output = (ContinuousDomainValue)meshXY.evaluate( meshDomain, 4, 0.5, 0.5 );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
     }
@@ -140,26 +121,30 @@ public class FieldmlTest
 
     public static void main( String[] args )
     {
-        EnsembleDomain triangle1x1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.triangle.1x1" );
-        triangle1x1LocalNodeDomain.addValues( 1, 2, 3 );
+        Region library = Region.getLibrary();
 
-        EnsembleDomain quad1x1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.quad.1x1" );
-        quad1x1LocalNodeDomain.addValues( 1, 2, 3, 4 );
+        EnsembleDomain triangle1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.1x1" );
 
-        EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( "library.local_nodes.quad.2x2" );
-        quad2x2LocalNodeDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
+        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+
+        EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
+
+        Region testRegion = new Region( "test" );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2, 3, 4 );
+        testRegion.addDomain( testMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.triangle.00_10_01" );
         meshDomain.setShape( 3, "library.shape.triangle.00_10_01" );
         meshDomain.setShape( 4, "library.shape.quad.00_10_01_11" );
+        testRegion.addDomain( meshDomain );
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
         globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
+        testRegion.addDomain( globalNodesDomain );
 
         EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesDomain, testMeshElementDomain,
             triangle1x1LocalNodeDomain );
@@ -171,6 +156,8 @@ public class FieldmlTest
         triangleNodeList.setValue( 6, 3, 1 );
         triangleNodeList.setValue( 3, 3, 2 );
         triangleNodeList.setValue( 5, 3, 3 );
+
+        testRegion.addField( triangleNodeList );
 
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
@@ -185,6 +172,8 @@ public class FieldmlTest
         quadNodeList.setValue( 3, 4, 3 );
         quadNodeList.setValue( 7, 4, 4 );
 
+        testRegion.addField( quadNodeList );
+
         EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesDomain, testMeshElementDomain,
             quad2x2LocalNodeDomain );
 
@@ -198,10 +187,16 @@ public class FieldmlTest
         biquadNodeList.setValue( 11, 4, 8 );
         biquadNodeList.setValue( 7, 4, 9 );
 
+        testRegion.addField( biquadNodeList );
+
         ContinuousDomain meshXdomain = new ContinuousDomain( "test_mesh.co-ordinates.x", 1 );
+        testRegion.addDomain( meshXdomain );
+
         ContinuousDomain meshYdomain = new ContinuousDomain( "test_mesh.co-ordinates.y", 1 );
+        testRegion.addDomain( meshYdomain );
 
         ContinuousDomain meshXYdomain = new ContinuousDomain( "test_mesh.co-ordinates.xy", 2 );
+        testRegion.addDomain( meshXYdomain );
 
         ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", meshXdomain, globalNodesDomain );
         meshX.setValue( 00.0, 1 );
@@ -212,6 +207,8 @@ public class FieldmlTest
         meshX.setValue( 20.0, 6 );
         meshX.setValue( 30.0, 7 );
         meshX.setValue( 30.0, 13 );
+
+        testRegion.addField( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( 10.0, 1 );
@@ -228,11 +225,12 @@ public class FieldmlTest
         meshY.setValue( 00.0, 12 );
         meshY.setValue( 00.0, 13 );
 
+        testRegion.addField( meshY );
+        
         /*
-
-        Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
-        wishing to share components can do so simply by sharing entire piecewise fields.  
-
+         * 
+         * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
+         * wishing to share components can do so simply by sharing entire piecewise fields.
          */
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
@@ -240,6 +238,8 @@ public class FieldmlTest
         meshCoordinatesX.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.addEvaluator( new BilinearSimplexEvaluator( "bilinear_simplex", meshX, triangleNodeList,
             triangle1x1LocalNodeDomain ) );
+
+        testRegion.addField( meshCoordinatesX );
 
         meshCoordinatesX.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesX.setEvaluator( 2, "bilinear_simplex" );
@@ -251,20 +251,23 @@ public class FieldmlTest
         meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.addEvaluator( new BilinearSimplexEvaluator( "bilinear_simplex", meshY, triangleNodeList,
             triangle1x1LocalNodeDomain ) );
-        meshCoordinatesY
-            .addEvaluator( new BiquadraticQuadEvaluator( "biquadratic_quad", meshY, biquadNodeList, quad2x2LocalNodeDomain ) );
+        meshCoordinatesY.addEvaluator( new BiquadraticQuadEvaluator( "biquadratic_quad", meshY, biquadNodeList, quad2x2LocalNodeDomain ) );
 
         meshCoordinatesY.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesY.setEvaluator( 2, "bilinear_simplex" );
         meshCoordinatesY.setEvaluator( 3, "bilinear_simplex" );
         meshCoordinatesY.setEvaluator( 4, "biquadratic_quad" );
 
+        testRegion.addField( meshCoordinatesY );
+
         ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates.xy", meshXYdomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
-        test();
+        testRegion.addField( meshCoordinates );
 
-        serialize();
+        test( testRegion );
+
+        serialize( testRegion );
     }
 }

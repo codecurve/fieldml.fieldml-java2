@@ -1,9 +1,11 @@
 package fieldml.value;
 
+import java.util.Arrays;
+
 import fieldml.domain.ContinuousDomain;
 
 public class ContinuousDomainValue
-    extends DomainValue
+    extends DomainValue<ContinuousDomain>
 {
     public double[] values;
 
@@ -24,5 +26,12 @@ public class ContinuousDomainValue
         }
 
         return new ContinuousDomainValue( domain, values );
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return "" + Arrays.toString( values );
     }
 }

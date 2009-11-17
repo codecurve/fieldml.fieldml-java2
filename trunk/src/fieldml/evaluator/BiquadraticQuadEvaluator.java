@@ -7,6 +7,7 @@ import fieldml.field.EnsembleParameters;
 public class BiquadraticQuadEvaluator
     extends IndirectEvaluator
 {
+    @Override
     protected double evaluate( double[] params, double[] xi )
     {
         double x1_1 = 2 * ( xi[0] - 1 ) * ( xi[0] - 0.5 );

@@ -7,6 +7,7 @@ import fieldml.field.EnsembleParameters;
 public class BilinearSimplexEvaluator
     extends IndirectEvaluator
 {
+    @Override
     protected double evaluate( double[] params, double[] xi )
     {
         double p0 = ( 1 - ( xi[0] + xi[1] ) );

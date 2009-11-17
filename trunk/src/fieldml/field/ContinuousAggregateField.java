@@ -6,7 +6,7 @@ import java.util.List;
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.DomainValue;
+import fieldml.value.DomainValues;
 
 public class ContinuousAggregateField
     extends Field<ContinuousDomain, ContinuousDomainValue>
@@ -38,7 +38,7 @@ public class ContinuousAggregateField
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValue... input )
+    public ContinuousDomainValue evaluate( DomainValues input )
     {
         double[] value = new double[count];
 

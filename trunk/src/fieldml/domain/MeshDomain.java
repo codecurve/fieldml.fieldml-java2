@@ -8,8 +8,6 @@ import fieldml.annotations.SerializationAsString;
 public class MeshDomain
     extends Domain
 {
-    public static final Map<String, MeshDomain> domains = new HashMap<String, MeshDomain>();
-
     public final int dimensions;
 
     @SerializationAsString
@@ -28,8 +26,6 @@ public class MeshDomain
         this.elementDomain = elementDomain;
         
         shapes = new HashMap<Integer, String>();
-
-        domains.put( name, this );
     }
     
     
