@@ -15,6 +15,9 @@ public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
 {
     @SerializationAsString
     public final EnsembleDomain[] parameterDomains;
+    
+    @SerializationAsString
+    public V defaultValue;
 
     public class MapEntry
     {
@@ -68,6 +71,12 @@ public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
     {
         entries.add( new MapEntry( value, keys ) );
     }
+    
+    
+    public void setDefaultValue( V value )
+    {
+        defaultValue = value;
+    }
 
 
     @Override
@@ -81,6 +90,6 @@ public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
             }
         }
 
-        return null;
+        return defaultValue;
     }
 }

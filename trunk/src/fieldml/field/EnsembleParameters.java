@@ -16,4 +16,10 @@ public class EnsembleParameters
     {
         setValue( EnsembleDomainValue.makeValue( valueDomain, value ), keys );
     }
+
+
+    public void setDefaultValue( int value )
+    {
+        setValue( EnsembleDomainValue.makeValue( valueDomain, value ) );
+    }
 }
