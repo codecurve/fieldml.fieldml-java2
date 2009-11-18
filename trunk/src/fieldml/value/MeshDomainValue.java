@@ -1,12 +1,14 @@
 package fieldml.value;
 
+import java.util.Arrays;
+
 import fieldml.domain.MeshDomain;
 
 public class MeshDomainValue
     extends DomainValue<MeshDomain>
 {
     public int indexValue;
-    
+
     public double[] chartValues;
 
 
@@ -19,7 +21,6 @@ public class MeshDomainValue
     }
 
 
-
     public static MeshDomainValue makeValue( MeshDomain domain, int indexValue, double... chartValues )
     {
         if( chartValues.length < domain.dimensions )
@@ -29,11 +30,11 @@ public class MeshDomainValue
 
         return new MeshDomainValue( domain, indexValue, chartValues );
     }
-    
-    
+
+
     @Override
     public String toString()
     {
-        return "" + indexValue + "+(" + chartValues +")";
+        return "" + indexValue + "+(" + Arrays.toString( chartValues ) + ")";
     }
 }

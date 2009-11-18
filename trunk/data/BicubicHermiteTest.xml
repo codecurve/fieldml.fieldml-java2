@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fieldml>
   <!--
-1____2
-|    |
-|    |
-|  1 |
-|    |
-3____4
+1____2____5
+|    |    |
+|    |    |
+|  1 |  2 |
+|    |    |
+3____4____6
 -->
   <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.d2z/ds1ds2" />
   
@@ -18,12 +18,12 @@
   
 
   <EnsembleDomain name="test_mesh.nodes">
-    <values>1  2  3  4  </values>
+    <values>1  2  3  4  5  6</values>
   </EnsembleDomain>
   
 
   <EnsembleDomain name="test_mesh.elements">
-    <values>1  </values>
+    <values>1  2</values>
   </EnsembleDomain>
   
 
