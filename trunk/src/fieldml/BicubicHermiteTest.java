@@ -157,7 +157,8 @@ public class BicubicHermiteTest
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
-        EnsembleDomain quadEdgeDirectionDomain = library.getEnsembleDomain( "library.edge_direction.quad" );
+        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction" );
+        edgeDirectionDomain.addValues( 1, 2 );
 
         Region testRegion = new Region( "test" );
 
@@ -226,7 +227,7 @@ public class BicubicHermiteTest
         testRegion.addField( meshZ );
 
         ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshdZdomain, globalNodesDomain,
-            quadEdgeDirectionDomain );
+            edgeDirectionDomain );
         meshdZ.setValue( -1.0, 1, 1 );
         meshdZ.setValue( 1.0, 1, 2 );
         meshdZ.setValue( 1.0, 2, 1 );
@@ -262,35 +263,25 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshd2Z );
 
-        EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", quadEdgeDirectionDomain,
-            globalNodesDomain );
-        meshds1Direction.setValue( 1, 1 );
-        meshds1Direction.setValue( 1, 2 );
-        meshds1Direction.setValue( 1, 3 );
-        meshds1Direction.setValue( 1, 4 );
-        meshds1Direction.setValue( 1, 5 );
-        meshds1Direction.setValue( 1, 6 );
+        EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
+            testMeshElementDomain, quad1x1LocalNodeDomain );
+        meshds1Direction.setDefaultValue( 1 );
 
         testRegion.addField( meshds1Direction );
 
-        EnsembleParameters meshds2Direction = new EnsembleParameters( "test_mesh.node.direction.ds2", quadEdgeDirectionDomain,
-            globalNodesDomain );
-        meshds2Direction.setValue( 2, 1 );
-        meshds2Direction.setValue( 2, 2 );
-        meshds2Direction.setValue( 2, 3 );
-        meshds2Direction.setValue( 2, 4 );
-        meshds2Direction.setValue( 2, 5 );
-        meshds2Direction.setValue( 2, 6 );
+        EnsembleParameters meshds2Direction = new EnsembleParameters( "test_mesh.node.direction.ds2", edgeDirectionDomain,
+            testMeshElementDomain, quad1x1LocalNodeDomain );
+        meshds2Direction.setDefaultValue( 2 );
 
         testRegion.addField( meshds2Direction );
 
-        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, globalNodesDomain );
+        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         meshdZds1.importField( meshds1Direction );
         meshdZds1.importField( meshdZ );
 
         testRegion.addField( meshdZds1 );
 
-        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, globalNodesDomain );
+        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         meshdZds2.importField( meshds2Direction );
         meshdZds2.importField( meshdZ );
 
@@ -334,10 +325,10 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshCoordinates );
 
-//        visualize( testRegion );
+        visualize( testRegion );
 
-        test( testRegion );
+//        test( testRegion );
 
-        serialize( testRegion );
+//        serialize( testRegion );
     }
 }
