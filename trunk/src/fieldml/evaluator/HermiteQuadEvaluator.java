@@ -2,9 +2,9 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
+import fieldml.field.ContinuousAggregateField;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
-import fieldml.field.composite.ContinuousCompositeField;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
@@ -14,16 +14,10 @@ public class HermiteQuadEvaluator
     extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final ContinuousParameters dofs;
+    public final ContinuousAggregateField dofs;
 
     @SerializationAsString
-    public final ContinuousCompositeField ds1dofs;
-
-    @SerializationAsString
-    public final ContinuousCompositeField ds2dofs;
-
-    @SerializationAsString
-    public final ContinuousParameters ds1ds2dofs;
+    public final ContinuousParameters dofScaling;
 
     @SerializationAsString
     public final EnsembleParameters dofIndexes;
@@ -31,18 +25,16 @@ public class HermiteQuadEvaluator
     private final EnsembleDomain iteratedDomain;
 
 
-    public HermiteQuadEvaluator( String name, ContinuousParameters dofs, ContinuousCompositeField ds1dofs,
-        ContinuousCompositeField ds2dofs, ContinuousParameters ds1ds2dofs, EnsembleParameters dofIndexes, EnsembleDomain iteratedDomain )
+    public HermiteQuadEvaluator( String name, ContinuousAggregateField dofs, ContinuousParameters dofScaling,
+        EnsembleParameters dofIndexes, EnsembleDomain localNodeDomain )
     {
         super( name );
         // TODO Assert that dofIndexes value domain is dofs only parameter domain
         // TODO Assert that dofIndexes's parameter domain has the right cardinality for the given interpolation.
         this.dofs = dofs;
-        this.ds1dofs = ds1dofs;
-        this.ds2dofs = ds2dofs;
-        this.ds1ds2dofs = ds1ds2dofs;
+        this.dofScaling = dofScaling;
         this.dofIndexes = dofIndexes;
-        this.iteratedDomain = iteratedDomain;
+        this.iteratedDomain = localNodeDomain;
     }
 
 
@@ -80,24 +72,25 @@ public class HermiteQuadEvaluator
     {
         int parameterCount;
         double[] params = new double[16];
-        DomainValues values = new DomainValues();
-        values.set( value.domain.elementDomain, value.indexValue );
+        DomainValues context = new DomainValues();
+        context.set( value.domain.elementDomain, value.indexValue );
 
         parameterCount = 0;
         for( int localNodeIndex = 1; localNodeIndex <= iteratedDomain.getValueCount(); localNodeIndex++ )
         {
-            values.set( iteratedDomain, localNodeIndex );
+            context.set( iteratedDomain, localNodeIndex );
+            
+            final ContinuousDomainValue scaling = dofScaling.evaluate( context );
 
-            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( values );
-            values.set( indexOfGlobalNode );
-            ContinuousDomainValue dofValue = dofs.evaluate( values );
-            params[parameterCount++] = dofValue.values[0];
-            dofValue = ds1dofs.evaluate( values );
-            params[parameterCount++] = dofValue.values[0];
-            dofValue = ds2dofs.evaluate( values );
-            params[parameterCount++] = dofValue.values[0];
-            dofValue = ds1ds2dofs.evaluate( values );
-            params[parameterCount++] = dofValue.values[0];
+            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( context );
+            context.set( indexOfGlobalNode );
+            
+            ContinuousDomainValue dofValues = dofs.evaluate( context );
+            
+            params[parameterCount++] = dofValues.values[0] * scaling.values[0];
+            params[parameterCount++] = dofValues.values[1] * scaling.values[1];
+            params[parameterCount++] = dofValues.values[2] * scaling.values[2];
+            params[parameterCount++] = dofValues.values[3] * scaling.values[3];
         }
 
         return evaluate( params, value.chartValues );

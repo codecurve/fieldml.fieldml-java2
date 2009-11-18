@@ -48,6 +48,18 @@ public class Region
         quadEdgeDirectionDomain.addValues( 1, 2 );
         region.addDomain( quadEdgeDirectionDomain );
 
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.x", 1 ) );
+
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.y", 1 ) );
+
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.z", 1 ) );
+
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.xyz", 3 ) );
+
+        region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
+
+        region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
+
         return region;
     }
 
