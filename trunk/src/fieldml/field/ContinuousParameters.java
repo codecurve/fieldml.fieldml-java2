@@ -17,4 +17,10 @@ public class ContinuousParameters
     {
         setValue( ContinuousDomainValue.makeValue( valueDomain, value ), keys );
     }
+
+
+    public void setDefaultValue( double ... values )
+    {
+        setDefaultValue( ContinuousDomainValue.makeValue( valueDomain, values ) );
+    }
 }
