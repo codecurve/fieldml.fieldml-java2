@@ -157,7 +157,8 @@ public class BicubicHermiteTest
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
-        EnsembleDomain quadEdgeDirectionDomain = library.getEnsembleDomain( "library.edge_direction.quad" );
+        EnsembleDomain quadEdgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_directions" );
+        quadEdgeDirectionDomain.addValues( 1, 2 );
 
         Region testRegion = new Region( "test" );
 
@@ -334,10 +335,10 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshCoordinates );
 
-//        visualize( testRegion );
+        visualize( testRegion );
 
-        test( testRegion );
+//        test( testRegion );
 
-        serialize( testRegion );
+//        serialize( testRegion );
     }
 }
