@@ -1,0 +1,105 @@
+<fieldml>
+  <continuous_domain id="library::real">
+    <component id="n" />
+  </continuous_domain>
+
+  <!--
+    A generic 4-component phi vector for use with 4-parameter interpolation
+    (e.g. bilinear lagrange) 
+    
+    No explicit extrema means that it covers the entire real domain.
+   -->
+  <continuous_domain id="library::phi_4" ">
+    <component id="phi1" />
+    <component id="phi2" />
+    <component id="phi3" />
+    <component id="phi4" />
+  </continuous_domain>
+  
+  <continuous_domain id="library::unit_square" min="0" max="1">
+    <component id="x1" />
+    <component id="x2" />
+  </continuous_domain>
+  
+  <!--
+    This field must be supplied by the client. As the value domain is continuous, a 'complete' list
+    of values cannot be supplied implicitly. On the other hand, explicitly specifying a resolution
+    in the FieldML itself would restrict the client too much. Therefore, the client application is
+    free to specify this field at whatever resolution it needs to, and indeed can change that 
+    resolution as it sees fit.
+    
+    They are declared here to ensure that there is at least one field of the given type available
+    for use as a parameter of the appropriate type for fields that require one.
+   -->
+  <client_field id="client::xi_2d" value_domain="library::unit_square" />
+  
+  <!--
+    Evaluations can take any number of parameters, and must return the exact
+    number of components that the calling field needs. This is to ensure that
+    the cardinality of each field component is the same, and thus that the field's
+    cardinality is internally consistent.
+    
+    This could also be achieved simply by insisting that evaluations can only take
+    a single parameter, and leaving it up to the user to bundle the right components
+    together. This precludes parameters from different domains, however.
+   -->
+  <evaluation id="library::bilinear_lagrange_phi" value_domain="library::real" value_count="4">
+    <!--
+      In order for them to be re-usable, evaluations can only specify the domain
+      and component count of their parameters. 'Weak' typing can be implemented
+      simply by interpreting the component_count specification as meaning "at least" rather
+      than "equal to".
+     -->
+    <parameter id="xi" parameter_domain="library::real" component_count="2" />
+    
+    <evaluate value_index="1">
+      <multiply>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value name="xi" component_index="1" />
+        </subtract>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value name="xi" component_index="2" />
+        </subtract>
+      </multiply>
+    </evaluate>
+
+    <evaluate value_index="2">
+      <multiply>
+        <parameter_value name="xi" component_index="1" />
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value name="xi" component_index="2" />
+        </subtract>
+      </multiply>
+    </evaluate>
+  
+    <evaluate value_index="3">
+      <multiply>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value name="xi" component_index="1" />
+        </subtract>
+        <parameter_value name="xi" component_index="2" />
+      </multiply>
+    </evaluate>
+
+    <evaluate value_index="4">
+      <multiply>
+        <parameter_value name="xi" component_index="1" />
+        <parameter_value name="xi" component_index="2" />
+      </multiply>
+    </evaluate>
+  </evaluation>
+  
+  <!--
+    A field used for applying bilinear lagrange interpolation to quad elements.
+   -->
+  <evaluated_field id="library::bilinear_lagrange_phi" value_domain="library::phi_4">
+    <evaluate_components evaluation="library::bilinear_lagrange_phi">
+      <field_parameter name="client::xi_2d" />
+    </evaluate_components>
+  </evaluated_field>
+
+</fieldml>

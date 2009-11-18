@@ -1,0 +1,161 @@
+<fieldml>
+  <!--
+    Produced by OpenCMISS, using the LaplaceExample project with a 4x4x0 mesh computed by 2 nodes. This file
+    represents the first node's output.
+   -->
+   
+  <cm_meta:opencmiss_annotation xmlns:cm_meta="http://www.fieldml.org/metadata/opencmiss_annotation/1.0">
+    <cm_meta:region name="region1">
+      <cm_meta:elements domain="mesh.element" node_map="element.nodes" />
+      <cm_meta:nodes domain="mesh.node" parameter_map="node.parameters" />
+      <cm_meta:mesh name="mesh.coordinates" type="quad" component_1="x" component_2="y" />
+      <cm_meta:field name="mesh.g" type="scalar" mesh="mesh.coordinates" component_1="g" />
+      <cm_meta:field name="mesh.n" type="scalar" mesh="mesh.coordinates" compoennt_1="n" />
+    </cm_meta:region>
+  </cm_meta:opencmiss_annotation>
+
+  <continuous_domain id="node.parameters">
+    <component id="x" />
+    <component id="y" />
+    <component id="g" />
+    <component id="n" />
+  </continuous_domain>
+  
+  <discrete_domain id="mesh.element" type="index">
+    <component id="id">
+      3  4  7  8  11  12  15  16
+    </component>
+  </discrete_domain>
+  
+  <discrete_domain id="mesh.node" type="index">
+    <component id="id">
+      3  4  5  8  9  10  14  15  19  20  24  25
+    </component>
+  </discrete_domain>
+  
+  <discrete_domain id="mesh.element_quad_nodes" type="index">
+    <import_component id="node1" domain="mesh.node" component="id" />
+    <import_component id="node2" domain="mesh.node" component="id" />
+    <import_component id="node3" domain="mesh.node" component="id" />
+    <import_component id="node4" domain="mesh.node" component="id" />
+  </discrete_domain>
+  
+  <nodal_field id="element.bilinear.x" element_domain="mesh.element" value_domain="library::bilinear_u">
+    <evaluate_nodal element_values="3  4  7  8  11  12  15  16">
+      <dof_indexes map="element.quad_nodes" /> 
+      <dof_values map="node.parameters" components="x" />
+    </evaluate_nodal>
+  </nodal_field>
+
+  <nodal_field id="element.bilinear.y" element_domain="mesh.element" value_domain="library::bilinear_u">
+    <evaluate_nodal element_values="3  4  7  8  11  12  15  16">
+      <dof_indexes map="element.quad_nodes" /> 
+      <dof_values map="node.parameters" components="y" />
+    </evaluate_nodal>
+  </nodal_field>
+  
+  <nodal_field id="element.bilinear.g" element_domain="mesh.element" value_domain="library::bilinear_u">
+    <evaluate_nodal element_values="3  4  7  8  11  12  15  16">
+      <dof_indexes map="element.quad_nodes" /> 
+      <dof_values map="node.parameters" components="g" />
+    </evaluate_nodal>
+  </nodal_field>
+  
+  <piecewise_field id="mesh.coordinates" key_domain="mesh.element" value_domain="library::cartesian_2d">
+    <evaluate_piecewise component="x" key_values="3  4  7  8  11  12  15  16">
+      <evaluate evaluation="library::dot_product">
+        <field_parameter field="library::bilinear_lagrange_phi" />
+        <field_parameter field="element.bilinear.x" />
+      </evaluate>
+    </evaluate_piecewise>
+    <evaluate_piecewise component="y" key_values="3  4  7  8  11  12  15  16">
+      <evaluate evaluation="library::dot_product">
+        <field_parameter field="library::bilinear_lagrange_phi" />
+        <field_parameter field="element.bilinear.y" />
+      </evaluate>
+    </evaluate_piecewise>
+  </piecewise_field>
+
+  <piecewise_field id="mesh.coordinates" key_domain="mesh.element" value_domain="library::real">
+    <evaluate_piecewise component="g" key_values="3  4  7  8  11  12  15  16">
+      <evaluate evaluation="library::dot_product">
+        <field_parameter field="library::bilinear_lagrange_phi" />
+        <field_parameter field="element.bilinear.g" />
+      </evaluate>
+    </evaluate_piecewise>
+  </piecewise_field>
+
+  <mapped_field id="node.parameters" key_domain="mesh.node" value_domain="node.parameters">
+    <map parameter_values="3">
+      1.0000000000000000E+00   0.0000000000000000E+00   3.1972356254077172E+00  -5.3524942944527254E-07
+    </map>
+    <map parameter_values="4">
+      1.5000000000000000E+00   0.0000000000000000E+00   3.6365212588612064E+00  -5.3524942966731714E-07
+    </map>
+    <map parameter_values="5">
+      2.0000000000000000E+00   0.0000000000000000E+00   3.8050656639529055E+00   9.1764340634819641E-02
+    </map>
+    <map parameter_values="8">
+      1.0000000000000000E+00   2.5000000000000000E-01   3.2333119188635906E+00  -4.6824431862851323E-01
+    </map>
+    <map parameter_values="9">
+      1.5000000000000000E+00   2.5000000000000000E-01   3.6624772699266712E+00  -4.6824431862851257E-01
+    </map>
+    <map parameter_values="10">
+      2.0000000000000000E+00   2.5000000000000000E-01   3.8587585611294335E+00  -5.7325184862691669E-01
+    </map>
+    <map parameter_values="14">
+      1.5000000000000000E+00   5.0000000000000000E-01   3.7541981649838512E+00  -4.6824431862851390E-01
+    </map>
+    <map parameter_values="15">
+      2.0000000000000000E+00   5.0000000000000000E-01   4.0337189461891123E+00  -5.7325184862691603E-01
+    </map>
+    <map parameter_values="19">
+      1.5000000000000000E+00   7.5000000000000000E-01   3.8640888796308559E+00  -4.6824431862851279E-01
+    </map>
+    <map parameter_values="20">
+      2.0000000000000000E+00   7.5000000000000000E-01   4.4352922105181323E+00  -5.7325184862691669E-01
+    </map>
+    <map parameter_values="24">
+      1.5000000000000000E+00   1.0000000000000000E+00   3.7494245949541605E+00   1.2590685730495488E-01
+    </map>
+    <map parameter_values="25">
+      2.0000000000000000E+00   1.0000000000000000E+00   5.4868641978000836E+00  -1.2488136854377663E-01
+    </map>
+  </mapped_field>
+
+
+  <!--
+    It seems that fields defined over a discrete domain only need to be defined over a single
+    domain, which in turn has a single component. While this prohibits 'nesting' value
+    requirements (i.e. forcing the field to be a single-parameter field), it simplifies the
+    associated API greatly. For a start, it allows the api to infer "domain 1, component 1"
+    for assigning values.   
+   -->
+  <mapped_field id="element.quad_nodes" key_domain="mesh.element" value_domain="mesh.element_quad_nodes">
+    <map parameter_values="3">
+        3  4  8  9
+    </map>
+    <map parameter_values="4">
+        4  5  9  10
+    </map>
+    <map parameter_values="7">
+        8  9  13  14
+    </map>
+    <map parameter_values="8">
+        9  10  14  15
+    </map>
+    <map parameter_values="11">
+        13  14  18  19
+    </map>
+    <map parameter_values="12">
+        14  15  19  20
+    </map>
+    <map parameter_values="15">
+        18  19  23  24
+    </map>
+    <map parameter_values="16">
+        19  20  24  25
+    </map>
+  </mapped_field>
+</fieldml>
