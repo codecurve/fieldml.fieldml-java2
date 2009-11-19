@@ -33,12 +33,13 @@ public class BicubicHermiteTriquadTest
 
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
-        s.append( "1____2____5\n" );
-        s.append( "|    |    |\n" );
-        s.append( "|    |    |\n" );
-        s.append( "|  1 |  2 |\n" );
-        s.append( "|    |    |\n" );
-        s.append( "3____4____6\n" );
+        s.append( "1____2____3\n" );
+        s.append( "\\    |    /\n" );
+        s.append( " \\   |   /\n" );
+        s.append( "  4-'5'-6\n" );
+        s.append( "   \\   /\n" );
+        s.append( "    \\ /\n" );
+        s.append( "     7\n" );
 
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
@@ -63,50 +64,6 @@ public class BicubicHermiteTriquadTest
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         Field<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
-
-        ContinuousDomainValue output;
-
-        // Test element 1
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.0, 0.0 );
-        assert output.values[0] == 0;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.0, 1.0 );
-        assert output.values[0] == 0;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.5, 0.0 );
-        assert output.values[0] == 5;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 1.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 1.0, 1.0 );
-        assert output.values[0] == 10;
-
-        // Test element 2
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 1.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.0, 1.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.5, 0.5 );
-        assert output.values[0] == 15;
-
-        // Test element 3
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.0, 0.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 1.0, 0.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.0, 1.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.5, 0.5 );
-        assert output.values[0] == 15;
     }
 
 
@@ -175,6 +132,8 @@ public class BicubicHermiteTriquadTest
         meshX.setValue( 0.5, 6 );
         meshX.setValue( 0.0, 7 );
 
+        testRegion.addField( meshX );
+
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 1 );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 2 );
@@ -183,6 +142,8 @@ public class BicubicHermiteTriquadTest
         meshY.setValue( 0.0, 5 );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ) - Math.sqrt( 0.75 ), 6 );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ) - Math.sqrt( 3 ), 7 );
+
+        testRegion.addField( meshY );
 
         ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", meshZdomain, globalNodesDomain );
         meshZ.setValue( 0.0, 1 );
@@ -224,6 +185,8 @@ public class BicubicHermiteTriquadTest
         meshd2Z.setValue( 0.0, 5 );
         meshd2Z.setValue( 0.0, 6 );
         meshd2Z.setValue( 0.0, 7 );
+
+        testRegion.addField( meshd2Z );
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
 
@@ -288,13 +251,15 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addField( meshds2Direction );
 
-        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, globalNodesDomain );
+        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain,
+            quad1x1LocalNodeDomain );
         meshdZds1.importField( meshds1Direction );
         meshdZds1.importField( meshdZ );
 
         testRegion.addField( meshdZds1 );
 
-        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, globalNodesDomain );
+        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain,
+            quad1x1LocalNodeDomain );
         meshdZds2.importField( meshds2Direction );
         meshdZds2.importField( meshdZ );
 
@@ -309,6 +274,8 @@ public class BicubicHermiteTriquadTest
         bicubicZHermiteParameters.setSourceField( 3, meshdZds2 );
         bicubicZHermiteParameters.setSourceField( 4, meshd2Z );
 
+        testRegion.addField( bicubicZHermiteParameters );
+
         /*
          * 
          * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
@@ -321,11 +288,15 @@ public class BicubicHermiteTriquadTest
         meshCoordinatesX.setEvaluator( 2, "linear_quad" );
         meshCoordinatesX.setEvaluator( 3, "linear_quad" );
 
+        testRegion.addField( meshCoordinatesX );
+
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
         meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "linear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "linear_quad" );
         meshCoordinatesY.setEvaluator( 2, "linear_quad" );
         meshCoordinatesY.setEvaluator( 3, "linear_quad" );
+
+        testRegion.addField( meshCoordinatesY );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", meshZdomain, meshDomain );
         meshCoordinatesZ.addEvaluator( new HermiteQuadEvaluator( "hermite_quad", bicubicZHermiteParameters, bicubicHermiteQuadScaling,
@@ -334,6 +305,8 @@ public class BicubicHermiteTriquadTest
         meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesZ.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesZ.setEvaluator( 3, "hermite_quad" );
+
+        testRegion.addField( meshCoordinatesZ );
 
         ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", meshXYZDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
