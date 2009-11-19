@@ -59,95 +59,10 @@ public class BicubicHermiteTest
     }
 
 
-    private static void visualize( Region region )
-    {
-        MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        Field<?, ContinuousDomainValue> mesh = (Field<?, ContinuousDomainValue>)region.getField( "test_mesh.coordinates" );
-
-        System.out.println( "0 BFC CERTIFY CW" );
-        ContinuousDomainValue v;
-        for( int i = 0; i < 16; i++ )
-        {
-            for( int j = 0; j < 16; j++ )
-            {
-                System.out.print( "4 4" );
-
-                v = mesh.evaluate( meshDomain, 1, ( i + 0 ) / 16.0, ( j + 0 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 1, ( i + 1 ) / 16.0, ( j + 0 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 1, ( i + 1 ) / 16.0, ( j + 1 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 1, ( i + 0 ) / 16.0, ( j + 1 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-
-                System.out.println( "" );
-
-                System.out.print( "4 14" );
-
-                v = mesh.evaluate( meshDomain, 2, ( i + 0 ) / 16.0, ( j + 0 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 2, ( i + 1 ) / 16.0, ( j + 0 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 2, ( i + 1 ) / 16.0, ( j + 1 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-                v = mesh.evaluate( meshDomain, 2, ( i + 0 ) / 16.0, ( j + 1 ) / 16.0 );
-                System.out.print( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
-
-                System.out.println( "" );
-            }
-        }
-    }
-
-
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         Field<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
-
-        ContinuousDomainValue output;
-
-        // Test element 1
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.0, 0.0 );
-        assert output.values[0] == 0;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.0, 1.0 );
-        assert output.values[0] == 0;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 0.5, 0.0 );
-        assert output.values[0] == 5;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 1.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 1, 1.0, 1.0 );
-        assert output.values[0] == 10;
-
-        // Test element 2
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 1.0, 0.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.0, 1.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 2, 0.5, 0.5 );
-        assert output.values[0] == 15;
-
-        // Test element 3
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.0, 0.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 1.0, 0.0 );
-        assert output.values[0] == 20;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.0, 1.0 );
-        assert output.values[0] == 10;
-
-        output = (ContinuousDomainValue)meshZ.evaluate( meshDomain, 3, 0.5, 0.5 );
-        assert output.values[0] == 15;
     }
 
 
@@ -207,6 +122,8 @@ public class BicubicHermiteTest
         meshX.setValue( 1.0, 4 );
         meshX.setValue( 3.0, 5 );
         meshX.setValue( 3.0, 6 );
+        
+        testRegion.addField( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( 0.0, 1 );
@@ -215,6 +132,8 @@ public class BicubicHermiteTest
         meshY.setValue( 1.0, 4 );
         meshY.setValue( 0.0, 5 );
         meshY.setValue( 1.0, 6 );
+        
+        testRegion.addField( meshY );
 
         ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", meshZdomain, globalNodesDomain );
         meshZ.setValue( 0.0, 1 );
@@ -250,6 +169,8 @@ public class BicubicHermiteTest
         meshd2Z.setValue( 0.0, 4 );
         meshd2Z.setValue( 0.0, 5 );
         meshd2Z.setValue( 0.0, 6 );
+        
+        testRegion.addField( meshd2Z );
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
 
@@ -261,7 +182,7 @@ public class BicubicHermiteTest
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 3 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 4 );
 
-        testRegion.addField( meshd2Z );
+        testRegion.addField( bicubicHermiteQuadScaling );
 
         EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
             testMeshElementDomain, quad1x1LocalNodeDomain );
@@ -296,6 +217,8 @@ public class BicubicHermiteTest
         bicubicZHermiteParameters.setSourceField( 3, meshdZds2 );
         bicubicZHermiteParameters.setSourceField( 4, meshd2Z );
 
+        testRegion.addField( bicubicZHermiteParameters );
+
         /*
          * 
          * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
@@ -307,16 +230,22 @@ public class BicubicHermiteTest
         meshCoordinatesX.setEvaluator( 1, "linear_quad" );
         meshCoordinatesX.setEvaluator( 2, "linear_quad" );
 
+        testRegion.addField( meshCoordinatesX );
+
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
         meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "linear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "linear_quad" );
         meshCoordinatesY.setEvaluator( 2, "linear_quad" );
+
+        testRegion.addField( meshCoordinatesY );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", meshZdomain, meshDomain );
         meshCoordinatesZ.addEvaluator( new HermiteQuadEvaluator( "hermite_quad", bicubicZHermiteParameters, bicubicHermiteQuadScaling,
             quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesZ.setEvaluator( 2, "hermite_quad" );
+
+        testRegion.addField( meshCoordinatesZ );
 
         ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", meshXYZDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
@@ -325,10 +254,8 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshCoordinates );
 
-        visualize( testRegion );
+        test( testRegion );
 
-//        test( testRegion );
-
-//        serialize( testRegion );
+        serialize( testRegion );
     }
 }
