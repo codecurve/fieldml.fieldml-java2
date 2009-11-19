@@ -33,13 +33,17 @@ public class BicubicHermiteTriquadTest
 
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
-        s.append( "1____2____3\n" );
-        s.append( "\\    |    /\n" );
-        s.append( " \\   |   /\n" );
-        s.append( "  4-'5'-6\n" );
-        s.append( "   \\   /\n" );
-        s.append( "    \\ /\n" );
-        s.append( "     7\n" );
+        s.append( "1_______2_______3\n" );
+        s.append( "\\       |       /\n" );
+        s.append( " \\      |      / \n" );
+        s.append( "  \\     5     /  \n" );
+        s.append( "   \\   / \\   /   \n" );
+        s.append( "    \\ /   \\ /    \n" );
+        s.append( "     4     6     \n" );
+        s.append( "      \\   /      \n" );
+        s.append( "       \\ /       \n" );
+        s.append( "        7        \n" );
+
 
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
