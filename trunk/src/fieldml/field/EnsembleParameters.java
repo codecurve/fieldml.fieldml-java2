@@ -20,6 +20,6 @@ public class EnsembleParameters
 
     public void setDefaultValue( int value )
     {
-        setValue( EnsembleDomainValue.makeValue( valueDomain, value ) );
+        setDefaultValue( EnsembleDomainValue.makeValue( valueDomain, value ) );
     }
 }
