@@ -541,7 +541,7 @@
 
   <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.z">
     <evaluatorList>
-      <HermiteQuadEvaluator dofs="test_mesh.bicubic_parameters.z" dofScaling="test_mesh.cubic_hermite_scaling" dofIndexes="test_mesh.quad_nodes" name="hermite_quad" />
+      <BicubicHermiteQuadEvaluator dofs="test_mesh.bicubic_parameters.z" dofScaling="test_mesh.cubic_hermite_scaling" dofIndexes="test_mesh.quad_nodes" name="hermite_quad" />
       <BilinearQuadEvaluator dofs="test_mesh.node.z" dofIndexes="test_mesh.quad_nodes" name="linear_quad" />
     </evaluatorList>
     <elementEvaluators>
