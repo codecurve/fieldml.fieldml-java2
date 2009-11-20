@@ -14,6 +14,8 @@ import java.io.IOException;
  */
 public class MinimalColladaExporter {
 
+  private static final String PATH_TO_COLLADA_SKELETON = "trunk/resources/ColladaSkeleton.xml";
+
   public static String exportFromFieldML(final Region region, final String meshName, final int elementCount, int discretisation) throws FileNotFoundException, IOException {
     MeshDomain meshDomain = region.getMeshDomain(meshName);
     Field<?, ContinuousDomainValue> mesh = (Field<?, ContinuousDomainValue>) region.getField("test_mesh.coordinates");
@@ -66,7 +68,7 @@ public class MinimalColladaExporter {
   private static String fillInColladaTemplate(StringBuilder xyzArray, StringBuilder polygonBlock, final int polygonCount, final int vertexCount, final int xyzArrayCount) throws FileNotFoundException, IOException {
     StringBuilder fullCollada = new StringBuilder();
 
-    FileReader f = new FileReader("trunk/data/ColladaSkeleton.xml");
+    FileReader f = new FileReader(PATH_TO_COLLADA_SKELETON);
     BufferedReader b = new BufferedReader(f);
     String nextLine = b.readLine();
     while (nextLine != null) {
