@@ -24,40 +24,40 @@ public class MinimalColladaExporter {
 
     StringBuilder xyzArray = new StringBuilder();
     StringBuilder polygonBlock = new StringBuilder();
-    int nodeNumber = 0;
     for (int elementNumber = 1; elementNumber <= elementCount; elementNumber++) {
+      for (int i = 0; i <= discretisation; i++) {
+        for (int j = 0; j <= discretisation; j++) {
+
+          final double xi1 = i / (double) discretisation;
+          final double xi2 = j / (double) discretisation;
+
+          v = mesh.evaluate(meshDomain, elementNumber, xi1, xi2);
+          xyzArray.append("\n");
+          xyzArray.append(" " + v.values[0] + " " + v.values[1] + " " + v.values[2]);
+
+        }
+      }
+      xyzArray.append("\n");
+      
+      final int nodeOffsetOfElement = (elementNumber-1) * (discretisation +1) * (discretisation+1);
       for (int i = 0; i < discretisation; i++) {
         for (int j = 0; j < discretisation; j++) {
-          polygonBlock.append("<p>");
-
-          final double xi1lower = (i + 0) / (double) discretisation;
-          final double xi2lower = (j + 0) / (double) discretisation;
-          final double xi1upper = (i + 1) / (double) discretisation;
-          final double xi2upper = (j + 1) / (double) discretisation;
-
-          v = mesh.evaluate(meshDomain, elementNumber, xi1lower, xi2lower);
-          xyzArray.append(" " + v.values[0] + " " + v.values[1] + " " + v.values[2]);
-          polygonBlock.append(" " + nodeNumber++);
-
-          v = mesh.evaluate(meshDomain, elementNumber, xi1upper, xi2lower);
-          xyzArray.append(" " + v.values[0] + " " + v.values[1] + " " + v.values[2]);
-          polygonBlock.append(" " + nodeNumber++);
-
-          v = mesh.evaluate(meshDomain, elementNumber, xi1upper, xi2upper);
-          xyzArray.append(" " + v.values[0] + " " + v.values[1] + " " + v.values[2]);
-          polygonBlock.append(" " + nodeNumber++);
-
-          v = mesh.evaluate(meshDomain, elementNumber, xi1lower, xi2upper);
-          xyzArray.append(" " + v.values[0] + " " + v.values[1] + " " + v.values[2]);
-          polygonBlock.append(" " + nodeNumber++);
+          final int nodeAtLowerXi1LowerXi2 = nodeOffsetOfElement + (discretisation+1) * (i+0) + (j+0);
+          final int nodeAtLowerXi1UpperXi2 = nodeOffsetOfElement + (discretisation+1) * (i+0) + (j+1);
+          final int nodeAtUpperXi1UpperXi2 = nodeOffsetOfElement + (discretisation+1) * (i+1) + (j+1);
+          final int nodeAtUpperXi1LowerXi2 = nodeOffsetOfElement + (discretisation+1) * (i+1) + (j+0);
+            polygonBlock.append("<p>");
+            polygonBlock.append(" " + nodeAtLowerXi1LowerXi2);
+            polygonBlock.append(" " + nodeAtLowerXi1UpperXi2);
+            polygonBlock.append(" " + nodeAtUpperXi1UpperXi2);
+            polygonBlock.append(" " + nodeAtUpperXi1LowerXi2);
           polygonBlock.append("</p>\n");
-
         }
       }
     }
 
     final int polygonCount = discretisation * discretisation * elementCount;
-    final int vertexCount = polygonCount * 4;
+    final int vertexCount = (discretisation + 1 ) * (discretisation + 1) * elementCount;
     final int xyzArrayCount = vertexCount * 3;
 
     final String colladaString = fillInColladaTemplate(xyzArray, polygonBlock, polygonCount, vertexCount, xyzArrayCount);
