@@ -58,7 +58,9 @@ public class PiecewiseField
     {
         MeshDomainValue v = input.get( meshDomain );
 
-        ContinuousEvaluator e = getEvaluator( elementEvaluators.get( v.indexValue ) );
+        final String evaluatorName = elementEvaluators.get(v.indexValue);
+        ContinuousEvaluator e = getEvaluator( evaluatorName);
+        
         if( e != null )
         {
             return ContinuousDomainValue.makeValue( valueDomain, e.evaluate( v ) );
