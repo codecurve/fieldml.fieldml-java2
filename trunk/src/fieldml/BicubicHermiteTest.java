@@ -1,6 +1,7 @@
 package fieldml;
 
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 
 import org.jdom.Comment;
@@ -261,6 +262,8 @@ public class BicubicHermiteTest
         serialize( testRegion );
 
         String collada = MinimalColladaExporter.exportFromFieldML(testRegion, "test_mesh.domain", 2, 16);
-        System.out.println(collada);
+        FileWriter f = new FileWriter("trunk/data/collada two quads.xml");
+        f.write(collada);
+        f.close();
     }
 }
