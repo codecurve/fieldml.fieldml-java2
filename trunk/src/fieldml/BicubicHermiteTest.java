@@ -1,5 +1,6 @@
 package fieldml;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.jdom.Comment;
@@ -22,6 +23,7 @@ import fieldml.field.PiecewiseField;
 import fieldml.field.composite.ContinuousCompositeField;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
+import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTest
 {
@@ -66,7 +68,7 @@ public class BicubicHermiteTest
     }
 
 
-    public static void main( String[] args )
+    public static void main( String[] args ) throws FileNotFoundException, IOException
     {
         Region library = Region.getLibrary();
 
@@ -257,5 +259,8 @@ public class BicubicHermiteTest
         test( testRegion );
 
         serialize( testRegion );
+
+        String collada = MinimalColladaExporter.exportFromFieldML(testRegion, "test_mesh.domain", 2, 16);
+        System.out.println(collada);
     }
 }
