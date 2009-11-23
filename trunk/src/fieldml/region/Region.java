@@ -59,6 +59,10 @@ public class Region
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
+        
+        region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
+        
+        region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
 
         return region;
     }
