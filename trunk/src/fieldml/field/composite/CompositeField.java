@@ -41,7 +41,7 @@ public abstract class CompositeField<D extends Domain, V extends DomainValue<D>>
     }
 
 
-    public void importField( Field<?,?> field )
+    public void importField( Field<?, ?> field )
     {
         operations.add( new FieldImport( field ) );
     }

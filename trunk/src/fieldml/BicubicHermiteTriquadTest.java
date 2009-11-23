@@ -14,8 +14,8 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.BilinearQuadEvaluator;
 import fieldml.evaluator.BicubicHermiteQuadEvaluator;
+import fieldml.evaluator.BilinearQuadEvaluator;
 import fieldml.field.ContinuousAggregateField;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
@@ -81,7 +81,7 @@ public class BicubicHermiteTriquadTest
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction" );
-        edgeDirectionDomain.addValues( 1, 2, 3 );
+        edgeDirectionDomain.addValues( 1, 2 );
 
         Region testRegion = new Region( "test" );
 
@@ -140,7 +140,7 @@ public class BicubicHermiteTriquadTest
         meshX.setValue( 0.0, 7 );
 
         testRegion.addField( meshX );
-
+        
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 1 );
         meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 2 );
@@ -176,7 +176,6 @@ public class BicubicHermiteTriquadTest
         meshdZ.setValue( -1.0, 4, 2 );
         meshdZ.setValue( -1.0, 5, 1 );
         meshdZ.setValue( 1.0, 5, 2 );
-        meshdZ.setValue( -1.0, 5, 3 );
         meshdZ.setValue( -1.0, 6, 1 );
         meshdZ.setValue( -1.0, 6, 2 );
         meshdZ.setValue( -1.0, 7, 1 );
@@ -204,71 +203,75 @@ public class BicubicHermiteTriquadTest
         bicubicHermiteQuadScaling.setDefaultValue( 100, 100, 100, 100 );
 
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 1, 1 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -sq3, sq3, 1 ), 1, 2 );
+        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 1, 2 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 1, 3 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 1, 4 );
 
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 2, 1 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 2, 2 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, -sq3, 1 ), 2, 3 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, -1, 1 ), 2, 4 );
+        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 2, 3 );
+        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 2, 4 );
 
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 3, 1 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 3, 2 );
         bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 3, 3 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -sq3, -sq3, 1 ), 3, 4 );
+        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 3, 4 );
 
         testRegion.addField( meshd2Z );
 
-        EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
-        meshds1Direction.setValue( 1, 1, 1 );
-        meshds1Direction.setValue( 3, 1, 2 );
-        meshds1Direction.setValue( 1, 1, 3 );
-        meshds1Direction.setValue( 2, 1, 4 );
+        ContinuousDomain mapWeighting = library.getContinuousDomain( "library.weighting.1d" );
 
-        meshds1Direction.setValue( 1, 2, 1 );
-        meshds1Direction.setValue( 1, 2, 2 );
-        meshds1Direction.setValue( 1, 2, 3 );
-        meshds1Direction.setValue( 1, 2, 4 );
+        ContinuousParameters meshdZds1Map = new ContinuousParameters( "test_mesh.node.ds1.map", mapWeighting,
+            testMeshElementDomain, quad1x1LocalNodeDomain, edgeDirectionDomain );
+        meshdZds1Map.setDefaultValue( 0.0 );
+        meshdZds1Map.setValue( 1.0, 1, 1, 1 );
+        meshdZds1Map.setValue( -0.5, 1, 2, 1 );
+        meshdZds1Map.setValue( -0.5, 1, 2, 2 );
+        meshdZds1Map.setValue( 1.0, 1, 3, 1 );
+        meshdZds1Map.setValue( 1.0, 1, 4, 2 );
 
-        meshds1Direction.setValue( 1, 3, 1 );
-        meshds1Direction.setValue( 1, 3, 2 );
-        meshds1Direction.setValue( 1, 3, 3 );
-        meshds1Direction.setValue( 3, 3, 4 );
+        meshdZds1Map.setValue( 1.0, 2, 1, 1 );
+        meshdZds1Map.setValue( 1.0, 2, 2, 1 );
+        meshdZds1Map.setValue( 1.0, 2, 3, 1 );
+        meshdZds1Map.setValue( 1.0, 2, 4, 1 );
 
-        testRegion.addField( meshds1Direction );
+        meshdZds1Map.setValue( 1.0, 3, 1, 1 );
+        meshdZds1Map.setValue( 1.0, 3, 2, 1 );
+        meshdZds1Map.setValue( 1.0, 3, 3, 1 );
+        meshdZds1Map.setValue( -0.5, 3, 4, 1 );
+        meshdZds1Map.setValue( -0.5, 3, 4, 2 );
 
-        EnsembleParameters meshds2Direction = new EnsembleParameters( "test_mesh.node.direction.ds2", edgeDirectionDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
-        meshds2Direction.setValue( 2, 1, 1 );
-        meshds2Direction.setValue( 1, 1, 2 );
-        meshds2Direction.setValue( 2, 1, 3 );
-        meshds2Direction.setValue( 1, 1, 4 );
+        testRegion.addField( meshdZds1Map );
 
-        meshds2Direction.setValue( 2, 2, 1 );
-        meshds2Direction.setValue( 2, 2, 2 );
-        meshds2Direction.setValue( 2, 2, 3 );
-        meshds2Direction.setValue( 2, 2, 4 );
+        ContinuousParameters meshdZds2Map = new ContinuousParameters( "test_mesh.node.ds2.map", mapWeighting,
+            testMeshElementDomain, quad1x1LocalNodeDomain, edgeDirectionDomain );
+        meshdZds2Map.setDefaultValue( 0.0 );
+        meshdZds2Map.setValue( 1.0, 1, 1, 2 );
+        meshdZds2Map.setValue( 1.0, 1, 2, 1 );
+        meshdZds2Map.setValue( 1.0, 1, 3, 2 );
+        meshdZds2Map.setValue( 1.0, 1, 4, 1 );
 
-        meshds2Direction.setValue( 2, 3, 1 );
-        meshds2Direction.setValue( 2, 3, 2 );
-        meshds2Direction.setValue( 2, 3, 3 );
-        meshds2Direction.setValue( 2, 3, 4 );
+        meshdZds2Map.setValue( 1.0, 2, 1, 2 );
+        meshdZds2Map.setValue( 1.0, 2, 2, 2 );
+        meshdZds2Map.setValue( -1.0, 2, 3, 2 );
+        meshdZds2Map.setValue( -1.0, 2, 4, 2 );
 
-        testRegion.addField( meshds2Direction );
+        meshdZds2Map.setValue( 1.0, 3, 1, 2 );
+        meshdZds2Map.setValue( 1.0, 3, 2, 2 );
+        meshdZds2Map.setValue( 1.0, 3, 3, 2 );
+        meshdZds2Map.setValue( -1.0, 3, 4, 2 );
+
+        testRegion.addField( meshdZds2Map );
 
         ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdZds1.importField( meshds1Direction );
-        meshdZds1.importField( meshdZ );
+        meshdZds1.importMappedField( meshdZ, meshdZds1Map, edgeDirectionDomain );
 
         testRegion.addField( meshdZds1 );
 
         ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdZds2.importField( meshds2Direction );
-        meshdZds2.importField( meshdZ );
+        meshdZds2.importMappedField( meshdZ, meshdZds2Map, edgeDirectionDomain );
 
         testRegion.addField( meshdZds2 );
 
@@ -326,7 +329,7 @@ public class BicubicHermiteTriquadTest
 
         serialize( testRegion );
 
-        String collada = MinimalColladaExporter.exportFromFieldML(testRegion, "test_mesh.domain", 3, 16);
+        String collada = MinimalColladaExporter.exportFromFieldML(testRegion, "test_mesh.domain", 3, 64);
         FileWriter f = new FileWriter("trunk/data/collada three quads.xml");
         f.write(collada);
         f.close();
