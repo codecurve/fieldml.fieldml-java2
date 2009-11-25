@@ -79,14 +79,14 @@ public class BicubicHermiteQuadEvaluator
         for( int localNodeIndex = 1; localNodeIndex <= iteratedDomain.getValueCount(); localNodeIndex++ )
         {
             context.set( iteratedDomain, localNodeIndex );
-            
+
             final ContinuousDomainValue scaling = dofScaling.evaluate( context );
 
             final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( context );
             context.set( indexOfGlobalNode );
-            
+
             ContinuousDomainValue dofValues = dofs.evaluate( context );
-            
+
             params[parameterCount++] = dofValues.values[0] * scaling.values[0];
             params[parameterCount++] = dofValues.values[1] * scaling.values[1];
             params[parameterCount++] = dofValues.values[2] * scaling.values[2];

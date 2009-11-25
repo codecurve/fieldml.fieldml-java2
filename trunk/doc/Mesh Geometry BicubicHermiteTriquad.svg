@@ -34,7 +34,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="550.51719"
-     inkscape:cy="443.47527"
+     inkscape:cy="194.17453"
      inkscape:current-layer="layer1"
      id="namedview3984"
      showgrid="false"
@@ -227,13 +227,13 @@
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="708.72015"
-       y="423.31989"
+       x="707.72015"
+       y="434.31989"
        id="text4838"><tspan
          sodipodi:role="line"
          id="tspan4840"
-         x="708.72015"
-         y="423.31989">6</tspan></text>
+         x="707.72015"
+         y="434.31989">6</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -258,12 +258,12 @@
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;fill:#ff0000;fill-opacity:1;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
        x="520.07599"
-       y="331.71097"
+       y="333.71097"
        id="text4850"><tspan
          sodipodi:role="line"
          id="tspan4852"
          x="520.07599"
-         y="331.71097">5</tspan></text>
+         y="333.71097">5</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -453,47 +453,47 @@
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
-       x="529"
-       y="654.09448"
+       x="682"
+       y="386.09448"
        id="text4916"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4918"
-         x="529"
-         y="654.09448">1</tspan></text>
+         x="682"
+         y="386.09448">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
-       x="684"
-       y="388.09448"
+       x="528"
+       y="299.09448"
        id="text4920"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4922"
-         x="684"
-         y="388.09448">2</tspan></text>
+         x="528"
+         y="299.09448">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
-       x="374"
-       y="387.09448"
+       x="530"
+       y="653.09448"
        id="text4924"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4926"
-         x="374"
-         y="387.09448">3</tspan></text>
+         x="530"
+         y="653.09448">3</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
-       x="527"
-       y="297.09448"
+       x="369"
+       y="386.09448"
        id="text4928"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan4930"
-         x="527"
-         y="297.09448">4</tspan></text>
+         x="369"
+         y="386.09448">4</tspan></text>
     <path
        sodipodi:type="arc"
        style="opacity:1;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:4.09991026;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"

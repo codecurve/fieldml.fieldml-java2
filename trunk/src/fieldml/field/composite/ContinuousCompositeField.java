@@ -6,6 +6,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.field.ContinuousParameters;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleDomainValue;
 
 public class ContinuousCompositeField
     extends CompositeField<ContinuousDomain, ContinuousDomainValue>
@@ -32,5 +33,11 @@ public class ContinuousCompositeField
         //NOTE could extend this to iterate over multiple ensemble domains, or automatically detect which ensemble domains
         //to iterate over based on the domains over which weightField is declared.
         operations.add( new FieldMappedImport( sourceField, weightField, iteratedDomain ) );
+    }
+
+
+    public void importValue( EnsembleDomainValue value )
+    {
+        operations.add( new ValueImport( value ) );
     }
 }
