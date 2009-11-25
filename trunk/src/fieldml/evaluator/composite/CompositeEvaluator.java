@@ -1,4 +1,4 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,49 +7,49 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
-import fieldml.field.Field;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.AbstractEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
-public abstract class CompositeField<D extends Domain, V extends DomainValue<D>>
-    extends Field<D, V>
+public abstract class CompositeEvaluator<D extends Domain, V extends DomainValue<D>>
+    extends AbstractEvaluator<D, V>
 {
     @SerializationAsString
     public final Domain[] parameterDomains;
 
-    public final List<FieldOperation> operations;
+    public final List<CompositeOperation> operations;
 
 
-    public CompositeField( String name, D valueDomain, Domain... parameterDomains )
+    public CompositeEvaluator( String name, D valueDomain, Domain... parameterDomains )
     {
         super( name, valueDomain );
 
         this.parameterDomains = parameterDomains;
 
-        operations = new ArrayList<FieldOperation>();
+        operations = new ArrayList<CompositeOperation>();
     }
 
 
     protected void apply( DomainValues values )
     {
-        for( FieldOperation o : operations )
+        for( CompositeOperation o : operations )
         {
             o.perform( values );
         }
     }
 
 
-    public void importField( Field<?, ?> field )
+    public void importField( AbstractEvaluator<?, ?> field )
     {
-        operations.add( new FieldImport( field ) );
+        operations.add( new ImportOperation( field ) );
     }
 
 
     public void importThrough( ContinuousParameters parameters, EnsembleParameters iteratedParameters, EnsembleDomain iteratedDomain,
         ContinuousDomain valueDomain )
     {
-        operations.add( new FieldImportThrough( parameters, iteratedParameters, iteratedDomain, valueDomain ) );
+        operations.add( new ImportThroughOperation( parameters, iteratedParameters, iteratedDomain, valueDomain ) );
     }
 }

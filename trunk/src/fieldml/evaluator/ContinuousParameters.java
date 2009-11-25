@@ -1,11 +1,12 @@
-package fieldml.field;
+package fieldml.evaluator;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
 
 public class ContinuousParameters
-    extends MappingField<ContinuousDomain, ContinuousDomainValue>
+    extends TableEvaluator<ContinuousDomain, ContinuousDomainValue>
+    implements ContinuousEvaluator
 {
     public ContinuousParameters( String name, ContinuousDomain valueDomain, EnsembleDomain... parameterDomains )
     {
@@ -19,7 +20,7 @@ public class ContinuousParameters
     }
 
 
-    public void setDefaultValue( double ... values )
+    public void setDefaultValue( double... values )
     {
         setDefaultValue( ContinuousDomainValue.makeValue( valueDomain, values ) );
     }

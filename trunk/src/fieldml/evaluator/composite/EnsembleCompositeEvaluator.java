@@ -1,14 +1,14 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
-public class EnsembleCompositeField
-    extends CompositeField<EnsembleDomain, EnsembleDomainValue>
+public class EnsembleCompositeEvaluator
+    extends CompositeEvaluator<EnsembleDomain, EnsembleDomainValue>
 {
-    public EnsembleCompositeField( String name, EnsembleDomain valueDomain, Domain[] parameterDomains )
+    public EnsembleCompositeEvaluator( String name, EnsembleDomain valueDomain, Domain[] parameterDomains )
     {
         super( name, valueDomain, parameterDomains );
     }

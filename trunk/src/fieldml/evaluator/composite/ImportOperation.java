@@ -1,18 +1,18 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.field.Field;
+import fieldml.evaluator.AbstractEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
-public class FieldImport
-    implements FieldOperation
+public class ImportOperation
+    implements CompositeOperation
 {
     @SerializationAsString
-    public final Field<?,?> field;
+    public final AbstractEvaluator<?,?> field;
 
 
-    public FieldImport( Field<?,?> field )
+    public ImportOperation( AbstractEvaluator<?,?> field )
     {
         this.field = field;
     }

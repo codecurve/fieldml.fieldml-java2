@@ -1,15 +1,15 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
-public class FieldImportThrough
-    implements FieldOperation
+public class ImportThroughOperation
+    implements CompositeOperation
 {
     @SerializationAsString
     public final ContinuousParameters parameters;
@@ -24,7 +24,7 @@ public class FieldImportThrough
     public final ContinuousDomain valueDomain;
 
 
-    public FieldImportThrough( ContinuousParameters parameters, EnsembleParameters iteratedParameters, EnsembleDomain iteratedDomain, ContinuousDomain valueDomain )
+    public ImportThroughOperation( ContinuousParameters parameters, EnsembleParameters iteratedParameters, EnsembleDomain iteratedDomain, ContinuousDomain valueDomain )
     {
         this.parameters = parameters;
         this.iteratedParameters = iteratedParameters;

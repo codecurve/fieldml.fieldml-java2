@@ -1,7 +1,7 @@
 package fieldmlx.util;
 
 import fieldml.domain.MeshDomain;
-import fieldml.field.Field;
+import fieldml.evaluator.AbstractEvaluator;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import java.io.BufferedReader;
@@ -22,7 +22,7 @@ public class MinimalColladaExporter
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        Field<?, ContinuousDomainValue> mesh = (Field<?, ContinuousDomainValue>)region.getField( "test_mesh.coordinates" );
+        AbstractEvaluator<?, ContinuousDomainValue> mesh = (AbstractEvaluator<?, ContinuousDomainValue>)region.getField( "test_mesh.coordinates" );
 
         ContinuousDomainValue v;
 

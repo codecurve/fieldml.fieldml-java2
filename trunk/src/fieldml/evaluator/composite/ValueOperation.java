@@ -1,15 +1,15 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
-public class ValueImport
-    implements FieldOperation
+public class ValueOperation
+    implements CompositeOperation
 {
     public final DomainValue<?> value;
 
 
-    public ValueImport( DomainValue<?> value )
+    public ValueOperation( DomainValue<?> value )
     {
         this.value = value;
     }

@@ -12,11 +12,11 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.field.ContinuousAggregateField;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
-import fieldml.field.Field;
-import fieldml.field.PiecewiseField;
+import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.PiecewiseField;
 import fieldml.function.BilinearQuad;
 import fieldml.function.BilinearSimplex;
 import fieldml.function.BiquadraticQuad;
@@ -62,8 +62,8 @@ public class FieldmlTest
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        Field<?, ?> meshX = region.getField( "test_mesh.coordinates.x" );
-        Field<?, ?> meshXY = region.getField( "test_mesh.coordinates.xy" );
+        AbstractEvaluator<?, ?> meshX = region.getField( "test_mesh.coordinates.x" );
+        AbstractEvaluator<?, ?> meshXY = region.getField( "test_mesh.coordinates.xy" );
 
         ContinuousDomainValue output;
 
@@ -260,7 +260,7 @@ public class FieldmlTest
 
         testRegion.addField( meshCoordinatesY );
 
-        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates.xy", meshXYdomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", meshXYdomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 

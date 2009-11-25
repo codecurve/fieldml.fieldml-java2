@@ -1,4 +1,4 @@
-package fieldml.field;
+package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
@@ -8,7 +8,7 @@ import fieldml.domain.MeshDomain;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
-public abstract class Field<D extends Domain, V extends DomainValue<D>>
+public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<D>>
 {
     public final String name;
 
@@ -16,7 +16,7 @@ public abstract class Field<D extends Domain, V extends DomainValue<D>>
     public final D valueDomain;
 
 
-    public Field( String name, D valueDomain )
+    public AbstractEvaluator( String name, D valueDomain )
     {
         this.name = name;
         this.valueDomain = valueDomain;
