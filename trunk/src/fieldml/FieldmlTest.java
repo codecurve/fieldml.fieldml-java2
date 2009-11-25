@@ -12,14 +12,14 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.BilinearQuadEvaluator;
-import fieldml.evaluator.BilinearSimplexEvaluator;
-import fieldml.evaluator.BiquadraticQuadEvaluator;
 import fieldml.field.ContinuousAggregateField;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 import fieldml.field.Field;
 import fieldml.field.PiecewiseField;
+import fieldml.function.BilinearQuad;
+import fieldml.function.BilinearSimplex;
+import fieldml.function.BiquadraticQuad;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
@@ -235,8 +235,8 @@ public class FieldmlTest
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
 
-        meshCoordinatesX.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.addEvaluator( new BilinearSimplexEvaluator( "bilinear_simplex", meshX, triangleNodeList,
+        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesX.addEvaluator( new BilinearSimplex( "bilinear_simplex", meshX, triangleNodeList,
             triangle1x1LocalNodeDomain ) );
 
         testRegion.addField( meshCoordinatesX );
@@ -248,10 +248,10 @@ public class FieldmlTest
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
 
-        meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BilinearSimplexEvaluator( "bilinear_simplex", meshY, triangleNodeList,
+        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesY.addEvaluator( new BilinearSimplex( "bilinear_simplex", meshY, triangleNodeList,
             triangle1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BiquadraticQuadEvaluator( "biquadratic_quad", meshY, biquadNodeList, quad2x2LocalNodeDomain ) );
+        meshCoordinatesY.addEvaluator( new BiquadraticQuad( "biquadratic_quad", meshY, biquadNodeList, quad2x2LocalNodeDomain ) );
 
         meshCoordinatesY.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesY.setEvaluator( 2, "bilinear_simplex" );

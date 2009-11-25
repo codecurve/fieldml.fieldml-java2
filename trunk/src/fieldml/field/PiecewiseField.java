@@ -6,7 +6,7 @@ import java.util.List;
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.function.ContinuousFunction;
 import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -18,7 +18,7 @@ public class PiecewiseField
     @SerializationAsString
     public final MeshDomain meshDomain;
 
-    public final List<ContinuousEvaluator> evaluatorList;
+    public final List<ContinuousFunction> evaluatorList;
 
     public final SimpleMap<Integer, String> elementEvaluators;
 
@@ -30,7 +30,7 @@ public class PiecewiseField
         this.meshDomain = meshDomain;
 
         elementEvaluators = new SimpleMap<Integer, String>();
-        evaluatorList = new ArrayList<ContinuousEvaluator>();
+        evaluatorList = new ArrayList<ContinuousFunction>();
     }
 
 
@@ -40,9 +40,9 @@ public class PiecewiseField
     }
 
     
-    private ContinuousEvaluator getEvaluator( String name )
+    private ContinuousFunction getEvaluator( String name )
     {
-        for( ContinuousEvaluator e : evaluatorList )
+        for( ContinuousFunction e : evaluatorList )
         {
             if(e.name.equals( name ) )
             {
@@ -59,7 +59,7 @@ public class PiecewiseField
         MeshDomainValue v = input.get( meshDomain );
 
         final String evaluatorName = elementEvaluators.get(v.indexValue);
-        ContinuousEvaluator e = getEvaluator( evaluatorName);
+        ContinuousFunction e = getEvaluator( evaluatorName);
         
         if( e != null )
         {
@@ -70,7 +70,7 @@ public class PiecewiseField
     }
 
 
-    public void addEvaluator( ContinuousEvaluator evaluator )
+    public void addEvaluator( ContinuousFunction evaluator )
     {
         evaluatorList.add( evaluator );
     }

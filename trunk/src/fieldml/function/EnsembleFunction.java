@@ -1,11 +1,11 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
 
-public abstract class EnsembleEvaluator
+public abstract class EnsembleFunction
 {
-    public EnsembleEvaluator()
+    public EnsembleFunction()
     {
     }
 

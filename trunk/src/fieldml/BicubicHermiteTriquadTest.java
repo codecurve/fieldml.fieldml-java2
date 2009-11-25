@@ -14,14 +14,14 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.BicubicHermiteQuadEvaluator;
-import fieldml.evaluator.BilinearQuadEvaluator;
 import fieldml.field.ContinuousAggregateField;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 import fieldml.field.Field;
 import fieldml.field.PiecewiseField;
 import fieldml.field.composite.ContinuousCompositeField;
+import fieldml.function.BicubicHermiteQuad;
+import fieldml.function.BilinearQuad;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.EnsembleDomainValue;
@@ -394,9 +394,9 @@ public class BicubicHermiteTriquadTest
          */
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
-        meshCoordinatesX.addEvaluator( new BicubicHermiteQuadEvaluator( "hermite_quad", bicubicXHermiteParameters,
+        meshCoordinatesX.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicXHermiteParameters,
             bicubicXHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 3, "hermite_quad" );
@@ -404,9 +404,9 @@ public class BicubicHermiteTriquadTest
         testRegion.addField( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
-        meshCoordinatesY.addEvaluator( new BicubicHermiteQuadEvaluator( "hermite_quad", bicubicYHermiteParameters,
+        meshCoordinatesY.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicYHermiteParameters,
             bicubicYHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 3, "hermite_quad" );
@@ -414,7 +414,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addField( meshCoordinatesY );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new BicubicHermiteQuadEvaluator( "hermite_quad", bicubicZHermiteParameters,
+        meshCoordinatesZ.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicZHermiteParameters,
             bicubicZHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesZ.setEvaluator( 2, "hermite_quad" );

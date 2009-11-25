@@ -1,11 +1,11 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.domain.EnsembleDomain;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 
-public class BilinearSimplexEvaluator
-    extends IndirectEvaluator
+public class BilinearSimplex
+    extends AbstractIndirectFunction
 {
     @Override
     protected double evaluate( double[] params, double[] xi )
@@ -18,7 +18,7 @@ public class BilinearSimplexEvaluator
     }
 
 
-    public BilinearSimplexEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BilinearSimplex( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );

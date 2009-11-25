@@ -1,4 +1,4 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
@@ -10,8 +10,8 @@ import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
 
-public class BicubicHermiteQuadEvaluator
-    extends ContinuousEvaluator
+public class BicubicHermiteQuad
+    extends ContinuousFunction
 {
     @SerializationAsString
     public final ContinuousAggregateField dofs;
@@ -25,7 +25,7 @@ public class BicubicHermiteQuadEvaluator
     private final EnsembleDomain iteratedDomain;
 
 
-    public BicubicHermiteQuadEvaluator( String name, ContinuousAggregateField dofs, ContinuousParameters dofScaling,
+    public BicubicHermiteQuad( String name, ContinuousAggregateField dofs, ContinuousParameters dofScaling,
         EnsembleParameters dofIndexes, EnsembleDomain localNodeDomain )
     {
         super( name );

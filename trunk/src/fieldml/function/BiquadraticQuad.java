@@ -1,11 +1,11 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.domain.EnsembleDomain;
 import fieldml.field.ContinuousParameters;
 import fieldml.field.EnsembleParameters;
 
-public class BiquadraticQuadEvaluator
-    extends IndirectEvaluator
+public class BiquadraticQuad
+    extends AbstractIndirectFunction
 {
     @Override
     protected double evaluate( double[] params, double[] xi )
@@ -25,7 +25,7 @@ public class BiquadraticQuadEvaluator
     }
 
 
-    public BiquadraticQuadEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BiquadraticQuad( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );

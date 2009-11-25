@@ -1,13 +1,13 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.value.MeshDomainValue;
 
-public abstract class ContinuousEvaluator
+public abstract class ContinuousFunction
 {
     public final String name;
 
 
-    public ContinuousEvaluator( String name )
+    public ContinuousFunction( String name )
     {
         this.name = name;
     }
