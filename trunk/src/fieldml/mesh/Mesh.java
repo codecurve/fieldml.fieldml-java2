@@ -1,12 +1,12 @@
 package fieldml.mesh;
 
-import fieldml.field.Field;
+import fieldml.evaluator.AbstractEvaluator;
 
 public class Mesh
 {
     public int elementCount;
     
-    public Field<?, ?> elementShapes;
+    public AbstractEvaluator<?, ?> elementShapes;
     
     public Object points;
 }

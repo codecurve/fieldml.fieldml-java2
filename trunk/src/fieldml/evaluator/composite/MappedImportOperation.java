@@ -1,12 +1,12 @@
-package fieldml.field.composite;
+package fieldml.evaluator.composite;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
+import fieldml.evaluator.ContinuousParameters;
 import fieldml.value.DomainValues;
 
-public class FieldMappedImport
-    implements FieldOperation
+public class MappedImportOperation
+    implements CompositeOperation
 {
     @SerializationAsString
     public final ContinuousParameters sourceField;
@@ -18,7 +18,7 @@ public class FieldMappedImport
     public final EnsembleDomain iteratedDomain;
 
 
-    public FieldMappedImport( ContinuousParameters sourceField, ContinuousParameters weightings, EnsembleDomain iteratedDomain )
+    public MappedImportOperation( ContinuousParameters sourceField, ContinuousParameters weightings, EnsembleDomain iteratedDomain )
     {
         this.sourceField = sourceField;
         this.weightings = weightings;

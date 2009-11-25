@@ -1,4 +1,4 @@
-package fieldml.field;
+package fieldml.evaluator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,8 @@ import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class PiecewiseField
-    extends Field<ContinuousDomain, ContinuousDomainValue>
+    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
+    implements ContinuousEvaluator
 {
     @SerializationAsString
     public final MeshDomain meshDomain;

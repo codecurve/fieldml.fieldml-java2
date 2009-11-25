@@ -2,8 +2,8 @@ package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;

@@ -1,8 +1,8 @@
 package fieldml.function;
 
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
 
 public class BilinearSimplex
     extends AbstractIndirectFunction

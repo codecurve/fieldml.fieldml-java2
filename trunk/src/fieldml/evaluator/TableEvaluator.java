@@ -1,4 +1,4 @@
-package fieldml.field;
+package fieldml.evaluator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -10,8 +10,8 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
-public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
-    extends Field<D, V>
+public abstract class TableEvaluator<D extends Domain, V extends DomainValue<D>>
+    extends AbstractEvaluator<D, V>
 {
     @SerializationAsString
     public final EnsembleDomain[] parameterDomains;
@@ -57,7 +57,7 @@ public abstract class MappingField<D extends Domain, V extends DomainValue<D>>
     public final List<MapEntry> entries;
 
 
-    public MappingField( String name, D valueDomain, EnsembleDomain... parameterDomains )
+    public TableEvaluator( String name, D valueDomain, EnsembleDomain... parameterDomains )
     {
         super( name, valueDomain );
 

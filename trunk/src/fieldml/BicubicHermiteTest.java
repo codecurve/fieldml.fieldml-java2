@@ -14,12 +14,12 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.field.ContinuousAggregateField;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
-import fieldml.field.Field;
-import fieldml.field.PiecewiseField;
-import fieldml.field.composite.ContinuousCompositeField;
+import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.PiecewiseField;
+import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.BicubicHermiteQuad;
 import fieldml.function.BilinearQuad;
 import fieldml.region.Region;
@@ -65,7 +65,7 @@ public class BicubicHermiteTest
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        Field<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
+        AbstractEvaluator<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
     }
 
 
@@ -199,13 +199,13 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshds2Direction );
 
-        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         meshdZds1.importField( meshds1Direction );
         meshdZds1.importField( meshdZ );
 
         testRegion.addField( meshdZds1 );
 
-        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         meshdZds2.importField( meshds2Direction );
         meshdZds2.importField( meshdZ );
 
@@ -213,7 +213,7 @@ public class BicubicHermiteTest
 
         ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
 
-        ContinuousAggregateField bicubicZHermiteParameters = new ContinuousAggregateField( "test_mesh.bicubic_parameters.z",
+        ContinuousAggregateEvaluator bicubicZHermiteParameters = new ContinuousAggregateEvaluator( "test_mesh.bicubic_parameters.z",
             bicubicHermiteParametersDomain );
         bicubicZHermiteParameters.setSourceField( 1, meshZ );
         bicubicZHermiteParameters.setSourceField( 2, meshdZds1 );
@@ -250,7 +250,7 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshCoordinatesZ );
 
-        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", meshXYZDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", meshXYZDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
         meshCoordinates.setSourceField( 3, meshCoordinatesZ );

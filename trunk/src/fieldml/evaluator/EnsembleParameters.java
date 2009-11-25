@@ -1,10 +1,11 @@
-package fieldml.field;
+package fieldml.evaluator;
 
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsembleParameters
-    extends MappingField<EnsembleDomain, EnsembleDomainValue>
+    extends TableEvaluator<EnsembleDomain, EnsembleDomainValue>
+    implements EnsembleEvaluator
 {
     public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )
     {

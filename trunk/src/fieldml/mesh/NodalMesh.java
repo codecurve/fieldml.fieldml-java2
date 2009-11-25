@@ -1,8 +1,8 @@
 package fieldml.mesh;
 
-import fieldml.field.Field;
+import fieldml.evaluator.AbstractEvaluator;
 
 public class NodalMesh
 {
-    public Field<?, ?> elementNodes;
+    public AbstractEvaluator<?, ?> elementNodes;
 }

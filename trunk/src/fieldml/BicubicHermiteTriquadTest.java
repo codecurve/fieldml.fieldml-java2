@@ -14,12 +14,12 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.field.ContinuousAggregateField;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
-import fieldml.field.Field;
-import fieldml.field.PiecewiseField;
-import fieldml.field.composite.ContinuousCompositeField;
+import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.PiecewiseField;
+import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.BicubicHermiteQuad;
 import fieldml.function.BilinearQuad;
 import fieldml.region.Region;
@@ -70,7 +70,7 @@ public class BicubicHermiteTriquadTest
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        Field<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
+        AbstractEvaluator<?, ?> meshZ = region.getField( "test_mesh.coordinates" );
     }
 
 
@@ -319,41 +319,41 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addField( meshdZds2Map );
 
-        ContinuousCompositeField meshdXds1 = new ContinuousCompositeField( "test_mesh.node.dx/ds1", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdXds1.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 1 ) );
         meshdXds1.importField( meshdX );
 
         testRegion.addField( meshdXds1 );
 
-        ContinuousCompositeField meshdXds2 = new ContinuousCompositeField( "test_mesh.node.dx/ds2", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdXds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdXds2.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 2 ) );
         meshdXds2.importField( meshdX );
 
         testRegion.addField( meshdXds2 );
 
-        ContinuousCompositeField meshdYds1 = new ContinuousCompositeField( "test_mesh.node.dy/ds1", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdYds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdYds1.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 1 ) );
         meshdYds1.importField( meshdY );
 
         testRegion.addField( meshdYds1 );
 
-        ContinuousCompositeField meshdYds2 = new ContinuousCompositeField( "test_mesh.node.dy/ds2", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdYds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdYds2.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 2 ) );
         meshdYds2.importField( meshdY );
 
         testRegion.addField( meshdYds2 );
 
-        ContinuousCompositeField meshdZds1 = new ContinuousCompositeField( "test_mesh.node.dz/ds1", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdZds1.importMappedField( meshdZ, meshdZds1Map, edgeDirectionDomain );
 
         testRegion.addField( meshdZds1 );
 
-        ContinuousCompositeField meshdZds2 = new ContinuousCompositeField( "test_mesh.node.dz/ds2", meshddsDomain, testMeshElementDomain,
+        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
         meshdZds2.importMappedField( meshdZ, meshdZds2Map, edgeDirectionDomain );
 
@@ -361,7 +361,7 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
 
-        ContinuousAggregateField bicubicXHermiteParameters = new ContinuousAggregateField( "test_mesh.bicubic_parameters.x",
+        ContinuousAggregateEvaluator bicubicXHermiteParameters = new ContinuousAggregateEvaluator( "test_mesh.bicubic_parameters.x",
             bicubicHermiteParametersDomain );
         bicubicXHermiteParameters.setSourceField( 1, meshX );
         bicubicXHermiteParameters.setSourceField( 2, meshdXds1 );
@@ -370,7 +370,7 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addField( bicubicXHermiteParameters );
 
-        ContinuousAggregateField bicubicYHermiteParameters = new ContinuousAggregateField( "test_mesh.bicubic_parameters.y",
+        ContinuousAggregateEvaluator bicubicYHermiteParameters = new ContinuousAggregateEvaluator( "test_mesh.bicubic_parameters.y",
             bicubicHermiteParametersDomain );
         bicubicYHermiteParameters.setSourceField( 1, meshY );
         bicubicYHermiteParameters.setSourceField( 2, meshdYds1 );
@@ -379,7 +379,7 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addField( bicubicYHermiteParameters );
 
-        ContinuousAggregateField bicubicZHermiteParameters = new ContinuousAggregateField( "test_mesh.bicubic_parameters.z",
+        ContinuousAggregateEvaluator bicubicZHermiteParameters = new ContinuousAggregateEvaluator( "test_mesh.bicubic_parameters.z",
             bicubicHermiteParametersDomain );
         bicubicZHermiteParameters.setSourceField( 1, meshZ );
         bicubicZHermiteParameters.setSourceField( 2, meshdZds1 );
@@ -422,7 +422,7 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addField( meshCoordinatesZ );
 
-        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", mesh3DDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
         meshCoordinates.setSourceField( 3, meshCoordinatesZ );

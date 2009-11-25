@@ -8,7 +8,7 @@ import org.jdom.Element;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.field.Field;
+import fieldml.evaluator.AbstractEvaluator;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 
@@ -75,7 +75,7 @@ public class Region
 
     private final Map<String, EnsembleDomain> ensembleDomains;
 
-    private final Map<String, Field<?, ?>> fields;
+    private final Map<String, AbstractEvaluator<?, ?>> fields;
 
 
     public Region( String name )
@@ -83,7 +83,7 @@ public class Region
         meshDomains = new HashMap<String, MeshDomain>();
         continuousDomains = new HashMap<String, ContinuousDomain>();
         ensembleDomains = new HashMap<String, EnsembleDomain>();
-        fields = new HashMap<String, Field<?, ?>>();
+        fields = new HashMap<String, AbstractEvaluator<?, ?>>();
 
         assert regions.get( name ) == null;
 
@@ -109,7 +109,7 @@ public class Region
     }
 
 
-    public Field<?, ?> getField( String name )
+    public AbstractEvaluator<?, ?> getField( String name )
     {
         return fields.get( name );
     }
@@ -133,7 +133,7 @@ public class Region
     }
 
 
-    public void addField( Field<?, ?> field )
+    public void addField( AbstractEvaluator<?, ?> field )
     {
         assert fields.get( field.name ) == null;
 
@@ -157,7 +157,7 @@ public class Region
             ReflectiveWalker.Walk( domain, handler );
         }
 
-        for( Field<?, ?> field : fields.values() )
+        for( AbstractEvaluator<?, ?> field : fields.values() )
         {
             ReflectiveWalker.Walk( field, handler );
         }
