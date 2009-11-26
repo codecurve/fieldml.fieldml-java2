@@ -40,28 +40,29 @@ public class PiecewiseField
         elementEvaluators.put( indexValue, evaluatorName );
     }
 
-    
+
     private ContinuousFunction getEvaluator( String name )
     {
         for( ContinuousFunction e : evaluatorList )
         {
-            if(e.name.equals( name ) )
+            if( e.name.equals( name ) )
             {
                 return e;
             }
         }
-        
+
         return null;
     }
+
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues input )
     {
         MeshDomainValue v = input.get( meshDomain );
 
-        final String evaluatorName = elementEvaluators.get(v.indexValue);
-        ContinuousFunction e = getEvaluator( evaluatorName);
-        
+        final String evaluatorName = elementEvaluators.get( v.indexValue );
+        ContinuousFunction e = getEvaluator( evaluatorName );
+
         if( e != null )
         {
             return ContinuousDomainValue.makeValue( valueDomain, e.evaluate( v ) );

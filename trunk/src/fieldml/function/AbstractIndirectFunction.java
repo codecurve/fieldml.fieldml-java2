@@ -1,27 +1,27 @@
-package fieldml.evaluator;
+package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.Field;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.MeshDomainValue;
 
-public abstract class IndirectEvaluator
-    extends ContinuousEvaluator
+public abstract class AbstractIndirectFunction
+    extends ContinuousFunction
 {
     @SerializationAsString
-    public final Field<ContinuousDomain, ContinuousDomainValue> dofs;
+    public final ContinuousEvaluator dofs;
 
     @SerializationAsString
-    public final Field<EnsembleDomain, EnsembleDomainValue> dofIndexes;
+    public final EnsembleEvaluator dofIndexes;
 
     private final EnsembleDomain iteratedDomain;
 
 
-    public IndirectEvaluator( String name, Field<ContinuousDomain, ContinuousDomainValue> dofs, Field<EnsembleDomain, EnsembleDomainValue> dofIndexes, EnsembleDomain iteratedDomain )
+    public AbstractIndirectFunction( String name, ContinuousEvaluator dofs, EnsembleEvaluator dofIndexes, EnsembleDomain iteratedDomain )
     {
         super( name );
         // TODO Assert that dofIndexes value domain is dofs only parameter domain

@@ -12,15 +12,13 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.BilinearQuadEvaluator;
-import fieldml.evaluator.BilinearSimplexEvaluator;
-import fieldml.evaluator.BiquadraticQuadEvaluator;
-import fieldml.field.ContinuousAggregateField;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
-import fieldml.field.Field;
-import fieldml.field.PiecewiseField;
-import fieldml.field.composite.ContinuousCompositeField;
+import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.PiecewiseField;
+import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
+import fieldml.function.BilinearQuad;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
@@ -65,8 +63,21 @@ public class HangingNodeTest
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        Field<?, ?> meshX = region.getField( "test_mesh.coordinates.x" );
-        Field<?, ?> meshXY = region.getField( "test_mesh.coordinates.xy" );
+        ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
+        
+        ContinuousDomainValue output;
+        
+        output = meshXY.evaluate( meshDomain, 1, 0.5, 0.5 );
+        assert output.values[0] == 10;
+        assert output.values[1] == 10;
+
+        output = meshXY.evaluate( meshDomain, 2, 0.5, 0.5 );
+        assert output.values[0] == 25;
+        assert output.values[1] == 15;
+
+        output = meshXY.evaluate( meshDomain, 3, 0.5, 0.5 );
+        assert output.values[0] == 25;
+        assert output.values[1] == 5;
     }
 
 
@@ -106,6 +117,7 @@ public class HangingNodeTest
         p2nArithmeticMeanMap.setValue( 1.0, 3, 3 );
         p2nArithmeticMeanMap.setValue( 0.5, 4, 2 );
         p2nArithmeticMeanMap.setValue( 0.5, 4, 6 );
+        p2nArithmeticMeanMap.setValue( 1.0, 5, 4 );
         p2nArithmeticMeanMap.setValue( 1.0, 6, 5 );
         p2nArithmeticMeanMap.setValue( 1.0, 7, 6 );
         p2nArithmeticMeanMap.setValue( 1.0, 8, 7 );
@@ -128,7 +140,7 @@ public class HangingNodeTest
         quadNodeList.setValue( 4, 3, 3 );
         quadNodeList.setValue( 5, 3, 4 );
 
-        testRegion.addField( quadNodeList );
+        testRegion.addEvaluator( quadNodeList );
 
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
@@ -142,7 +154,7 @@ public class HangingNodeTest
         meshPointsX.setValue( 20.0, 6 );
         meshPointsX.setValue( 30.0, 7 );
 
-        testRegion.addField( meshPointsX );
+        testRegion.addEvaluator( meshPointsX );
 
         ContinuousParameters meshPointsY = new ContinuousParameters( "test_mesh.point.y", mesh1DDomain, globalPointsDomain );
         meshPointsY.setValue( 20.0, 1 );
@@ -153,15 +165,15 @@ public class HangingNodeTest
         meshPointsY.setValue( 00.0, 6 );
         meshPointsY.setValue( 00.0, 7 );
 
-        testRegion.addField( meshPointsY );
+        testRegion.addEvaluator( meshPointsY );
         
-        ContinuousCompositeField meshX = new ContinuousCompositeField( "test_mesh.point.x", mesh1DDomain, globalNodesDomain );
+        ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.point.x", mesh1DDomain, globalNodesDomain );
         meshX.importMappedField( meshPointsX, p2nArithmeticMeanMap, globalPointsDomain );
-        testRegion.addField( meshX );
+        testRegion.addEvaluator( meshX );
 
-        ContinuousCompositeField meshY = new ContinuousCompositeField( "test_mesh.point.y", mesh1DDomain, globalNodesDomain );
+        ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.point.y", mesh1DDomain, globalNodesDomain );
         meshY.importMappedField( meshPointsY, p2nArithmeticMeanMap, globalPointsDomain );
-        testRegion.addField( meshY );
+        testRegion.addEvaluator( meshY );
 
         /*
          * 
@@ -170,26 +182,26 @@ public class HangingNodeTest
          */
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
-        meshCoordinatesX.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesX.setEvaluator( 2, "bilinear_quad" );
         meshCoordinatesX.setEvaluator( 3, "bilinear_quad" );
 
-        testRegion.addField( meshCoordinatesX );
+        testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
-        meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesY.setEvaluator( 2, "bilinear_quad" );
         meshCoordinatesY.setEvaluator( 3, "bilinear_quad" );
 
-        testRegion.addField( meshCoordinatesY );
+        testRegion.addEvaluator( meshCoordinatesY );
 
-        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates.xy", mesh2DDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", mesh2DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
-        testRegion.addField( meshCoordinates );
+        testRegion.addEvaluator( meshCoordinates );
 
         test( testRegion );
 
