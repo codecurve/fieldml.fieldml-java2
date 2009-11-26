@@ -34,6 +34,67 @@
   </MeshDomain>
   
 
+  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.p2nAMap" valueDomain="library.weighting.1d">
+    <parameterDomains>"test_mesh.nodes"  "test_mesh.points"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  2  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  3  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.5  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.5  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  4  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  5  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  6  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>8  7  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
   <ContinuousCompositeEvaluator name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <operations>
