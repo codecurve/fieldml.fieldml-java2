@@ -50,6 +50,8 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.1d", 1 ) );
 
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.2d", 2 ) );
+
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.3d", 3 ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
@@ -57,8 +59,6 @@ public class Region
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
         
         region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
-        
-        region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
 
         return region;
     }
@@ -77,9 +77,12 @@ public class Region
 
     private final Map<String, Field<?, ?>> fields;
 
+    private final String name;
 
     public Region( String name )
     {
+        this.name = name;
+
         meshDomains = new HashMap<String, MeshDomain>();
         continuousDomains = new HashMap<String, ContinuousDomain>();
         ensembleDomains = new HashMap<String, EnsembleDomain>();
@@ -93,25 +96,41 @@ public class Region
 
     public MeshDomain getMeshDomain( String name )
     {
-        return meshDomains.get( name );
+        MeshDomain domain = meshDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " not found in region " + this.name;
+        
+        return domain;
     }
 
 
     public ContinuousDomain getContinuousDomain( String name )
     {
-        return continuousDomains.get( name );
+        ContinuousDomain domain = continuousDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " not found in region " + this.name;
+        
+        return domain;
     }
 
 
     public EnsembleDomain getEnsembleDomain( String name )
     {
-        return ensembleDomains.get( name );
+        EnsembleDomain domain = ensembleDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " not found in region " + this.name;
+        
+        return domain;
     }
 
 
     public Field<?, ?> getField( String name )
     {
-        return fields.get( name );
+        Field<?, ?> field = fields.get( name );
+        
+        assert field != null : "Field " + name + " not found in region " + this.name;
+        
+        return field;
     }
 
 

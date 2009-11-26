@@ -107,10 +107,8 @@ public class BicubicHermiteTest
 
         testRegion.addField( quadNodeList );
 
-        ContinuousDomain meshXdomain = library.getContinuousDomain( "library.co-ordinates.rc.x" );
-        ContinuousDomain meshYdomain = library.getContinuousDomain( "library.co-ordinates.rc.y" );
-        ContinuousDomain meshZdomain = library.getContinuousDomain( "library.co-ordinates.rc.z" );
-        ContinuousDomain meshXYZDomain = library.getContinuousDomain( "library.co-ordinates.rc.xyz" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
 
         ContinuousDomain meshdZdomain = new ContinuousDomain( "test_mesh.co-ordinates.dz/ds", 1 );
         testRegion.addDomain( meshdZdomain );
@@ -118,7 +116,7 @@ public class BicubicHermiteTest
         ContinuousDomain meshd2Zdomain = new ContinuousDomain( "test_mesh.co-ordinates.d2z/ds1ds2", 1 );
         testRegion.addDomain( meshd2Zdomain );
 
-        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", meshXdomain, globalNodesDomain );
+        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
         meshX.setValue( 0.0, 1 );
         meshX.setValue( 1.0, 2 );
         meshX.setValue( 0.0, 3 );
@@ -128,7 +126,7 @@ public class BicubicHermiteTest
         
         testRegion.addField( meshX );
 
-        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
+        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
         meshY.setValue( 0.0, 1 );
         meshY.setValue( 0.0, 2 );
         meshY.setValue( 1.0, 3 );
@@ -138,7 +136,7 @@ public class BicubicHermiteTest
         
         testRegion.addField( meshY );
 
-        ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", meshZdomain, globalNodesDomain );
+        ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodesDomain );
         meshZ.setValue( 0.0, 1 );
         meshZ.setValue( 0.0, 2 );
         meshZ.setValue( 0.0, 3 );
@@ -228,21 +226,21 @@ public class BicubicHermiteTest
          * wishing to share components can do so simply by sharing entire piecewise fields.
          */
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
         meshCoordinatesX.addEvaluator( new BilinearQuadEvaluator( "linear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.setEvaluator( 1, "linear_quad" );
         meshCoordinatesX.setEvaluator( 2, "linear_quad" );
 
         testRegion.addField( meshCoordinatesX );
 
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
         meshCoordinatesY.addEvaluator( new BilinearQuadEvaluator( "linear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "linear_quad" );
         meshCoordinatesY.setEvaluator( 2, "linear_quad" );
 
         testRegion.addField( meshCoordinatesY );
 
-        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", meshZdomain, meshDomain );
+        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
         meshCoordinatesZ.addEvaluator( new BicubicHermiteQuadEvaluator( "hermite_quad", bicubicZHermiteParameters, bicubicHermiteQuadScaling,
             quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
@@ -250,7 +248,7 @@ public class BicubicHermiteTest
 
         testRegion.addField( meshCoordinatesZ );
 
-        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", meshXYZDomain );
+        ContinuousAggregateField meshCoordinates = new ContinuousAggregateField( "test_mesh.coordinates", mesh3DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
         meshCoordinates.setSourceField( 3, meshCoordinatesZ );
