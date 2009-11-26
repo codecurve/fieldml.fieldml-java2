@@ -145,7 +145,7 @@ public class BicubicHermiteTriquadTest
         
         meshX.setValue( -1.0, 1 );
         meshY.setValue( alpha1, 1 );
-        meshZ.setValue( 1.0, 1 );
+        meshZ.setValue( 0.0, 1 );
 
         meshX.setValue( 0.0, 2 );
         meshY.setValue( alpha1, 2 );
@@ -201,11 +201,11 @@ public class BicubicHermiteTriquadTest
         
         meshdX.setValue( 1.0, 1, 1 );
         meshdY.setValue( 0.0, 1, 1 );
-        meshdZ.setValue( 1.0, 1, 1 );
+        meshdZ.setValue( 0.0, 1, 1 );
         
-        meshdX.setValue( vxNorthWestOuter, 1, 2 );
-        meshdY.setValue( vyNorthWestOuter, 1, 2 );
-        meshdZ.setValue( 0.0,              1, 2 );
+        meshdX.setValue( 0.0, 1, 2 );
+        meshdY.setValue( 1.0, 1, 2 );
+        meshdZ.setValue( 0.0, 1, 2 );
 
         meshdX.setValue( 0.0, 2, 1 );
         meshdY.setValue( 1.0, 2, 1 );
@@ -215,9 +215,9 @@ public class BicubicHermiteTriquadTest
         meshdY.setValue( 0.0, 2, 2 );
         meshdZ.setValue( 0.0, 2, 2 );
 
-        meshdX.setValue( vxNorthEastOuter, 3, 1 );
-        meshdY.setValue( vyNorthEastOuter, 3, 1 );
-        meshdZ.setValue( 0.0,              3, 1 );
+        meshdX.setValue( 0.0, 3, 1 );
+        meshdY.setValue( 1.0, 3, 1 );
+        meshdZ.setValue( 0.0, 3, 1 );
 
         meshdX.setValue( -1.0, 3, 2 );
         meshdY.setValue(  0.0, 3, 2 );
@@ -227,22 +227,22 @@ public class BicubicHermiteTriquadTest
         meshdY.setValue( vyNorthEastInner, 4, 1 );
         meshdZ.setValue( 0.0,              4, 1 );
 
-        meshdX.setValue( vxNorthWestOuter, 4, 2 );
-        meshdY.setValue( vyNorthWestOuter, 4, 2 );
-        meshdZ.setValue( 0.0,              4, 2 );
+        meshdX.setValue( 0.0, 4, 2 );
+        meshdY.setValue( 1.0, 4, 2 );
+        meshdZ.setValue( 1.0, 4, 2 );
         
 
         meshdX.setValue( 0.0, 5, 1 );
         meshdY.setValue( 1.0, 5, 1 );
-        meshdZ.setValue( 0.0, 5, 1 );
+        meshdZ.setValue( 1.0, 5, 1 );
 
         meshdX.setValue( -vxNorthWestInner, 5, 2 );
         meshdY.setValue( -vyNorthWestInner, 5, 2 );
         meshdZ.setValue( 0.0,              5, 2 );
 
-        meshdX.setValue( vxNorthEastOuter, 6, 1 );
-        meshdY.setValue( vyNorthEastOuter, 6, 1 );
-        meshdZ.setValue( 0.0,              6, 1 );
+        meshdX.setValue( 0.0, 6, 1 );
+        meshdY.setValue( 1.0, 6, 1 );
+        meshdZ.setValue( 1.0, 6, 1 );
 
         meshdX.setValue( vxNorthWestInner, 6, 2 );
         meshdY.setValue( vyNorthWestInner, 6, 2 );
@@ -271,7 +271,6 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
 
-
         ContinuousParameters bicubicZHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.z",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         bicubicZHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
@@ -293,9 +292,10 @@ public class BicubicHermiteTriquadTest
         ContinuousParameters meshd_ds1Map = new ContinuousParameters( "test_mesh.node.ds1.map", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
         meshd_ds1Map.setDefaultValue( 0.0 );
+
         meshd_ds1Map.setValue(  1.0, 1, 1, 1 );
-        meshd_ds1Map.setValue(  0.5, 1, 2, 1 );
-        meshd_ds1Map.setValue(  0.5, 1, 2, 2 );
+        meshd_ds1Map.setValue(  1.0, 1, 2, 1 );
+        meshd_ds1Map.setValue(  1.0, 1, 2, 2 );
         meshd_ds1Map.setValue(  1.0, 1, 3, 1 );
         meshd_ds1Map.setValue(  1.0, 1, 4, 2 );
 
@@ -325,8 +325,8 @@ public class BicubicHermiteTriquadTest
         meshd_ds2Map.setValue( -1.0, 2, 4, 2 );
 
         meshd_ds2Map.setValue( -1.0, 3, 1, 1 );
-        meshd_ds2Map.setValue( -0.5, 3, 2, 1 );
-        meshd_ds2Map.setValue( -0.5, 3, 2, 2 );
+        meshd_ds2Map.setValue( -1.0, 3, 2, 1 );
+        meshd_ds2Map.setValue( -1.0, 3, 2, 2 );
         meshd_ds2Map.setValue( -1.0, 3, 3, 1 );
         meshd_ds2Map.setValue( -1.0, 3, 4, 1 );
 
