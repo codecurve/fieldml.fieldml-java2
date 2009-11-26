@@ -50,6 +50,8 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.1d", 1 ) );
 
+        region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.2d", 2 ) );
+
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.3d", 3 ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
@@ -79,9 +81,12 @@ public class Region
 
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
+    private final String name;
 
     public Region( String name )
     {
+        this.name = name;
+        
         meshDomains = new SimpleMap<String, MeshDomain>();
         continuousDomains = new SimpleMap<String, ContinuousDomain>();
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
@@ -96,31 +101,51 @@ public class Region
 
     public MeshDomain getMeshDomain( String name )
     {
-        return meshDomains.get( name );
+        MeshDomain domain = meshDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " does not exist in region " + this.name;
+        
+        return domain;
     }
 
 
     public ContinuousDomain getContinuousDomain( String name )
     {
-        return continuousDomains.get( name );
+        ContinuousDomain domain = continuousDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " does not exist in region " + this.name;
+        
+        return domain;
     }
 
 
     public EnsembleDomain getEnsembleDomain( String name )
     {
-        return ensembleDomains.get( name );
+        EnsembleDomain domain = ensembleDomains.get( name );
+        
+        assert domain != null : "Domain " + name + " does not exist in region " + this.name;
+        
+        return domain;
     }
 
 
     public ContinuousEvaluator getContinuousEvaluator( String name )
     {
-        return continuousEvaluators.get( name );
+        ContinuousEvaluator evaluator = continuousEvaluators.get( name );
+        
+        assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
+        
+        return evaluator;
     }
 
 
     public EnsembleEvaluator getEnsembleEvaluator( String name )
     {
-        return ensembleEvaluators.get( name );
+        EnsembleEvaluator evaluator = ensembleEvaluators.get( name );
+        
+        assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
+        
+        return evaluator;
     }
 
 
