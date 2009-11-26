@@ -1,11 +1,13 @@
-package fieldml.function;
+package fieldml.evaluator;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousParameters;
-import fieldml.evaluator.EnsembleParameters;
+import fieldml.field.Field;
+import fieldml.value.ContinuousDomainValue;
+import fieldml.value.EnsembleDomainValue;
 
 public class BilinearQuad
-    extends AbstractIndirectFunction
+    extends IndirectEvaluator
 {
     @Override
     protected double evaluate( double[] params, double[] xi )
@@ -19,7 +21,7 @@ public class BilinearQuad
     }
 
 
-    public BilinearQuad( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BilinearQuad( String name, Field<ContinuousDomain, ContinuousDomainValue> dofs, Field<EnsembleDomain, EnsembleDomainValue> dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );
