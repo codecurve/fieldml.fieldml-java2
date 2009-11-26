@@ -13,9 +13,9 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.AbstractEvaluator;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.function.BilinearQuad;
 import fieldml.function.BilinearSimplex;
@@ -62,13 +62,13 @@ public class FieldmlTest
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        AbstractEvaluator<?, ?> meshX = region.getField( "test_mesh.coordinates.x" );
-        AbstractEvaluator<?, ?> meshXY = region.getField( "test_mesh.coordinates.xy" );
+        ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
+        ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
 
         ContinuousDomainValue output;
 
         // Test element 1
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 1, 0.0, 0.0 );
         assert output.values[0] == 0;
 
         output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.0, 1.0 );
@@ -157,7 +157,7 @@ public class FieldmlTest
         triangleNodeList.setValue( 3, 3, 2 );
         triangleNodeList.setValue( 5, 3, 3 );
 
-        testRegion.addField( triangleNodeList );
+        testRegion.addEvaluator( triangleNodeList );
 
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
@@ -172,7 +172,7 @@ public class FieldmlTest
         quadNodeList.setValue( 3, 4, 3 );
         quadNodeList.setValue( 7, 4, 4 );
 
-        testRegion.addField( quadNodeList );
+        testRegion.addEvaluator( quadNodeList );
 
         EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesDomain, testMeshElementDomain,
             quad2x2LocalNodeDomain );
@@ -187,7 +187,7 @@ public class FieldmlTest
         biquadNodeList.setValue( 11, 4, 8 );
         biquadNodeList.setValue( 7, 4, 9 );
 
-        testRegion.addField( biquadNodeList );
+        testRegion.addEvaluator( biquadNodeList );
 
         ContinuousDomain meshXdomain = new ContinuousDomain( "test_mesh.co-ordinates.x", 1 );
         testRegion.addDomain( meshXdomain );
@@ -208,7 +208,7 @@ public class FieldmlTest
         meshX.setValue( 30.0, 7 );
         meshX.setValue( 30.0, 13 );
 
-        testRegion.addField( meshX );
+        testRegion.addEvaluator( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", meshYdomain, globalNodesDomain );
         meshY.setValue( 10.0, 1 );
@@ -225,7 +225,7 @@ public class FieldmlTest
         meshY.setValue( 00.0, 12 );
         meshY.setValue( 00.0, 13 );
 
-        testRegion.addField( meshY );
+        testRegion.addEvaluator( meshY );
         
         /*
          * 
@@ -239,7 +239,7 @@ public class FieldmlTest
         meshCoordinatesX.addEvaluator( new BilinearSimplex( "bilinear_simplex", meshX, triangleNodeList,
             triangle1x1LocalNodeDomain ) );
 
-        testRegion.addField( meshCoordinatesX );
+        testRegion.addEvaluator( meshCoordinatesX );
 
         meshCoordinatesX.setEvaluator( 1, "bilinear_quad" );
         meshCoordinatesX.setEvaluator( 2, "bilinear_simplex" );
@@ -258,13 +258,13 @@ public class FieldmlTest
         meshCoordinatesY.setEvaluator( 3, "bilinear_simplex" );
         meshCoordinatesY.setEvaluator( 4, "biquadratic_quad" );
 
-        testRegion.addField( meshCoordinatesY );
+        testRegion.addEvaluator( meshCoordinatesY );
 
         ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", meshXYdomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
-        testRegion.addField( meshCoordinates );
+        testRegion.addEvaluator( meshCoordinates );
 
         test( testRegion );
 

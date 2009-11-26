@@ -1,16 +1,16 @@
 package fieldml.region;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jdom.Element;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
+import fieldml.util.SimpleMap;
+import fieldml.util.SimpleMapEntry;
 
 public class Region
 {
@@ -18,11 +18,11 @@ public class Region
 
     private static final Region library;
 
-    public static final Map<String, Region> regions;
+    public static final SimpleMap<String, Region> regions;
 
     static
     {
-        regions = new HashMap<String, Region>();
+        regions = new SimpleMap<String, Region>();
 
         library = buildLibrary();
     }
@@ -55,9 +55,9 @@ public class Region
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
-        
+
         region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
-        
+
         region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
 
         return region;
@@ -69,21 +69,24 @@ public class Region
         return library;
     }
 
-    private final Map<String, MeshDomain> meshDomains;
+    private final SimpleMap<String, MeshDomain> meshDomains;
 
-    private final Map<String, ContinuousDomain> continuousDomains;
+    private final SimpleMap<String, ContinuousDomain> continuousDomains;
 
-    private final Map<String, EnsembleDomain> ensembleDomains;
+    private final SimpleMap<String, EnsembleDomain> ensembleDomains;
 
-    private final Map<String, AbstractEvaluator<?, ?>> fields;
+    private final SimpleMap<String, ContinuousEvaluator> continuousEvaluators;
+
+    private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
 
     public Region( String name )
     {
-        meshDomains = new HashMap<String, MeshDomain>();
-        continuousDomains = new HashMap<String, ContinuousDomain>();
-        ensembleDomains = new HashMap<String, EnsembleDomain>();
-        fields = new HashMap<String, AbstractEvaluator<?, ?>>();
+        meshDomains = new SimpleMap<String, MeshDomain>();
+        continuousDomains = new SimpleMap<String, ContinuousDomain>();
+        ensembleDomains = new SimpleMap<String, EnsembleDomain>();
+        continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
+        ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
 
         assert regions.get( name ) == null;
 
@@ -109,9 +112,15 @@ public class Region
     }
 
 
-    public AbstractEvaluator<?, ?> getField( String name )
+    public ContinuousEvaluator getContinuousEvaluator( String name )
     {
-        return fields.get( name );
+        return continuousEvaluators.get( name );
+    }
+
+
+    public EnsembleEvaluator getEnsembleEvaluator( String name )
+    {
+        return ensembleEvaluators.get( name );
     }
 
 
@@ -133,33 +142,41 @@ public class Region
     }
 
 
-    public void addField( AbstractEvaluator<?, ?> field )
+    public void addEvaluator( ContinuousEvaluator evaluator )
     {
-        assert fields.get( field.name ) == null;
+        continuousEvaluators.put( evaluator.getName(), evaluator );
+    }
 
-        fields.put( field.name, field );
+
+    public void addEvaluator( EnsembleEvaluator evaluator )
+    {
+        ensembleEvaluators.put( evaluator.getName(), evaluator );
     }
 
 
     public void serializeToXml( Element root )
     {
         JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
-        for( ContinuousDomain domain : continuousDomains.values() )
+        for( SimpleMapEntry<String, ContinuousDomain> k : continuousDomains )
         {
-            ReflectiveWalker.Walk( domain, handler );
+            ReflectiveWalker.Walk( k.value, handler );
         }
-        for( EnsembleDomain domain : ensembleDomains.values() )
+        for( SimpleMapEntry<String, EnsembleDomain> k : ensembleDomains )
         {
-            ReflectiveWalker.Walk( domain, handler );
+            ReflectiveWalker.Walk( k.value, handler );
         }
-        for( MeshDomain domain : meshDomains.values() )
+        for( SimpleMapEntry<String, MeshDomain> k : meshDomains )
         {
-            ReflectiveWalker.Walk( domain, handler );
+            ReflectiveWalker.Walk( k.value, handler );
         }
 
-        for( AbstractEvaluator<?, ?> field : fields.values() )
+        for( SimpleMapEntry<String, ContinuousEvaluator> k : continuousEvaluators )
         {
-            ReflectiveWalker.Walk( field, handler );
+            ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, EnsembleEvaluator> k : ensembleEvaluators )
+        {
+            ReflectiveWalker.Walk( k.value, handler );
         }
     }
 }
