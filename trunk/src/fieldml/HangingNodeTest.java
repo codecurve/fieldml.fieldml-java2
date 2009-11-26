@@ -121,6 +121,8 @@ public class HangingNodeTest
         p2nArithmeticMeanMap.setValue( 1.0, 6, 5 );
         p2nArithmeticMeanMap.setValue( 1.0, 7, 6 );
         p2nArithmeticMeanMap.setValue( 1.0, 8, 7 );
+        
+        testRegion.addEvaluator( p2nArithmeticMeanMap );
 
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
