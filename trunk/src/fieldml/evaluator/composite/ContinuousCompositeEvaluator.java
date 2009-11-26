@@ -3,6 +3,7 @@ package fieldml.evaluator.composite;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -10,6 +11,7 @@ import fieldml.value.EnsembleDomainValue;
 
 public class ContinuousCompositeEvaluator
     extends CompositeEvaluator<ContinuousDomain, ContinuousDomainValue>
+    implements ContinuousEvaluator
 {
     public ContinuousCompositeEvaluator( String name, ContinuousDomain valueDomain, Domain... parameterDomains )
     {

@@ -2,11 +2,13 @@ package fieldml.evaluator.composite;
 
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsembleCompositeEvaluator
     extends CompositeEvaluator<EnsembleDomain, EnsembleDomainValue>
+    implements EnsembleEvaluator
 {
     public EnsembleCompositeEvaluator( String name, EnsembleDomain valueDomain, Domain[] parameterDomains )
     {

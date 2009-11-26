@@ -1,13 +1,14 @@
 package fieldmlx.util;
 
-import fieldml.domain.MeshDomain;
-import fieldml.evaluator.AbstractEvaluator;
-import fieldml.region.Region;
-import fieldml.value.ContinuousDomainValue;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
+import fieldml.domain.MeshDomain;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.region.Region;
+import fieldml.value.ContinuousDomainValue;
 
 /**
  * Very very simplistic FieldML-java to Collada converter.
@@ -22,7 +23,7 @@ public class MinimalColladaExporter
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        AbstractEvaluator<?, ContinuousDomainValue> mesh = (AbstractEvaluator<?, ContinuousDomainValue>)region.getField( "test_mesh.coordinates" );
+        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
 
         ContinuousDomainValue v;
 
