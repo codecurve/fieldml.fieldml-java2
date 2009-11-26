@@ -131,70 +131,131 @@ public class BicubicHermiteTriquadTest
         testRegion.addDomain( meshd2dsDomain );
 
         ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
-        meshX.setValue( -1.0, 1 );
-        meshX.setValue( 0.0, 2 );
-        meshX.setValue( 1.0, 3 );
-        meshX.setValue( -0.5, 4 );
-        meshX.setValue( 0.0, 5 );
-        meshX.setValue( 0.5, 6 );
-        meshX.setValue( 0.0, 7 );
-
         testRegion.addEvaluator( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
-
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 1 );
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 2 );
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ), 3 );
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ) - Math.sqrt( 0.75 ), 4 );
-        meshY.setValue( 0.0, 5 );
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ) - Math.sqrt( 0.75 ), 6 );
-        meshY.setValue( Math.sqrt( 1.0 / 3.0 ) - Math.sqrt( 3 ), 7 );
-
         testRegion.addEvaluator( meshY );
 
         ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodesDomain );
+        testRegion.addEvaluator( meshZ );
+
+        final double alpha1 = Math.sqrt( 1.0 / 3.0 );
+        final double alpha2 = alpha1 - Math.sqrt( 0.75 );
+        final double alpha3 = alpha1 - Math.sqrt( 3 );
+        
+        meshX.setValue( -1.0, 1 );
+        meshY.setValue( alpha1, 1 );
         meshZ.setValue( 0.0, 1 );
+
+        meshX.setValue( 0.0, 2 );
+        meshY.setValue( alpha1, 2 );
         meshZ.setValue( 0.0, 2 );
+
+        meshX.setValue( 1.0, 3 );
+        meshY.setValue( alpha1, 3 );
         meshZ.setValue( 0.0, 3 );
+
+        meshX.setValue( -0.5, 4 );
+        meshY.setValue( alpha2, 4 );
         meshZ.setValue( 0.0, 4 );
+
+        meshX.setValue( 0.0, 5 );
+        meshY.setValue( 0.0, 5 );
         meshZ.setValue( 0.0, 5 );
+        
+        meshX.setValue( 0.5, 6 );
+        meshY.setValue( alpha2, 6 );
         meshZ.setValue( 0.0, 6 );
+
+        meshX.setValue( 0.0, 7 );
+        meshY.setValue( alpha3, 7 );
         meshZ.setValue( 0.0, 7 );
 
-        testRegion.addEvaluator( meshZ );
+
 
         ContinuousParameters meshdX = new ContinuousParameters( "test_mesh.node.dx/ds", meshddsDomain, globalNodesDomain,
             edgeDirectionDomain );
-        meshdX.setDefaultValue( 1.0 );
-
+        meshdX.setDefaultValue( 0 );
         testRegion.addEvaluator( meshdX );
 
         ContinuousParameters meshdY = new ContinuousParameters( "test_mesh.node.dy/ds", meshddsDomain, globalNodesDomain,
             edgeDirectionDomain );
-        meshdY.setDefaultValue( 1.0 );
-
+        meshdY.setDefaultValue( 0 );
         testRegion.addEvaluator( meshdY );
 
         ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshddsDomain, globalNodesDomain,
             edgeDirectionDomain );
         meshdZ.setDefaultValue( 0 );
-        meshdZ.setValue( 1.0, 1, 1 );
-        meshdZ.setValue( 1.0, 1, 2 );
-        meshdZ.setValue( 1.0, 2, 1 );
-        meshdZ.setValue( 1.0, 2, 2 );
-        meshdZ.setValue( -1.0, 3, 1 );
-        meshdZ.setValue( -1.0, 3, 2 );
-        meshdZ.setValue( 1.0, 4, 1 );
-        meshdZ.setValue( -1.0, 4, 2 );
-        meshdZ.setValue( 0.0, 5, 1 );
-        meshdZ.setValue( 0.0, 5, 2 );
-        meshdZ.setValue( -1.0, 6, 1 );
-        meshdZ.setValue( -1.0, 6, 2 );
-        meshdZ.setValue( -1.0, 7, 1 );
-        meshdZ.setValue( -1.0, 7, 2 );
-
         testRegion.addEvaluator( meshdZ );
+
+        double vxNorthWestOuter = Math.cos(2*Math.PI/3);
+        double vyNorthWestOuter = Math.sin(2*Math.PI/3);
+        double vxNorthEastOuter = Math.cos(2*Math.PI/6);
+        double vyNorthEastOuter = Math.sin(2*Math.PI/6);
+
+        double vxNorthEastInner = Math.cos(2*Math.PI/12);
+        double vyNorthEastInner = Math.sin(2*Math.PI/12);
+        double vxNorthWestInner = Math.cos(2*Math.PI*5/12);
+        double vyNorthWestInner = Math.sin(2*Math.PI*5/12);
+        
+        
+        meshdX.setValue( 1.0, 1, 1 );
+        meshdY.setValue( 0.0, 1, 1 );
+        meshdZ.setValue( 0.0, 1, 1 );
+        
+        meshdX.setValue( 0.0, 1, 2 );
+        meshdY.setValue( 1.0, 1, 2 );
+        meshdZ.setValue( 0.0, 1, 2 );
+
+        meshdX.setValue( 0.0, 2, 1 );
+        meshdY.setValue( 1.0, 2, 1 );
+        meshdZ.setValue( 0.0, 2, 1 );
+
+        meshdX.setValue( 1.0, 2, 2 );
+        meshdY.setValue( 0.0, 2, 2 );
+        meshdZ.setValue( 0.0, 2, 2 );
+
+        meshdX.setValue( 0.0, 3, 1 );
+        meshdY.setValue( 1.0, 3, 1 );
+        meshdZ.setValue( 0.0, 3, 1 );
+
+        meshdX.setValue( -1.0, 3, 2 );
+        meshdY.setValue(  0.0, 3, 2 );
+        meshdZ.setValue(  0.0, 3, 2 );
+
+        meshdX.setValue( vxNorthEastInner , 4, 1 );
+        meshdY.setValue( vyNorthEastInner, 4, 1 );
+        meshdZ.setValue( 0.0,              4, 1 );
+
+        meshdX.setValue( 0.0, 4, 2 );
+        meshdY.setValue( 1.0, 4, 2 );
+        meshdZ.setValue( 1.0, 4, 2 );
+        
+
+        meshdX.setValue( 0.0, 5, 1 );
+        meshdY.setValue( 1.0, 5, 1 );
+        meshdZ.setValue( 1.0, 5, 1 );
+
+        meshdX.setValue( -vxNorthWestInner, 5, 2 );
+        meshdY.setValue( -vyNorthWestInner, 5, 2 );
+        meshdZ.setValue( 0.0,              5, 2 );
+
+        meshdX.setValue( 0.0, 6, 1 );
+        meshdY.setValue( 1.0, 6, 1 );
+        meshdZ.setValue( 1.0, 6, 1 );
+
+        meshdX.setValue( vxNorthWestInner, 6, 2 );
+        meshdY.setValue( vyNorthWestInner, 6, 2 );
+        meshdZ.setValue( 0.0,              6, 2 );
+
+        meshdX.setValue( vxNorthEastOuter, 7, 1 );
+        meshdY.setValue( vyNorthEastOuter, 7, 1 );
+        meshdZ.setValue( 0.0,              7, 1 );
+
+        meshdX.setValue( vxNorthWestOuter, 7, 2 );
+        meshdY.setValue( vyNorthWestOuter, 7, 2 );
+        meshdZ.setValue( 0.0,              7, 2 );
+        
 
         ContinuousParameters meshd2X = new ContinuousParameters( "test_mesh.node.d2x/ds1ds2", meshd2dsDomain, globalNodesDomain );
         meshd2X.setDefaultValue( 0.0 );
@@ -210,152 +271,100 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
 
-        final double sq3 = Math.sqrt( 1.0 / 3.0 );
-
         ContinuousParameters bicubicZHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.z",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-        bicubicZHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 0, 0, 0, 0 ) );
-
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 1, 1 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 1, 2 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 1, 3 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 1, 4 );
-
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 2, 1 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 2, 2 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 2, 3 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 2, 4 );
-
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, 1, 1 ), 3, 1 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq3, sq3, 1 ), 3, 2 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ), 3, 3 );
-        bicubicZHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, sq3, 1 ), 3, 4 );
-
+        bicubicZHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicZHermiteQuadScaling );
 
-        final double sq34 = Math.sqrt( 3.0 / 4.0 );
 
         ContinuousParameters bicubicXHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.x",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, -0.5, 1 ), 1, 1 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, 0.0, 1 ), 1, 2 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, -0.5, 1 ), 1, 3 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 0.0, 1 ), 1, 4 );
-
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, -sq34, 1 ), 2, 1 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, -1, 1 ), 2, 2 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.0, -sq34, 1 ), 2, 3 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.0, -1, 1 ), 2, 4 );
-
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -sq34, -0.5, 1 ), 3, 1 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -sq34, -sq34, 1 ), 3, 2 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -0.5, -0.5, 1 ), 3, 3 );
-        bicubicXHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, -0.5, -sq34, 1 ), 3, 4 );
-
+        bicubicXHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicXHermiteQuadScaling );
 
         ContinuousParameters bicubicYHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.y",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, sq34, 1 ), 1, 1 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, 1, 1 ), 1, 2 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0, sq34, 1 ), 1, 3 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0, 1, 1 ), 1, 4 );
-
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, 0.5, 1 ), 2, 1 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, 0, 1 ), 2, 2 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 0.5, 1 ), 2, 3 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 0.0, 1 ), 2, 4 );
-
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, -sq34, 1 ), 3, 1 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 0.5, -0.5, 1 ), 3, 2 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, -sq34, 1 ), 3, 3 );
-        bicubicYHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, sq34, -0.5, 1 ), 3, 4 );
-
+        bicubicYHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicYHermiteQuadScaling );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.1d" );
 
-        ContinuousParameters meshdZds1Map = new ContinuousParameters( "test_mesh.node.ds1.map", weightingDomain, testMeshElementDomain,
+        ContinuousParameters meshd_ds1Map = new ContinuousParameters( "test_mesh.node.ds1.map", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
-        meshdZds1Map.setDefaultValue( 0.0 );
-        meshdZds1Map.setValue( 1.0, 1, 1, 1 );
-        meshdZds1Map.setValue( -0.5, 1, 2, 1 );
-        meshdZds1Map.setValue( -0.5, 1, 2, 2 );
-        meshdZds1Map.setValue( 1.0, 1, 3, 1 );
-        meshdZds1Map.setValue( 1.0, 1, 4, 2 );
+        meshd_ds1Map.setDefaultValue( 0.0 );
 
-        meshdZds1Map.setValue( 1.0, 2, 1, 1 );
-        meshdZds1Map.setValue( 1.0, 2, 2, 1 );
-        meshdZds1Map.setValue( 1.0, 2, 3, 1 );
-        meshdZds1Map.setValue( 1.0, 2, 4, 1 );
+        meshd_ds1Map.setValue(  1.0, 1, 1, 1 );
+        meshd_ds1Map.setValue(  1.0, 1, 2, 1 );
+        meshd_ds1Map.setValue(  1.0, 1, 2, 2 );
+        meshd_ds1Map.setValue(  1.0, 1, 3, 1 );
+        meshd_ds1Map.setValue(  1.0, 1, 4, 2 );
 
-        meshdZds1Map.setValue( 1.0, 3, 1, 2 );
-        meshdZds1Map.setValue( -1.0, 3, 2, 2 );
-        meshdZds1Map.setValue( 1.0, 3, 3, 1 );
-        meshdZds1Map.setValue( 1.0, 3, 4, 2 );
+        meshd_ds1Map.setValue( 1.0, 2, 1, 1 );
+        meshd_ds1Map.setValue( 1.0, 2, 2, 1 );
+        meshd_ds1Map.setValue( 1.0, 2, 3, 1 );
+        meshd_ds1Map.setValue( 1.0, 2, 4, 1 );
 
-        testRegion.addEvaluator( meshdZds1Map );
+        meshd_ds1Map.setValue(  1.0, 3, 1, 2 );
+        meshd_ds1Map.setValue( -1.0, 3, 2, 2 );
+        meshd_ds1Map.setValue(  1.0, 3, 3, 2 );
+        meshd_ds1Map.setValue(  1.0, 3, 4, 2 );
 
-        ContinuousParameters meshdZds2Map = new ContinuousParameters( "test_mesh.node.ds2.map", weightingDomain, testMeshElementDomain,
+        testRegion.addEvaluator( meshd_ds1Map );
+
+        ContinuousParameters meshd_ds2Map = new ContinuousParameters( "test_mesh.node.ds2.map", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
-        meshdZds2Map.setDefaultValue( 0.0 );
-        meshdZds2Map.setValue( 1.0, 1, 1, 2 );
-        meshdZds2Map.setValue( 1.0, 1, 2, 1 );
-        meshdZds2Map.setValue( 1.0, 1, 3, 2 );
-        meshdZds2Map.setValue( 1.0, 1, 4, 1 );
+        meshd_ds2Map.setDefaultValue( 0.0 );
+        meshd_ds2Map.setValue( 1.0, 1, 1, 2 );
+        meshd_ds2Map.setValue( 1.0, 1, 2, 1 );
+        meshd_ds2Map.setValue( 1.0, 1, 3, 2 );
+        meshd_ds2Map.setValue( 1.0, 1, 4, 1 );
 
-        meshdZds2Map.setValue( 1.0, 2, 1, 2 );
-        meshdZds2Map.setValue( 1.0, 2, 2, 2 );
-        meshdZds2Map.setValue( -1.0, 2, 3, 2 );
-        meshdZds2Map.setValue( -1.0, 2, 4, 2 );
+        meshd_ds2Map.setValue(  1.0, 2, 1, 2 );
+        meshd_ds2Map.setValue(  1.0, 2, 2, 2 );
+        meshd_ds2Map.setValue( -1.0, 2, 3, 2 );
+        meshd_ds2Map.setValue( -1.0, 2, 4, 2 );
 
-        meshdZds2Map.setValue( -1.0, 3, 1, 1 );
-        meshdZds2Map.setValue( -0.5, 3, 2, 1 );
-        meshdZds2Map.setValue( -0.5, 3, 2, 2 );
-        meshdZds2Map.setValue( -1.0, 3, 3, 1 );
-        meshdZds2Map.setValue( -1.0, 3, 4, 1 );
+        meshd_ds2Map.setValue( -1.0, 3, 1, 1 );
+        meshd_ds2Map.setValue( -1.0, 3, 2, 1 );
+        meshd_ds2Map.setValue( -1.0, 3, 2, 2 );
+        meshd_ds2Map.setValue( -1.0, 3, 3, 1 );
+        meshd_ds2Map.setValue( -1.0, 3, 4, 1 );
 
-        testRegion.addEvaluator( meshdZds2Map );
+        testRegion.addEvaluator( meshd_ds2Map );
 
         ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdXds1.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 1 ) );
-        meshdXds1.importField( meshdX );
+        meshdXds1.importMappedField( meshdX, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdXds1 );
 
         ContinuousCompositeEvaluator meshdXds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdXds2.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 2 ) );
-        meshdXds2.importField( meshdX );
+        meshdXds2.importMappedField( meshdX, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdXds2 );
 
         ContinuousCompositeEvaluator meshdYds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdYds1.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 1 ) );
-        meshdYds1.importField( meshdY );
+        meshdYds1.importMappedField( meshdY, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdYds1 );
 
         ContinuousCompositeEvaluator meshdYds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdYds2.importValue( EnsembleDomainValue.makeValue( edgeDirectionDomain, 2 ) );
-        meshdYds2.importField( meshdY );
+        meshdYds2.importMappedField( meshdY, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdYds2 );
 
         ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdZds1.importMappedField( meshdZ, meshdZds1Map, edgeDirectionDomain );
+        meshdZds1.importMappedField( meshdZ, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdZds1 );
 
         ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshddsDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain );
-        meshdZds2.importMappedField( meshdZ, meshdZds2Map, edgeDirectionDomain );
+        meshdZds2.importMappedField( meshdZ, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdZds2 );
 
