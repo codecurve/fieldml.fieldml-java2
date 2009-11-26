@@ -1,8 +1,10 @@
 package fieldml.evaluator;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.field.ContinuousParameters;
-import fieldml.field.EnsembleParameters;
+import fieldml.field.Field;
+import fieldml.value.ContinuousDomainValue;
+import fieldml.value.EnsembleDomainValue;
 
 public class BilinearQuadEvaluator
     extends IndirectEvaluator
@@ -19,7 +21,7 @@ public class BilinearQuadEvaluator
     }
 
 
-    public BilinearQuadEvaluator( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BilinearQuadEvaluator( String name, Field<ContinuousDomain, ContinuousDomainValue> dofs, Field<EnsembleDomain, EnsembleDomainValue> dofIndexes,
         EnsembleDomain iteratedDomain )
     {
         super( name, dofs, dofIndexes, iteratedDomain );
