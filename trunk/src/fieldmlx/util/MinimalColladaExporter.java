@@ -76,6 +76,56 @@ public class MinimalColladaExporter
     }
 
 
+    public static String export2DFromFieldML( final Region region, final String meshName, final int elementCount, int discretisation )
+        throws FileNotFoundException, IOException
+    {
+        MeshDomain meshDomain = region.getMeshDomain( meshName );
+        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
+
+        ContinuousDomainValue v;
+
+        StringBuilder xyzArray = new StringBuilder();
+        StringBuilder polygonBlock = new StringBuilder();
+        for( int elementNumber = 1; elementNumber <= elementCount; elementNumber++ )
+        {
+            for( int j = 0; j <= discretisation; j++ )
+            {
+                final double xi1 = j / (double)discretisation;
+
+                v = mesh.evaluate( meshDomain, elementNumber, xi1 );
+                xyzArray.append( "\n" );
+                xyzArray.append( " " + v.values[0] + " " + v.values[1] + " 0.0" );
+                xyzArray.append( " " + v.values[0] + " " + v.values[1] + " 1.0" );
+            }
+            xyzArray.append( "\n" );
+
+            final int nodeOffsetOfElement = ( elementNumber - 1 ) * ( discretisation + 1 ) * 2;
+            
+            for( int j = 0; j < discretisation; j++ )
+            {
+                final int nodeAtLowerXi1LowerXi2 = nodeOffsetOfElement + ( j * 2 ) + 0;
+                final int nodeAtLowerXi1UpperXi2 = nodeOffsetOfElement + ( j * 2 ) + 2;
+                final int nodeAtUpperXi1UpperXi2 = nodeOffsetOfElement + ( j * 2 ) + 3;
+                final int nodeAtUpperXi1LowerXi2 = nodeOffsetOfElement + ( j * 2 ) + 1;
+                polygonBlock.append( "<p>" );
+                polygonBlock.append( " " + nodeAtLowerXi1LowerXi2 );
+                polygonBlock.append( " " + nodeAtLowerXi1UpperXi2 );
+                polygonBlock.append( " " + nodeAtUpperXi1UpperXi2 );
+                polygonBlock.append( " " + nodeAtUpperXi1LowerXi2 );
+                polygonBlock.append( "</p>\n" );
+            }
+        }
+
+        final int polygonCount = discretisation * elementCount;
+        final int vertexCount = ( discretisation + 1 ) * 2 * elementCount;
+        final int xyzArrayCount = vertexCount * 3;
+
+        final String colladaString = fillInColladaTemplate( xyzArray, polygonBlock, polygonCount, vertexCount, xyzArrayCount );
+
+        return colladaString;
+    }
+
+
     private static String fillInColladaTemplate( StringBuilder xyzArray, StringBuilder polygonBlock, final int polygonCount,
         final int vertexCount, final int xyzArrayCount )
         throws FileNotFoundException, IOException

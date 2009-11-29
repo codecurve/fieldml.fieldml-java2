@@ -40,6 +40,10 @@ public class Region
         quad1x1LocalNodeDomain.addValues( 1, 2, 3, 4 );
         region.addDomain( quad1x1LocalNodeDomain );
 
+        EnsembleDomain line1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.line.1" );
+        line1LocalNodeDomain.addValues( 1, 2 );
+        region.addDomain( line1LocalNodeDomain );
+
         EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( "library.local_nodes.quad.2x2" );
         quad2x2LocalNodeDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9 );
         region.addDomain( quad2x2LocalNodeDomain );
@@ -57,6 +61,8 @@ public class Region
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
+
+        region.addDomain( new ContinuousDomain( "library.linear_bspline.parameters", 3 ) );
 
         region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
 
