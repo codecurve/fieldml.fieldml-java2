@@ -1,5 +1,6 @@
 package fieldml.evaluator;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.value.ContinuousDomainValue;
@@ -17,4 +18,7 @@ public interface ContinuousEvaluator
 
 
     public ContinuousDomainValue evaluate( MeshDomain domain, int index, double... chartValues );
+
+
+    public ContinuousDomain getValueDomain();
 }

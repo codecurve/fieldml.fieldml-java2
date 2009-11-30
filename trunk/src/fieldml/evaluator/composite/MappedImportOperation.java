@@ -2,6 +2,7 @@ package fieldml.evaluator.composite;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.value.DomainValues;
 
@@ -12,13 +13,13 @@ public class MappedImportOperation
     public final ContinuousParameters sourceField;
 
     @SerializationAsString
-    public final ContinuousParameters weightings;
+    public final ContinuousEvaluator weightings;
 
     @SerializationAsString
     public final EnsembleDomain iteratedDomain;
 
 
-    public MappedImportOperation( ContinuousParameters sourceField, ContinuousParameters weightings, EnsembleDomain iteratedDomain )
+    public MappedImportOperation( ContinuousParameters sourceField, ContinuousEvaluator weightings, EnsembleDomain iteratedDomain )
     {
         this.sourceField = sourceField;
         this.weightings = weightings;
@@ -29,7 +30,8 @@ public class MappedImportOperation
     @Override
     public void perform( DomainValues values )
     {
-        int dimensions = sourceField.valueDomain.dimensions;
+        //TODO If both the weight and the value lookups are multi-dimension, we need to figure out what to do.
+        int dimensions = weightings.getValueDomain().dimensions;
         double weight;
         double value;
         double[] finalValue = new double[dimensions];
@@ -40,7 +42,7 @@ public class MappedImportOperation
             for( int j = 0; j < dimensions; j++ )
             {
                 weight = weightings.evaluate( values ).values[j];
-                value = sourceField.evaluate( values ).values[j];
+                value = sourceField.evaluate( values ).values[0];
 
                 finalValue[j] += ( weight * value );
             }
