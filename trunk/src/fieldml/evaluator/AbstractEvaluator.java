@@ -60,6 +60,12 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
     }
     
     
+    public final D getValueDomain()
+    {
+        return valueDomain;
+    }
+    
+    
     public final String getName()
     {
         return name;
