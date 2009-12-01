@@ -5,7 +5,7 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.MeshDomainValue;
 
-public class LinearQuadraticBSpline
+public class QuadraticBSpline
     extends ContinuousFunction
 {
     @SerializationAsString
@@ -22,7 +22,7 @@ public class LinearQuadraticBSpline
     }
 
 
-    public LinearQuadraticBSpline( String name, ContinuousEvaluator dofs )
+    public QuadraticBSpline( String name, ContinuousEvaluator dofs )
     {
         super( name );
 

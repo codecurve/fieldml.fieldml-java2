@@ -213,14 +213,14 @@
   </ContinuousCompositeEvaluator>
   
 
-  <ContinuousAggregateEvaluator name="test_mesh.element.params" valueDomain="library.linear_bspline.parameters">
+  <ContinuousAggregateEvaluator name="test_mesh.element.params" valueDomain="library.quadratic_bspline.parameters">
     <sourceFields>"test_mesh.element.p1"  "test_mesh.element.p2"  "test_mesh.element.p3"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
   <PiecewiseField meshDomain="test_mesh.domain" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
     <evaluatorList>
-      <LinearBSpline dofs="test_mesh.element.params" name="bspline_line" />
+      <QuadraticBSpline dofs="test_mesh.element.params" name="bspline_line" />
     </evaluatorList>
     <elementEvaluators>
       <SimpleMapEntry key="1" value="bspline_line" />
