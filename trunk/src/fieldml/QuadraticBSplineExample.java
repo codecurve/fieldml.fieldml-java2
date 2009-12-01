@@ -19,13 +19,13 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
-import fieldml.function.LinearQuadraticBSpline;
+import fieldml.function.QuadraticBSpline;
 import fieldml.function.LinearLagrange;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
-public class LinearBSplineExample
+public class QuadraticBSplineExample
 {
     private static void serialize( Region region )
     {
@@ -189,7 +189,7 @@ public class LinearBSplineExample
         elementDofP3.importMappedField( dofs, elementDofMapP3, globalDofsDomain );
         testRegion.addEvaluator( elementDofP3 );
 
-        ContinuousDomain bsplineParamsDomain = library.getContinuousDomain( "library.linear_bspline.parameters" );
+        ContinuousDomain bsplineParamsDomain = library.getContinuousDomain( "library.quadratic_bspline.parameters" );
 
         ContinuousAggregateEvaluator elementParameters = new ContinuousAggregateEvaluator( "test_mesh.element.params", bsplineParamsDomain );
         elementParameters.setSourceField( 1, elementDofP1 );
@@ -199,7 +199,7 @@ public class LinearBSplineExample
         testRegion.addEvaluator( elementParameters );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new LinearQuadraticBSpline( "bspline_line", elementParameters ) );
+        meshCoordinatesZ.addEvaluator( new QuadraticBSpline( "bspline_line", elementParameters ) );
         meshCoordinatesZ.setEvaluator( 1, "bspline_line" );
         meshCoordinatesZ.setEvaluator( 2, "bspline_line" );
         meshCoordinatesZ.setEvaluator( 3, "bspline_line" );

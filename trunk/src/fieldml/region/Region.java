@@ -64,7 +64,7 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.bilinear_lagrange.parameters", 4 ) );
 
-        region.addDomain( new ContinuousDomain( "library.linear_bspline.parameters", 3 ) );
+        region.addDomain( new ContinuousDomain( "library.quadratic_bspline.parameters", 3 ) );
 
         region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
 
