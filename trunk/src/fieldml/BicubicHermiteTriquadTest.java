@@ -149,7 +149,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( 0.0, 2 );
         meshY.setValue( alpha1, 2 );
-        meshZ.setValue( 0.0, 2 );
+        meshZ.setValue( alpha1, 2 );
 
         meshX.setValue( 1.0, 3 );
         meshY.setValue( alpha1, 3 );
@@ -157,7 +157,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( -0.5, 4 );
         meshY.setValue( alpha2, 4 );
-        meshZ.setValue( 0.0, 4 );
+        meshZ.setValue( alpha2, 4 );
 
         meshX.setValue( 0.0, 5 );
         meshY.setValue( 0.0, 5 );
@@ -165,7 +165,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( 0.5, 6 );
         meshY.setValue( alpha2, 6 );
-        meshZ.setValue( 0.0, 6 );
+        meshZ.setValue( alpha2, 6 );
 
         meshX.setValue( 0.0, 7 );
         meshY.setValue( alpha3, 7 );
@@ -206,7 +206,7 @@ public class BicubicHermiteTriquadTest
 
         meshdX.setValue( 0.0, 2, 1 );
         meshdY.setValue( 1.0, 2, 1 );
-        meshdZ.setValue( 0.0, 2, 1 );
+        meshdZ.setValue( 1.0, 2, 1 );
 
         meshdX.setValue( 1.0, 2, 2 );
         meshdY.setValue( 0.0, 2, 2 );
