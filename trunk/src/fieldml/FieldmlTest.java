@@ -20,6 +20,7 @@ import fieldml.evaluator.PiecewiseField;
 import fieldml.function.BilinearQuad;
 import fieldml.function.BilinearSimplex;
 import fieldml.function.BiquadraticQuad;
+import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
@@ -43,7 +44,8 @@ public class FieldmlTest
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
 
-        region.serializeToXml( root );
+        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
+        region.walkObjects( handler );
 
         Format format = Format.getPrettyFormat();
         format.setTextMode( TextMode.PRESERVE );
@@ -71,49 +73,49 @@ public class FieldmlTest
         output = meshX.evaluate( meshDomain, 1, 0.0, 0.0 );
         assert output.values[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.0, 1.0 );
+        output = meshX.evaluate( meshDomain, 1, 0.0, 1.0 );
         assert output.values[0] == 0;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 0.5, 0.0 );
+        output = meshX.evaluate( meshDomain, 1, 0.5, 0.0 );
         assert output.values[0] == 5;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 1.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 1, 1.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 1, 1.0, 1.0 );
+        output = meshX.evaluate( meshDomain, 1, 1.0, 1.0 );
         assert output.values[0] == 10;
 
         // Test element 2
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 2, 0.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 1.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 2, 1.0, 0.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.0, 1.0 );
+        output = meshX.evaluate( meshDomain, 2, 0.0, 1.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 2, 0.5, 0.5 );
+        output = meshX.evaluate( meshDomain, 2, 0.5, 0.5 );
         assert output.values[0] == 15;
 
         // Test element 3
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 3, 0.0, 0.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 1.0, 0.0 );
+        output = meshX.evaluate( meshDomain, 3, 1.0, 0.0 );
         assert output.values[0] == 20;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.0, 1.0 );
+        output = meshX.evaluate( meshDomain, 3, 0.0, 1.0 );
         assert output.values[0] == 10;
 
-        output = (ContinuousDomainValue)meshX.evaluate( meshDomain, 3, 0.5, 0.5 );
+        output = meshX.evaluate( meshDomain, 3, 0.5, 0.5 );
         assert output.values[0] == 15;
 
-        output = (ContinuousDomainValue)meshXY.evaluate( meshDomain, 3, 0.5, 0.5 );
+        output = meshXY.evaluate( meshDomain, 3, 0.5, 0.5 );
         assert output.values[0] == 15;
         assert output.values[1] == 5;
 
-        output = (ContinuousDomainValue)meshXY.evaluate( meshDomain, 4, 0.5, 0.5 );
+        output = meshXY.evaluate( meshDomain, 4, 0.5, 0.5 );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
     }

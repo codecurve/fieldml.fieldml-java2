@@ -2,7 +2,7 @@ package fieldml.io;
 
 public interface ReflectiveHandler
 {
-    void onStartInstance( Class<?> class1 );
+    void onStartInstance( Object o );
 
 
     void onStringField( String name, String value );
@@ -11,13 +11,16 @@ public interface ReflectiveHandler
     void onIntField( String name, Integer value );
 
 
-    void onEndInstance( Class<?> class1 );
+    void onEndInstance( Object o );
 
 
-    void onStringListElement( Object o2 );
+    void onStringListElement( Object o );
 
 
-    void onIntListElement( Object o2 );
+    void onListElementAsString( Object o );
+
+
+    void onIntListElement( Object o );
 
 
     void onDoubleListElement( Object value );
@@ -30,4 +33,7 @@ public interface ReflectiveHandler
 
 
     void onMapEntry( String key, String value );
+
+
+    void onFieldAsString( String name, Object o );
 }

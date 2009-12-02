@@ -19,7 +19,7 @@ public class JdomReflectiveHandler
 
 
     @Override
-    public void onEndInstance( Class<?> class1 )
+    public void onEndInstance( Object o )
     {
         currentElement = currentElement.getParentElement();
         if( currentElement == rootElement )
@@ -44,18 +44,25 @@ public class JdomReflectiveHandler
 
 
     @Override
-    public void onStartInstance( Class<?> class1 )
+    public void onFieldAsString( String name, Object value )
     {
-        Element e = new Element( class1.getSimpleName() );
+        currentElement.setAttribute( name, value.toString() );
+    }
+
+
+    @Override
+    public void onStartInstance( Object o )
+    {
+        Element e = new Element( o.getClass().getSimpleName() );
         currentElement.addContent( e );
         currentElement = e;
     }
 
 
     @Override
-    public void onIntListElement( Object o2 )
+    public void onIntListElement( Object o )
     {
-        Text t = new Text( o2.toString() + "  " );
+        Text t = new Text( o.toString() + "  " );
         currentElement.addContent( t );
     }
 
@@ -71,17 +78,25 @@ public class JdomReflectiveHandler
 
 
     @Override
-    public void onDoubleListElement( Object o2 )
+    public void onDoubleListElement( Object o )
     {
-        Text t = new Text( o2.toString() + "  " );
+        Text t = new Text( o.toString() + "  " );
         currentElement.addContent( t );
     }
 
 
     @Override
-    public void onStringListElement( Object o2 )
+    public void onStringListElement( Object o )
     {
-        Text t = new Text( "\"" + o2.toString() + "\"  " );
+        Text t = new Text( "\"" + o.toString() + "\"  " );
+        currentElement.addContent( t );
+    }
+
+
+    @Override
+    public void onListElementAsString( Object o )
+    {
+        Text t = new Text( "\"" + o.toString() + "\"  " );
         currentElement.addContent( t );
     }
 

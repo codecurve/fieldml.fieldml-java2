@@ -22,9 +22,9 @@ import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.BicubicHermiteQuad;
 import fieldml.function.BilinearQuad;
+import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.EnsembleDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTriquadTest
@@ -51,7 +51,8 @@ public class BicubicHermiteTriquadTest
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
 
-        region.serializeToXml( root );
+        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
+        region.walkObjects( handler );
 
         Format format = Format.getPrettyFormat();
         format.setTextMode( TextMode.PRESERVE );

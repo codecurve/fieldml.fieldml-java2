@@ -23,9 +23,13 @@ public class ReflectiveWalker
     {
         for( Object o2 : (Iterable<? extends Object>)o )
         {
-            if( ( o2.getClass() == String.class ) || f.isAnnotationPresent( SerializationAsString.class ) )
+            if( o2.getClass() == String.class )
             {
                 handler.onStringListElement( o2 );
+            }
+            else if( f.isAnnotationPresent( SerializationAsString.class ) )
+            {
+                handler.onListElementAsString( o2 );
             }
             else if( o2.getClass() == Integer.class )
             {
@@ -61,9 +65,13 @@ public class ReflectiveWalker
         {
             for( Object o2 : (Object[])o )
             {
-                if( ( o2.getClass() == String.class ) || f.isAnnotationPresent( SerializationAsString.class ) )
+                if( o2.getClass() == String.class )
                 {
                     handler.onStringListElement( o2 );
+                }
+                else if( f.isAnnotationPresent( SerializationAsString.class ) )
+                {
+                    handler.onListElementAsString( o2 );
                 }
                 else if( o2.getClass() == Integer.class )
                 {
@@ -89,7 +97,7 @@ public class ReflectiveWalker
 
     public static void Walk( Object o, ReflectiveHandler handler )
     {
-        handler.onStartInstance( o.getClass() );
+        handler.onStartInstance( o );
 
         Field[] fields = o.getClass().getFields();
 
@@ -131,10 +139,14 @@ public class ReflectiveWalker
                     handler.onEndList( o );
                     continue;
                 }
-                if( type == String.class || f.isAnnotationPresent( SerializationAsString.class ) )
+                if( type == String.class )
                 {
                     handler.onStringField( f.getName(), f.get( o ).toString() );
                     continue;
+                }
+                else if( f.isAnnotationPresent( SerializationAsString.class ) )
+                {
+                    handler.onFieldAsString( f.getName(), f.get( o ) );
                 }
             }
             catch( Exception e )
@@ -164,6 +176,6 @@ public class ReflectiveWalker
             }
         }
 
-        handler.onEndInstance( o.getClass() );
+        handler.onEndInstance( o );
     }
 }

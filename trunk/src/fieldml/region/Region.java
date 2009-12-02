@@ -1,13 +1,11 @@
 package fieldml.region;
 
-import org.jdom.Element;
-
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
-import fieldml.io.JdomReflectiveHandler;
+import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
@@ -187,9 +185,8 @@ public class Region
     }
 
 
-    public void serializeToXml( Element root )
+    public void walkObjects( ReflectiveHandler handler )
     {
-        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
         for( SimpleMapEntry<String, ContinuousDomain> k : continuousDomains )
         {
             ReflectiveWalker.Walk( k.value, handler );

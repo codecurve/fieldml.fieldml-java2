@@ -7,9 +7,9 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.AbstractEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.AbstractEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 

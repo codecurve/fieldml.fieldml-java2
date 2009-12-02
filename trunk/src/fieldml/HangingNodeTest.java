@@ -20,6 +20,7 @@ import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.BilinearQuad;
 import fieldml.function.DirectBilinearLagrange;
+import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
@@ -45,7 +46,8 @@ public class HangingNodeTest
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );
 
-        region.serializeToXml( root );
+        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
+        region.walkObjects( handler );
 
         Format format = Format.getPrettyFormat();
         format.setTextMode( TextMode.PRESERVE );
