@@ -207,7 +207,7 @@ public class BicubicHermiteTriquadTest
 
         meshdX.setValue( 0.0, 2, 1 );
         meshdY.setValue( 1.0, 2, 1 );
-        meshdZ.setValue( 0.0, 2, 1 );
+        meshdZ.setValue( 1.0, 2, 1 );
 
         meshdX.setValue( 1.0, 2, 2 );
         meshdY.setValue( 0.0, 2, 2 );
@@ -400,7 +400,6 @@ public class BicubicHermiteTriquadTest
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
         meshCoordinatesX.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicXHermiteParameters,
             bicubicXHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 3, "hermite_quad" );
@@ -410,7 +409,6 @@ public class BicubicHermiteTriquadTest
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
         meshCoordinatesY.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicYHermiteParameters,
             bicubicYHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 3, "hermite_quad" );
