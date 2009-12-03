@@ -55,12 +55,19 @@ public class BicubicHermiteQuad
         double p12y = CubicHermite.psi12(y);
 
         double value = 0 + //
+            // u, at local nodes 1,2,3,4
             p01x * p01y * params[0] + p02x * p01y * params[4] + //
             p01x * p02y * params[8] + p02x * p02y * params[12] + //
+            
+            // du/ds1, at local nodes 1,2,3,4
             p11x * p01y * params[1] + p12x * p01y * params[5] + //
             p11x * p02y * params[9] + p12x * p02y * params[13] + //
+            
+            // du/ds2, at local nodes 1,2,3,4
             p01x * p11y * params[2] + p02x * p11y * params[6] + //
             p01x * p12y * params[10] + p02x * p12y * params[14] + //
+            
+            // d2u /ds1ds2, at local nodes 1,2,3,4
             p11x * p11y * params[3] + p12x * p11y * params[7] + //
             p11x * p12y * params[11] + p12x * p12y * params[15];
 
