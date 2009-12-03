@@ -149,7 +149,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( 0.0, 2 );
         meshY.setValue( alpha1, 2 );
-        meshZ.setValue( alpha1, 2 );
+        meshZ.setValue( 0.0, 2 );
 
         meshX.setValue( 1.0, 3 );
         meshY.setValue( alpha1, 3 );
@@ -157,7 +157,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( -0.5, 4 );
         meshY.setValue( alpha2, 4 );
-        meshZ.setValue( alpha2, 4 );
+        meshZ.setValue( 0.0, 4 );
 
         meshX.setValue( 0.0, 5 );
         meshY.setValue( 0.0, 5 );
@@ -165,7 +165,7 @@ public class BicubicHermiteTriquadTest
 
         meshX.setValue( 0.5, 6 );
         meshY.setValue( alpha2, 6 );
-        meshZ.setValue( alpha2, 6 );
+        meshZ.setValue( 0.0, 6 );
 
         meshX.setValue( 0.0, 7 );
         meshY.setValue( alpha3, 7 );
@@ -399,7 +399,6 @@ public class BicubicHermiteTriquadTest
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
         meshCoordinatesX.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicXHermiteParameters,
             bicubicXHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesX.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesX.setEvaluator( 3, "hermite_quad" );
@@ -409,7 +408,6 @@ public class BicubicHermiteTriquadTest
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
         meshCoordinatesY.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicYHermiteParameters,
             bicubicYHermiteQuadScaling, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
         meshCoordinatesY.setEvaluator( 1, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 2, "hermite_quad" );
         meshCoordinatesY.setEvaluator( 3, "hermite_quad" );
