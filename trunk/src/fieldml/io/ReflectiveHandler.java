@@ -2,7 +2,7 @@ package fieldml.io;
 
 public interface ReflectiveHandler
 {
-    void onStartInstance( Object o );
+    boolean onStartInstance( Object o );
 
 
     void onStringField( String name, String value );
@@ -14,7 +14,7 @@ public interface ReflectiveHandler
     void onEndInstance( Object o );
 
 
-    void onStringListElement( Object o );
+    void onStringListElement( String o );
 
 
     void onListElementAsString( Object o );

@@ -51,11 +51,13 @@ public class JdomReflectiveHandler
 
 
     @Override
-    public void onStartInstance( Object o )
+    public boolean onStartInstance( Object o )
     {
         Element e = new Element( o.getClass().getSimpleName() );
         currentElement.addContent( e );
         currentElement = e;
+        
+        return true;
     }
 
 
@@ -86,7 +88,7 @@ public class JdomReflectiveHandler
 
 
     @Override
-    public void onStringListElement( Object o )
+    public void onStringListElement( String o )
     {
         Text t = new Text( "\"" + o.toString() + "\"  " );
         currentElement.addContent( t );
