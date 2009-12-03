@@ -1,7 +1,9 @@
 package fieldml;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.jdom.Comment;
 import org.jdom.Document;
@@ -21,6 +23,7 @@ import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
+import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
@@ -50,6 +53,20 @@ public class QuadraticBSplineExample
         try
         {
             outputter.output( doc, System.out );
+        }
+        catch( IOException e )
+        {
+            System.err.println( e );
+        }
+
+        try
+        {
+            PrintStream printStream = new PrintStream( new File( "trunk/doc/QuadraticBSpline.dot" ) );
+
+            DOTReflectiveHandler dotHandler = new DOTReflectiveHandler( printStream );
+            region.walkObjects( dotHandler );
+            printStream.println("}");//HACK!
+            printStream.close();
         }
         catch( IOException e )
         {
