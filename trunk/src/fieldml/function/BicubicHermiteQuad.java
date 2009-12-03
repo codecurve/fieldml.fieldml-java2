@@ -5,6 +5,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
+import fieldml.function.util.CubicHermite;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
@@ -43,15 +44,15 @@ public class BicubicHermiteQuad
         final double x = xi[0];
         final double y = xi[1];
 
-        double p01x = ( 1 - 3 * x * x + 2 * x * x * x );
-        double p11x = x * ( x - 1 ) * ( x - 1 );
-        double p02x = x * x * ( 3 - 2 * x );
-        double p12x = x * x * ( x - 1 );
+        double p01x = CubicHermite.psi01(x);
+        double p11x = CubicHermite.psi11(x);
+        double p02x = CubicHermite.psi02(x);
+        double p12x = CubicHermite.psi12(x);
 
-        double p01y = ( 1 - 3 * y * y + 2 * y * y * y );
-        double p11y = y * ( y - 1 ) * ( y - 1 );
-        double p02y = y * y * ( 3 - 2 * y );
-        double p12y = y * y * ( y - 1 );
+        double p01y = CubicHermite.psi01(y);
+        double p11y = CubicHermite.psi11(y);
+        double p02y = CubicHermite.psi02(y);
+        double p12y = CubicHermite.psi12(y);
 
         double value = 0 + //
             p01x * p01y * params[0] + p02x * p01y * params[4] + //
