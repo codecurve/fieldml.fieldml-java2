@@ -10,22 +10,11 @@ public class ContinuousDomainValue
     public double[] values;
 
 
-    private ContinuousDomainValue( ContinuousDomain domain, double... values )
+    public ContinuousDomainValue( ContinuousDomain domain, double... values )
     {
         super( domain );
 
         this.values = values;
-    }
-
-
-    public static ContinuousDomainValue makeValue( ContinuousDomain domain, double... values )
-    {
-        if( values.length < domain.dimensions )
-        {
-            return null;
-        }
-
-        return new ContinuousDomainValue( domain, values );
     }
 
 

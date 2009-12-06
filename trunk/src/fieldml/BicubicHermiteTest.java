@@ -180,10 +180,10 @@ public class BicubicHermiteTest
         ContinuousParameters bicubicHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
         bicubicHermiteQuadScaling.setDefaultValue( 1, 1, 1, 1 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 1 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 2 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 3 );
-        bicubicHermiteQuadScaling.setValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 2, 1, 2 ), 2, 4 );
+        bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 1 );
+        bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 2 );
+        bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 3 );
+        bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 4 );
 
         testRegion.addEvaluator( bicubicHermiteQuadScaling );
 

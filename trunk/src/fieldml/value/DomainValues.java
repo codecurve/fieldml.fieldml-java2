@@ -38,19 +38,19 @@ public class DomainValues
 
     public void set( ContinuousDomain domain, double... values )
     {
-        set( ContinuousDomainValue.makeValue( domain, values ) );
+        set( domain.makeValue( values ) );
     }
 
 
     public void set( EnsembleDomain domain, int value )
     {
-        set( EnsembleDomainValue.makeValue( domain, value ) );
+        set( domain.makeValue( value ) );
     }
 
 
     public void set( MeshDomain domain, int indexValue, double... chartValues )
     {
-        set( MeshDomainValue.makeValue( domain, indexValue, chartValues ) );
+        set( domain.makeValue( indexValue, chartValues ) );
     }
 
 

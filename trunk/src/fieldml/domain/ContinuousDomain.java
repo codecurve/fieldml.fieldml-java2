@@ -1,5 +1,7 @@
 package fieldml.domain;
 
+import fieldml.value.ContinuousDomainValue;
+
 
 public class ContinuousDomain
     extends Domain
@@ -12,5 +14,16 @@ public class ContinuousDomain
         super( name );
 
         this.dimensions = dimensions;
+    }
+
+
+    public ContinuousDomainValue makeValue( double... values )
+    {
+        if( values.length < dimensions )
+        {
+            return null;
+        }
+
+        return new ContinuousDomainValue( this, values );
     }
 }

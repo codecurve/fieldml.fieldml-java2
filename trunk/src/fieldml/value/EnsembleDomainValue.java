@@ -5,20 +5,14 @@ import fieldml.domain.EnsembleDomain;
 public class EnsembleDomainValue
     extends DomainValue<EnsembleDomain>
 {
-    public int indexValue;
+    public final int indexValue;
 
 
-    private EnsembleDomainValue( EnsembleDomain domain, int indexValue )
+    public EnsembleDomainValue( EnsembleDomain domain, int indexValue )
     {
         super( domain );
 
         this.indexValue = indexValue;
-    }
-
-
-    public static EnsembleDomainValue makeValue( EnsembleDomain domain, int indexValue )
-    {
-        return new EnsembleDomainValue( domain, indexValue );
     }
 
 
