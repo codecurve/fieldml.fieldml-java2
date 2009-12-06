@@ -16,12 +16,12 @@ public class ContinuousParameters
 
     public void setValue( double value, int... keys )
     {
-        setValue( ContinuousDomainValue.makeValue( valueDomain, value ), keys );
+        setValue( valueDomain.makeValue( value ), keys );
     }
 
 
     public void setDefaultValue( double... values )
     {
-        setDefaultValue( ContinuousDomainValue.makeValue( valueDomain, values ) );
+        setDefaultValue( valueDomain.makeValue( values ) );
     }
 }

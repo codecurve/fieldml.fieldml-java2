@@ -48,6 +48,6 @@ public class ContinuousAggregateEvaluator
             value[i] = sourceFields.get( i ).evaluate( input ).values[0];
         }
 
-        return ContinuousDomainValue.makeValue( valueDomain, value );
+        return valueDomain.makeValue( value );
     }
 }

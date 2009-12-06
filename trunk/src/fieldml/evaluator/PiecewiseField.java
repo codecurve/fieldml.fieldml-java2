@@ -65,7 +65,7 @@ public class PiecewiseField
 
         if( e != null )
         {
-            return ContinuousDomainValue.makeValue( valueDomain, e.evaluate( v ) );
+            return valueDomain.makeValue( e.evaluate( v ) );
         }
 
         return null;

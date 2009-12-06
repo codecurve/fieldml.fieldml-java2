@@ -15,12 +15,12 @@ public class EnsembleParameters
 
     public void setValue( int value, int... keys )
     {
-        setValue( EnsembleDomainValue.makeValue( valueDomain, value ), keys );
+        setValue( valueDomain.makeValue( value ), keys );
     }
 
 
     public void setDefaultValue( int value )
     {
-        setDefaultValue( EnsembleDomainValue.makeValue( valueDomain, value ) );
+        setDefaultValue( valueDomain.makeValue( value ) );
     }
 }

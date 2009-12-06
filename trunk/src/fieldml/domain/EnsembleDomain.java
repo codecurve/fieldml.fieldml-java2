@@ -3,6 +3,8 @@ package fieldml.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import fieldml.value.EnsembleDomainValue;
+
 public class EnsembleDomain
     extends Domain
 {
@@ -14,6 +16,12 @@ public class EnsembleDomain
         super( name );
 
         values = new ArrayList<Integer>();
+    }
+
+
+    public EnsembleDomainValue makeValue( int indexValue )
+    {
+        return new EnsembleDomainValue( this, indexValue );
     }
 
 

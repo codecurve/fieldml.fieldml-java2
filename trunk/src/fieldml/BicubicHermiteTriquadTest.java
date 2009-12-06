@@ -21,10 +21,8 @@ import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.function.BicubicHermiteQuad;
-import fieldml.function.BilinearQuad;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
-import fieldml.value.ContinuousDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTriquadTest
@@ -269,17 +267,17 @@ public class BicubicHermiteTriquadTest
 
         ContinuousParameters bicubicZHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.z",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-        bicubicZHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
+        bicubicZHermiteQuadScaling.setDefaultValue( bicubicHermiteScalingDomain.makeValue( 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicZHermiteQuadScaling );
 
         ContinuousParameters bicubicXHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.x",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-        bicubicXHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
+        bicubicXHermiteQuadScaling.setDefaultValue( bicubicHermiteScalingDomain.makeValue( 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicXHermiteQuadScaling );
 
         ContinuousParameters bicubicYHermiteQuadScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling.y",
             bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-        bicubicYHermiteQuadScaling.setDefaultValue( ContinuousDomainValue.makeValue( bicubicHermiteScalingDomain, 1, 1, 1, 1 ) );
+        bicubicYHermiteQuadScaling.setDefaultValue( bicubicHermiteScalingDomain.makeValue( 1, 1, 1, 1 ) );
         testRegion.addEvaluator( bicubicYHermiteQuadScaling );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.1d" );
