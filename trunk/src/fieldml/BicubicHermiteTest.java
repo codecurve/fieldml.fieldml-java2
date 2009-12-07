@@ -24,7 +24,6 @@ import fieldml.function.BicubicHermiteQuad;
 import fieldml.function.BilinearQuad;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
-import fieldml.value.ContinuousDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTest

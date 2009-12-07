@@ -65,7 +65,7 @@ public class QuadraticBSplineExample
 
             DOTReflectiveHandler dotHandler = new DOTReflectiveHandler( printStream );
             region.walkObjects( dotHandler );
-            printStream.println("}");//HACK!
+            printStream.println( "}" );// HACK!
             printStream.close();
         }
         catch( IOException e )
@@ -78,21 +78,12 @@ public class QuadraticBSplineExample
     private static void test( Region region )
     {
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
+        // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
+        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
 
         ContinuousDomainValue output;
 
-        output = meshX.evaluate( meshDomain, 1, 0.5 );
-        assert output.values[0] == 10;
-
-        output = meshX.evaluate( meshDomain, 2, 0.5 );
-        assert output.values[0] == 25;
-
-        output = meshX.evaluate( meshDomain, 3, 0.5 );
-        assert output.values[0] == 25;
-
-        output = meshX.evaluate( meshDomain, 4, 0.5 );
-        assert output.values[0] == 25;
+        output = meshZ.evaluate( meshDomain, 1, 0.25 );
     }
 
 
@@ -146,42 +137,6 @@ public class QuadraticBSplineExample
 
         ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
 
-        ContinuousParameters elementDofMapP1 = new ContinuousParameters( "test_mesh.element_dof_map.p1", weighting, testMeshElementDomain,
-            globalDofsDomain );
-        elementDofMapP1.setDefaultValue( 0.0 );
-        elementDofMapP1.setValue( 1.0, 1, 1 );
-        elementDofMapP1.setValue( 1.0, 2, 2 );
-        elementDofMapP1.setValue( 1.0, 3, 3 );
-        elementDofMapP1.setValue( 1.0, 4, 4 );
-        elementDofMapP1.setValue( 1.0, 5, 5 );
-
-        testRegion.addEvaluator( elementDofMapP1 );
-
-        ContinuousParameters elementDofMapP2 = new ContinuousParameters( "test_mesh.element_dof_map.p2", weighting, testMeshElementDomain,
-            globalDofsDomain );
-        elementDofMapP2.setDefaultValue( 0.0 );
-        elementDofMapP2.setValue( 1.0, 1, 2 );
-        elementDofMapP2.setValue( 1.0, 2, 3 );
-        elementDofMapP2.setValue( 1.0, 3, 4 );
-        elementDofMapP2.setValue( 1.0, 4, 5 );
-        elementDofMapP2.setValue( 1.0, 5, 6 );
-
-        testRegion.addEvaluator( elementDofMapP2 );
-
-        ContinuousParameters elementDofMapP3 = new ContinuousParameters( "test_mesh.element_dof_map.p3", weighting, testMeshElementDomain,
-            globalDofsDomain );
-        elementDofMapP3.setDefaultValue( 0.0 );
-        elementDofMapP3.setValue( 1.0, 1, 3 );
-        elementDofMapP3.setValue( 1.0, 2, 4 );
-        elementDofMapP3.setValue( 1.0, 3, 5 );
-        elementDofMapP3.setValue( 1.0, 4, 6 );
-        elementDofMapP3.setValue( 1.0, 5, 7 );
-
-        testRegion.addEvaluator( elementDofMapP3 );
-
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
-
         ContinuousParameters dofs = new ContinuousParameters( "test_mesh.dofs.z", weighting, globalDofsDomain );
         dofs.setValue( 0.954915, 1 );
         dofs.setValue( 1.0450850, 2 );
@@ -193,32 +148,39 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( dofs );
 
-        ContinuousCompositeEvaluator elementDofP1 = new ContinuousCompositeEvaluator( "test_mesh.element.p1", weighting,
-            testMeshElementDomain );
-        elementDofP1.importMappedField( dofs, elementDofMapP1, globalDofsDomain );
-        testRegion.addEvaluator( elementDofP1 );
-
-        ContinuousCompositeEvaluator elementDofP2 = new ContinuousCompositeEvaluator( "test_mesh.element.p2", weighting,
-            testMeshElementDomain );
-        elementDofP2.importMappedField( dofs, elementDofMapP2, globalDofsDomain );
-        testRegion.addEvaluator( elementDofP2 );
-
-        ContinuousCompositeEvaluator elementDofP3 = new ContinuousCompositeEvaluator( "test_mesh.element.p3", weighting,
-            testMeshElementDomain );
-        elementDofP3.importMappedField( dofs, elementDofMapP3, globalDofsDomain );
-        testRegion.addEvaluator( elementDofP3 );
-
         ContinuousDomain bsplineParamsDomain = library.getContinuousDomain( "library.quadratic_bspline.parameters" );
 
-        ContinuousAggregateEvaluator elementParameters = new ContinuousAggregateEvaluator( "test_mesh.element.params", bsplineParamsDomain );
-        elementParameters.setSourceField( 1, elementDofP1 );
-        elementParameters.setSourceField( 2, elementDofP2 );
-        elementParameters.setSourceField( 3, elementDofP3 );
+        ContinuousDomain weighting3 = library.getContinuousDomain( "library.weighting.3d" );
 
-        testRegion.addEvaluator( elementParameters );
+        ContinuousParameters elementDofMap = new ContinuousParameters( "test_mesh.element_dof_map", weighting3, testMeshElementDomain,
+            globalDofsDomain );
+        elementDofMap.setDefaultValue( weighting.makeValue( 0.0, 0.0, 0.0 ) );
+        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
+        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 2, 2 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 2, 3 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 2, 4 );
+        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 3, 3 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 3, 4 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 3, 5 );
+        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 4, 4 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 4, 5 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 4, 6 );
+        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 5, 5 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 5, 6 );
+        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 5, 7 );
+        testRegion.addEvaluator( elementDofMap );
+
+        ContinuousCompositeEvaluator elementParametersMerged = new ContinuousCompositeEvaluator( "test_mesh.element.parameters_merged",
+            bsplineParamsDomain, testMeshElementDomain );
+        elementParametersMerged.importMappedField( bsplineParamsDomain, dofs, elementDofMap, globalDofsDomain );
+        testRegion.addEvaluator( elementParametersMerged );
+
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new QuadraticBSpline( "bspline_line", elementParameters ) );
+        meshCoordinatesZ.addEvaluator( new QuadraticBSpline( "bspline_line", elementParametersMerged ) );
         meshCoordinatesZ.setEvaluator( 1, "bspline_line" );
         meshCoordinatesZ.setEvaluator( 2, "bspline_line" );
         meshCoordinatesZ.setEvaluator( 3, "bspline_line" );
@@ -227,7 +189,7 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
-        // test( testRegion );
+        test( testRegion );
 
         serialize( testRegion );
 
@@ -249,6 +211,8 @@ public class QuadraticBSplineExample
             meshCoordinatesX.setEvaluator( 3, "linear" );
             meshCoordinatesX.setEvaluator( 4, "linear" );
             meshCoordinatesX.setEvaluator( 5, "linear" );
+
+            ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 
             ContinuousAggregateEvaluator testCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh2DDomain );
             testCoordinates.setSourceField( 1, meshCoordinatesX );

@@ -29,7 +29,7 @@ public class ReflectiveWalker
             }
             else if( o2.getClass() == Integer.class )
             {
-                handler.onIntListElement( (Integer)o2 );
+                handler.onIntListElement( o2 );
             }
             else if( f.isAnnotationPresent( SerializationAsString.class ) )
             {
