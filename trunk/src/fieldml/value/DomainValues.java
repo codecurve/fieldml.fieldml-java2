@@ -25,7 +25,7 @@ public class DomainValues
 
         for( DomainValue<? extends Domain> v : input.values.values() )
         {
-            set( v );
+            values.put( v.domain, v );
         }
     }
 

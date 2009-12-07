@@ -178,12 +178,12 @@ public class HangingNodeTest
 
         ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.point.x", mesh1DDomain,
             localDofsDomain );
-        meshX.importMappedField( meshPointsX, p2nArithmeticMeanMap, globalDofsDomain );
+        meshX.importMappedField( mesh1DDomain, meshPointsX, p2nArithmeticMeanMap, globalDofsDomain );
         testRegion.addEvaluator( meshX );
 
         ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.point.y", mesh1DDomain,
             localDofsDomain );
-        meshY.importMappedField( meshPointsY, p2nArithmeticMeanMap, globalDofsDomain );
+        meshY.importMappedField( mesh1DDomain, meshPointsY, p2nArithmeticMeanMap, globalDofsDomain );
         testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
@@ -319,12 +319,12 @@ public class HangingNodeTest
 
         ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.x", mesh1DDomain,
             testMeshElementDomain );
-        meshX.importMappedField( meshPointsX, bilinearLagrangeParameters, globalDofsDomain );
+        meshX.importMappedField( mesh1DDomain, meshPointsX, bilinearLagrangeParameters, globalDofsDomain );
         testRegion.addEvaluator( meshX );
 
         ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.y", mesh1DDomain,
             testMeshElementDomain );
-        meshY.importMappedField( meshPointsY, bilinearLagrangeParameters, globalDofsDomain );
+        meshY.importMappedField( mesh1DDomain, meshPointsY, bilinearLagrangeParameters, globalDofsDomain );
         testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );

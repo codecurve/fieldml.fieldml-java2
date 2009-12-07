@@ -30,11 +30,12 @@ public class ContinuousCompositeEvaluator
     }
 
 
-    public void importMappedField( ContinuousParameters sourceField, ContinuousEvaluator weightField, EnsembleDomain iteratedDomain )
+    public void importMappedField( ContinuousDomain valueDomain, ContinuousParameters sourceField, ContinuousEvaluator weightField,
+        EnsembleDomain iteratedDomain )
     {
-        //NOTE could extend this to iterate over multiple ensemble domains, or automatically detect which ensemble domains
-        //to iterate over based on the domains over which weightField is declared.
-        operations.add( new MappedImportOperation( sourceField, weightField, iteratedDomain ) );
+        // NOTE could extend this to iterate over multiple ensemble domains, or automatically detect which ensemble domains
+        // to iterate over based on the domains over which weightField is declared.
+        operations.add( new MappedImportOperation( valueDomain, sourceField, weightField, iteratedDomain ) );
     }
 
 

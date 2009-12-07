@@ -68,6 +68,8 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
 
+        region.addDomain( new ContinuousDomain( "library.weighting.3d", 3 ) );
+
         return region;
     }
 
