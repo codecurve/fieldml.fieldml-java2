@@ -12,7 +12,8 @@ public class QuadraticBSpline
     public final ContinuousEvaluator dofs;
 
 
-    private double evaluate( double[] params, double[] xi )
+    //NOTE Making this method public simplifies testing.
+    public static double evaluate( double[] params, double[] xi )
     {
         double p0 = 0.5 * ( 1 - xi[0] ) * ( 1 - xi[0] );
         double p1 = -( xi[0] * xi[0] ) + xi[0] + 0.5;

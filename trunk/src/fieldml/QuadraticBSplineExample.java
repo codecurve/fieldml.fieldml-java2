@@ -74,6 +74,9 @@ public class QuadraticBSplineExample
         }
     }
 
+    private static double[] rawDofs =
+    { 0.954915, 1.0450850, -0.427051, -1.190983, -0.427051, 1.0450850, 0.954915 };
+
 
     private static void test( Region region )
     {
@@ -83,7 +86,27 @@ public class QuadraticBSplineExample
 
         ContinuousDomainValue output;
 
-        output = meshZ.evaluate( meshDomain, 1, 0.25 );
+        double params[] = new double[3];
+        double xi[] = new double[1];
+        double expectedValue;
+
+        xi[0] = 0.25;
+        params[0] = rawDofs[0];
+        params[1] = rawDofs[1];
+        params[2] = rawDofs[2];
+        output = meshZ.evaluate( meshDomain, 1, xi );
+        expectedValue = QuadraticBSpline.evaluate( params, xi );
+
+        assert output.values[0] == expectedValue;
+
+        xi[0] = 0.48;
+        params[0] = rawDofs[3];
+        params[1] = rawDofs[4];
+        params[2] = rawDofs[5];
+        output = meshZ.evaluate( meshDomain, 4, xi );
+        expectedValue = QuadraticBSpline.evaluate( params, xi );
+
+        assert output.values[0] == expectedValue;
     }
 
 
@@ -100,11 +123,11 @@ public class QuadraticBSplineExample
         testRegion.addDomain( testMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 1, testMeshElementDomain );
-        meshDomain.setShape( 1, "library.shape.line.00_10" );
-        meshDomain.setShape( 2, "library.shape.line.00_10" );
-        meshDomain.setShape( 3, "library.shape.line.00_10" );
-        meshDomain.setShape( 4, "library.shape.line.00_10" );
-        meshDomain.setShape( 5, "library.shape.line.00_10" );
+        meshDomain.setShape( 1, "library.shape.line.0_1" );
+        meshDomain.setShape( 2, "library.shape.line.0_1" );
+        meshDomain.setShape( 3, "library.shape.line.0_1" );
+        meshDomain.setShape( 4, "library.shape.line.0_1" );
+        meshDomain.setShape( 5, "library.shape.line.0_1" );
         testRegion.addDomain( meshDomain );
 
         EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.dofs" );
@@ -173,13 +196,13 @@ public class QuadraticBSplineExample
         testRegion.addEvaluator( elementDofMap );
 
         ContinuousCompositeEvaluator elementParametersMerged = new ContinuousCompositeEvaluator( "test_mesh.element.parameters_merged",
-            bsplineParamsDomain, testMeshElementDomain );
+            bsplineParamsDomain );
         elementParametersMerged.importMappedField( bsplineParamsDomain, dofs, elementDofMap, globalDofsDomain );
         testRegion.addEvaluator( elementParametersMerged );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
-        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
+        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshDomain );
         meshCoordinatesZ.addEvaluator( new QuadraticBSpline( "bspline_line", elementParametersMerged ) );
         meshCoordinatesZ.setEvaluator( 1, "bspline_line" );
         meshCoordinatesZ.setEvaluator( 2, "bspline_line" );
@@ -196,7 +219,7 @@ public class QuadraticBSplineExample
         try
         {
             // These are only for visualization. Do not serialize.
-            ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
+            ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
             nodalX.setValue( 0.0, 1 );
             nodalX.setValue( 1.0, 2 );
             nodalX.setValue( 2.0, 3 );
@@ -204,7 +227,7 @@ public class QuadraticBSplineExample
             nodalX.setValue( 4.0, 5 );
             nodalX.setValue( 5.0, 6 );
 
-            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
+            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, meshDomain );
             meshCoordinatesX.addEvaluator( new LinearLagrange( "linear", nodalX, lineNodeList, lineLocalNodeDomain ) );
             meshCoordinatesX.setEvaluator( 1, "linear" );
             meshCoordinatesX.setEvaluator( 2, "linear" );

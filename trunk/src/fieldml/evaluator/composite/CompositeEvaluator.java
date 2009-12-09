@@ -3,7 +3,6 @@ package fieldml.evaluator.composite;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
@@ -16,28 +15,31 @@ import fieldml.value.DomainValues;
 public abstract class CompositeEvaluator<D extends Domain, V extends DomainValue<D>>
     extends AbstractEvaluator<D, V>
 {
-    @SerializationAsString
-    public final Domain[] parameterDomains;
-
     public final List<CompositeOperation> operations;
 
 
-    public CompositeEvaluator( String name, D valueDomain, Domain... parameterDomains )
+    public CompositeEvaluator( String name, D valueDomain )
     {
         super( name, valueDomain );
-
-        this.parameterDomains = parameterDomains;
 
         operations = new ArrayList<CompositeOperation>();
     }
 
 
-    protected void apply( DomainValues values )
+    protected abstract V onComposition( DomainValues localValues );
+
+
+    @Override
+    public V evaluate( DomainValues input )
     {
+        DomainValues localValues = new DomainValues( input );
+
         for( CompositeOperation o : operations )
         {
-            o.perform( values );
+            o.perform( localValues );
         }
+
+        return onComposition( localValues );
     }
 
 

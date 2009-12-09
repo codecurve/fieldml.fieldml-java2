@@ -131,8 +131,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( p2nArithmeticMeanMap );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofsDomain, testMeshElementDomain,
+            quad1x1LocalNodeDomain );
 
         quadNodeList.setValue( 6, 1, 1 );
         quadNodeList.setValue( 7, 1, 2 );
@@ -176,13 +176,11 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.point.x", mesh1DDomain,
-            localDofsDomain );
+        ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.point.x", mesh1DDomain );
         meshX.importMappedField( mesh1DDomain, meshPointsX, p2nArithmeticMeanMap, globalDofsDomain );
         testRegion.addEvaluator( meshX );
 
-        ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.point.y", mesh1DDomain,
-            localDofsDomain );
+        ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.point.y", mesh1DDomain );
         meshY.importMappedField( mesh1DDomain, meshPointsY, p2nArithmeticMeanMap, globalDofsDomain );
         testRegion.addEvaluator( meshY );
 
@@ -202,8 +200,7 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshCoordinatesY );
 
-        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy",
-            mesh2DDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", mesh2DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
@@ -241,8 +238,8 @@ public class HangingNodeTest
 
         ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
 
-        ContinuousParameters bilinearMapP1 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p1", weighting,
-            globalDofsDomain, testMeshElementDomain );
+        ContinuousParameters bilinearMapP1 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p1", weighting, globalDofsDomain,
+            testMeshElementDomain );
         bilinearMapP1.setDefaultValue( 0 );
         bilinearMapP1.setValue( 1.0, 5, 1 );
         bilinearMapP1.setValue( 0.5, 2, 2 );
@@ -251,8 +248,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( bilinearMapP1 );
 
-        ContinuousParameters bilinearMapP2 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p2", weighting,
-            globalDofsDomain, testMeshElementDomain );
+        ContinuousParameters bilinearMapP2 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p2", weighting, globalDofsDomain,
+            testMeshElementDomain );
         bilinearMapP2.setDefaultValue( 0 );
         bilinearMapP2.setValue( 1.0, 6, 1 );
         bilinearMapP2.setValue( 1.0, 4, 2 );
@@ -260,8 +257,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( bilinearMapP2 );
 
-        ContinuousParameters bilinearMapP3 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p3", weighting,
-            globalDofsDomain, testMeshElementDomain );
+        ContinuousParameters bilinearMapP3 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p3", weighting, globalDofsDomain,
+            testMeshElementDomain );
         bilinearMapP3.setDefaultValue( 0 );
         bilinearMapP3.setValue( 1.0, 1, 1 );
         bilinearMapP3.setValue( 1.0, 2, 2 );
@@ -270,8 +267,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( bilinearMapP3 );
 
-        ContinuousParameters bilinearMapP4 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p4", weighting,
-            globalDofsDomain, testMeshElementDomain );
+        ContinuousParameters bilinearMapP4 = new ContinuousParameters( "test_mesh.dof_map.bilinear.p4", weighting, globalDofsDomain,
+            testMeshElementDomain );
         bilinearMapP4.setDefaultValue( 0 );
         bilinearMapP4.setValue( 1.0, 2, 1 );
         bilinearMapP4.setValue( 1.0, 3, 2 );
@@ -279,12 +276,11 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( bilinearMapP4 );
 
-        ContinuousDomain bilinearLagrangeParametersDomain = library
-            .getContinuousDomain( "library.bilinear_lagrange.parameters" );
+        ContinuousDomain bilinearLagrangeParametersDomain = library.getContinuousDomain( "library.bilinear_lagrange.parameters" );
 
         ContinuousAggregateEvaluator bilinearLagrangeParameters = new ContinuousAggregateEvaluator(
             "test_mesh.bilinear_lagrange.parameter_map", bilinearLagrangeParametersDomain );
-        
+
         bilinearLagrangeParameters.setSourceField( 1, bilinearMapP1 );
         bilinearLagrangeParameters.setSourceField( 2, bilinearMapP2 );
         bilinearLagrangeParameters.setSourceField( 3, bilinearMapP3 );
@@ -317,14 +313,12 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.x", mesh1DDomain,
-            testMeshElementDomain );
-        meshX.importMappedField( mesh1DDomain, meshPointsX, bilinearLagrangeParameters, globalDofsDomain );
+        ContinuousCompositeEvaluator meshX = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.x", bilinearLagrangeParametersDomain );
+        meshX.importMappedField( bilinearLagrangeParametersDomain, meshPointsX, bilinearLagrangeParameters, globalDofsDomain );
         testRegion.addEvaluator( meshX );
 
-        ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.y", mesh1DDomain,
-            testMeshElementDomain );
-        meshY.importMappedField( mesh1DDomain, meshPointsY, bilinearLagrangeParameters, globalDofsDomain );
+        ContinuousCompositeEvaluator meshY = new ContinuousCompositeEvaluator( "test_mesh.bilinear_lagrange.parameters.y", bilinearLagrangeParametersDomain );
+        meshY.importMappedField( bilinearLagrangeParametersDomain, meshPointsY, bilinearLagrangeParameters, globalDofsDomain );
         testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
@@ -343,8 +337,7 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshCoordinatesY );
 
-        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy",
-            mesh2DDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", mesh2DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
@@ -358,7 +351,7 @@ public class HangingNodeTest
 
     public static void main( String[] args )
     {
-//        virtualNodeExample();
+        // virtualNodeExample();
 
         directMapExample();
     }

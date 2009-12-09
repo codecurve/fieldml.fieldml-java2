@@ -18,7 +18,7 @@ public interface ContinuousEvaluator
 
 
     public ContinuousDomainValue evaluate( MeshDomain domain, int index, double... chartValues );
-
-
+    
+    
     public ContinuousDomain getValueDomain();
 }
