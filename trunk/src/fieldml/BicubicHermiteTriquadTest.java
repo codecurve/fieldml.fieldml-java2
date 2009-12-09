@@ -325,38 +325,32 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addEvaluator( meshd_ds2Map );
 
-        ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain );
         meshdXds1.importMappedField( meshddsDomain, meshdX, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdXds1 );
 
-        ContinuousCompositeEvaluator meshdXds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds2", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdXds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds2", meshddsDomain );
         meshdXds2.importMappedField( meshddsDomain, meshdX, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdXds2 );
 
-        ContinuousCompositeEvaluator meshdYds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds1", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdYds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds1", meshddsDomain );
         meshdYds1.importMappedField( meshddsDomain, meshdY, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdYds1 );
 
-        ContinuousCompositeEvaluator meshdYds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds2", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdYds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds2", meshddsDomain );
         meshdYds2.importMappedField( meshddsDomain, meshdY, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdYds2 );
 
-        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshddsDomain );
         meshdZds1.importMappedField( meshddsDomain, meshdZ, meshd_ds1Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdZds1 );
 
-        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshddsDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshddsDomain );
         meshdZds2.importMappedField( meshddsDomain, meshdZ, meshd_ds2Map, edgeDirectionDomain );
 
         testRegion.addEvaluator( meshdZds2 );

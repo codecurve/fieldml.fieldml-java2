@@ -22,6 +22,8 @@ public class MappedImportOperation
     @SerializationAsString
     public final ContinuousDomain valueDomain;
 
+    private final boolean valueSpan;
+
 
     public MappedImportOperation( ContinuousDomain valueDomain, ContinuousParameters sourceField, ContinuousEvaluator weightings,
         EnsembleDomain iteratedDomain )
@@ -30,6 +32,24 @@ public class MappedImportOperation
         this.weightings = weightings;
         this.iteratedDomain = iteratedDomain;
         this.valueDomain = valueDomain;
+
+        int outputDimensions = 0;
+        if( weightings.getValueDomain().dimensions == 1 )
+        {
+            valueSpan = true;
+            outputDimensions = sourceField.getValueDomain().dimensions;
+        }
+        else if( sourceField.getValueDomain().dimensions == 1 )
+        {
+            valueSpan = false;
+            outputDimensions = weightings.getValueDomain().dimensions;
+        }
+        else
+        {
+            valueSpan = false;
+        }
+
+        assert outputDimensions == valueDomain.dimensions;
     }
 
 
@@ -37,20 +57,27 @@ public class MappedImportOperation
     public void perform( DomainValues values )
     {
         // TODO If both the weight and the value lookups are multi-dimension, we need to figure out what to do.
-        int dimensions = weightings.getValueDomain().dimensions;
-        double value;
+        int dimensions = valueDomain.dimensions;
         double[] finalValue = new double[dimensions];
-        double[] weights;
+        double fixed;
+        double[] spanned;
 
         for( int i = 1; i <= iteratedDomain.getValueCount(); i++ )
         {
             values.set( iteratedDomain, i );
-            weights = weightings.evaluate( values ).values;
-            value = sourceField.evaluate( values ).values[0];
+            if( valueSpan )
+            {
+                spanned = sourceField.evaluate( values ).values;
+                fixed = weightings.evaluate( values ).values[0];
+            }
+            else
+            {
+                spanned = weightings.evaluate( values ).values;
+                fixed = sourceField.evaluate( values ).values[0];
+            }
             for( int j = 0; j < dimensions; j++ )
             {
-
-                finalValue[j] += ( weights[j] * value );
+                finalValue[j] += ( spanned[j] * fixed );
             }
         }
 

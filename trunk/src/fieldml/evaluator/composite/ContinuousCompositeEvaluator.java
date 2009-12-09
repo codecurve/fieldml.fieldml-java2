@@ -1,7 +1,6 @@
 package fieldml.evaluator.composite;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
@@ -13,20 +12,9 @@ public class ContinuousCompositeEvaluator
     extends CompositeEvaluator<ContinuousDomain, ContinuousDomainValue>
     implements ContinuousEvaluator
 {
-    public ContinuousCompositeEvaluator( String name, ContinuousDomain valueDomain, Domain... parameterDomains )
+    public ContinuousCompositeEvaluator( String name, ContinuousDomain valueDomain )
     {
-        super( name, valueDomain, parameterDomains );
-    }
-
-
-    @Override
-    public ContinuousDomainValue evaluate( DomainValues input )
-    {
-        DomainValues localValues = new DomainValues( input );
-
-        apply( localValues );
-
-        return localValues.get( valueDomain );
+        super( name, valueDomain );
     }
 
 
@@ -42,5 +30,12 @@ public class ContinuousCompositeEvaluator
     public void importValue( EnsembleDomainValue value )
     {
         operations.add( new ValueOperation( value ) );
+    }
+
+
+    @Override
+    protected ContinuousDomainValue onComposition( DomainValues localValues )
+    {
+        return localValues.get( valueDomain );
     }
 }

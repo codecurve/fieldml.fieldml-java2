@@ -198,13 +198,13 @@ public class BicubicHermiteTest
 
         testRegion.addEvaluator( meshds2Direction );
 
-        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshdZdomain );
         meshdZds1.importField( meshds1Direction );
         meshdZds1.importField( meshdZ );
 
         testRegion.addEvaluator( meshdZds1 );
 
-        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshdZdomain, testMeshElementDomain, quad1x1LocalNodeDomain );
+        ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshdZdomain );
         meshdZds2.importField( meshds2Direction );
         meshdZds2.importField( meshdZ );
 

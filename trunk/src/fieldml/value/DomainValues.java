@@ -70,4 +70,10 @@ public class DomainValues
     {
         return (MeshDomainValue)values.get( domain );
     }
+
+
+    public DomainValue<? extends Domain> get( Domain domain )
+    {
+        return values.get( domain );
+    }
 }

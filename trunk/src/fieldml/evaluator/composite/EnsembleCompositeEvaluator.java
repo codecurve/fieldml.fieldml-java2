@@ -1,6 +1,5 @@
 package fieldml.evaluator.composite;
 
-import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.value.DomainValues;
@@ -10,19 +9,15 @@ public class EnsembleCompositeEvaluator
     extends CompositeEvaluator<EnsembleDomain, EnsembleDomainValue>
     implements EnsembleEvaluator
 {
-    public EnsembleCompositeEvaluator( String name, EnsembleDomain valueDomain, Domain[] parameterDomains )
+    public EnsembleCompositeEvaluator( String name, EnsembleDomain valueDomain )
     {
-        super( name, valueDomain, parameterDomains );
+        super( name, valueDomain );
     }
 
 
     @Override
-    public EnsembleDomainValue evaluate( DomainValues input )
+    protected EnsembleDomainValue onComposition( DomainValues localValues )
     {
-        DomainValues localValues = new DomainValues( input );
-
-        apply( localValues );
-
         return localValues.get( valueDomain );
     }
 }
