@@ -17,6 +17,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
@@ -175,29 +176,31 @@ public class QuadraticBSplineExample
 
         ContinuousDomain weighting3 = library.getContinuousDomain( "library.weighting.3d" );
 
-        ContinuousParameters elementDofMap = new ContinuousParameters( "test_mesh.element_dof_map", weighting3, testMeshElementDomain,
+        ContinuousParameters elementDofWeights = new ContinuousParameters( "test_mesh.element_dof_weights", weighting3, testMeshElementDomain,
             globalDofsDomain );
-        elementDofMap.setDefaultValue( weighting.makeValue( 0.0, 0.0, 0.0 ) );
-        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
-        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 2, 2 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 2, 3 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 2, 4 );
-        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 3, 3 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 3, 4 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 3, 5 );
-        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 4, 4 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 4, 5 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 4, 6 );
-        elementDofMap.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 5, 5 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 5, 6 );
-        elementDofMap.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 5, 7 );
-        testRegion.addEvaluator( elementDofMap );
+        elementDofWeights.setDefaultValue( weighting.makeValue( 0.0, 0.0, 0.0 ) );
+        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
+        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 2, 2 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 2, 3 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 2, 4 );
+        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 3, 3 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 3, 4 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 3, 5 );
+        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 4, 4 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 4, 5 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 4, 6 );
+        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 5, 5 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 5, 6 );
+        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 5, 7 );
+        testRegion.addEvaluator( elementDofWeights );
+        
+        ContinuousMap elementDofMap = new ContinuousMap( "test_mesh.element_dof_map", elementDofWeights, globalDofsDomain );
 
         ContinuousCompositeEvaluator elementParametersMerged = new ContinuousCompositeEvaluator( "test_mesh.element.parameters_merged",
             bsplineParamsDomain );
-        elementParametersMerged.importMappedField( bsplineParamsDomain, dofs, elementDofMap, globalDofsDomain );
+        elementParametersMerged.importMap( bsplineParamsDomain, dofs, elementDofMap );
         testRegion.addEvaluator( elementParametersMerged );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );

@@ -1,8 +1,8 @@
 package fieldml.evaluator.composite;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -18,12 +18,11 @@ public class ContinuousCompositeEvaluator
     }
 
 
-    public void importMappedField( ContinuousDomain valueDomain, ContinuousParameters sourceField, ContinuousEvaluator weightField,
-        EnsembleDomain iteratedDomain )
+    public void importMap( ContinuousDomain valueDomain, ContinuousParameters sourceField, ContinuousMap map )
     {
         // NOTE could extend this to iterate over multiple ensemble domains, or automatically detect which ensemble domains
         // to iterate over based on the domains over which weightField is declared.
-        operations.add( new MappedImportOperation( valueDomain, sourceField, weightField, iteratedDomain ) );
+        operations.add( new MappedImportOperation( valueDomain, sourceField, map ) );
     }
 
 
