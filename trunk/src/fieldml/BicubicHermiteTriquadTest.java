@@ -16,6 +16,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
@@ -282,76 +283,80 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.1d" );
 
-        ContinuousParameters meshd_ds1Map = new ContinuousParameters( "test_mesh.node.ds1.map", weightingDomain, testMeshElementDomain,
+        ContinuousParameters meshd_ds1Weights = new ContinuousParameters( "test_mesh.node.ds1.weights", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
-        meshd_ds1Map.setDefaultValue( 0.0 );
+        meshd_ds1Weights.setDefaultValue( 0.0 );
 
-        meshd_ds1Map.setValue( 1.0, 1, 1, 1 );
-        meshd_ds1Map.setValue( 1.0, 1, 2, 1 );
-        meshd_ds1Map.setValue( 1.0, 1, 2, 2 );
-        meshd_ds1Map.setValue( 1.0, 1, 3, 1 );
-        meshd_ds1Map.setValue( 1.0, 1, 4, 2 );
+        meshd_ds1Weights.setValue( 1.0, 1, 1, 1 );
+        meshd_ds1Weights.setValue( 1.0, 1, 2, 1 );
+        meshd_ds1Weights.setValue( 1.0, 1, 2, 2 );
+        meshd_ds1Weights.setValue( 1.0, 1, 3, 1 );
+        meshd_ds1Weights.setValue( 1.0, 1, 4, 2 );
 
-        meshd_ds1Map.setValue( 1.0, 2, 1, 1 );
-        meshd_ds1Map.setValue( 1.0, 2, 2, 1 );
-        meshd_ds1Map.setValue( 1.0, 2, 3, 1 );
-        meshd_ds1Map.setValue( 1.0, 2, 4, 1 );
+        meshd_ds1Weights.setValue( 1.0, 2, 1, 1 );
+        meshd_ds1Weights.setValue( 1.0, 2, 2, 1 );
+        meshd_ds1Weights.setValue( 1.0, 2, 3, 1 );
+        meshd_ds1Weights.setValue( 1.0, 2, 4, 1 );
 
-        meshd_ds1Map.setValue( 1.0, 3, 1, 2 );
-        meshd_ds1Map.setValue( -1.0, 3, 2, 2 );
-        meshd_ds1Map.setValue( 1.0, 3, 3, 2 );
-        meshd_ds1Map.setValue( 1.0, 3, 4, 2 );
+        meshd_ds1Weights.setValue( 1.0, 3, 1, 2 );
+        meshd_ds1Weights.setValue( -1.0, 3, 2, 2 );
+        meshd_ds1Weights.setValue( 1.0, 3, 3, 2 );
+        meshd_ds1Weights.setValue( 1.0, 3, 4, 2 );
 
-        testRegion.addEvaluator( meshd_ds1Map );
+        testRegion.addEvaluator( meshd_ds1Weights );
+        
+        ContinuousMap meshd_ds1Map = new ContinuousMap( "test_mesh.node.ds1.map", meshd_ds1Weights, edgeDirectionDomain );
 
-        ContinuousParameters meshd_ds2Map = new ContinuousParameters( "test_mesh.node.ds2.map", weightingDomain, testMeshElementDomain,
+        ContinuousParameters meshd_ds2Weights = new ContinuousParameters( "test_mesh.node.ds2.weights", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
-        meshd_ds2Map.setDefaultValue( 0.0 );
-        meshd_ds2Map.setValue( 1.0, 1, 1, 2 );
-        meshd_ds2Map.setValue( 1.0, 1, 2, 1 );
-        meshd_ds2Map.setValue( 1.0, 1, 3, 2 );
-        meshd_ds2Map.setValue( 1.0, 1, 4, 1 );
+        meshd_ds2Weights.setDefaultValue( 0.0 );
+        meshd_ds2Weights.setValue( 1.0, 1, 1, 2 );
+        meshd_ds2Weights.setValue( 1.0, 1, 2, 1 );
+        meshd_ds2Weights.setValue( 1.0, 1, 3, 2 );
+        meshd_ds2Weights.setValue( 1.0, 1, 4, 1 );
 
-        meshd_ds2Map.setValue( 1.0, 2, 1, 2 );
-        meshd_ds2Map.setValue( 1.0, 2, 2, 2 );
-        meshd_ds2Map.setValue( -1.0, 2, 3, 2 );
-        meshd_ds2Map.setValue( -1.0, 2, 4, 2 );
+        meshd_ds2Weights.setValue( 1.0, 2, 1, 2 );
+        meshd_ds2Weights.setValue( 1.0, 2, 2, 2 );
+        meshd_ds2Weights.setValue( -1.0, 2, 3, 2 );
+        meshd_ds2Weights.setValue( -1.0, 2, 4, 2 );
 
-        meshd_ds2Map.setValue( -1.0, 3, 1, 1 );
-        meshd_ds2Map.setValue( -1.0, 3, 2, 1 );
-        meshd_ds2Map.setValue( -1.0, 3, 2, 2 );
-        meshd_ds2Map.setValue( -1.0, 3, 3, 1 );
-        meshd_ds2Map.setValue( -1.0, 3, 4, 1 );
+        meshd_ds2Weights.setValue( -1.0, 3, 1, 1 );
+        meshd_ds2Weights.setValue( -1.0, 3, 2, 1 );
+        meshd_ds2Weights.setValue( -1.0, 3, 2, 2 );
+        meshd_ds2Weights.setValue( -1.0, 3, 3, 1 );
+        meshd_ds2Weights.setValue( -1.0, 3, 4, 1 );
 
-        testRegion.addEvaluator( meshd_ds2Map );
+        testRegion.addEvaluator( meshd_ds2Weights );
+
+        ContinuousMap meshd_ds2Map = new ContinuousMap( "test_mesh.node.ds2.map", meshd_ds2Weights, edgeDirectionDomain );
 
         ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain );
-        meshdXds1.importMappedField( meshddsDomain, meshdX, meshd_ds1Map, edgeDirectionDomain );
+        meshdXds1.importMap( meshddsDomain, meshdX, meshd_ds1Map );
 
         testRegion.addEvaluator( meshdXds1 );
 
         ContinuousCompositeEvaluator meshdXds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds2", meshddsDomain );
-        meshdXds2.importMappedField( meshddsDomain, meshdX, meshd_ds2Map, edgeDirectionDomain );
+        meshdXds2.importMap( meshddsDomain, meshdX, meshd_ds2Map );
 
         testRegion.addEvaluator( meshdXds2 );
 
         ContinuousCompositeEvaluator meshdYds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds1", meshddsDomain );
-        meshdYds1.importMappedField( meshddsDomain, meshdY, meshd_ds1Map, edgeDirectionDomain );
+        meshdYds1.importMap( meshddsDomain, meshdY, meshd_ds1Map );
 
         testRegion.addEvaluator( meshdYds1 );
 
         ContinuousCompositeEvaluator meshdYds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dy/ds2", meshddsDomain );
-        meshdYds2.importMappedField( meshddsDomain, meshdY, meshd_ds2Map, edgeDirectionDomain );
+        meshdYds2.importMap( meshddsDomain, meshdY, meshd_ds2Map );
 
         testRegion.addEvaluator( meshdYds2 );
 
         ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshddsDomain );
-        meshdZds1.importMappedField( meshddsDomain, meshdZ, meshd_ds1Map, edgeDirectionDomain );
+        meshdZds1.importMap( meshddsDomain, meshdZ, meshd_ds1Map );
 
         testRegion.addEvaluator( meshdZds1 );
 
         ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshddsDomain );
-        meshdZds2.importMappedField( meshddsDomain, meshdZ, meshd_ds2Map, edgeDirectionDomain );
+        meshdZds2.importMap( meshddsDomain, meshdZ, meshd_ds2Map );
 
         testRegion.addEvaluator( meshdZds2 );
 
