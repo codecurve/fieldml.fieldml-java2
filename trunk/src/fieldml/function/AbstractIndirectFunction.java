@@ -1,9 +1,11 @@
 package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
@@ -13,7 +15,7 @@ public abstract class AbstractIndirectFunction
     extends ContinuousFunction
 {
     @SerializationAsString
-    public final ContinuousEvaluator dofs;
+    public final ContinuousDomain dofDomain;
 
     @SerializationAsString
     public final EnsembleEvaluator dofIndexes;
@@ -21,12 +23,11 @@ public abstract class AbstractIndirectFunction
     private final EnsembleDomain iteratedDomain;
 
 
-    public AbstractIndirectFunction( String name, ContinuousEvaluator dofs, EnsembleEvaluator dofIndexes, EnsembleDomain iteratedDomain )
+    public AbstractIndirectFunction( String name, ContinuousDomain dofDomain, EnsembleEvaluator dofIndexes, EnsembleDomain iteratedDomain )
     {
         super( name );
-        // TODO Assert that dofIndexes value domain is dofs only parameter domain
         // TODO Assert that dofIndexes's parameter domain has the right cardinality for the given interpolation.
-        this.dofs = dofs;
+        this.dofDomain = dofDomain;
         this.dofIndexes = dofIndexes;
         this.iteratedDomain = iteratedDomain;
     }
@@ -36,29 +37,31 @@ public abstract class AbstractIndirectFunction
 
 
     @Override
-    public double evaluate( MeshDomainValue value )
+    public double evaluate( DomainValues context, MeshDomainValue meshLocation,
+        SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators )
     {
         int parameterCount;
-        final int elementIndex = value.indexValue;
+        final int elementIndex = meshLocation.indexValue;
         double[] params = new double[iteratedDomain.getValueCount()];
-        
-        DomainValues input = new DomainValues();
-        input.set( value.domain.elementDomain, elementIndex );
+        ContinuousEvaluator dofs = dofEvaluators.get( dofDomain );
+
+        context = new DomainValues( context );
+        context.set( meshLocation.domain.elementDomain, elementIndex );
 
         parameterCount = 0;
         for( int localNodeIndex = 1; localNodeIndex <= iteratedDomain.getValueCount(); localNodeIndex++ )
         {
-            input.set( iteratedDomain, localNodeIndex );
-            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( input );
+            context.set( iteratedDomain, localNodeIndex );
+            final EnsembleDomainValue indexOfGlobalNode = dofIndexes.evaluate( context );
             if( ( indexOfGlobalNode == null ) || ( indexOfGlobalNode.indexValue == 0 ) )
             {
                 continue;
             }
-            input.set( indexOfGlobalNode );
-            ContinuousDomainValue dofValue = dofs.evaluate( input );
+            context.set( indexOfGlobalNode );
+            ContinuousDomainValue dofValue = dofs.evaluate( context );
             params[parameterCount++] = dofValue.values[0];
         }
 
-        return evaluate( params, value.chartValues );
+        return evaluate( params, meshLocation.chartValues );
     }
 }

@@ -21,6 +21,7 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.function.BicubicHermiteQuad;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
@@ -306,6 +307,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addEvaluator( meshd_ds1Weights );
         
         ContinuousMap meshd_ds1Map = new ContinuousMap( "test_mesh.node.ds1.map", meshd_ds1Weights, edgeDirectionDomain );
+        testRegion.addMap( meshd_ds1Map );
 
         ContinuousParameters meshd_ds2Weights = new ContinuousParameters( "test_mesh.node.ds2.weights", weightingDomain, testMeshElementDomain,
             quad1x1LocalNodeDomain, edgeDirectionDomain );
@@ -329,6 +331,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addEvaluator( meshd_ds2Weights );
 
         ContinuousMap meshd_ds2Map = new ContinuousMap( "test_mesh.node.ds2.map", meshd_ds2Weights, edgeDirectionDomain );
+        testRegion.addMap( meshd_ds2Map );
 
         ContinuousCompositeEvaluator meshdXds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dx/ds1", meshddsDomain );
         meshdXds1.importMap( meshddsDomain, meshdX, meshd_ds1Map );
@@ -388,36 +391,27 @@ public class BicubicHermiteTriquadTest
         bicubicZHermiteParameters.setSourceField( 4, meshd2Z );
 
         testRegion.addEvaluator( bicubicZHermiteParameters );
-        /*
-         * 
-         * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
-         * wishing to share components can do so simply by sharing entire piecewise fields.
-         */
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
-        meshCoordinatesX.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicXHermiteParameters, bicubicXHermiteQuadScaling,
+        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.h3", meshDomain );
+        meshCoordinatesH3.addFunction( new BicubicHermiteQuad( "hermite_quad", bicubicHermiteParametersDomain, bicubicXHermiteQuadScaling,
             quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.setEvaluator( 1, "hermite_quad" );
-        meshCoordinatesX.setEvaluator( 2, "hermite_quad" );
-        meshCoordinatesX.setEvaluator( 3, "hermite_quad" );
+        meshCoordinatesH3.setFunction( 1, "hermite_quad" );
+        meshCoordinatesH3.setFunction( 2, "hermite_quad" );
+        meshCoordinatesH3.setFunction( 3, "hermite_quad" );
+        testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
+        
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesH3 );
+        meshCoordinatesX.setDofs( bicubicHermiteParametersDomain, bicubicXHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
-        meshCoordinatesY.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicYHermiteParameters, bicubicYHermiteQuadScaling,
-            quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.setEvaluator( 1, "hermite_quad" );
-        meshCoordinatesY.setEvaluator( 2, "hermite_quad" );
-        meshCoordinatesY.setEvaluator( 3, "hermite_quad" );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesH3 );
+        meshCoordinatesY.setDofs( bicubicHermiteParametersDomain, bicubicYHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
-        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicZHermiteParameters, bicubicZHermiteQuadScaling,
-            quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
-        meshCoordinatesZ.setEvaluator( 2, "hermite_quad" );
-        meshCoordinatesZ.setEvaluator( 3, "hermite_quad" );
+        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
+        meshCoordinatesZ.setDofs( bicubicHermiteParametersDomain, bicubicZHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 

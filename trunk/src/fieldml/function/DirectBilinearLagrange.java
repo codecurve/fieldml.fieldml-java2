@@ -1,7 +1,9 @@
 package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
+import fieldml.domain.ContinuousDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
@@ -10,7 +12,7 @@ public class DirectBilinearLagrange
     extends ContinuousFunction
 {
     @SerializationAsString
-    public final ContinuousEvaluator parameters;
+    public final ContinuousDomain dofsDomain;
 
 
     protected double evaluate( double[] params, double[] xi )
@@ -24,22 +26,21 @@ public class DirectBilinearLagrange
     }
 
 
-    public DirectBilinearLagrange( String name, ContinuousEvaluator parameters )
+    public DirectBilinearLagrange( String name, ContinuousDomain dofsDomain )
     {
         super( name );
 
-        this.parameters = parameters;
+        this.dofsDomain = dofsDomain;
     }
 
 
     @Override
-    public double evaluate( MeshDomainValue value )
+    public double evaluate( DomainValues context, MeshDomainValue meshLocation,
+        SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators )
     {
-        DomainValues values = new DomainValues();
-        values.set( value.domain.elementDomain, value.indexValue );
+        ContinuousEvaluator dofEvaluator = dofEvaluators.get( dofsDomain );
+        ContinuousDomainValue dofs = dofEvaluator.evaluate( context );
 
-        ContinuousDomainValue params = parameters.evaluate( values );
-
-        return evaluate( params.values, value.chartValues );
+        return evaluate( dofs.values, meshLocation.chartValues );
     }
 }

@@ -51,6 +51,7 @@ public class DomainValues
     public void set( MeshDomain domain, int indexValue, double... chartValues )
     {
         set( domain.makeValue( indexValue, chartValues ) );
+        set( domain.elementDomain.makeValue( indexValue ) );//TODO This is ugly
     }
 
 

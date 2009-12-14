@@ -22,6 +22,7 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
@@ -176,27 +177,28 @@ public class QuadraticBSplineExample
 
         ContinuousDomain weighting3 = library.getContinuousDomain( "library.weighting.3d" );
 
-        ContinuousParameters elementDofWeights = new ContinuousParameters( "test_mesh.element_dof_weights", weighting3, testMeshElementDomain,
-            globalDofsDomain );
+        ContinuousParameters elementDofWeights = new ContinuousParameters( "test_mesh.element_dof_weights", weighting3,
+            testMeshElementDomain, globalDofsDomain );
         elementDofWeights.setDefaultValue( weighting.makeValue( 0.0, 0.0, 0.0 ) );
-        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
-        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 2, 2 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 2, 3 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 2, 4 );
-        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 3, 3 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 3, 4 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 3, 5 );
-        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 4, 4 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 4, 5 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 4, 6 );
-        elementDofWeights.setValue( weighting.makeValue( 1.0, 0.0, 0.0 ), 5, 5 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 1.0, 0.0 ), 5, 6 );
-        elementDofWeights.setValue( weighting.makeValue( 0.0, 0.0, 1.0 ), 5, 7 );
+        elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
+        elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 2, 2 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 2, 3 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 2, 4 );
+        elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 3, 3 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 3, 4 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 3, 5 );
+        elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 4, 4 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 4, 5 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 4, 6 );
+        elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 5, 5 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 5, 6 );
+        elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 5, 7 );
         testRegion.addEvaluator( elementDofWeights );
-        
+
         ContinuousMap elementDofMap = new ContinuousMap( "test_mesh.element_dof_map", elementDofWeights, globalDofsDomain );
+        testRegion.addMap( elementDofMap );
 
         ContinuousCompositeEvaluator elementParametersMerged = new ContinuousCompositeEvaluator( "test_mesh.element.parameters_merged",
             bsplineParamsDomain );
@@ -205,13 +207,17 @@ public class QuadraticBSplineExample
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
-        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new QuadraticBSpline( "bspline_line", elementParametersMerged ) );
-        meshCoordinatesZ.setEvaluator( 1, "bspline_line" );
-        meshCoordinatesZ.setEvaluator( 2, "bspline_line" );
-        meshCoordinatesZ.setEvaluator( 3, "bspline_line" );
-        meshCoordinatesZ.setEvaluator( 4, "bspline_line" );
-        meshCoordinatesZ.setEvaluator( 5, "bspline_line" );
+        PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "test_mesh.coordinates", meshDomain );
+        meshCoordinates.addFunction( new QuadraticBSpline( "quadratic_bspline", bsplineParamsDomain ) );
+        meshCoordinates.setFunction( 1, "quadratic_bspline" );
+        meshCoordinates.setFunction( 2, "quadratic_bspline" );
+        meshCoordinates.setFunction( 3, "quadratic_bspline" );
+        meshCoordinates.setFunction( 4, "quadratic_bspline" );
+        meshCoordinates.setFunction( 5, "quadratic_bspline" );
+        testRegion.addPiecewiseTemplate( meshCoordinates );
+
+        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshCoordinates );
+        meshCoordinatesZ.setDofs( bsplineParamsDomain, elementParametersMerged );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
@@ -230,13 +236,17 @@ public class QuadraticBSplineExample
             nodalX.setValue( 4.0, 5 );
             nodalX.setValue( 5.0, 6 );
 
-            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, meshDomain );
-            meshCoordinatesX.addEvaluator( new LinearLagrange( "linear", nodalX, lineNodeList, lineLocalNodeDomain ) );
-            meshCoordinatesX.setEvaluator( 1, "linear" );
-            meshCoordinatesX.setEvaluator( 2, "linear" );
-            meshCoordinatesX.setEvaluator( 3, "linear" );
-            meshCoordinatesX.setEvaluator( 4, "linear" );
-            meshCoordinatesX.setEvaluator( 5, "linear" );
+            PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", meshDomain );
+            linearMeshCoordinates.addFunction( new LinearLagrange( "linear", rc1CoordinatesDomain, lineNodeList, lineLocalNodeDomain ) );
+            linearMeshCoordinates.setFunction( 1, "linear" );
+            linearMeshCoordinates.setFunction( 2, "linear" );
+            linearMeshCoordinates.setFunction( 3, "linear" );
+            linearMeshCoordinates.setFunction( 4, "linear" );
+            linearMeshCoordinates.setFunction( 5, "linear" );
+            testRegion.addPiecewiseTemplate( linearMeshCoordinates );
+
+            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
+            meshCoordinatesX.setDofs( rc1CoordinatesDomain, nodalX );
 
             ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 

@@ -1,7 +1,7 @@
 package fieldml.function;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 
 public class BiquadraticQuad
@@ -25,9 +25,9 @@ public class BiquadraticQuad
     }
 
 
-    public BiquadraticQuad( String name, ContinuousParameters dofs, EnsembleParameters dofIndexes,
+    public BiquadraticQuad( String name, ContinuousDomain dofDomain, EnsembleParameters dofIndexes,
         EnsembleDomain iteratedDomain )
     {
-        super( name, dofs, dofIndexes, iteratedDomain );
+        super( name, dofDomain, dofIndexes, iteratedDomain );
     }
 }

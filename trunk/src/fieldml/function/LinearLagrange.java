@@ -1,7 +1,7 @@
 package fieldml.function;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 
 public class LinearLagrange
@@ -17,9 +17,9 @@ public class LinearLagrange
     }
 
 
-    public LinearLagrange( String name, ContinuousEvaluator dofs, EnsembleEvaluator dofIndexes,
+    public LinearLagrange( String name, ContinuousDomain dofDomain, EnsembleEvaluator dofIndexes,
         EnsembleDomain iteratedDomain )
     {
-        super( name, dofs, dofIndexes, iteratedDomain );
+        super( name, dofDomain, dofIndexes, iteratedDomain );
     }
 }

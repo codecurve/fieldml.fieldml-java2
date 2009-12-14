@@ -1,5 +1,9 @@
 package fieldml.function;
 
+import fieldml.domain.ContinuousDomain;
+import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.util.SimpleMap;
+import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public abstract class ContinuousFunction
@@ -13,5 +17,6 @@ public abstract class ContinuousFunction
     }
 
 
-    public abstract double evaluate( MeshDomainValue value );
+    public abstract double evaluate( DomainValues context, MeshDomainValue meshLocation,
+        SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators );
 }

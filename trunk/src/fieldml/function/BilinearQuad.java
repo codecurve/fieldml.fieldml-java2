@@ -1,7 +1,7 @@
 package fieldml.function;
 
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 
 public class BilinearQuad
@@ -19,9 +19,9 @@ public class BilinearQuad
     }
 
 
-    public BilinearQuad( String name, ContinuousEvaluator dofs, EnsembleEvaluator dofIndexes,
+    public BilinearQuad( String name, ContinuousDomain dofDomain, EnsembleEvaluator dofIndexes,
         EnsembleDomain iteratedDomain )
     {
-        super( name, dofs, dofIndexes, iteratedDomain );
+        super( name, dofDomain, dofIndexes, iteratedDomain );
     }
 }
