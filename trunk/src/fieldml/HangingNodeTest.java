@@ -197,12 +197,12 @@ public class HangingNodeTest
         testRegion.addPiecewiseTemplate( meshCoordinatesTemplate );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesTemplate );
-        meshCoordinatesX.setDofs( mesh1DDomain, meshX );
+        meshCoordinatesX.addDofs( meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesTemplate );
-        meshCoordinatesY.setDofs( mesh1DDomain, meshY );
+        meshCoordinatesY.addDofs( meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
@@ -341,12 +341,12 @@ public class HangingNodeTest
         testRegion.addPiecewiseTemplate( meshCoordinatesTemplate );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesTemplate );
-        meshCoordinatesX.setDofs( bilinearLagrangeParametersDomain, meshX );
+        meshCoordinatesX.addDofs( meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesTemplate );
-        meshCoordinatesY.setDofs( bilinearLagrangeParametersDomain, meshY );
+        meshCoordinatesY.addDofs( meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 

@@ -27,9 +27,12 @@ public class PiecewiseField
     }
 
 
-    public void setDofs( ContinuousDomain domain, ContinuousEvaluator evaluator )
+    public void addDofs( ContinuousEvaluator evaluator )
     {
-        dofEvaluators.put( domain, evaluator );
+        //Can only have one set of dofs on any given domain.
+        assert dofEvaluators.get( evaluator.getValueDomain() ) == null; 
+        
+        dofEvaluators.put( evaluator.getValueDomain(), evaluator );
     }
 
 
