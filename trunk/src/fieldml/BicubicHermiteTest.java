@@ -236,12 +236,12 @@ public class BicubicHermiteTest
         testRegion.addPiecewiseTemplate( meshCoordinatesL2 );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesX.setDofs( mesh1DDomain, meshX );
+        meshCoordinatesX.addDofs( meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesY.setDofs( mesh1DDomain, meshY );
+        meshCoordinatesY.addDofs( meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
@@ -253,7 +253,7 @@ public class BicubicHermiteTest
         testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesZ.setDofs( bicubicHermiteParametersDomain, bicubicZHermiteParameters );
+        meshCoordinatesZ.addDofs( bicubicZHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 

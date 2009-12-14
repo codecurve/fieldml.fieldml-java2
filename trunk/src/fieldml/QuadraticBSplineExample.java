@@ -217,7 +217,7 @@ public class QuadraticBSplineExample
         testRegion.addPiecewiseTemplate( meshCoordinates );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshCoordinates );
-        meshCoordinatesZ.setDofs( bsplineParamsDomain, elementParametersMerged );
+        meshCoordinatesZ.addDofs( elementParametersMerged );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
@@ -246,7 +246,7 @@ public class QuadraticBSplineExample
             testRegion.addPiecewiseTemplate( linearMeshCoordinates );
 
             PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
-            meshCoordinatesX.setDofs( rc1CoordinatesDomain, nodalX );
+            meshCoordinatesX.addDofs( nodalX );
 
             ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 

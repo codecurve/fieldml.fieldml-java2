@@ -246,7 +246,7 @@ public class FieldmlTest
         testRegion.addPiecewiseTemplate( meshCoordinatesT1 );
         
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshCoordinatesT1 );
-        meshCoordinatesX.setDofs( meshXdomain, meshX );
+        meshCoordinatesX.addDofs( meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
@@ -261,7 +261,7 @@ public class FieldmlTest
         testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
         
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.temple", meshYdomain, meshCoordinatesT2 );
-        meshCoordinatesY.setDofs( meshYdomain, meshY );
+        meshCoordinatesY.addDofs( meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 

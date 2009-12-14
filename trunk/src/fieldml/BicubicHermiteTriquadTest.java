@@ -401,17 +401,17 @@ public class BicubicHermiteTriquadTest
         testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
         
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesX.setDofs( bicubicHermiteParametersDomain, bicubicXHermiteParameters );
+        meshCoordinatesX.addDofs( bicubicXHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesY.setDofs( bicubicHermiteParametersDomain, bicubicYHermiteParameters );
+        meshCoordinatesY.addDofs( bicubicYHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesZ.setDofs( bicubicHermiteParametersDomain, bicubicZHermiteParameters );
+        meshCoordinatesZ.addDofs( bicubicZHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
