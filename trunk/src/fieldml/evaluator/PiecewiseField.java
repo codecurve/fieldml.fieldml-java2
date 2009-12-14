@@ -1,79 +1,41 @@
 package fieldml.evaluator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.MeshDomain;
-import fieldml.function.ContinuousFunction;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
-import fieldml.value.MeshDomainValue;
 
 public class PiecewiseField
     extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
     implements ContinuousEvaluator
 {
     @SerializationAsString
-    public final MeshDomain meshDomain;
+    public final PiecewiseTemplate template;
 
-    public final List<ContinuousFunction> evaluatorList;
-
-    public final SimpleMap<Integer, String> elementEvaluators;
+    public final SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators;
 
 
-    public PiecewiseField( String name, ContinuousDomain valueDomain, MeshDomain meshDomain )
+    public PiecewiseField( String name, ContinuousDomain valueDomain, PiecewiseTemplate template )
     {
         super( name, valueDomain );
 
-        this.meshDomain = meshDomain;
+        this.template = template;
 
-        elementEvaluators = new SimpleMap<Integer, String>();
-        evaluatorList = new ArrayList<ContinuousFunction>();
+        dofEvaluators = new SimpleMap<ContinuousDomain, ContinuousEvaluator>();
     }
 
 
-    public void setEvaluator( int indexValue, String evaluatorName )
+    public void setDofs( ContinuousDomain domain, ContinuousEvaluator evaluator )
     {
-        elementEvaluators.put( indexValue, evaluatorName );
-    }
-
-
-    private ContinuousFunction getEvaluator( String name )
-    {
-        for( ContinuousFunction e : evaluatorList )
-        {
-            if( e.name.equals( name ) )
-            {
-                return e;
-            }
-        }
-
-        return null;
+        dofEvaluators.put( domain, evaluator );
     }
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues input )
+    public ContinuousDomainValue evaluate( DomainValues context )
     {
-        MeshDomainValue v = input.get( meshDomain );
-
-        final String evaluatorName = elementEvaluators.get( v.indexValue );
-        ContinuousFunction e = getEvaluator( evaluatorName );
-
-        if( e != null )
-        {
-            return valueDomain.makeValue( e.evaluate( v ) );
-        }
-
-        return null;
-    }
-
-
-    public void addEvaluator( ContinuousFunction evaluator )
-    {
-        evaluatorList.add( evaluator );
+        return valueDomain.makeValue( template.evaluate( context, dofEvaluators ) );
     }
 }

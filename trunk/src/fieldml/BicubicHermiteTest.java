@@ -20,6 +20,7 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.function.BicubicHermiteQuad;
 import fieldml.function.BilinearQuad;
 import fieldml.io.JdomReflectiveHandler;
@@ -70,7 +71,8 @@ public class BicubicHermiteTest
     }
 
 
-    public static void main( String[] args ) throws FileNotFoundException, IOException
+    public static void main( String[] args )
+        throws FileNotFoundException, IOException
     {
         Region library = Region.getLibrary();
 
@@ -124,7 +126,7 @@ public class BicubicHermiteTest
         meshX.setValue( 1.0, 4 );
         meshX.setValue( 3.0, 5 );
         meshX.setValue( 3.0, 6 );
-        
+
         testRegion.addEvaluator( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
@@ -134,7 +136,7 @@ public class BicubicHermiteTest
         meshY.setValue( 1.0, 4 );
         meshY.setValue( 0.0, 5 );
         meshY.setValue( 1.0, 6 );
-        
+
         testRegion.addEvaluator( meshY );
 
         ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodesDomain );
@@ -171,7 +173,7 @@ public class BicubicHermiteTest
         meshd2Z.setValue( 0.0, 4 );
         meshd2Z.setValue( 0.0, 5 );
         meshd2Z.setValue( 0.0, 6 );
-        
+
         testRegion.addEvaluator( meshd2Z );
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
@@ -227,25 +229,31 @@ public class BicubicHermiteTest
          * wishing to share components can do so simply by sharing entire piecewise fields.
          */
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshDomain );
-        meshCoordinatesX.addEvaluator( new BilinearQuad( "linear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.setEvaluator( 1, "linear_quad" );
-        meshCoordinatesX.setEvaluator( 2, "linear_quad" );
+        PiecewiseTemplate meshCoordinatesL2 = new PiecewiseTemplate( "test_mesh.coordinates.L2", meshDomain );
+        meshCoordinatesL2.addFunction( new BilinearQuad( "bilinear_quad", mesh1DDomain, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesL2.setFunction( 1, "bilinear_quad" );
+        meshCoordinatesL2.setFunction( 2, "bilinear_quad" );
+        testRegion.addPiecewiseTemplate( meshCoordinatesL2 );
+
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesL2 );
+        meshCoordinatesX.setDofs( mesh1DDomain, meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshDomain );
-        meshCoordinatesY.addEvaluator( new BilinearQuad( "linear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.setEvaluator( 1, "linear_quad" );
-        meshCoordinatesY.setEvaluator( 2, "linear_quad" );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesL2 );
+        meshCoordinatesY.setDofs( mesh1DDomain, meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
-        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshDomain );
-        meshCoordinatesZ.addEvaluator( new BicubicHermiteQuad( "hermite_quad", bicubicZHermiteParameters, bicubicHermiteQuadScaling,
+        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain );
+        meshCoordinatesH3.addFunction( new BicubicHermiteQuad( "hermite_quad", bicubicHermiteParametersDomain, bicubicHermiteQuadScaling,
             quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesZ.setEvaluator( 1, "hermite_quad" );
-        meshCoordinatesZ.setEvaluator( 2, "hermite_quad" );
+        meshCoordinatesH3.setFunction( 1, "hermite_quad" );
+        meshCoordinatesH3.setFunction( 2, "hermite_quad" );
+        testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
+
+        PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
+        meshCoordinatesZ.setDofs( bicubicHermiteParametersDomain, bicubicZHermiteParameters );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
@@ -260,9 +268,9 @@ public class BicubicHermiteTest
 
         serialize( testRegion );
 
-        String collada = MinimalColladaExporter.exportFromFieldML(testRegion, "test_mesh.domain", 2, 16);
-        FileWriter f = new FileWriter("trunk/data/collada two quads.xml");
-        f.write(collada);
+        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, "test_mesh.domain", 2, 16 );
+        FileWriter f = new FileWriter( "trunk/data/collada two quads.xml" );
+        f.write( collada );
         f.close();
     }
 }

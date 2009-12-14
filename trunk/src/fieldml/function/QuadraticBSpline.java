@@ -1,18 +1,21 @@
 package fieldml.function;
 
 import fieldml.annotations.SerializationAsString;
+import fieldml.domain.ContinuousDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class QuadraticBSpline
     extends ContinuousFunction
 {
     @SerializationAsString
-    public final ContinuousEvaluator dofs;
+    public final ContinuousDomain dofsDomain;
 
 
-    //NOTE Making this method public simplifies testing.
+    // NOTE Making this method public simplifies testing.
     public static double evaluate( double[] params, double[] xi )
     {
         double p0 = 0.5 * ( 1 - xi[0] ) * ( 1 - xi[0] );
@@ -23,19 +26,21 @@ public class QuadraticBSpline
     }
 
 
-    public QuadraticBSpline( String name, ContinuousEvaluator dofs )
+    public QuadraticBSpline( String name, ContinuousDomain dofsDomain )
     {
         super( name );
 
-        this.dofs = dofs;
+        this.dofsDomain = dofsDomain;
     }
 
 
     @Override
-    public double evaluate( MeshDomainValue value )
+    public double evaluate( DomainValues context, MeshDomainValue meshLocation,
+        SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators )
     {
-        ContinuousDomainValue params = dofs.evaluate( value.domain.elementDomain, value.indexValue );
+        ContinuousEvaluator dofEvaluator = dofEvaluators.get( dofsDomain );
+        ContinuousDomainValue dofs = dofEvaluator.evaluate( context );
 
-        return evaluate( params.values, value.chartValues );
+        return evaluate( dofs.values, meshLocation.chartValues );
     }
 }

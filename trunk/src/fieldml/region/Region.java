@@ -4,7 +4,10 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
@@ -62,6 +65,8 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.bilinear_lagrange.parameters", 4 ) );
 
+        region.addDomain( new ContinuousDomain( "library.linear_lagrange.parameters", 2 ) );
+
         region.addDomain( new ContinuousDomain( "library.quadratic_bspline.parameters", 3 ) );
 
         region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
@@ -89,17 +94,24 @@ public class Region
 
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
+    private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
+
+    private final SimpleMap<String, ContinuousMap> continuousMaps;
+
     private final String name;
+
 
     public Region( String name )
     {
         this.name = name;
-        
+
         meshDomains = new SimpleMap<String, MeshDomain>();
         continuousDomains = new SimpleMap<String, ContinuousDomain>();
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
+        piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
+        continuousMaps = new SimpleMap<String, ContinuousMap>();
 
         assert regions.get( name ) == null;
 
@@ -110,9 +122,9 @@ public class Region
     public MeshDomain getMeshDomain( String name )
     {
         MeshDomain domain = meshDomains.get( name );
-        
+
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
-        
+
         return domain;
     }
 
@@ -120,9 +132,9 @@ public class Region
     public ContinuousDomain getContinuousDomain( String name )
     {
         ContinuousDomain domain = continuousDomains.get( name );
-        
+
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
-        
+
         return domain;
     }
 
@@ -130,9 +142,9 @@ public class Region
     public EnsembleDomain getEnsembleDomain( String name )
     {
         EnsembleDomain domain = ensembleDomains.get( name );
-        
+
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
-        
+
         return domain;
     }
 
@@ -140,9 +152,9 @@ public class Region
     public ContinuousEvaluator getContinuousEvaluator( String name )
     {
         ContinuousEvaluator evaluator = continuousEvaluators.get( name );
-        
+
         assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
-        
+
         return evaluator;
     }
 
@@ -150,10 +162,30 @@ public class Region
     public EnsembleEvaluator getEnsembleEvaluator( String name )
     {
         EnsembleEvaluator evaluator = ensembleEvaluators.get( name );
-        
+
         assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
-        
+
         return evaluator;
+    }
+
+
+    public PiecewiseTemplate getPiecewiseTemplate( String name )
+    {
+        PiecewiseTemplate template = piecewiseTemplates.get( name );
+
+        assert template != null : "Template " + name + " does not exist in region " + this.name;
+
+        return template;
+    }
+
+
+    public ContinuousMap getContinuousMap( String name )
+    {
+        ContinuousMap map = continuousMaps.get( name );
+
+        assert map != null : "Map " + name + " does not exist in region " + this.name;
+
+        return map;
     }
 
 
@@ -187,6 +219,18 @@ public class Region
     }
 
 
+    public void addPiecewiseTemplate( PiecewiseTemplate template )
+    {
+        piecewiseTemplates.put( template.name, template );
+    }
+
+
+    public void addMap( ContinuousMap map )
+    {
+        continuousMaps.put( map.name, map );
+    }
+
+
     public void walkObjects( ReflectiveHandler handler )
     {
         for( SimpleMapEntry<String, ContinuousDomain> k : continuousDomains )
@@ -201,14 +245,34 @@ public class Region
         {
             ReflectiveWalker.Walk( k.value, handler );
         }
-
         for( SimpleMapEntry<String, ContinuousEvaluator> k : continuousEvaluators )
+        {
+            if( k.value instanceof PiecewiseField )
+            {
+                // Hack for better ordering.
+                continue;
+            }
+            ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, ContinuousMap> k : continuousMaps )
         {
             ReflectiveWalker.Walk( k.value, handler );
         }
         for( SimpleMapEntry<String, EnsembleEvaluator> k : ensembleEvaluators )
         {
             ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, PiecewiseTemplate> k : piecewiseTemplates )
+        {
+            ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, ContinuousEvaluator> k : continuousEvaluators )
+        {
+            if( k.value instanceof PiecewiseField )
+            {
+                // Hack for better ordering... evil twin.
+                ReflectiveWalker.Walk( k.value, handler );
+            }
         }
     }
 }

@@ -17,6 +17,7 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseTemplate;
 import fieldml.function.BilinearQuad;
 import fieldml.function.BilinearSimplex;
 import fieldml.function.BiquadraticQuad;
@@ -235,30 +236,32 @@ public class FieldmlTest
          * wishing to share components can do so simply by sharing entire piecewise fields.
          */
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshDomain );
-
-        meshCoordinatesX.addEvaluator( new BilinearQuad( "bilinear_quad", meshX, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesX.addEvaluator( new BilinearSimplex( "bilinear_simplex", meshX, triangleNodeList,
-            triangle1x1LocalNodeDomain ) );
+        PiecewiseTemplate meshCoordinatesT1  = new PiecewiseTemplate( "test_mesh.coordinates.template1", meshDomain );
+        meshCoordinatesT1.addFunction( new BilinearQuad( "bilinear_quad", meshXdomain, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesT1.addFunction( new BilinearSimplex( "bilinear_simplex", meshXdomain, triangleNodeList, triangle1x1LocalNodeDomain ) );
+        meshCoordinatesT1.setFunction( 1, "bilinear_quad" );
+        meshCoordinatesT1.setFunction( 2, "bilinear_simplex" );
+        meshCoordinatesT1.setFunction( 3, "bilinear_simplex" );
+        meshCoordinatesT1.setFunction( 4, "bilinear_quad" );
+        testRegion.addPiecewiseTemplate( meshCoordinatesT1 );
+        
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshCoordinatesT1 );
+        meshCoordinatesX.setDofs( meshXdomain, meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
-        meshCoordinatesX.setEvaluator( 1, "bilinear_quad" );
-        meshCoordinatesX.setEvaluator( 2, "bilinear_simplex" );
-        meshCoordinatesX.setEvaluator( 3, "bilinear_simplex" );
-        meshCoordinatesX.setEvaluator( 4, "bilinear_quad" );
-
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshDomain );
-
-        meshCoordinatesY.addEvaluator( new BilinearQuad( "bilinear_quad", meshY, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BilinearSimplex( "bilinear_simplex", meshY, triangleNodeList,
-            triangle1x1LocalNodeDomain ) );
-        meshCoordinatesY.addEvaluator( new BiquadraticQuad( "biquadratic_quad", meshY, biquadNodeList, quad2x2LocalNodeDomain ) );
-
-        meshCoordinatesY.setEvaluator( 1, "bilinear_quad" );
-        meshCoordinatesY.setEvaluator( 2, "bilinear_simplex" );
-        meshCoordinatesY.setEvaluator( 3, "bilinear_simplex" );
-        meshCoordinatesY.setEvaluator( 4, "biquadratic_quad" );
+        PiecewiseTemplate meshCoordinatesT2 = new PiecewiseTemplate( "test_mesh.coordinates.template2", meshDomain );
+        meshCoordinatesT2.addFunction( new BilinearQuad( "bilinear_quad", meshYdomain, quadNodeList, quad1x1LocalNodeDomain ) );
+        meshCoordinatesT2.addFunction( new BilinearSimplex( "bilinear_simplex", meshYdomain, triangleNodeList, triangle1x1LocalNodeDomain ) );
+        meshCoordinatesT2.addFunction( new BiquadraticQuad( "biquadratic_quad", meshYdomain, biquadNodeList, quad2x2LocalNodeDomain ) );
+        meshCoordinatesT2.setFunction( 1, "bilinear_quad" );
+        meshCoordinatesT2.setFunction( 2, "bilinear_simplex" );
+        meshCoordinatesT2.setFunction( 3, "bilinear_simplex" );
+        meshCoordinatesT2.setFunction( 4, "biquadratic_quad" );
+        testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
+        
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.temple", meshYdomain, meshCoordinatesT2 );
+        meshCoordinatesY.setDofs( meshYdomain, meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 
