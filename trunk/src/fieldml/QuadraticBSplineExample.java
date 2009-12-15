@@ -19,6 +19,7 @@ import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
@@ -112,7 +113,7 @@ public class QuadraticBSplineExample
     }
 
 
-    public static void main( String[] args )
+    public static Region buildRegion()
     {
         Region library = Region.getLibrary();
 
@@ -221,6 +222,14 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( meshCoordinatesZ );
 
+        return testRegion;
+    }
+
+
+    public static void main( String[] args )
+    {
+        Region testRegion = buildRegion();
+        
         test( testRegion );
 
         serialize( testRegion );
@@ -228,6 +237,14 @@ public class QuadraticBSplineExample
         try
         {
             // These are only for visualization. Do not serialize.
+            Region library = Region.getLibrary();
+            ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+            EnsembleDomain globalNodesDomain = testRegion.getEnsembleDomain( "test_mesh.nodes" );
+            EnsembleEvaluator lineNodeList = testRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
+            MeshDomain meshDomain = testRegion.getMeshDomain( "test_mesh.domain" );
+            EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
+            ContinuousEvaluator meshCoordinatesZ = testRegion.getContinuousEvaluator( "test_mesh.coordinates.z" );
+
             ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
             nodalX.setValue( 0.0, 1 );
             nodalX.setValue( 1.0, 2 );

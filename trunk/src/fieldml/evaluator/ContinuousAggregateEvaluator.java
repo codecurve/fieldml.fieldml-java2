@@ -13,7 +13,7 @@ public class ContinuousAggregateEvaluator
     implements ContinuousEvaluator
 {
     @SerializationAsString
-    public final List<AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>> sourceFields;
+    public final List<ContinuousEvaluator> sourceFields;
 
     private int count;
 
@@ -23,7 +23,7 @@ public class ContinuousAggregateEvaluator
         super( name, valueDomain );
 
         count = valueDomain.dimensions;
-        sourceFields = new ArrayList<AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>>();
+        sourceFields = new ArrayList<ContinuousEvaluator>();
         for( int i = 0; i < valueDomain.dimensions; i++ )
         {
             sourceFields.add( null );
@@ -31,7 +31,7 @@ public class ContinuousAggregateEvaluator
     }
 
 
-    public void setSourceField( int destinationDimension, AbstractEvaluator<ContinuousDomain, ContinuousDomainValue> sourceField )
+    public void setSourceField( int destinationDimension, ContinuousEvaluator sourceField )
     {
         // TODO For simplicity, we're just taking the source field's first component.
         sourceFields.set( destinationDimension - 1, sourceField );
