@@ -124,7 +124,7 @@ public class TimeVaryingExample
         Region tvRegion = new Region( "tv_test" );
 
         EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements" );
-        timeElementDomain.addValues( 1, 2 );
+        timeElementDomain.addValues( 1, 2, 3 );
         tvRegion.addDomain( timeElementDomain );
 
         MeshDomain timeMeshDomain = new MeshDomain( "tv_test.time.mesh", 1, timeElementDomain );
@@ -169,8 +169,6 @@ public class TimeVaryingExample
         meshTimeTemplate.setFunction( 1, "quadratic_lagrange" );
         meshTimeTemplate.setFunction( 2, "quadratic_lagrange" );
         meshTimeTemplate.setFunction( 3, "quadratic_lagrange" );
-        meshTimeTemplate.setFunction( 4, "quadratic_lagrange" );
-        meshTimeTemplate.setFunction( 5, "quadratic_lagrange" );
         tvRegion.addPiecewiseTemplate( meshTimeTemplate );
 
         PiecewiseField meshTime = new PiecewiseField( "tv_test.time", rc1CoordinatesDomain, meshTimeTemplate );
@@ -220,6 +218,22 @@ public class TimeVaryingExample
         dofs.setValue( -0.427051, 5, 5 );
         dofs.setValue( 1.0450850, 6, 5 );
         dofs.setValue( 0.954915, 7, 5 );
+
+        dofs.setValue( 0.0, 1, 6 );
+        dofs.setValue( 0.0, 2, 6 );
+        dofs.setValue( 0.0, 3, 6 );
+        dofs.setValue( 0.0, 4, 6 );
+        dofs.setValue( 0.0, 5, 6 );
+        dofs.setValue( 0.0, 6, 6 );
+        dofs.setValue( 0.0, 7, 6 );
+
+        dofs.setValue( -0.954915, 1, 7 );
+        dofs.setValue( -1.0450850, 2, 7 );
+        dofs.setValue( 0.427051, 3, 7 );
+        dofs.setValue( 1.190983, 4, 7 );
+        dofs.setValue( 0.427051, 5, 7 );
+        dofs.setValue( -1.0450850, 6, 7 );
+        dofs.setValue( -0.954915, 7, 7 );
 
         ContinuousEvaluator bsplineDofWeights = bsplineRegion.getContinuousEvaluator( "test_mesh.element_dof_weights" );
 
