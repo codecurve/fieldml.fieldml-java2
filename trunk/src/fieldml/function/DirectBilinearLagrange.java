@@ -1,21 +1,13 @@
 package fieldml.function;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.util.SimpleMap;
-import fieldml.value.ContinuousDomainValue;
-import fieldml.value.DomainValues;
-import fieldml.value.MeshDomainValue;
+import fieldml.evaluator.ContinuousMap;
 
 public class DirectBilinearLagrange
-    extends ContinuousFunction
+    extends AbstractMappedFunction
 {
-    @SerializationAsString
-    public final ContinuousDomain dofsDomain;
-
-
-    protected double evaluate( double[] params, double[] xi )
+    // NOTE Making this method public simplifies testing.
+    public double evaluateDirect( double[] params, double[] xi )
     {
         double x1_1 = ( 1 - xi[0] );
         double x1_2 = ( xi[0] );
@@ -28,19 +20,19 @@ public class DirectBilinearLagrange
 
     public DirectBilinearLagrange( String name, ContinuousDomain dofsDomain )
     {
-        super( name );
+        super( name, dofsDomain, null );
+    }
 
-        this.dofsDomain = dofsDomain;
+
+    public DirectBilinearLagrange( String name, ContinuousDomain dofsDomain, ContinuousMap dofsMap )
+    {
+        super( name, dofsDomain, dofsMap );
     }
 
 
     @Override
-    public double evaluate( DomainValues context, MeshDomainValue meshLocation,
-        SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators )
+    public double evaluate( double[] params, double[] xi )
     {
-        ContinuousEvaluator dofEvaluator = dofEvaluators.get( dofsDomain );
-        ContinuousDomainValue dofs = dofEvaluator.evaluate( context );
-
-        return evaluate( dofs.values, meshLocation.chartValues );
+        return evaluateDirect( params, xi );
     }
 }

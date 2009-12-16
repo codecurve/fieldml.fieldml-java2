@@ -95,7 +95,7 @@ public class QuadraticBSplineExample
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
         output = meshZ.evaluate( meshDomain, 1, xi );
-        expectedValue = QuadraticBSpline.evaluate( params, xi );
+        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
         assert output.values[0] == expectedValue;
 
@@ -104,7 +104,7 @@ public class QuadraticBSplineExample
         params[1] = rawDofs[4];
         params[2] = rawDofs[5];
         output = meshZ.evaluate( meshDomain, 4, xi );
-        expectedValue = QuadraticBSpline.evaluate( params, xi );
+        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
         assert output.values[0] == expectedValue;
     }
@@ -198,15 +198,10 @@ public class QuadraticBSplineExample
         ContinuousMap elementDofMap = new ContinuousMap( "test_mesh.element_dof_map", elementDofWeights, globalDofsDomain );
         testRegion.addMap( elementDofMap );
 
-        ContinuousCompositeEvaluator elementParametersMerged = new ContinuousCompositeEvaluator( "test_mesh.element.parameters_merged",
-            bsplineParamsDomain );
-        elementParametersMerged.importMap( bsplineParamsDomain, dofs, elementDofMap );
-        testRegion.addEvaluator( elementParametersMerged );
-
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
         PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "test_mesh.coordinates", meshDomain );
-        meshCoordinates.addFunction( new QuadraticBSpline( "quadratic_bspline", bsplineParamsDomain ) );
+        meshCoordinates.addFunction( new QuadraticBSpline( "quadratic_bspline", weighting, elementDofMap ) );
         meshCoordinates.setFunction( 1, "quadratic_bspline" );
         meshCoordinates.setFunction( 2, "quadratic_bspline" );
         meshCoordinates.setFunction( 3, "quadratic_bspline" );
@@ -215,7 +210,7 @@ public class QuadraticBSplineExample
         testRegion.addPiecewiseTemplate( meshCoordinates );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshCoordinates );
-        meshCoordinatesZ.addDofs( elementParametersMerged );
+        meshCoordinatesZ.addDofs( dofs );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 

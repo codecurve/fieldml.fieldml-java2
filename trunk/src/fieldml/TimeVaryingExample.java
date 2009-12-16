@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import junit.framework.TestCase;
+
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -17,12 +19,10 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
-import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
@@ -34,6 +34,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class TimeVaryingExample
+    extends TestCase
 {
     private static void serialize( Region region )
     {
@@ -99,7 +100,7 @@ public class TimeVaryingExample
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
         output = meshZ.evaluate( meshDomain, 1, xi );
-        expectedValue = QuadraticBSpline.evaluate( params, xi );
+        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
         assert output.values[0] == expectedValue;
 
@@ -108,7 +109,7 @@ public class TimeVaryingExample
         params[1] = rawDofs[4];
         params[2] = rawDofs[5];
         output = meshZ.evaluate( meshDomain, 4, xi );
-        expectedValue = QuadraticBSpline.evaluate( params, xi );
+        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
         assert output.values[0] == expectedValue;
     }
@@ -116,13 +117,18 @@ public class TimeVaryingExample
 
     public static void main( String[] args )
     {
-        Region bsplineRegion = QuadraticBSplineExample.buildRegion();
-
-        Region library = Region.getLibrary();
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-
         Region tvRegion = new Region( "tv_test" );
 
+        Region library = Region.getLibrary();
+        Region bsplineRegion = QuadraticBSplineExample.buildRegion();
+
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain line2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
+        ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
+        EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+
+        {
         EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements" );
         timeElementDomain.addValues( 1, 2, 3 );
         tvRegion.addDomain( timeElementDomain );
@@ -144,8 +150,6 @@ public class TimeVaryingExample
         timeDofs.setValue( 6.625, 6 );
         timeDofs.setValue( 10.0, 7 );// Deliberately non-linear. C1 continuous for my own amusement.
         tvRegion.addEvaluator( timeDofs );
-
-        EnsembleDomain line2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsDomain,
             timeElementDomain, line2LocalNodeDomain );
@@ -175,7 +179,6 @@ public class TimeVaryingExample
         meshTime.addDofs( timeDofs );
         tvRegion.addEvaluator( meshTime );
 
-        ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
         EnsembleDomain bsplineDofsDomain = bsplineRegion.getEnsembleDomain( "test_mesh.dofs" );
 
         ContinuousParameters dofs = new ContinuousParameters( "tv_test.dofs.z", weighting, bsplineDofsDomain, timeDofsDomain );
@@ -235,27 +238,16 @@ public class TimeVaryingExample
         dofs.setValue( -1.0450850, 6, 7 );
         dofs.setValue( -0.954915, 7, 7 );
 
-        ContinuousEvaluator bsplineDofWeights = bsplineRegion.getContinuousEvaluator( "test_mesh.element_dof_weights" );
-
-        ContinuousMap extrudedDofMap = new ContinuousMap( "tv_test.element_dof_map", bsplineDofWeights, bsplineDofsDomain );
-        tvRegion.addMap( extrudedDofMap );
-
-        ContinuousDomain bsplineParamsDomain = library.getContinuousDomain( "library.quadratic_bspline.parameters" );
-
-        ContinuousCompositeEvaluator extrudedParametersMerged = new ContinuousCompositeEvaluator( "tv_test.element.parameters_merged",
-            bsplineParamsDomain );
-        extrudedParametersMerged.importMap( bsplineParamsDomain, dofs, extrudedDofMap );
-        tvRegion.addEvaluator( extrudedParametersMerged );
-
         PiecewiseTemplate bsplineTemplate = bsplineRegion.getPiecewiseTemplate( "test_mesh.coordinates" );
 
         PiecewiseField slicedZ = new PiecewiseField( "tv_test.coordinates.sliced_z", rc1CoordinatesDomain, bsplineTemplate );
-        slicedZ.addDofs( extrudedParametersMerged );
+        slicedZ.addDofs( dofs );
         tvRegion.addEvaluator( slicedZ );
 
         PiecewiseField zValue = new PiecewiseField( "tv_test.coordinates.z", rc1CoordinatesDomain, meshTimeTemplate );
         zValue.addDofs( slicedZ );
         tvRegion.addEvaluator( zValue );
+        }
 
         // test( tvRegion );
 
@@ -264,8 +256,8 @@ public class TimeVaryingExample
         try
         {
             // These are only for visualization. Do not serialize.
+
             EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
-            EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
             EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
             MeshDomain meshDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
 
@@ -289,7 +281,8 @@ public class TimeVaryingExample
             PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
             meshCoordinatesX.addDofs( nodalX );
 
-            ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+            ContinuousEvaluator meshTime = tvRegion.getContinuousEvaluator( "tv_test.time" );
+            ContinuousEvaluator zValue = tvRegion.getContinuousEvaluator( "tv_test.coordinates.z" );
 
             ContinuousAggregateEvaluator testCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );
             testCoordinates.setSourceField( 1, meshCoordinatesX );
