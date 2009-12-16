@@ -4,7 +4,6 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
-import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class MappedImportOperation
@@ -15,8 +14,7 @@ public class MappedImportOperation
 
     @SerializationAsString
     public final ContinuousDomain valueDomain;
-    
-    
+
     @SerializationAsString
     public final ContinuousMap map;
 
@@ -32,7 +30,7 @@ public class MappedImportOperation
     @Override
     public void perform( DomainValues context )
     {
-        ContinuousDomainValue value = map.evaluate( valueDomain, context, sourceField );
-        context.set( value );
+        double[] values = map.evaluate( context, sourceField );
+        context.set( valueDomain, values );
     }
 }
