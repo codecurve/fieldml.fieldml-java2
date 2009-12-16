@@ -268,7 +268,7 @@ public class BicubicHermiteTest
 
         serialize( testRegion );
 
-        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, "test_mesh.domain", 2, 16 );
+        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, 16, "test_mesh.domain", "test_mesh.coordinates" );
         FileWriter f = new FileWriter( "trunk/data/collada two quads.xml" );
         f.write( collada );
         f.close();

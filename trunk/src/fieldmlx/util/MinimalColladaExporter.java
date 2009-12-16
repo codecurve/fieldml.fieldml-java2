@@ -9,6 +9,7 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValues;
 
 /**
  * Very very simplistic FieldML-java to Collada converter.
@@ -19,11 +20,12 @@ public class MinimalColladaExporter
     private static final String PATH_TO_COLLADA_SKELETON = "trunk/resources/ColladaSkeleton.xml";
 
 
-    public static String exportFromFieldML( final Region region, final String meshName, final int elementCount, int discretisation )
+    public static String exportFromFieldML( final Region region, int discretisation, final String meshName, final String fieldName )
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
+        ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
+        final int elementCount = meshDomain.elementDomain.getValueCount();
 
         ContinuousDomainValue v;
 
@@ -76,31 +78,108 @@ public class MinimalColladaExporter
     }
 
 
-    public static String export2DFromFieldML( final Region region, final String meshName, final int elementCount, int discretisation )
+    public static String exportFromFieldML( final Region region, int discretisation, final String fieldName, final String mesh1Name,
+        final String mesh2Name )
+        throws FileNotFoundException, IOException
+    {
+        MeshDomain mesh1Domain = region.getMeshDomain( mesh1Name );
+        MeshDomain mesh2Domain = region.getMeshDomain( mesh2Name );
+        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
+        final int element1Count = mesh1Domain.elementDomain.getValueCount();
+        final int element2Count = mesh2Domain.elementDomain.getValueCount();
+
+        ContinuousDomainValue v;
+
+        StringBuilder xyzArray = new StringBuilder();
+        StringBuilder polygonBlock = new StringBuilder();
+        DomainValues context = new DomainValues();
+        int elementNumber = 0;
+
+        for( int element1Number = 1; element1Number <= element1Count; element1Number++ )
+        {
+            for( int element2Number = 1; element2Number <= element2Count; element2Number++ )
+            {
+                for( int i = 0; i <= discretisation; i++ )
+                {
+                    for( int j = 0; j <= discretisation; j++ )
+                    {
+
+                        final double xi1 = i / (double)discretisation;
+                        final double xi2 = j / (double)discretisation;
+
+                        context.set( mesh1Domain, element1Number, xi1 );
+                        context.set( mesh2Domain, element2Number, xi2 );
+
+                        v = mesh.evaluate( context );
+                        xyzArray.append( "\n" );
+                        xyzArray.append( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
+
+                    }
+                }
+                xyzArray.append( "\n" );
+
+                elementNumber++;
+
+                final int nodeOffsetOfElement = ( elementNumber - 1 ) * ( discretisation + 1 ) * ( discretisation + 1 );
+                for( int i = 0; i < discretisation; i++ )
+                {
+                    for( int j = 0; j < discretisation; j++ )
+                    {
+                        final int nodeAtLowerXi1LowerXi2 = nodeOffsetOfElement + ( discretisation + 1 ) * ( i + 0 ) + ( j + 0 );
+                        final int nodeAtLowerXi1UpperXi2 = nodeOffsetOfElement + ( discretisation + 1 ) * ( i + 0 ) + ( j + 1 );
+                        final int nodeAtUpperXi1UpperXi2 = nodeOffsetOfElement + ( discretisation + 1 ) * ( i + 1 ) + ( j + 1 );
+                        final int nodeAtUpperXi1LowerXi2 = nodeOffsetOfElement + ( discretisation + 1 ) * ( i + 1 ) + ( j + 0 );
+                        polygonBlock.append( "<p>" );
+                        polygonBlock.append( " " + nodeAtLowerXi1LowerXi2 );
+                        polygonBlock.append( " " + nodeAtLowerXi1UpperXi2 );
+                        polygonBlock.append( " " + nodeAtUpperXi1UpperXi2 );
+                        polygonBlock.append( " " + nodeAtUpperXi1LowerXi2 );
+                        polygonBlock.append( "</p>\n" );
+                    }
+                }
+            }
+        }
+
+        final int polygonCount = discretisation * discretisation * elementNumber;
+        final int vertexCount = ( discretisation + 1 ) * ( discretisation + 1 ) * elementNumber;
+        final int xyzArrayCount = vertexCount * 3;
+
+        final String colladaString = fillInColladaTemplate( xyzArray, polygonBlock, polygonCount, vertexCount, xyzArrayCount );
+
+        return colladaString;
+    }
+
+
+    public static String export1DFromFieldML( final Region region, final String meshName, final String fieldName, int discretisation )
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
-
+        ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
+        int elementCount = meshDomain.elementDomain.getValueCount();
+        double deltaX = 1.0 / discretisation;
+        double x = deltaX;
         ContinuousDomainValue v;
 
         StringBuilder xyzArray = new StringBuilder();
         StringBuilder polygonBlock = new StringBuilder();
         for( int elementNumber = 1; elementNumber <= elementCount; elementNumber++ )
         {
+            x -= deltaX;
             for( int j = 0; j <= discretisation; j++ )
             {
                 final double xi1 = j / (double)discretisation;
 
                 v = mesh.evaluate( meshDomain, elementNumber, xi1 );
                 xyzArray.append( "\n" );
-                xyzArray.append( " " + v.values[0] + " " + v.values[1] + " 0.0" );
-                xyzArray.append( " " + v.values[0] + " " + v.values[1] + " 1.0" );
+                xyzArray.append( " " + x + " " + v.values[0] + " 0.0" );
+                xyzArray.append( " " + x + " " + v.values[0] + " 1.0" );
+
+                x += deltaX;
             }
             xyzArray.append( "\n" );
 
             final int nodeOffsetOfElement = ( elementNumber - 1 ) * ( discretisation + 1 ) * 2;
-            
+
             for( int j = 0; j < discretisation; j++ )
             {
                 final int nodeAtLowerXi1LowerXi2 = nodeOffsetOfElement + ( j * 2 ) + 0;

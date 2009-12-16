@@ -15,16 +15,13 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
-import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.field.PiecewiseTemplate;
-import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
@@ -180,7 +177,7 @@ public class QuadraticBSplineExample
 
         ContinuousParameters elementDofWeights = new ContinuousParameters( "test_mesh.element_dof_weights", weighting3,
             testMeshElementDomain, globalDofsDomain );
-        elementDofWeights.setDefaultValue( weighting.makeValue( 0.0, 0.0, 0.0 ) );
+        elementDofWeights.setDefaultValue( weighting3.makeValue( 0.0, 0.0, 0.0 ) );
         elementDofWeights.setValue( weighting3.makeValue( 1.0, 0.0, 0.0 ), 1, 1 );
         elementDofWeights.setValue( weighting3.makeValue( 0.0, 1.0, 0.0 ), 1, 2 );
         elementDofWeights.setValue( weighting3.makeValue( 0.0, 0.0, 1.0 ), 1, 3 );
@@ -229,51 +226,14 @@ public class QuadraticBSplineExample
     public static void main( String[] args )
     {
         Region testRegion = buildRegion();
-        
+
         test( testRegion );
 
         serialize( testRegion );
 
         try
         {
-            // These are only for visualization. Do not serialize.
-            Region library = Region.getLibrary();
-            ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-            EnsembleDomain globalNodesDomain = testRegion.getEnsembleDomain( "test_mesh.nodes" );
-            EnsembleEvaluator lineNodeList = testRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
-            MeshDomain meshDomain = testRegion.getMeshDomain( "test_mesh.domain" );
-            EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
-            ContinuousEvaluator meshCoordinatesZ = testRegion.getContinuousEvaluator( "test_mesh.coordinates.z" );
-
-            ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
-            nodalX.setValue( 0.0, 1 );
-            nodalX.setValue( 1.0, 2 );
-            nodalX.setValue( 2.0, 3 );
-            nodalX.setValue( 3.0, 4 );
-            nodalX.setValue( 4.0, 5 );
-            nodalX.setValue( 5.0, 6 );
-
-            PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", meshDomain );
-            linearMeshCoordinates.addFunction( new LinearLagrange( "linear", rc1CoordinatesDomain, lineNodeList, lineLocalNodeDomain ) );
-            linearMeshCoordinates.setFunction( 1, "linear" );
-            linearMeshCoordinates.setFunction( 2, "linear" );
-            linearMeshCoordinates.setFunction( 3, "linear" );
-            linearMeshCoordinates.setFunction( 4, "linear" );
-            linearMeshCoordinates.setFunction( 5, "linear" );
-            testRegion.addPiecewiseTemplate( linearMeshCoordinates );
-
-            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
-            meshCoordinatesX.addDofs( nodalX );
-
-            ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
-
-            ContinuousAggregateEvaluator testCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh2DDomain );
-            testCoordinates.setSourceField( 1, meshCoordinatesX );
-            testCoordinates.setSourceField( 2, meshCoordinatesZ );
-
-            testRegion.addEvaluator( testCoordinates );
-
-            String collada = MinimalColladaExporter.export2DFromFieldML( testRegion, "test_mesh.domain", 5, 16 );
+            String collada = MinimalColladaExporter.export1DFromFieldML( testRegion, "test_mesh.domain", "test_mesh.coordinates.z", 16 );
             FileWriter f = new FileWriter( "trunk/data/collada b-spline.xml" );
             f.write( collada );
             f.close();
