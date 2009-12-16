@@ -426,7 +426,7 @@ public class BicubicHermiteTriquadTest
 
         serialize( testRegion );
 
-        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, "test_mesh.domain", 3, 64 );
+        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, 64, "test_mesh.domain", "test_mesh.coordinates" );
         FileWriter f = new FileWriter( "trunk/data/collada three quads.xml" );
         f.write( collada );
         f.close();
