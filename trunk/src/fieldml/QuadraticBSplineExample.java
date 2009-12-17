@@ -5,6 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import junit.framework.TestCase;
+
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -20,7 +22,6 @@ import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
-import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
@@ -30,9 +31,12 @@ import fieldml.value.ContinuousDomainValue;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class QuadraticBSplineExample
+    extends TestCase
 {
-    private static void serialize( Region region )
+    public void testSerialize()
     {
+        Region region = buildRegion();
+        
         Document doc = new Document();
         Element root = new Element( "fieldml" );
         doc.setRootElement( root );
@@ -78,8 +82,10 @@ public class QuadraticBSplineExample
     { 0.954915, 1.0450850, -0.427051, -1.190983, -0.427051, 1.0450850, 0.954915 };
 
 
-    private static void test( Region region )
+    public void testEvaluation()
     {
+        Region region = buildRegion();
+
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
         ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
@@ -97,7 +103,7 @@ public class QuadraticBSplineExample
         output = meshZ.evaluate( meshDomain, 1, xi );
         expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
-        assert output.values[0] == expectedValue;
+        assertEquals( expectedValue, output.values[0] );
 
         xi[0] = 0.48;
         params[0] = rawDofs[3];
@@ -106,8 +112,10 @@ public class QuadraticBSplineExample
         output = meshZ.evaluate( meshDomain, 4, xi );
         expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
 
-        assert output.values[0] == expectedValue;
+        assertEquals( expectedValue, output.values[0] );
     }
+
+    public static String REGION_NAME = "QuadraticBSpline_Test";
 
 
     public static Region buildRegion()
@@ -116,7 +124,7 @@ public class QuadraticBSplineExample
 
         EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
 
-        Region testRegion = new Region( "test" );
+        Region testRegion = new Region( REGION_NAME );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2, 3, 4, 5 );
@@ -213,18 +221,14 @@ public class QuadraticBSplineExample
         meshCoordinatesZ.addDofs( dofs );
 
         testRegion.addEvaluator( meshCoordinatesZ );
-
+        
         return testRegion;
     }
 
 
-    public static void main( String[] args )
+    public void test()
     {
         Region testRegion = buildRegion();
-
-        test( testRegion );
-
-        serialize( testRegion );
 
         try
         {

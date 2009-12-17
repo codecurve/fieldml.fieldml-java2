@@ -31,13 +31,16 @@ import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValues;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class TimeVaryingExample
     extends TestCase
 {
-    private static void serialize( Region region )
+    public void testSerialize()
     {
+        Region region = buildRegion();
+
         Document doc = new Document();
         Element root = new Element( "fieldml" );
         doc.setRootElement( root );
@@ -83,52 +86,69 @@ public class TimeVaryingExample
     { 0.954915, 1.0450850, -0.427051, -1.190983, -0.427051, 1.0450850, 0.954915 };
 
 
-    private static void test( Region region )
+    public void testEvaluation()
     {
-        MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
+        Region testRegion = buildRegion();
+        Region bsplineRegion = testRegion.getSubregion( QuadraticBSplineExample.REGION_NAME );
+
+        MeshDomain timeMeshDomain = testRegion.getMeshDomain( "tv_test.time.mesh" );
+        MeshDomain splineMeshDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
+        ContinuousEvaluator meshZ = testRegion.getContinuousEvaluator( "tv_test.coordinates.z" );
+
+        DomainValues context = new DomainValues();
 
         ContinuousDomainValue output;
 
         double params[] = new double[3];
         double xi[] = new double[1];
-        double expectedValue;
+        double timeXi[] = new double[1];
+        double quadraticParams[] = new double[3];
+        double value;
 
         xi[0] = 0.25;
+        timeXi[0] = 0.33;
+
         params[0] = rawDofs[0];
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
-        output = meshZ.evaluate( meshDomain, 1, xi );
-        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
+        quadraticParams[0] = QuadraticBSpline.evaluateDirect( params, xi );
 
-        assert output.values[0] == expectedValue;
+        params[0] = 0;
+        params[1] = 0;
+        params[2] = 0;
+        quadraticParams[1] = QuadraticBSpline.evaluateDirect( params, xi );
 
-        xi[0] = 0.48;
-        params[0] = rawDofs[3];
-        params[1] = rawDofs[4];
-        params[2] = rawDofs[5];
-        output = meshZ.evaluate( meshDomain, 4, xi );
-        expectedValue = QuadraticBSpline.evaluateDirect( params, xi );
+        params[0] = -rawDofs[0];
+        params[1] = -rawDofs[1];
+        params[2] = -rawDofs[2];
+        quadraticParams[2] = QuadraticBSpline.evaluateDirect( params, xi );
 
-        assert output.values[0] == expectedValue;
+        context.set( splineMeshDomain, 1, xi );
+        context.set( timeMeshDomain, 1, timeXi );
+        output = meshZ.evaluate( context );
+
+        value = QuadraticLagrange.evaluateDirect( quadraticParams, timeXi );
+
+        assertEquals( value, output.values[0] );
     }
 
+    public static String REGION_NAME = "TimeVaryingExample_Test";
 
-    public void test()
+
+    public static Region buildRegion()
     {
-        Region tvRegion = new Region( "tv_test" );
-
         Region library = Region.getLibrary();
+
+        Region tvRegion = new Region( REGION_NAME );
+
         Region bsplineRegion = QuadraticBSplineExample.buildRegion();
 
+        tvRegion.addSubregion( bsplineRegion );
+        
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         EnsembleDomain line2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
         ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
-        EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
-        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
-
-        {
         EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements" );
         timeElementDomain.addValues( 1, 2, 3 );
         tvRegion.addDomain( timeElementDomain );
@@ -247,61 +267,63 @@ public class TimeVaryingExample
         PiecewiseField zValue = new PiecewiseField( "tv_test.coordinates.z", rc1CoordinatesDomain, meshTimeTemplate );
         zValue.addDofs( slicedZ );
         tvRegion.addEvaluator( zValue );
-        }
+        
+        return tvRegion;
+    }
 
-        // test( tvRegion );
 
-        // serialize( tvRegion );
+    public void test()
+        throws IOException
+    {
+        Region library = Region.getLibrary();
+        Region testRegion = buildRegion();
+        Region bsplineRegion = testRegion.getSubregion( QuadraticBSplineExample.REGION_NAME );
 
-        try
-        {
-            // These are only for visualization. Do not serialize.
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+        // These are only for visualization. Do not serialize.
 
-            EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
-            EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
-            MeshDomain meshDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
+        EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
+        EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
+        MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
 
-            ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
-            nodalX.setValue( 0.0, 1 );
-            nodalX.setValue( 1.0, 2 );
-            nodalX.setValue( 2.0, 3 );
-            nodalX.setValue( 3.0, 4 );
-            nodalX.setValue( 4.0, 5 );
-            nodalX.setValue( 5.0, 6 );
+        ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
+        nodalX.setValue( 0.0, 1 );
+        nodalX.setValue( 1.0, 2 );
+        nodalX.setValue( 2.0, 3 );
+        nodalX.setValue( 3.0, 4 );
+        nodalX.setValue( 4.0, 5 );
+        nodalX.setValue( 5.0, 6 );
 
-            PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", meshDomain );
-            linearMeshCoordinates.addFunction( new LinearLagrange( "linear", rc1CoordinatesDomain, lineNodeList, lineLocalNodeDomain ) );
-            linearMeshCoordinates.setFunction( 1, "linear" );
-            linearMeshCoordinates.setFunction( 2, "linear" );
-            linearMeshCoordinates.setFunction( 3, "linear" );
-            linearMeshCoordinates.setFunction( 4, "linear" );
-            linearMeshCoordinates.setFunction( 5, "linear" );
-            tvRegion.addPiecewiseTemplate( linearMeshCoordinates );
+        PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain );
+        linearMeshCoordinates.addFunction( new LinearLagrange( "linear", rc1CoordinatesDomain, lineNodeList, lineLocalNodeDomain ) );
+        linearMeshCoordinates.setFunction( 1, "linear" );
+        linearMeshCoordinates.setFunction( 2, "linear" );
+        linearMeshCoordinates.setFunction( 3, "linear" );
+        linearMeshCoordinates.setFunction( 4, "linear" );
+        linearMeshCoordinates.setFunction( 5, "linear" );
+        testRegion.addPiecewiseTemplate( linearMeshCoordinates );
 
-            PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
-            meshCoordinatesX.addDofs( nodalX );
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
+        meshCoordinatesX.addDofs( nodalX );
 
-            ContinuousEvaluator meshTime = tvRegion.getContinuousEvaluator( "tv_test.time" );
-            ContinuousEvaluator zValue = tvRegion.getContinuousEvaluator( "tv_test.coordinates.z" );
+        ContinuousEvaluator meshTime = testRegion.getContinuousEvaluator( "tv_test.time" );
+        ContinuousEvaluator zValue = testRegion.getContinuousEvaluator( "tv_test.coordinates.z" );
 
-            ContinuousAggregateEvaluator testCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );
-            testCoordinates.setSourceField( 1, meshCoordinatesX );
-            testCoordinates.setSourceField( 2, meshTime );
-            testCoordinates.setSourceField( 3, zValue );
+        ContinuousAggregateEvaluator testCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );
+        testCoordinates.setSourceField( 1, meshCoordinatesX );
+        testCoordinates.setSourceField( 2, meshTime );
+        testCoordinates.setSourceField( 3, zValue );
 
-            tvRegion.addEvaluator( testCoordinates );
+        testRegion.addEvaluator( testCoordinates );
 
-            MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
-            tvRegion.addDomain( bsplineDomain );
+        testRegion.addDomain( bsplineDomain );
 
-            String collada = MinimalColladaExporter.exportFromFieldML( tvRegion, 16, "test_mesh.coordinates", "test_mesh.domain",
-                "tv_test.time.mesh" );
-            FileWriter f = new FileWriter( "trunk/data/collada tv b-spline.xml" );
-            f.write( collada );
-            f.close();
-        }
-        catch( IOException e )
-        {
-        }
+        String collada = MinimalColladaExporter.exportFromFieldML( testRegion, 16, "test_mesh.coordinates", "test_mesh.domain",
+            "tv_test.time.mesh" );
+        FileWriter f = new FileWriter( "trunk/data/collada tv b-spline.xml" );
+        f.write( collada );
+        f.close();
     }
 }

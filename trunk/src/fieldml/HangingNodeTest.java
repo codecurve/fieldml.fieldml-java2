@@ -2,6 +2,8 @@ package fieldml;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -27,9 +29,14 @@ import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
 public class HangingNodeTest
+    extends TestCase
 {
-    private static void serialize( Region region )
+    public static String REGION_NAME = "HangingNode_Test";
+    
+    public void testSerialization()
     {
+        Region region = buildDirectMapRegion();
+
         Document doc = new Document();
         Element root = new Element( "fieldml" );
         doc.setRootElement( root );
@@ -65,8 +72,10 @@ public class HangingNodeTest
     }
 
 
-    private static void test( Region region )
+    public void testEvaluation()
     {
+        Region region = buildDirectMapRegion();
+        
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
 
@@ -90,13 +99,13 @@ public class HangingNodeTest
      * This example creates a local node set from the available dofs, adding 'virtual' nodes as needed, then using a standard
      * element x localnode -> globalnode lookup for generating the dof vectors needed for interpolation.
      */
-    private static void virtualNodeExample()
+    public static Region buildVirtualNodeRegion()
     {
         Region library = Region.getLibrary();
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
-        Region testRegion = new Region( "test" );
+        Region testRegion = new Region( REGION_NAME );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2, 3 );
@@ -211,10 +220,8 @@ public class HangingNodeTest
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        test( testRegion );
-
-        serialize( testRegion );
+        
+        return testRegion;
     }
 
 
@@ -222,12 +229,12 @@ public class HangingNodeTest
      * This example creates a local node set from the available dofs, adding 'virtual' nodes as needed, then using a standard
      * element x localnode -> globalnode lookup for generating the dof vectors needed for interpolation.
      */
-    private static void directMapExample()
+    public static Region buildDirectMapRegion()
     {
         Region library = Region.getLibrary();
 
-        Region testRegion = new Region( "test" );
-
+        Region testRegion = new Region( REGION_NAME );
+        
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2, 3 );
         testRegion.addDomain( testMeshElementDomain );
@@ -355,17 +362,7 @@ public class HangingNodeTest
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        test( testRegion );
-
-        serialize( testRegion );
-    }
-
-
-    public static void main( String[] args )
-    {
-        // virtualNodeExample();
-
-        directMapExample();
+        
+        return testRegion;
     }
 }
