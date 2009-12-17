@@ -115,7 +115,7 @@ public class TimeVaryingExample
     }
 
 
-    public static void main( String[] args )
+    public void test()
     {
         Region tvRegion = new Region( "tv_test" );
 
