@@ -1,8 +1,9 @@
 package fieldml;
 
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+
+import junit.framework.TestCase;
 
 import org.jdom.Comment;
 import org.jdom.Document;
@@ -15,7 +16,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.PiecewiseField;
@@ -28,9 +28,15 @@ import fieldml.region.Region;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTest
+    extends TestCase
 {
-    private static void serialize( Region region )
+    public static String REGION_NAME = "BicubicHermite_Test";
+
+
+    public void testSerialization()
     {
+        Region region = buildRegion();
+
         Document doc = new Document();
         Element root = new Element( "fieldml" );
         doc.setRootElement( root );
@@ -64,15 +70,13 @@ public class BicubicHermiteTest
     }
 
 
-    private static void test( Region region )
+    public void testEvaluation()
     {
-        MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates" );
+        //TODO STUB BicubicHermiteTest.testEvaluation
     }
 
 
-    public static void main( String[] args )
-        throws FileNotFoundException, IOException
+    public static Region buildRegion()
     {
         Region library = Region.getLibrary();
 
@@ -81,7 +85,7 @@ public class BicubicHermiteTest
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction" );
         edgeDirectionDomain.addValues( 1, 2 );
 
-        Region testRegion = new Region( "test" );
+        Region testRegion = new Region( REGION_NAME );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2 );
@@ -263,10 +267,15 @@ public class BicubicHermiteTest
         meshCoordinates.setSourceField( 3, meshCoordinatesZ );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        test( testRegion );
-
-        serialize( testRegion );
+        
+        return testRegion;
+    }
+    
+    
+    public void test()
+        throws IOException
+    {
+        Region testRegion = buildRegion();
 
         String collada = MinimalColladaExporter.exportFromFieldML( testRegion, 16, "test_mesh.domain", "test_mesh.coordinates" );
         FileWriter f = new FileWriter( "trunk/data/collada two quads.xml" );

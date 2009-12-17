@@ -2,6 +2,8 @@ package fieldml;
 
 import java.io.IOException;
 
+import junit.framework.TestCase;
+
 import org.jdom.Comment;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -26,9 +28,14 @@ import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
 public class FieldmlTest
+    extends TestCase
 {
-    private static void serialize( Region region )
+    public static String REGION_NAME = "Fieldml_Test";
+    
+    public void testSerialization()
     {
+        Region region = buildRegion();
+
         Document doc = new Document();
         Element root = new Element( "fieldml" );
         doc.setRootElement( root );
@@ -62,8 +69,10 @@ public class FieldmlTest
     }
 
 
-    private static void test( Region region )
+    public void testEvaluation()
     {
+        Region region = buildRegion();
+
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
         ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
@@ -122,7 +131,7 @@ public class FieldmlTest
     }
 
 
-    public static void main( String[] args )
+    public static Region buildRegion()
     {
         Region library = Region.getLibrary();
 
@@ -132,7 +141,7 @@ public class FieldmlTest
 
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
 
-        Region testRegion = new Region( "test" );
+        Region testRegion = new Region( REGION_NAME );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2, 3, 4 );
@@ -270,9 +279,7 @@ public class FieldmlTest
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        test( testRegion );
-
-        serialize( testRegion );
+        
+        return testRegion;
     }
 }

@@ -1,5 +1,8 @@
 package fieldml.region;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
@@ -19,7 +22,7 @@ public class Region
 
     private static final Region library;
 
-    public static final SimpleMap<String, Region> regions;
+    private static final SimpleMap<String, Region> regions;
 
     static
     {
@@ -106,6 +109,8 @@ public class Region
 
     private final SimpleMap<String, ContinuousMap> continuousMaps;
 
+    private final Map<String, Region> subregions;
+
     private final String name;
 
 
@@ -120,6 +125,7 @@ public class Region
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
         piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
         continuousMaps = new SimpleMap<String, ContinuousMap>();
+        subregions = new HashMap<String, Region>();
 
         assert regions.get( name ) == null;
 
@@ -282,5 +288,17 @@ public class Region
                 ReflectiveWalker.Walk( k.value, handler );
             }
         }
+    }
+
+
+    public void addSubregion( Region region )
+    {
+        subregions.put( region.name, region );
+    }
+
+
+    public Region getSubregion( String name )
+    {
+        return subregions.get( name );
     }
 }
