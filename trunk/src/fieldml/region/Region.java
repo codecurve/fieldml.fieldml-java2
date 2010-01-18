@@ -9,7 +9,7 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.EnsembleEvaluator;
-import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;

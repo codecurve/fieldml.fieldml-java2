@@ -1,8 +1,9 @@
-package fieldml.evaluator;
+package fieldml.field;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.field.PiecewiseTemplate;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.util.SimpleMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;

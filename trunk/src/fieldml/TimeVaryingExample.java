@@ -22,7 +22,7 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;

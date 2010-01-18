@@ -18,7 +18,7 @@ import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.function.BilinearQuad;
 import fieldml.function.BilinearSimplex;

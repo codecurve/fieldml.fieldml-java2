@@ -21,7 +21,7 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousMap;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.PiecewiseField;
+import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
