@@ -11,7 +11,7 @@ public interface ContinuousEvaluator
     public String getName();
 
 
-    public ContinuousDomainValue evaluate( DomainValues input );
+    public ContinuousDomainValue evaluate( DomainValues context );
 
 
     public ContinuousDomainValue evaluate( EnsembleDomain domain, int index );

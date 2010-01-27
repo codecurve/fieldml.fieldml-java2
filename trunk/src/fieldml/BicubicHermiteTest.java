@@ -14,16 +14,20 @@ import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.EnsembleListParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
+import fieldml.evaluator.hardcoded.BicubicHermite;
+import fieldml.evaluator.hardcoded.BilinearLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
-import fieldml.function.BicubicHermiteQuad;
-import fieldml.function.BilinearQuad;
 import fieldml.io.JdomReflectiveHandler;
+import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldmlx.util.MinimalColladaExporter;
 
@@ -72,7 +76,7 @@ public class BicubicHermiteTest
 
     public void testEvaluation()
     {
-        //TODO STUB BicubicHermiteTest.testEvaluation
+        // TODO STUB BicubicHermiteTest.testEvaluation
     }
 
 
@@ -82,10 +86,11 @@ public class BicubicHermiteTest
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
+        Region testRegion = new Region( REGION_NAME );
+
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction" );
         edgeDirectionDomain.addValues( 1, 2 );
-
-        Region testRegion = new Region( REGION_NAME );
+        testRegion.addDomain( edgeDirectionDomain );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
         testMeshElementDomain.addValues( 1, 2 );
@@ -100,18 +105,13 @@ public class BicubicHermiteTest
         globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6 );
         testRegion.addDomain( globalNodesDomain );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, testMeshElementDomain,
-            quad1x1LocalNodeDomain );
+        EnsembleListDomain globalNodesListDomain = new EnsembleListDomain( "test_mesh.node_list", globalNodesDomain );
+        testRegion.addDomain( globalNodesListDomain );
 
-        quadNodeList.setValue( 1, 1, 1 );
-        quadNodeList.setValue( 2, 1, 2 );
-        quadNodeList.setValue( 3, 1, 3 );
-        quadNodeList.setValue( 4, 1, 4 );
-        quadNodeList.setValue( 2, 2, 1 );
-        quadNodeList.setValue( 5, 2, 2 );
-        quadNodeList.setValue( 4, 2, 3 );
-        quadNodeList.setValue( 6, 2, 4 );
-
+        EnsembleListParameters quadNodeList = new EnsembleListParameters( "test_mesh.quad_nodes", globalNodesListDomain,
+            testMeshElementDomain );
+        quadNodeList.setValue( 1, 1, 2, 3, 4 );
+        quadNodeList.setValue( 2, 2, 5, 4, 6 );
         testRegion.addEvaluator( quadNodeList );
 
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
@@ -130,7 +130,6 @@ public class BicubicHermiteTest
         meshX.setValue( 1.0, 4 );
         meshX.setValue( 3.0, 5 );
         meshX.setValue( 3.0, 6 );
-
         testRegion.addEvaluator( meshX );
 
         ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
@@ -140,7 +139,6 @@ public class BicubicHermiteTest
         meshY.setValue( 1.0, 4 );
         meshY.setValue( 0.0, 5 );
         meshY.setValue( 1.0, 6 );
-
         testRegion.addEvaluator( meshY );
 
         ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodesDomain );
@@ -150,7 +148,6 @@ public class BicubicHermiteTest
         meshZ.setValue( 0.0, 4 );
         meshZ.setValue( 0.0, 5 );
         meshZ.setValue( 0.0, 6 );
-
         testRegion.addEvaluator( meshZ );
 
         ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshdZdomain, globalNodesDomain,
@@ -167,7 +164,6 @@ public class BicubicHermiteTest
         meshdZ.setValue( 1.0, 5, 2 );
         meshdZ.setValue( -1.0, 6, 1 );
         meshdZ.setValue( -1.0, 6, 2 );
-
         testRegion.addEvaluator( meshdZ );
 
         ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2Zdomain, globalNodesDomain );
@@ -177,7 +173,6 @@ public class BicubicHermiteTest
         meshd2Z.setValue( 0.0, 4 );
         meshd2Z.setValue( 0.0, 5 );
         meshd2Z.setValue( 0.0, 6 );
-
         testRegion.addEvaluator( meshd2Z );
 
         ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
@@ -189,89 +184,82 @@ public class BicubicHermiteTest
         bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 2 );
         bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 3 );
         bicubicHermiteQuadScaling.setValue( bicubicHermiteScalingDomain.makeValue( 1, 2, 1, 2 ), 2, 4 );
-
         testRegion.addEvaluator( bicubicHermiteQuadScaling );
 
         EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
             testMeshElementDomain, quad1x1LocalNodeDomain );
         meshds1Direction.setDefaultValue( 1 );
-
         testRegion.addEvaluator( meshds1Direction );
 
         EnsembleParameters meshds2Direction = new EnsembleParameters( "test_mesh.node.direction.ds2", edgeDirectionDomain,
             testMeshElementDomain, quad1x1LocalNodeDomain );
         meshds2Direction.setDefaultValue( 2 );
-
         testRegion.addEvaluator( meshds2Direction );
 
         ContinuousCompositeEvaluator meshdZds1 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds1", meshdZdomain );
         meshdZds1.importField( meshds1Direction );
         meshdZds1.importField( meshdZ );
-
         testRegion.addEvaluator( meshdZds1 );
 
         ContinuousCompositeEvaluator meshdZds2 = new ContinuousCompositeEvaluator( "test_mesh.node.dz/ds2", meshdZdomain );
         meshdZds2.importField( meshds2Direction );
         meshdZds2.importField( meshdZ );
-
         testRegion.addEvaluator( meshdZds2 );
 
-        ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
+        ContinuousDomain bicubicHermiteNodalParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.nodal.parameters" );
 
         ContinuousAggregateEvaluator bicubicZHermiteParameters = new ContinuousAggregateEvaluator( "test_mesh.bicubic_parameters.z",
-            bicubicHermiteParametersDomain );
+            bicubicHermiteNodalParametersDomain );
         bicubicZHermiteParameters.setSourceField( 1, meshZ );
         bicubicZHermiteParameters.setSourceField( 2, meshdZds1 );
         bicubicZHermiteParameters.setSourceField( 3, meshdZds2 );
         bicubicZHermiteParameters.setSourceField( 4, meshd2Z );
-
         testRegion.addEvaluator( bicubicZHermiteParameters );
 
-        /*
-         * 
-         * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
-         * wishing to share components can do so simply by sharing entire piecewise fields.
-         */
+        ContinuousListEvaluator meshBilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
+        testRegion.addEvaluator( meshBilinearLagrange );
 
-        PiecewiseTemplate meshCoordinatesL2 = new PiecewiseTemplate( "test_mesh.coordinates.L2", meshDomain );
-        meshCoordinatesL2.addFunction( new BilinearQuad( "bilinear_quad", mesh1DDomain, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesL2.setFunction( 1, "bilinear_quad" );
-        meshCoordinatesL2.setFunction( 2, "bilinear_quad" );
+        IndirectMap elementBilinearMap = new IndirectMap( "test_mesh.element.bilinear_lagrange", quadNodeList, meshBilinearLagrange );
+        testRegion.addMap( elementBilinearMap );
+
+        PiecewiseTemplate meshCoordinatesL2 = new PiecewiseTemplate( "test_mesh.coordinates.L2", meshDomain, 1 );
+        meshCoordinatesL2.setMap( 1, elementBilinearMap, 1 );
+        meshCoordinatesL2.setMap( 2, elementBilinearMap, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesL2 );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesX.addDofs( meshX );
-
+        meshCoordinatesX.setDofs( 1, meshX );
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesY.addDofs( meshY );
-
+        meshCoordinatesY.setDofs( 1, meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
-        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain );
-        meshCoordinatesH3.addFunction( new BicubicHermiteQuad( "hermite_quad", bicubicHermiteParametersDomain, bicubicHermiteQuadScaling,
-            quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesH3.setFunction( 1, "hermite_quad" );
-        meshCoordinatesH3.setFunction( 2, "hermite_quad" );
+        ContinuousListEvaluator meshBicubicHermite = new BicubicHermite( "test_mesh.mesh.bicubic_hermite", meshDomain );
+        testRegion.addEvaluator( meshBicubicHermite );
+
+        IndirectMap elementBicubicHermiteMap = new IndirectMap( "test_mesh.element.bicubic_hermite", quadNodeList, meshBicubicHermite );
+        testRegion.addMap( elementBicubicHermiteMap );
+
+        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain, 1 );
+        meshCoordinatesH3.setMap( 1, elementBicubicHermiteMap, 1 );
+        meshCoordinatesH3.setMap( 2, elementBicubicHermiteMap, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesZ.addDofs( bicubicZHermiteParameters );
-
+        meshCoordinatesZ.setDofs( 1, bicubicZHermiteParameters );
         testRegion.addEvaluator( meshCoordinatesZ );
 
         ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
         meshCoordinates.setSourceField( 3, meshCoordinatesZ );
-
         testRegion.addEvaluator( meshCoordinates );
-        
+
         return testRegion;
     }
-    
-    
+
+
     public void test()
         throws IOException
     {
