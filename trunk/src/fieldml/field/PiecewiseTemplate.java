@@ -1,76 +1,65 @@
 package fieldml.field;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.function.ContinuousFunction;
+import fieldml.map.ContinuousMap;
 import fieldml.util.SimpleMap;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class PiecewiseTemplate
 {
+    public static class TemplateMap
+    {
+        @SerializationAsString
+        public final ContinuousMap map;
+
+        public final int dofSet;
+
+
+        public TemplateMap( ContinuousMap map, int dofSet )
+        {
+            this.map = map;
+            this.dofSet = dofSet - 1;
+        }
+    }
+
     public final String name;
 
     @SerializationAsString
     public final MeshDomain meshDomain;
 
-    // NOTE This should be a map, but a list makes serialization much nicer.
-    public final List<ContinuousFunction> functions;
+    public final SimpleMap<Integer, TemplateMap> maps;
 
-    public final SimpleMap<Integer, String> elementFunctions;
+    public final int totalDofSets;
 
 
-    public PiecewiseTemplate( String name, MeshDomain meshDomain )
+    public PiecewiseTemplate( String name, MeshDomain meshDomain, int totalDofSets )
     {
         this.name = name;
         this.meshDomain = meshDomain;
+        this.totalDofSets = totalDofSets;
 
-        functions = new ArrayList<ContinuousFunction>();
-        elementFunctions = new SimpleMap<Integer, String>();
+        maps = new SimpleMap<Integer, TemplateMap>();
     }
 
 
-    public void addFunction( ContinuousFunction function )
+    public void setMap( int index, ContinuousMap map, int dofSet )
     {
-        functions.add( function );
+        maps.put( index, new TemplateMap( map, dofSet ) );
     }
 
 
-    public void setFunction( int element, String functionName )
-    {
-        elementFunctions.put( element, functionName );
-    }
-
-
-    private ContinuousFunction getFunction( String name )
-    {
-        for( ContinuousFunction f : functions )
-        {
-            if( f.name.equals( name ) )
-            {
-                return f;
-            }
-        }
-
-        return null;
-    }
-
-
-    public double evaluate( DomainValues context, SimpleMap<ContinuousDomain, ContinuousEvaluator> dofEvaluators )
+    public double evaluate( DomainValues context, ContinuousEvaluator[] dofs )
     {
         MeshDomainValue v = context.get( meshDomain );
 
-        final String evaluatorName = elementFunctions.get( v.indexValue );
-        ContinuousFunction function = getFunction( evaluatorName );
+        TemplateMap templateMap = maps.get( v.indexValue );
 
-        if( function != null )
+        if( templateMap != null )
         {
-            return function.evaluate( context, v, dofEvaluators );
+            return templateMap.map.evaluate( context, dofs[templateMap.dofSet] );
         }
 
         assert false;

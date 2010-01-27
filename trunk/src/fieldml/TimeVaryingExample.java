@@ -16,19 +16,22 @@ import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
-import fieldml.evaluator.EnsembleEvaluator;
-import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.EnsembleListEvaluator;
+import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.hardcoded.LinearLagrange;
+import fieldml.evaluator.hardcoded.QuadraticBSpline;
+import fieldml.evaluator.hardcoded.QuadraticLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
-import fieldml.function.LinearLagrange;
-import fieldml.function.QuadraticBSpline;
-import fieldml.function.QuadraticLagrange;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
+import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -100,6 +103,7 @@ public class TimeVaryingExample
 
         ContinuousDomainValue output;
 
+        double[] interpolatorValues = new double[3];
         double params[] = new double[3];
         double xi[] = new double[1];
         double timeXi[] = new double[1];
@@ -112,23 +116,31 @@ public class TimeVaryingExample
         params[0] = rawDofs[0];
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
-        quadraticParams[0] = QuadraticBSpline.evaluateDirect( params, xi );
+        interpolatorValues = QuadraticBSpline.evaluateDirect( xi[0] );
+        quadraticParams[0] = ( interpolatorValues[0] * params[0] ) + ( interpolatorValues[1] * params[1] )
+            + ( interpolatorValues[2] * params[2] );
 
         params[0] = 0;
         params[1] = 0;
         params[2] = 0;
-        quadraticParams[1] = QuadraticBSpline.evaluateDirect( params, xi );
+        interpolatorValues = QuadraticBSpline.evaluateDirect( xi[0] );
+        quadraticParams[1] = ( interpolatorValues[0] * params[0] ) + ( interpolatorValues[1] * params[1] )
+            + ( interpolatorValues[2] * params[2] );
 
         params[0] = -rawDofs[0];
         params[1] = -rawDofs[1];
         params[2] = -rawDofs[2];
-        quadraticParams[2] = QuadraticBSpline.evaluateDirect( params, xi );
+        interpolatorValues = QuadraticBSpline.evaluateDirect( xi[0] );
+        quadraticParams[2] = ( interpolatorValues[0] * params[0] ) + ( interpolatorValues[1] * params[1] )
+            + ( interpolatorValues[2] * params[2] );
 
         context.set( splineMeshDomain, 1, xi );
         context.set( timeMeshDomain, 1, timeXi );
         output = meshZ.evaluate( context );
 
-        value = QuadraticLagrange.evaluateDirect( quadraticParams, timeXi );
+        interpolatorValues = QuadraticLagrange.evaluateDirect( timeXi[0] );
+        value = ( interpolatorValues[0] * quadraticParams[0] ) + ( interpolatorValues[1] * quadraticParams[1] )
+            + ( interpolatorValues[2] * quadraticParams[2] );
 
         assertEquals( value, output.values[0] );
     }
@@ -145,9 +157,8 @@ public class TimeVaryingExample
         Region bsplineRegion = QuadraticBSplineExample.buildRegion();
 
         tvRegion.addSubregion( bsplineRegion );
-        
+
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        EnsembleDomain line2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
         ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
         EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements" );
         timeElementDomain.addValues( 1, 2, 3 );
@@ -161,6 +172,9 @@ public class TimeVaryingExample
         timeDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7 );
         tvRegion.addDomain( timeDofsDomain );
 
+        EnsembleListDomain timeDofsListDomain = new EnsembleListDomain( "tv_test.time.dofs.list.domain", timeDofsDomain );
+        tvRegion.addDomain( timeDofsListDomain );
+
         ContinuousParameters timeDofs = new ContinuousParameters( "tv_test.time.dofs.values", rc1CoordinatesDomain, timeDofsDomain );
         timeDofs.setValue( 0, 1 );
         timeDofs.setValue( 1, 2 );
@@ -171,32 +185,28 @@ public class TimeVaryingExample
         timeDofs.setValue( 10.0, 7 );// Deliberately non-linear. C1 continuous for my own amusement.
         tvRegion.addEvaluator( timeDofs );
 
-        EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsDomain,
-            timeElementDomain, line2LocalNodeDomain );
-        elementDofIndexes.setValue( 1, 1, 1 );
-        elementDofIndexes.setValue( 2, 1, 2 );
-        elementDofIndexes.setValue( 3, 1, 3 );
-
-        elementDofIndexes.setValue( 3, 2, 1 );
-        elementDofIndexes.setValue( 4, 2, 2 );
-        elementDofIndexes.setValue( 5, 2, 3 );
-
-        elementDofIndexes.setValue( 5, 3, 1 );
-        elementDofIndexes.setValue( 6, 3, 2 );
-        elementDofIndexes.setValue( 7, 3, 3 );
+        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
+            timeElementDomain );
+        elementDofIndexes.setValue( 1, 1, 2, 3 );
+        elementDofIndexes.setValue( 2, 3, 4, 5 );
+        elementDofIndexes.setValue( 3, 5, 6, 7 );
 
         tvRegion.addEvaluator( elementDofIndexes );
 
-        PiecewiseTemplate meshTimeTemplate = new PiecewiseTemplate( "tv_test.time.template", timeMeshDomain );
-        meshTimeTemplate.addFunction( new QuadraticLagrange( "quadratic_lagrange", rc1CoordinatesDomain, elementDofIndexes,
-            line2LocalNodeDomain ) );
-        meshTimeTemplate.setFunction( 1, "quadratic_lagrange" );
-        meshTimeTemplate.setFunction( 2, "quadratic_lagrange" );
-        meshTimeTemplate.setFunction( 3, "quadratic_lagrange" );
+        ContinuousListEvaluator quadraticLagrange = new QuadraticLagrange( "tv_test.mesh.quadratic_lagrange", timeMeshDomain );
+        tvRegion.addEvaluator( quadraticLagrange );
+
+        IndirectMap elementQLagrange = new IndirectMap( "test_mesh.element.quadratic_lagrange_map", elementDofIndexes, quadraticLagrange );
+        tvRegion.addMap( elementQLagrange );
+
+        PiecewiseTemplate meshTimeTemplate = new PiecewiseTemplate( "tv_test.time.template", timeMeshDomain, 1 );
+        meshTimeTemplate.setMap( 1, elementQLagrange, 1 );
+        meshTimeTemplate.setMap( 2, elementQLagrange, 1 );
+        meshTimeTemplate.setMap( 3, elementQLagrange, 1 );
         tvRegion.addPiecewiseTemplate( meshTimeTemplate );
 
         PiecewiseField meshTime = new PiecewiseField( "tv_test.time", rc1CoordinatesDomain, meshTimeTemplate );
-        meshTime.addDofs( timeDofs );
+        meshTime.setDofs( 1, timeDofs );
         tvRegion.addEvaluator( meshTime );
 
         EnsembleDomain bsplineDofsDomain = bsplineRegion.getEnsembleDomain( "test_mesh.dofs" );
@@ -257,17 +267,18 @@ public class TimeVaryingExample
         dofs.setValue( 0.427051, 5, 7 );
         dofs.setValue( -1.0450850, 6, 7 );
         dofs.setValue( -0.954915, 7, 7 );
+        tvRegion.addEvaluator( dofs );
 
         PiecewiseTemplate bsplineTemplate = bsplineRegion.getPiecewiseTemplate( "test_mesh.coordinates" );
 
         PiecewiseField slicedZ = new PiecewiseField( "tv_test.coordinates.sliced_z", rc1CoordinatesDomain, bsplineTemplate );
-        slicedZ.addDofs( dofs );
+        slicedZ.setDofs( 1, dofs );
         tvRegion.addEvaluator( slicedZ );
 
         PiecewiseField zValue = new PiecewiseField( "tv_test.coordinates.z", rc1CoordinatesDomain, meshTimeTemplate );
-        zValue.addDofs( slicedZ );
+        zValue.setDofs( 1, slicedZ );
         tvRegion.addEvaluator( zValue );
-        
+
         return tvRegion;
     }
 
@@ -280,12 +291,11 @@ public class TimeVaryingExample
         Region bsplineRegion = testRegion.getSubregion( QuadraticBSplineExample.REGION_NAME );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        EnsembleDomain lineLocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.line.1" );
         ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
         // These are only for visualization. Do not serialize.
 
         EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
-        EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
+        EnsembleListEvaluator lineNodeList = bsplineRegion.getEnsembleListEvaluator( "test_mesh.line_nodes" );
         MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
 
         ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
@@ -296,17 +306,22 @@ public class TimeVaryingExample
         nodalX.setValue( 4.0, 5 );
         nodalX.setValue( 5.0, 6 );
 
-        PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain );
-        linearMeshCoordinates.addFunction( new LinearLagrange( "linear", rc1CoordinatesDomain, lineNodeList, lineLocalNodeDomain ) );
-        linearMeshCoordinates.setFunction( 1, "linear" );
-        linearMeshCoordinates.setFunction( 2, "linear" );
-        linearMeshCoordinates.setFunction( 3, "linear" );
-        linearMeshCoordinates.setFunction( 4, "linear" );
-        linearMeshCoordinates.setFunction( 5, "linear" );
+        ContinuousListEvaluator linearLagrange = new LinearLagrange( "test_mesh.mesh.linear_lagrange", bsplineDomain );
+        testRegion.addEvaluator( linearLagrange );
+        
+        IndirectMap elementLLagrange = new IndirectMap( "test_mesh.element.linear_lagrange_map", lineNodeList, linearLagrange );
+        testRegion.addMap( elementLLagrange );
+
+        PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain, 1 );
+        linearMeshCoordinates.setMap( 1, elementLLagrange, 1 );
+        linearMeshCoordinates.setMap( 2, elementLLagrange, 1 );
+        linearMeshCoordinates.setMap( 3, elementLLagrange, 1 );
+        linearMeshCoordinates.setMap( 4, elementLLagrange, 1 );
+        linearMeshCoordinates.setMap( 5, elementLLagrange, 1 );
         testRegion.addPiecewiseTemplate( linearMeshCoordinates );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
-        meshCoordinatesX.addDofs( nodalX );
+        meshCoordinatesX.setDofs( 1, nodalX );
 
         ContinuousEvaluator meshTime = testRegion.getContinuousEvaluator( "tv_test.time" );
         ContinuousEvaluator zValue = testRegion.getContinuousEvaluator( "tv_test.coordinates.z" );

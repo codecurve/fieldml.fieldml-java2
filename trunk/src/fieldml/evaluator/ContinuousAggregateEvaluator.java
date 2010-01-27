@@ -33,7 +33,7 @@ public class ContinuousAggregateEvaluator
 
     public void setSourceField( int destinationDimension, ContinuousEvaluator sourceField )
     {
-        // TODO For simplicity, we're just taking the source field's first component.
+        // TODO For now, we're just taking the source field's first component.
         sourceFields.set( destinationDimension - 1, sourceField );
     }
 

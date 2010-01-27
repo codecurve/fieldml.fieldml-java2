@@ -4,15 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousMap;
+import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.evaluator.EnsembleListEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
+import fieldml.map.ContinuousMap;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
 
@@ -60,6 +64,13 @@ public class Region
         quadEdgeDirectionDomain.addValues( 1, 2 );
         region.addDomain( quadEdgeDirectionDomain );
 
+        ContinuousDomain weighting = new ContinuousDomain( "library.weighting.1d", 1 );
+        region.addDomain( weighting );
+
+        region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
+
+        region.addDomain( new ContinuousDomain( "library.weighting.3d", 3 ) );
+
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.1d", 1 ) );
 
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.2d", 2 ) );
@@ -68,24 +79,26 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 4 ) );
 
-        region.addDomain( new ContinuousDomain( "library.linear_lagrange.parameters", 2 ) );
+        region.addDomain( new ContinuousListDomain( "library.linear_lagrange.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.bilinear_lagrange.parameters", 4 ) );
+        region.addDomain( new ContinuousListDomain( "library.bilinear_lagrange.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.quadratic_lagrange.parameters", 3 ) );
+        region.addDomain( new ContinuousListDomain( "library.quadratic_lagrange.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.cubic_lagrange.parameters", 3 ) );
+        region.addDomain( new ContinuousListDomain( "library.biquadratic_lagrange.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.bicubic_hermite.parameters", 4 ) );
+        region.addDomain( new ContinuousListDomain( "library.cubic_lagrange.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.quadratic_bspline.parameters", 3 ) );
+        region.addDomain( new ContinuousListDomain( "library.bilinear_simplex.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.weighting.1d", 1 ) );
+        region.addDomain( new ContinuousListDomain( "library.bicubic_hermite.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.weighting.2d", 2 ) );
+        region.addDomain( new ContinuousListDomain( "library.quadratic_bspline.parameters", weighting ) );
 
-        region.addDomain( new ContinuousDomain( "library.weighting.3d", 3 ) );
+        region.addDomain( new ContinuousListDomain( "library.weighting.list", weighting ) );
 
+        region.addDomain( new ContinuousDomain( "library.bicubic_hermite.nodal.parameters", 4 ) );
+        
         return region;
     }
 
@@ -99,15 +112,23 @@ public class Region
 
     private final SimpleMap<String, ContinuousDomain> continuousDomains;
 
+    private final SimpleMap<String, ContinuousListDomain> continuousListDomains;
+
     private final SimpleMap<String, EnsembleDomain> ensembleDomains;
+
+    private final SimpleMap<String, EnsembleListDomain> ensembleListDomains;
 
     private final SimpleMap<String, ContinuousEvaluator> continuousEvaluators;
 
+    private final SimpleMap<String, ContinuousListEvaluator> continuousListEvaluators;
+
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
+
+    private final SimpleMap<String, EnsembleListEvaluator> ensembleListEvaluators;
 
     private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
 
-    private final SimpleMap<String, ContinuousMap> continuousMaps;
+    private final SimpleMap<String, ContinuousMap> parameterMaps;
 
     private final Map<String, Region> subregions;
 
@@ -120,11 +141,15 @@ public class Region
 
         meshDomains = new SimpleMap<String, MeshDomain>();
         continuousDomains = new SimpleMap<String, ContinuousDomain>();
+        continuousListDomains = new SimpleMap<String, ContinuousListDomain>();
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
+        ensembleListDomains = new SimpleMap<String, EnsembleListDomain>();
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
+        continuousListEvaluators = new SimpleMap<String, ContinuousListEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
+        ensembleListEvaluators = new SimpleMap<String, EnsembleListEvaluator>();
         piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
-        continuousMaps = new SimpleMap<String, ContinuousMap>();
+        parameterMaps = new SimpleMap<String, ContinuousMap>();
         subregions = new HashMap<String, Region>();
 
         assert regions.get( name ) == null;
@@ -153,6 +178,16 @@ public class Region
     }
 
 
+    public ContinuousListDomain getContinuousListDomain( String name )
+    {
+        ContinuousListDomain domain = continuousListDomains.get( name );
+
+        assert domain != null : "Domain " + name + " does not exist in region " + this.name;
+
+        return domain;
+    }
+
+
     public EnsembleDomain getEnsembleDomain( String name )
     {
         EnsembleDomain domain = ensembleDomains.get( name );
@@ -173,9 +208,29 @@ public class Region
     }
 
 
+    public ContinuousListEvaluator getContinuousListEvaluator( String name )
+    {
+        ContinuousListEvaluator evaluator = continuousListEvaluators.get( name );
+
+        assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
+
+        return evaluator;
+    }
+
+
     public EnsembleEvaluator getEnsembleEvaluator( String name )
     {
         EnsembleEvaluator evaluator = ensembleEvaluators.get( name );
+
+        assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
+
+        return evaluator;
+    }
+
+
+    public EnsembleListEvaluator getEnsembleListEvaluator( String name )
+    {
+        EnsembleListEvaluator evaluator = ensembleListEvaluators.get( name );
 
         assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
 
@@ -193,9 +248,9 @@ public class Region
     }
 
 
-    public ContinuousMap getContinuousMap( String name )
+    public ContinuousMap getParameterMap( String name )
     {
-        ContinuousMap map = continuousMaps.get( name );
+        ContinuousMap map = parameterMaps.get( name );
 
         assert map != null : "Map " + name + " does not exist in region " + this.name;
 
@@ -215,9 +270,21 @@ public class Region
     }
 
 
+    public void addDomain( ContinuousListDomain domain )
+    {
+        continuousListDomains.put( domain.name, domain );
+    }
+
+
     public void addDomain( EnsembleDomain domain )
     {
         ensembleDomains.put( domain.name, domain );
+    }
+
+
+    public void addDomain( EnsembleListDomain domain )
+    {
+        ensembleListDomains.put( domain.name, domain );
     }
 
 
@@ -227,9 +294,21 @@ public class Region
     }
 
 
+    public void addEvaluator( ContinuousListEvaluator evaluator )
+    {
+        continuousListEvaluators.put( evaluator.getName(), evaluator );
+    }
+
+
     public void addEvaluator( EnsembleEvaluator evaluator )
     {
         ensembleEvaluators.put( evaluator.getName(), evaluator );
+    }
+
+
+    public void addEvaluator( EnsembleListEvaluator evaluator )
+    {
+        ensembleListEvaluators.put( evaluator.getName(), evaluator );
     }
 
 
@@ -241,7 +320,7 @@ public class Region
 
     public void addMap( ContinuousMap map )
     {
-        continuousMaps.put( map.name, map );
+        parameterMaps.put( map.getName(), map );
     }
 
 
@@ -252,6 +331,10 @@ public class Region
             ReflectiveWalker.Walk( k.value, handler );
         }
         for( SimpleMapEntry<String, EnsembleDomain> k : ensembleDomains )
+        {
+            ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, EnsembleListDomain> k : ensembleListDomains )
         {
             ReflectiveWalker.Walk( k.value, handler );
         }
@@ -268,7 +351,7 @@ public class Region
             }
             ReflectiveWalker.Walk( k.value, handler );
         }
-        for( SimpleMapEntry<String, ContinuousMap> k : continuousMaps )
+        for( SimpleMapEntry<String, ContinuousMap> k : parameterMaps )
         {
             ReflectiveWalker.Walk( k.value, handler );
         }

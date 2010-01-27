@@ -1,0 +1,45 @@
+package fieldml.evaluator.hardcoded;
+
+import fieldml.domain.ContinuousListDomain;
+import fieldml.domain.MeshDomain;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.ContinuousListEvaluator;
+import fieldml.region.Region;
+import fieldml.value.ContinuousListDomainValue;
+import fieldml.value.DomainValues;
+
+public class QuadraticBSpline
+    extends AbstractEvaluator<ContinuousListDomain, ContinuousListDomainValue>
+    implements ContinuousListEvaluator
+{
+    // NOTE Making this method public simplifies testing.
+    public static double[] evaluateDirect( double x1 )
+    {
+        double[] value = new double[3];
+
+        value[0] = 0.5 * ( 1 - x1 ) * ( 1 - x1 );
+        value[1] = -( x1 * x1 ) + x1 + 0.5;
+        value[2] = 0.5 * x1 * x1;
+
+        return value;
+    }
+
+    public final MeshDomain xiDomain;
+
+
+    public QuadraticBSpline( String name, MeshDomain xiDomain )
+    {
+        super( name, Region.getLibrary().getContinuousListDomain( "library.quadratic_bspline.parameters" ) );
+        
+        this.xiDomain = xiDomain;
+    }
+
+
+    @Override
+    public ContinuousListDomainValue evaluate( DomainValues context )
+    {
+        double xi[] = context.get( xiDomain ).chartValues;
+        
+        return valueDomain.makeValue( evaluateDirect( xi[0] ) );
+    }
+}

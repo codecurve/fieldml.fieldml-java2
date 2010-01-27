@@ -13,17 +13,20 @@ import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
-import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.hardcoded.BilinearLagrange;
+import fieldml.evaluator.hardcoded.BilinearSimplex;
+import fieldml.evaluator.hardcoded.BiquadraticLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
-import fieldml.function.BilinearQuad;
-import fieldml.function.BilinearSimplex;
-import fieldml.function.BiquadraticQuad;
 import fieldml.io.JdomReflectiveHandler;
+import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
@@ -133,14 +136,6 @@ public class FieldmlTest
 
     public static Region buildRegion()
     {
-        Region library = Region.getLibrary();
-
-        EnsembleDomain triangle1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.1x1" );
-
-        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
-
-        EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
-
         Region testRegion = new Region( REGION_NAME );
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
@@ -157,47 +152,23 @@ public class FieldmlTest
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
         globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
         testRegion.addDomain( globalNodesDomain );
+        
+        EnsembleListDomain globalNodesListDomain = new EnsembleListDomain( "test_mesh.nodes_list", globalNodesDomain );
+        testRegion.addDomain( globalNodesListDomain );
 
-        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesDomain, testMeshElementDomain,
-            triangle1x1LocalNodeDomain );
-
-        triangleNodeList.setValue( 2, 2, 1 );
-        triangleNodeList.setValue( 5, 2, 2 );
-        triangleNodeList.setValue( 3, 2, 3 );
-
-        triangleNodeList.setValue( 6, 3, 1 );
-        triangleNodeList.setValue( 3, 3, 2 );
-        triangleNodeList.setValue( 5, 3, 3 );
-
+        EnsembleListParameters triangleNodeList = new EnsembleListParameters( "test_mesh.triangle_nodes", globalNodesListDomain, testMeshElementDomain );
+        triangleNodeList.setValue( 2, 2, 5, 3 );
+        triangleNodeList.setValue( 3, 6, 3, 5 );
         testRegion.addEvaluator( triangleNodeList );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, testMeshElementDomain,
-            quad1x1LocalNodeDomain );
-
-        quadNodeList.setValue( 4, 1, 1 );
-        quadNodeList.setValue( 5, 1, 2 );
-        quadNodeList.setValue( 1, 1, 3 );
-        quadNodeList.setValue( 2, 1, 4 );
-
-        quadNodeList.setValue( 6, 4, 1 );
-        quadNodeList.setValue( 13, 4, 2 );
-        quadNodeList.setValue( 3, 4, 3 );
-        quadNodeList.setValue( 7, 4, 4 );
+        EnsembleListParameters quadNodeList = new EnsembleListParameters( "test_mesh.quad_nodes", globalNodesListDomain, testMeshElementDomain );
+        quadNodeList.setValue( 1, 4, 5, 1, 2 );
+        quadNodeList.setValue( 4, 6, 13, 3, 7 );
 
         testRegion.addEvaluator( quadNodeList );
 
-        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesDomain, testMeshElementDomain,
-            quad2x2LocalNodeDomain );
-
-        biquadNodeList.setValue( 6, 4, 1 );
-        biquadNodeList.setValue( 12, 4, 2 );
-        biquadNodeList.setValue( 13, 4, 3 );
-        biquadNodeList.setValue( 8, 4, 4 );
-        biquadNodeList.setValue( 9, 4, 5 );
-        biquadNodeList.setValue( 10, 4, 6 );
-        biquadNodeList.setValue( 3, 4, 7 );
-        biquadNodeList.setValue( 11, 4, 8 );
-        biquadNodeList.setValue( 7, 4, 9 );
+        EnsembleListParameters biquadNodeList = new EnsembleListParameters( "test_mesh.biquad_nodes", globalNodesListDomain, testMeshElementDomain );
+        biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
 
         testRegion.addEvaluator( biquadNodeList );
 
@@ -244,33 +215,43 @@ public class FieldmlTest
          * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
          * wishing to share components can do so simply by sharing entire piecewise fields.
          */
+        ContinuousListEvaluator bilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
+        testRegion.addEvaluator( bilinearLagrange );
 
-        PiecewiseTemplate meshCoordinatesT1  = new PiecewiseTemplate( "test_mesh.coordinates.template1", meshDomain );
-        meshCoordinatesT1.addFunction( new BilinearQuad( "bilinear_quad", meshXdomain, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesT1.addFunction( new BilinearSimplex( "bilinear_simplex", meshXdomain, triangleNodeList, triangle1x1LocalNodeDomain ) );
-        meshCoordinatesT1.setFunction( 1, "bilinear_quad" );
-        meshCoordinatesT1.setFunction( 2, "bilinear_simplex" );
-        meshCoordinatesT1.setFunction( 3, "bilinear_simplex" );
-        meshCoordinatesT1.setFunction( 4, "bilinear_quad" );
+        ContinuousListEvaluator biquadraticLagrange = new BiquadraticLagrange( "test_mesh.mesh.biquadratic_lagrange", meshDomain );
+        testRegion.addEvaluator( biquadraticLagrange );
+
+        ContinuousListEvaluator bilinearSimplex = new BilinearSimplex( "test_mesh.mesh.bilinear_simplex", meshDomain );
+        testRegion.addEvaluator( bilinearSimplex );
+        
+        IndirectMap elementBilinearLagrange = new IndirectMap( "test_mesh.element.bilinear_lagrange", quadNodeList, bilinearLagrange );
+        testRegion.addMap( elementBilinearLagrange );
+        IndirectMap elementBilinearSimplex = new IndirectMap( "test_mesh.element.bilinear_simplex", triangleNodeList, bilinearSimplex ); 
+        testRegion.addMap( elementBilinearSimplex );
+        IndirectMap elementBiquadraticLagrange = new IndirectMap( "test_mesh.element.biquadratic_lagrange", biquadNodeList, biquadraticLagrange ); 
+        testRegion.addMap( elementBiquadraticLagrange );
+
+        PiecewiseTemplate meshCoordinatesT1 = new PiecewiseTemplate( "test_mesh.coordinates.template1", meshDomain, 1 );
+        meshCoordinatesT1.setMap( 1, elementBilinearLagrange, 1 );
+        meshCoordinatesT1.setMap( 2, elementBilinearSimplex, 1 );
+        meshCoordinatesT1.setMap( 3, elementBilinearSimplex, 1 );
+        meshCoordinatesT1.setMap( 4, elementBilinearLagrange, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesT1 );
         
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", meshXdomain, meshCoordinatesT1 );
-        meshCoordinatesX.addDofs( meshX );
+        meshCoordinatesX.setDofs( 1, meshX );
 
         testRegion.addEvaluator( meshCoordinatesX );
 
-        PiecewiseTemplate meshCoordinatesT2 = new PiecewiseTemplate( "test_mesh.coordinates.template2", meshDomain );
-        meshCoordinatesT2.addFunction( new BilinearQuad( "bilinear_quad", meshYdomain, quadNodeList, quad1x1LocalNodeDomain ) );
-        meshCoordinatesT2.addFunction( new BilinearSimplex( "bilinear_simplex", meshYdomain, triangleNodeList, triangle1x1LocalNodeDomain ) );
-        meshCoordinatesT2.addFunction( new BiquadraticQuad( "biquadratic_quad", meshYdomain, biquadNodeList, quad2x2LocalNodeDomain ) );
-        meshCoordinatesT2.setFunction( 1, "bilinear_quad" );
-        meshCoordinatesT2.setFunction( 2, "bilinear_simplex" );
-        meshCoordinatesT2.setFunction( 3, "bilinear_simplex" );
-        meshCoordinatesT2.setFunction( 4, "biquadratic_quad" );
+        PiecewiseTemplate meshCoordinatesT2 = new PiecewiseTemplate( "test_mesh.coordinates.template2", meshDomain, 1 );
+        meshCoordinatesT2.setMap( 1, elementBilinearLagrange, 1 );
+        meshCoordinatesT2.setMap( 2, elementBilinearSimplex, 1 );
+        meshCoordinatesT2.setMap( 3, elementBilinearSimplex, 1 );
+        meshCoordinatesT2.setMap( 4, elementBiquadraticLagrange, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
         
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.temple", meshYdomain, meshCoordinatesT2 );
-        meshCoordinatesY.addDofs( meshY );
+        meshCoordinatesY.setDofs( 1, meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
 

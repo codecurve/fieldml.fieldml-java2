@@ -30,7 +30,7 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
     }
 
 
-    public abstract V evaluate( DomainValues input );
+    public abstract V evaluate( DomainValues context );
     
     
     public final V evaluate( MeshDomain domain, int index, double ... chartValues )
