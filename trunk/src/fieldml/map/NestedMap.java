@@ -58,4 +58,11 @@ public class NestedMap
 
         return finalValue;
     }
+    
+    
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }

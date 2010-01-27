@@ -61,4 +61,11 @@ public class IndirectMap
 
         return finalValue;
     }
+    
+    
+    @Override
+    public String toString()
+    {
+        return name;
+    }
 }

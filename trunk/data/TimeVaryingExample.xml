@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1____2____3____4____5
+-->
+  <EnsembleDomain name="tv_test.time.elements">
+    <values>1  2  3  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleDomain name="tv_test.time.dofs.domain">
+    <values>1  2  3  4  5  6  7  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleListDomain elementDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.list.domain" />
+  
+
+  <MeshDomain dimensions="1" elementDomain="tv_test.time.elements" defaultShape="line_0_1" name="tv_test.time.mesh">
+    <shapes />
+  </MeshDomain>
+  
+
+  <ContinuousParameters name="tv_test.time.dofs.values" valueDomain="library.co-ordinates.rc.1d">
+    <parameterDomains>"tv_test.time.dofs.domain"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <ContinuousDomainValue>
+          <values>1.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <ContinuousDomainValue>
+          <values>2.5  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <ContinuousDomainValue>
+          <values>4.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <ContinuousDomainValue>
+          <values>5.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <ContinuousDomainValue>
+          <values>6.625  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <ContinuousDomainValue>
+          <values>10.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
+  <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.weighting.1d">
+    <parameterDomains>"test_mesh.dofs"  "tv_test.time.dofs.domain"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <ContinuousDomainValue>
+          <values>0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  1  </keys>
+        <ContinuousDomainValue>
+          <values>1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  1  </keys>
+        <ContinuousDomainValue>
+          <values>-0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  1  </keys>
+        <ContinuousDomainValue>
+          <values>-1.190983  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  1  </keys>
+        <ContinuousDomainValue>
+          <values>-0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  1  </keys>
+        <ContinuousDomainValue>
+          <values>1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  1  </keys>
+        <ContinuousDomainValue>
+          <values>0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  2  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  3  </keys>
+        <ContinuousDomainValue>
+          <values>-0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  3  </keys>
+        <ContinuousDomainValue>
+          <values>-1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  3  </keys>
+        <ContinuousDomainValue>
+          <values>0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  3  </keys>
+        <ContinuousDomainValue>
+          <values>1.190983  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  3  </keys>
+        <ContinuousDomainValue>
+          <values>0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  3  </keys>
+        <ContinuousDomainValue>
+          <values>-1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  3  </keys>
+        <ContinuousDomainValue>
+          <values>-0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  4  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  5  </keys>
+        <ContinuousDomainValue>
+          <values>0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  5  </keys>
+        <ContinuousDomainValue>
+          <values>1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  5  </keys>
+        <ContinuousDomainValue>
+          <values>-0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  5  </keys>
+        <ContinuousDomainValue>
+          <values>-1.190983  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  5  </keys>
+        <ContinuousDomainValue>
+          <values>-0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  5  </keys>
+        <ContinuousDomainValue>
+          <values>1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  5  </keys>
+        <ContinuousDomainValue>
+          <values>0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  6  </keys>
+        <ContinuousDomainValue>
+          <values>0.0  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  7  </keys>
+        <ContinuousDomainValue>
+          <values>-0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  7  </keys>
+        <ContinuousDomainValue>
+          <values>-1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  7  </keys>
+        <ContinuousDomainValue>
+          <values>0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  7  </keys>
+        <ContinuousDomainValue>
+          <values>1.190983  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  7  </keys>
+        <ContinuousDomainValue>
+          <values>0.427051  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  7  </keys>
+        <ContinuousDomainValue>
+          <values>-1.045085  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  7  </keys>
+        <ContinuousDomainValue>
+          <values>-0.954915  </values>
+        </ContinuousDomainValue>
+      </MapEntry>
+    </entries>
+  </ContinuousParameters>
+  
+
+  <IndirectMap name="test_mesh.element.quadratic_lagrange_map" valueIndexes="tv_test.time.element_dof_indexes" valueWeights="tv_test.mesh.quadratic_lagrange" />
+  
+
+  <PiecewiseTemplate name="tv_test.time.template" meshDomain="tv_test.time.mesh" totalDofSets="1">
+    <elementMaps>
+      <TemplateMap element="1" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
+      <TemplateMap element="2" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
+      <TemplateMap element="3" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
+    </elementMaps>
+  </PiecewiseTemplate>
+  
+
+  <PiecewiseField template="tv_test.time.template" name="tv_test.time" valueDomain="library.co-ordinates.rc.1d">
+    <dofs>"tv_test.time.dofs.values"  </dofs>
+  </PiecewiseField>
+  
+
+  <PiecewiseField template="test_mesh.coordinates" name="tv_test.coordinates.sliced_z" valueDomain="library.co-ordinates.rc.1d">
+    <dofs>"tv_test.dofs.z"  </dofs>
+  </PiecewiseField>
+  
+
+  <PiecewiseField template="tv_test.time.template" name="tv_test.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
+    <dofs>"tv_test.coordinates.sliced_z"  </dofs>
+  </PiecewiseField>
+  
+
+</fieldml>
+

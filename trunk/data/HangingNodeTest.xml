@@ -20,6 +20,17 @@
   </EnsembleDomain>
   
 
+  <EnsembleDomain name="test_mesh.local_dofs">
+    <values>1  2  3  4  5  6  7  8  </values>
+  </EnsembleDomain>
+  
+
+  <EnsembleListDomain elementDomain="test_mesh.global_dofs" name="test_mesh_global_dof_list" />
+  
+
+  <EnsembleListDomain elementDomain="test_mesh.local_dofs" name="test_mesh_local_dof_list" />
+  
+
   <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.quad.00_10_01_11" />
@@ -27,123 +38,6 @@
       <entry key="3" value="library.shape.quad.00_10_01_11" />
     </shapes>
   </MeshDomain>
-  
-
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.dof_weights.bilinear.p1" valueDomain="library.weighting.1d">
-    <parameterDomains>"test_mesh.global_dofs"  "test_mesh.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>5  1  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  2  </keys>
-        <ContinuousDomainValue>
-          <values>0.5  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  2  </keys>
-        <ContinuousDomainValue>
-          <values>0.5  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  3  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.dof_weights.bilinear.p2" valueDomain="library.weighting.1d">
-    <parameterDomains>"test_mesh.global_dofs"  "test_mesh.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>6  1  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  2  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  3  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.dof_weights.bilinear.p3" valueDomain="library.weighting.1d">
-    <parameterDomains>"test_mesh.global_dofs"  "test_mesh.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  1  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  2  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  3  </keys>
-        <ContinuousDomainValue>
-          <values>0.5  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  3  </keys>
-        <ContinuousDomainValue>
-          <values>0.5  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.dof_weights.bilinear.p4" valueDomain="library.weighting.1d">
-    <parameterDomains>"test_mesh.global_dofs"  "test_mesh.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>2  1  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  2  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  3  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
-  <ContinuousAggregateEvaluator name="test_mesh.bilinear_lagrange.parameter_weights" valueDomain="library.bilinear_lagrange.parameters">
-    <sourceFields>"test_mesh.dof_weights.bilinear.p1"  "test_mesh.dof_weights.bilinear.p2"  "test_mesh.dof_weights.bilinear.p3"  "test_mesh.dof_weights.bilinear.p4"  </sourceFields>
-  </ContinuousAggregateEvaluator>
   
 
   <ContinuousParameters name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d">
@@ -244,51 +138,33 @@
   </ContinuousParameters>
   
 
-  <ContinuousCompositeEvaluator name="test_mesh.bilinear_lagrange.parameters.x" valueDomain="library.bilinear_lagrange.parameters">
-    <operations>
-      <MappedImportOperation sourceField="test_mesh.point.x" valueDomain="library.bilinear_lagrange.parameters" map="test_mesh.bilinear_lagrange.parameter_map" />
-    </operations>
-  </ContinuousCompositeEvaluator>
-  
-
-  <ContinuousCompositeEvaluator name="test_mesh.bilinear_lagrange.parameters.y" valueDomain="library.bilinear_lagrange.parameters">
-    <operations>
-      <MappedImportOperation sourceField="test_mesh.point.y" valueDomain="library.bilinear_lagrange.parameters" map="test_mesh.bilinear_lagrange.parameter_map" />
-    </operations>
-  </ContinuousCompositeEvaluator>
-  
-
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
-  <ContinuousMap name="test_mesh.bilinear_lagrange.parameter_map" weights="test_mesh.bilinear_lagrange.parameter_weights" iteratedDomain="test_mesh.global_dofs" />
+  <IndirectMap name="test_mesh.p2nA.map" valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" />
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain">
-    <functions>
-      <DirectBilinearLagrange dofsDomain="library.bilinear_lagrange.parameters" name="bilinear_lagrange" />
-    </functions>
-    <elementFunctions>
-      <SimpleMapEntry key="1" value="bilinear_lagrange" />
-      <SimpleMapEntry key="2" value="bilinear_lagrange" />
-      <SimpleMapEntry key="3" value="bilinear_lagrange" />
-    </elementFunctions>
+  <NestedMap name="test_mesh.element.bilinear_lagrange_map" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" values="test_mesh.p2nA.map" />
+  
+
+  <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain" totalDofSets="1">
+    <elementMaps>
+      <TemplateMap element="1" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
+      <TemplateMap element="2" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
+      <TemplateMap element="3" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
+    </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <dofEvaluators>
-      <SimpleMapEntry key="library.bilinear_lagrange.parameters" value="test_mesh.bilinear_lagrange.parameters.x" />
-    </dofEvaluators>
+    <dofs>"test_mesh.point.x"  </dofs>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <dofEvaluators>
-      <SimpleMapEntry key="library.bilinear_lagrange.parameters" value="test_mesh.bilinear_lagrange.parameters.y" />
-    </dofEvaluators>
+    <dofs>"test_mesh.point.y"  </dofs>
   </PiecewiseField>
   
 

@@ -1,6 +1,7 @@
 package fieldml;
 
 import java.io.IOException;
+import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
@@ -63,7 +64,8 @@ public class FieldmlTest
         XMLOutputter outputter = new XMLOutputter( format );
         try
         {
-            outputter.output( doc, System.out );
+            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName()  + ".xml");
+            outputter.output( doc, output );
         }
         catch( IOException e )
         {
@@ -250,7 +252,7 @@ public class FieldmlTest
         meshCoordinatesT2.setMap( 4, elementBiquadraticLagrange, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
         
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.temple", meshYdomain, meshCoordinatesT2 );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", meshYdomain, meshCoordinatesT2 );
         meshCoordinatesY.setDofs( 1, meshY );
 
         testRegion.addEvaluator( meshCoordinatesY );
