@@ -23,6 +23,10 @@ public class ReflectiveWalker
     {
         for( Object o2 : (Iterable<? extends Object>)o )
         {
+            if( o2 == null )
+            {
+                continue;
+            }
             if( o2.getClass() == String.class )
             {
                 handler.onStringListElement( (String)o2 );

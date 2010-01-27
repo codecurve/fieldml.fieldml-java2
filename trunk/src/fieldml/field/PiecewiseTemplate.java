@@ -1,10 +1,12 @@
 package fieldml.field;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.map.ContinuousMap;
-import fieldml.util.SimpleMap;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
@@ -12,16 +14,19 @@ public class PiecewiseTemplate
 {
     public static class TemplateMap
     {
+        public final int element;
+        
         @SerializationAsString
         public final ContinuousMap map;
 
         public final int dofSet;
 
 
-        public TemplateMap( ContinuousMap map, int dofSet )
+        public TemplateMap( int element, ContinuousMap map, int dofSet )
         {
+            this.element = element;
             this.map = map;
-            this.dofSet = dofSet - 1;
+            this.dofSet = dofSet;
         }
     }
 
@@ -30,7 +35,7 @@ public class PiecewiseTemplate
     @SerializationAsString
     public final MeshDomain meshDomain;
 
-    public final SimpleMap<Integer, TemplateMap> maps;
+    public final List<TemplateMap> elementMaps;
 
     public final int totalDofSets;
 
@@ -41,13 +46,17 @@ public class PiecewiseTemplate
         this.meshDomain = meshDomain;
         this.totalDofSets = totalDofSets;
 
-        maps = new SimpleMap<Integer, TemplateMap>();
+        elementMaps = new ArrayList<TemplateMap>();
+        for( int i = 0; i <= meshDomain.elementDomain.getValueCount(); i++ )
+        {
+            elementMaps.add( null );
+        }
     }
 
 
     public void setMap( int index, ContinuousMap map, int dofSet )
     {
-        maps.put( index, new TemplateMap( map, dofSet ) );
+        elementMaps.set( index, new TemplateMap( index, map, dofSet ) );
     }
 
 
@@ -55,11 +64,11 @@ public class PiecewiseTemplate
     {
         MeshDomainValue v = context.get( meshDomain );
 
-        TemplateMap templateMap = maps.get( v.indexValue );
+        TemplateMap templateMap = elementMaps.get( v.indexValue );
 
         if( templateMap != null )
         {
-            return templateMap.map.evaluate( context, dofs[templateMap.dofSet] );
+            return templateMap.map.evaluate( context, dofs[templateMap.dofSet - 1] );
         }
 
         assert false;

@@ -27,6 +27,9 @@
   </EnsembleDomain>
   
 
+  <EnsembleListDomain elementDomain="test_mesh.nodes" name="test_mesh.nodes_list" />
+  
+
   <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.quad.00_10_01_11" />
@@ -178,163 +181,46 @@
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="test_mesh.co-ordinates.xy">
-    <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.temple"  </sourceFields>
+    <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
-  <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.triangle.1x1"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>2  1  </keys>
-        <EnsembleDomainValue indexValue="2" />
-      </MapEntry>
-      <MapEntry>
-        <keys>2  2  </keys>
-        <EnsembleDomainValue indexValue="5" />
-      </MapEntry>
-      <MapEntry>
-        <keys>2  3  </keys>
-        <EnsembleDomainValue indexValue="3" />
-      </MapEntry>
-      <MapEntry>
-        <keys>3  1  </keys>
-        <EnsembleDomainValue indexValue="6" />
-      </MapEntry>
-      <MapEntry>
-        <keys>3  2  </keys>
-        <EnsembleDomainValue indexValue="3" />
-      </MapEntry>
-      <MapEntry>
-        <keys>3  3  </keys>
-        <EnsembleDomainValue indexValue="5" />
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
+  <IndirectMap name="test_mesh.element.bilinear_lagrange" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" />
   
 
-  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  1  </keys>
-        <EnsembleDomainValue indexValue="4" />
-      </MapEntry>
-      <MapEntry>
-        <keys>1  2  </keys>
-        <EnsembleDomainValue indexValue="5" />
-      </MapEntry>
-      <MapEntry>
-        <keys>1  3  </keys>
-        <EnsembleDomainValue indexValue="1" />
-      </MapEntry>
-      <MapEntry>
-        <keys>1  4  </keys>
-        <EnsembleDomainValue indexValue="2" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  1  </keys>
-        <EnsembleDomainValue indexValue="6" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  2  </keys>
-        <EnsembleDomainValue indexValue="13" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  3  </keys>
-        <EnsembleDomainValue indexValue="3" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  4  </keys>
-        <EnsembleDomainValue indexValue="7" />
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
+  <IndirectMap name="test_mesh.element.bilinear_simplex" valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.mesh.bilinear_simplex" />
   
 
-  <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.2x2"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>4  1  </keys>
-        <EnsembleDomainValue indexValue="6" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  2  </keys>
-        <EnsembleDomainValue indexValue="12" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  3  </keys>
-        <EnsembleDomainValue indexValue="13" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  4  </keys>
-        <EnsembleDomainValue indexValue="8" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  5  </keys>
-        <EnsembleDomainValue indexValue="9" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  6  </keys>
-        <EnsembleDomainValue indexValue="10" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  7  </keys>
-        <EnsembleDomainValue indexValue="3" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  8  </keys>
-        <EnsembleDomainValue indexValue="11" />
-      </MapEntry>
-      <MapEntry>
-        <keys>4  9  </keys>
-        <EnsembleDomainValue indexValue="7" />
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
+  <IndirectMap name="test_mesh.element.biquadratic_lagrange" valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.mesh.biquadratic_lagrange" />
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.template1" meshDomain="test_mesh.domain">
-    <functions>
-      <BilinearQuad dofDomain="test_mesh.co-ordinates.x" dofIndexes="test_mesh.quad_nodes" name="bilinear_quad" />
-      <BilinearSimplex dofDomain="test_mesh.co-ordinates.x" dofIndexes="test_mesh.triangle_nodes" name="bilinear_simplex" />
-    </functions>
-    <elementFunctions>
-      <SimpleMapEntry key="1" value="bilinear_quad" />
-      <SimpleMapEntry key="2" value="bilinear_simplex" />
-      <SimpleMapEntry key="3" value="bilinear_simplex" />
-      <SimpleMapEntry key="4" value="bilinear_quad" />
-    </elementFunctions>
+  <PiecewiseTemplate name="test_mesh.coordinates.template1" meshDomain="test_mesh.domain" totalDofSets="1">
+    <elementMaps>
+      <TemplateMap element="1" map="test_mesh.element.bilinear_lagrange" dofSet="1" />
+      <TemplateMap element="2" map="test_mesh.element.bilinear_simplex" dofSet="1" />
+      <TemplateMap element="3" map="test_mesh.element.bilinear_simplex" dofSet="1" />
+      <TemplateMap element="4" map="test_mesh.element.bilinear_lagrange" dofSet="1" />
+    </elementMaps>
   </PiecewiseTemplate>
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.template2" meshDomain="test_mesh.domain">
-    <functions>
-      <BilinearQuad dofDomain="test_mesh.co-ordinates.y" dofIndexes="test_mesh.quad_nodes" name="bilinear_quad" />
-      <BilinearSimplex dofDomain="test_mesh.co-ordinates.y" dofIndexes="test_mesh.triangle_nodes" name="bilinear_simplex" />
-      <BiquadraticQuad dofDomain="test_mesh.co-ordinates.y" dofIndexes="test_mesh.biquad_nodes" name="biquadratic_quad" />
-    </functions>
-    <elementFunctions>
-      <SimpleMapEntry key="1" value="bilinear_quad" />
-      <SimpleMapEntry key="2" value="bilinear_simplex" />
-      <SimpleMapEntry key="3" value="bilinear_simplex" />
-      <SimpleMapEntry key="4" value="biquadratic_quad" />
-    </elementFunctions>
+  <PiecewiseTemplate name="test_mesh.coordinates.template2" meshDomain="test_mesh.domain" totalDofSets="1">
+    <elementMaps>
+      <TemplateMap element="1" map="test_mesh.element.bilinear_lagrange" dofSet="1" />
+      <TemplateMap element="2" map="test_mesh.element.bilinear_simplex" dofSet="1" />
+      <TemplateMap element="3" map="test_mesh.element.bilinear_simplex" dofSet="1" />
+      <TemplateMap element="4" map="test_mesh.element.biquadratic_lagrange" dofSet="1" />
+    </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="test_mesh.co-ordinates.x">
-    <dofEvaluators>
-      <SimpleMapEntry key="test_mesh.co-ordinates.x" value="test_mesh.node.x" />
-    </dofEvaluators>
+    <dofs>"test_mesh.node.x"  </dofs>
   </PiecewiseField>
   
 
-  <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.temple" valueDomain="test_mesh.co-ordinates.y">
-    <dofEvaluators>
-      <SimpleMapEntry key="test_mesh.co-ordinates.y" value="test_mesh.node.y" />
-    </dofEvaluators>
+  <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="test_mesh.co-ordinates.y">
+    <dofs>"test_mesh.node.y"  </dofs>
   </PiecewiseField>
   
 

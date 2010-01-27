@@ -2,6 +2,7 @@ package fieldml;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
@@ -65,7 +66,8 @@ public class BicubicHermiteTest
         XMLOutputter outputter = new XMLOutputter( format );
         try
         {
-            outputter.output( doc, System.out );
+            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName()  + ".xml");
+            outputter.output( doc, output );
         }
         catch( IOException e )
         {
