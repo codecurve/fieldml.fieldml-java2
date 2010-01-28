@@ -17,9 +17,6 @@ public class MapEvaluator
     @SerializationAsString
     public final ContinuousEvaluator indexedValues;
 
-    @SerializationAsString
-    public final EnsembleDomain spannedDomain;
-
 
     public MapEvaluator( String name, ContinuousDomain valueDomain, IndirectMap map, ContinuousEvaluator indexedValues,
         EnsembleDomain spannedDomain )
@@ -28,7 +25,6 @@ public class MapEvaluator
 
         this.map = map;
         this.indexedValues = indexedValues;
-        this.spannedDomain = spannedDomain;
     }
 
 
@@ -43,23 +39,8 @@ public class MapEvaluator
     {
         double[] values;
         
-        if( spannedDomain != null )
-        {
-            values = new double[spannedDomain.getValueCount()];
-            
-            DomainValues spanContext = new DomainValues( context );
-            
-            for( int i = 1; i <= spannedDomain.getValueCount(); i++ )
-            {
-                spanContext.set( spannedDomain, i );
-                values[i] = map.evaluate( spanContext, indexedValues );
-            }
-        }
-        else
-        {
-            values = new double[1];
-            values[0] = map.evaluate( context, indexedValues );
-        }
+        values = new double[1];
+        values[0] = map.evaluate( context, indexedValues );
 
         return valueDomain.makeValue( values );
     }

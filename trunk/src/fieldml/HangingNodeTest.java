@@ -244,8 +244,7 @@ public class HangingNodeTest
 
 
     /**
-     * This example creates a local node set from the available dofs, adding 'virtual' nodes as needed, then using a standard
-     * element x localnode -> globalnode lookup for generating the dof vectors needed for interpolation.
+     * This example maps global dofs directly to per-element parameters.
      */
     public static Region buildDirectMapRegion()
     {
@@ -274,47 +273,40 @@ public class HangingNodeTest
         EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
         EnsembleListDomain quad1x1NodeListDomain = new EnsembleListDomain( "test_mesh.1x1.nodes", quad1x1NodeDomain ); 
         
-        ContinuousListParameters element1Weights = new ContinuousListParameters( "test_mesh.e1.dof_weights", weighting, quad1x1NodeDomain );
-        element1Weights.setValue( 1, 1.0 );
-        element1Weights.setValue( 2, 1.0 );
-        element1Weights.setValue( 3, 1.0 );
-        element1Weights.setValue( 4, 1.0 );
-        
-        EnsembleListParameters element1Indexes = new EnsembleListParameters( "test_mesh.e1.dof_indexes", globalDofIndexesDomain, quad1x1NodeDomain );
-        element1Indexes.setValue( 1, 5 );
-        element1Indexes.setValue( 2, 6 );
-        element1Indexes.setValue( 3, 1 );
-        element1Indexes.setValue( 4, 2 );
-        
-        IndirectMap element1Map = new IndirectMap( "test_mesh.e1.dof_map", element1Indexes, element1Weights );
-        
-        ContinuousListParameters element2Weights = new ContinuousListParameters( "test_mesh.e2.dof_weights", weighting, quad1x1NodeDomain );
-        element2Weights.setValue( 1, 0.5, 0.5 );
-        element2Weights.setValue( 2, 1.0 );
-        element2Weights.setValue( 3, 1.0 );
-        element2Weights.setValue( 4, 1.0 );
-        
-        EnsembleListParameters element2Indexes = new EnsembleListParameters( "test_mesh.e2.dof_indexes", globalDofIndexesDomain, quad1x1NodeDomain );
-        element2Indexes.setValue( 1, 2, 6 );
-        element2Indexes.setValue( 2, 4 );
-        element2Indexes.setValue( 3, 2 );
-        element2Indexes.setValue( 4, 3 );
-        
-        IndirectMap element2Map = new IndirectMap( "test_mesh.e2.dof_map", element2Indexes, element2Weights );
+        ContinuousListParameters elementWeights = new ContinuousListParameters( "test_mesh.element.dof_weights", weighting, testMeshElementDomain, quad1x1NodeDomain );
+        EnsembleListParameters elementIndexes = new EnsembleListParameters( "test_mesh.e1.dof_indexes", globalDofIndexesDomain, testMeshElementDomain, quad1x1NodeDomain );
 
-        ContinuousListParameters element3Weights = new ContinuousListParameters( "test_mesh.e3.dof_weights", weighting, quad1x1NodeDomain );
-        element3Weights.setValue( 1, 1.0 );
-        element3Weights.setValue( 2, 1.0 );
-        element3Weights.setValue( 3, 0.5, 0.5 );
-        element3Weights.setValue( 4, 1.0 );
+        elementWeights.setValue( new int[]{1,1}, 1.0 );
+        elementWeights.setValue( new int[]{1,2}, 1.0 );
+        elementWeights.setValue( new int[]{1,3}, 1.0 );
+        elementWeights.setValue( new int[]{1,4}, 1.0 );
         
-        EnsembleListParameters element3Indexes = new EnsembleListParameters( "test_mesh.e3.dof_indexes", globalDofIndexesDomain, quad1x1NodeDomain );
-        element3Indexes.setValue( 1, 5 );
-        element3Indexes.setValue( 2, 7 );
-        element3Indexes.setValue( 3, 2, 6 );
-        element3Indexes.setValue( 4, 4 );
+        elementIndexes.setValue( new int[]{1,1}, 5 );
+        elementIndexes.setValue( new int[]{1,2}, 6 );
+        elementIndexes.setValue( new int[]{1,3}, 1 );
+        elementIndexes.setValue( new int[]{1,4}, 2 );
+        
+        elementWeights.setValue( new int[]{2,1}, 0.5, 0.5 );
+        elementWeights.setValue( new int[]{2,2}, 1.0 );
+        elementWeights.setValue( new int[]{2,3}, 1.0 );
+        elementWeights.setValue( new int[]{2,4}, 1.0 );
+        
+        elementIndexes.setValue( new int[]{2,1}, 2, 6 );
+        elementIndexes.setValue( new int[]{2,2}, 4 );
+        elementIndexes.setValue( new int[]{2,3}, 2 );
+        elementIndexes.setValue( new int[]{2,4}, 3 );
+        
+        elementWeights.setValue( new int[]{3,1}, 1.0 );
+        elementWeights.setValue( new int[]{3,2}, 1.0 );
+        elementWeights.setValue( new int[]{3,3}, 0.5, 0.5 );
+        elementWeights.setValue( new int[]{3,4}, 1.0 );
+        
+        elementIndexes.setValue( new int[]{3,1}, 5 );
+        elementIndexes.setValue( new int[]{3,2}, 7 );
+        elementIndexes.setValue( new int[]{3,3}, 2, 6 );
+        elementIndexes.setValue( new int[]{3,4}, 4 );
 
-        IndirectMap element3Map = new IndirectMap( "test_mesh.e3.dof_map", element3Indexes, element3Weights );
+        IndirectMap elementDofMap = new IndirectMap( "test_mesh.element.dof_map", elementIndexes, elementWeights );
         
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
@@ -341,22 +333,18 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "test_mesh.element.dof_indexes", quad1x1NodeListDomain, testMeshElementDomain );
-        elementDofIndexes.setValue( 1, 1, 2, 3, 4 );
-        elementDofIndexes.setValue( 2, 1, 2, 3, 4 );
-        elementDofIndexes.setValue( 3, 1, 2, 3, 4 );
+        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "test_mesh.element.dof_indexes", quad1x1NodeListDomain );
+        elementDofIndexes.setValue( 1, 2, 3, 4 );
         
         ContinuousListEvaluator bilinearQuad = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
         testRegion.addEvaluator( bilinearQuad );
         
-        NestedMap element1Bilinear = new NestedMap( "test_mesh.element1.bilinear_lagrange", elementDofIndexes, bilinearQuad, element1Map );
-        NestedMap element2Bilinear = new NestedMap( "test_mesh.element2.bilinear_lagrange", elementDofIndexes, bilinearQuad, element2Map );
-        NestedMap element3Bilinear = new NestedMap( "test_mesh.element3.bilinear_lagrange", elementDofIndexes, bilinearQuad, element3Map );
+        NestedMap elementBilinear = new NestedMap( "test_mesh.element1.bilinear_lagrange", elementDofIndexes, bilinearQuad, elementDofMap );
 
         PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.coordinates.template", meshDomain, 1 );
-        meshCoordinatesTemplate.setMap( 1, element1Bilinear, 1 );
-        meshCoordinatesTemplate.setMap( 2, element2Bilinear, 1 );
-        meshCoordinatesTemplate.setMap( 3, element3Bilinear, 1 );
+        meshCoordinatesTemplate.setMap( 1, elementBilinear, 1 );
+        meshCoordinatesTemplate.setMap( 2, elementBilinear, 1 );
+        meshCoordinatesTemplate.setMap( 3, elementBilinear, 1 );
         testRegion.addPiecewiseTemplate( meshCoordinatesTemplate );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesTemplate );
