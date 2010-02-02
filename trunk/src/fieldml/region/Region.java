@@ -16,7 +16,6 @@ import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
-import fieldml.map.ContinuousMap;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
 
@@ -130,8 +129,6 @@ public class Region
 
     private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
 
-    private final SimpleMap<String, ContinuousMap> parameterMaps;
-
     private final Map<String, Region> subregions;
 
     private final String name;
@@ -151,7 +148,6 @@ public class Region
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
         ensembleListEvaluators = new SimpleMap<String, EnsembleListEvaluator>();
         piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
-        parameterMaps = new SimpleMap<String, ContinuousMap>();
         subregions = new HashMap<String, Region>();
 
         assert regions.get( name ) == null;
@@ -260,16 +256,6 @@ public class Region
     }
 
 
-    public ContinuousMap getParameterMap( String name )
-    {
-        ContinuousMap map = parameterMaps.get( name );
-
-        assert map != null : "Map " + name + " does not exist in region " + this.name;
-
-        return map;
-    }
-
-
     public void addDomain( MeshDomain domain )
     {
         meshDomains.put( domain.name, domain );
@@ -330,12 +316,6 @@ public class Region
     }
 
 
-    public void addMap( ContinuousMap map )
-    {
-        parameterMaps.put( map.getName(), map );
-    }
-
-
     public void walkObjects( ReflectiveHandler handler )
     {
         for( SimpleMapEntry<String, ContinuousDomain> k : continuousDomains )
@@ -361,10 +341,6 @@ public class Region
                 // Hack for better ordering.
                 continue;
             }
-            ReflectiveWalker.Walk( k.value, handler );
-        }
-        for( SimpleMapEntry<String, ContinuousMap> k : parameterMaps )
-        {
             ReflectiveWalker.Walk( k.value, handler );
         }
         for( SimpleMapEntry<String, EnsembleEvaluator> k : ensembleEvaluators )

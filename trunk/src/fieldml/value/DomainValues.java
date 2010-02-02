@@ -7,15 +7,20 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
+import fieldml.evaluator.ContinuousEvaluator;
 
 public class DomainValues
 {
-    public final Map<Domain, DomainValue<? extends Domain>> values;
+    private final Map<Domain, DomainValue<? extends Domain>> values;
+
+    private final Map<String, ContinuousEvaluator> continuousVariables;
 
 
     public DomainValues()
     {
         values = new HashMap<Domain, DomainValue<? extends Domain>>();
+
+        continuousVariables = new HashMap<String, ContinuousEvaluator>();
     }
 
 
@@ -26,6 +31,10 @@ public class DomainValues
         for( DomainValue<? extends Domain> v : input.values.values() )
         {
             values.put( v.domain, v );
+        }
+        for( String name : input.continuousVariables.keySet() )
+        {
+            continuousVariables.put( name, input.continuousVariables.get( name ) );
         }
     }
 
@@ -51,7 +60,7 @@ public class DomainValues
     public void set( MeshDomain domain, int indexValue, double... chartValues )
     {
         set( domain.makeValue( indexValue, chartValues ) );
-        set( domain.elementDomain.makeValue( indexValue ) );//TODO This is ugly
+        set( domain.elementDomain.makeValue( indexValue ) );// TODO This is ugly
     }
 
 
@@ -76,5 +85,17 @@ public class DomainValues
     public DomainValue<? extends Domain> get( Domain domain )
     {
         return values.get( domain );
+    }
+
+
+    public void setVariable( String name, ContinuousEvaluator evaluator )
+    {
+        continuousVariables.put( name, evaluator );
+    }
+
+
+    public ContinuousEvaluator getContinuousVariable( String name )
+    {
+        return continuousVariables.get( name );
     }
 }

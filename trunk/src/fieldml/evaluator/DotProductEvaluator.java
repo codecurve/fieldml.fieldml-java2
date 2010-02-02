@@ -1,14 +1,11 @@
-package fieldml.map;
+package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.evaluator.AbstractEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
-public class DirectMap
+public class DotProductEvaluator
     extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
     implements ContinuousEvaluator
 {
@@ -19,7 +16,7 @@ public class DirectMap
     public final ContinuousListEvaluator valueWeights;
 
 
-    public DirectMap( String name, ContinuousDomain valueDomain, ContinuousListEvaluator valueSource, ContinuousListEvaluator valueWeights )
+    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousListEvaluator valueSource, ContinuousListEvaluator valueWeights )
     {
         super( name, valueDomain );
         this.valueSource = valueSource;

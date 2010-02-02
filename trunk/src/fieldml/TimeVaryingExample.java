@@ -22,8 +22,10 @@ import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.hardcoded.LinearLagrange;
 import fieldml.evaluator.hardcoded.QuadraticBSpline;
 import fieldml.evaluator.hardcoded.QuadraticLagrange;
@@ -31,7 +33,6 @@ import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
-import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -63,7 +64,7 @@ public class TimeVaryingExample
         XMLOutputter outputter = new XMLOutputter( format );
         try
         {
-            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName()  + ".xml");
+            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName() + ".xml" );
             outputter.output( doc, output );
         }
         catch( IOException e )
@@ -197,17 +198,20 @@ public class TimeVaryingExample
         ContinuousListEvaluator quadraticLagrange = new QuadraticLagrange( "tv_test.mesh.quadratic_lagrange", timeMeshDomain );
         tvRegion.addEvaluator( quadraticLagrange );
 
-        IndirectMap elementQLagrange = new IndirectMap( "test_mesh.element.quadratic_lagrange_map", elementDofIndexes, quadraticLagrange );
-        tvRegion.addMap( elementQLagrange );
+        ContinuousVariableEvaluator tvMeshDofs = new ContinuousVariableEvaluator( "tv_test.mesh.dofs", rc1CoordinatesDomain );
 
-        PiecewiseTemplate meshTimeTemplate = new PiecewiseTemplate( "tv_test.time.template", timeMeshDomain, 1 );
-        meshTimeTemplate.setMap( 1, elementQLagrange, 1 );
-        meshTimeTemplate.setMap( 2, elementQLagrange, 1 );
-        meshTimeTemplate.setMap( 3, elementQLagrange, 1 );
+        MapEvaluator elementQLagrange = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain, elementDofIndexes, quadraticLagrange,
+            tvMeshDofs );
+        tvRegion.addEvaluator( elementQLagrange );
+
+        PiecewiseTemplate meshTimeTemplate = new PiecewiseTemplate( "tv_test.time.template", timeMeshDomain );
+        meshTimeTemplate.setEvaluator( 1, elementQLagrange );
+        meshTimeTemplate.setEvaluator( 2, elementQLagrange );
+        meshTimeTemplate.setEvaluator( 3, elementQLagrange );
         tvRegion.addPiecewiseTemplate( meshTimeTemplate );
 
         PiecewiseField meshTime = new PiecewiseField( "tv_test.time", rc1CoordinatesDomain, meshTimeTemplate );
-        meshTime.setDofs( 1, timeDofs );
+        meshTime.setVariable( "tv_test.mesh.dofs", timeDofs );
         tvRegion.addEvaluator( meshTime );
 
         EnsembleDomain bsplineDofsDomain = bsplineRegion.getEnsembleDomain( "test_mesh.dofs" );
@@ -273,11 +277,11 @@ public class TimeVaryingExample
         PiecewiseTemplate bsplineTemplate = bsplineRegion.getPiecewiseTemplate( "test_mesh.coordinates" );
 
         PiecewiseField slicedZ = new PiecewiseField( "tv_test.coordinates.sliced_z", rc1CoordinatesDomain, bsplineTemplate );
-        slicedZ.setDofs( 1, dofs );
+        slicedZ.setVariable( "test_mesh.dofs", dofs );
         tvRegion.addEvaluator( slicedZ );
 
         PiecewiseField zValue = new PiecewiseField( "tv_test.coordinates.z", rc1CoordinatesDomain, meshTimeTemplate );
-        zValue.setDofs( 1, slicedZ );
+        zValue.setVariable( "tv_test.mesh.dofs", slicedZ );
         tvRegion.addEvaluator( zValue );
 
         return tvRegion;
@@ -310,19 +314,21 @@ public class TimeVaryingExample
         ContinuousListEvaluator linearLagrange = new LinearLagrange( "test_mesh.mesh.linear_lagrange", bsplineDomain );
         testRegion.addEvaluator( linearLagrange );
         
-        IndirectMap elementLLagrange = new IndirectMap( "test_mesh.element.linear_lagrange_map", lineNodeList, linearLagrange );
-        testRegion.addMap( elementLLagrange );
+        ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain );
 
-        PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain, 1 );
-        linearMeshCoordinates.setMap( 1, elementLLagrange, 1 );
-        linearMeshCoordinates.setMap( 2, elementLLagrange, 1 );
-        linearMeshCoordinates.setMap( 3, elementLLagrange, 1 );
-        linearMeshCoordinates.setMap( 4, elementLLagrange, 1 );
-        linearMeshCoordinates.setMap( 5, elementLLagrange, 1 );
+        MapEvaluator elementLLagrange = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, lineNodeList, linearLagrange, linearDofs );
+        testRegion.addEvaluator( elementLLagrange );
+
+        PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain );
+        linearMeshCoordinates.setEvaluator( 1, elementLLagrange );
+        linearMeshCoordinates.setEvaluator( 2, elementLLagrange );
+        linearMeshCoordinates.setEvaluator( 3, elementLLagrange );
+        linearMeshCoordinates.setEvaluator( 4, elementLLagrange );
+        linearMeshCoordinates.setEvaluator( 5, elementLLagrange );
         testRegion.addPiecewiseTemplate( linearMeshCoordinates );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1CoordinatesDomain, linearMeshCoordinates );
-        meshCoordinatesX.setDofs( 1, nodalX );
+        meshCoordinatesX.setVariable( "test_mesh.linear.dofs", nodalX );
 
         ContinuousEvaluator meshTime = testRegion.getContinuousEvaluator( "tv_test.time" );
         ContinuousEvaluator zValue = testRegion.getContinuousEvaluator( "tv_test.coordinates.z" );

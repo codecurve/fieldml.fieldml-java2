@@ -138,33 +138,33 @@
   </ContinuousParameters>
   
 
+  <MapEvaluator valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@b66cc" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  
+
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
-  <IndirectMap name="test_mesh.p2nA.map" valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" />
-  
-
-  <NestedMap name="test_mesh.element.bilinear_lagrange_map" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" values="test_mesh.p2nA.map" />
-  
-
-  <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain" totalDofSets="1">
+  <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
-      <TemplateMap element="3" map="test_mesh.element.bilinear_lagrange_map" dofSet="1" />
+      <TemplateMap element="1" evaluator="test_mesh.element.bilinear_lagrange" />
+      <TemplateMap element="2" evaluator="test_mesh.element.bilinear_lagrange" />
+      <TemplateMap element="3" evaluator="test_mesh.element.bilinear_lagrange" />
     </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.point.x"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@8a0d5d"  </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.point.y"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@173831b"  </variables>
   </PiecewiseField>
   
 

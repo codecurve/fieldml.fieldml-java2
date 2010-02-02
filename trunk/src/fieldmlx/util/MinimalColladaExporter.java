@@ -26,6 +26,7 @@ public class MinimalColladaExporter
         MeshDomain meshDomain = region.getMeshDomain( meshName );
         ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
         final int elementCount = meshDomain.elementDomain.getValueCount();
+        DomainValues context = new DomainValues();
 
         ContinuousDomainValue v;
 
@@ -41,7 +42,8 @@ public class MinimalColladaExporter
                     final double xi1 = i / (double)discretisation;
                     final double xi2 = j / (double)discretisation;
 
-                    v = mesh.evaluate( meshDomain, elementNumber, xi1, xi2 );
+                    context.set( meshDomain, elementNumber, xi1, xi2 );
+                    v = mesh.evaluate( context );
                     xyzArray.append( "\n" );
                     xyzArray.append( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
 
@@ -159,6 +161,7 @@ public class MinimalColladaExporter
         double deltaX = 1.0 / discretisation;
         double x = deltaX;
         ContinuousDomainValue v;
+        DomainValues context = new DomainValues();
 
         StringBuilder xyzArray = new StringBuilder();
         StringBuilder polygonBlock = new StringBuilder();
@@ -169,7 +172,8 @@ public class MinimalColladaExporter
             {
                 final double xi1 = j / (double)discretisation;
 
-                v = mesh.evaluate( meshDomain, elementNumber, xi1 );
+                context.set( meshDomain, elementNumber, xi1 );
+                v = mesh.evaluate( context );
                 xyzArray.append( "\n" );
                 xyzArray.append( " " + x + " " + v.values[0] + " 0.0" );
                 xyzArray.append( " " + x + " " + v.values[0] + " 1.0" );

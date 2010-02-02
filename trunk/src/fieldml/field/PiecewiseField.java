@@ -4,6 +4,8 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.evaluator.AbstractEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.util.SimpleMap;
+import fieldml.util.SimpleMapEntry;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
@@ -15,7 +17,7 @@ public class PiecewiseField
     public final PiecewiseTemplate template;
 
     @SerializationAsString
-    public final ContinuousEvaluator[] dofs;
+    public final SimpleMap<String, ContinuousEvaluator> variables;
 
 
     public PiecewiseField( String name, ContinuousDomain valueDomain, PiecewiseTemplate template )
@@ -23,20 +25,24 @@ public class PiecewiseField
         super( name, valueDomain );
 
         this.template = template;
-
-        dofs = new ContinuousEvaluator[template.totalDofSets];
+        
+        variables = new SimpleMap<String, ContinuousEvaluator>();
     }
 
 
-    public void setDofs( int index, ContinuousEvaluator evaluator )
+    public void setVariable( String name, ContinuousEvaluator evaluator )
     {
-        dofs[index - 1] = evaluator;
+        variables.put( name, evaluator );
     }
 
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        return valueDomain.makeValue( template.evaluate( context, dofs ) );
+        for( SimpleMapEntry<String, ContinuousEvaluator> e : variables )
+        {
+            context.setVariable( e.key, e.value );
+        }
+        return valueDomain.makeValue( template.evaluate( context ) );
     }
 }
