@@ -171,13 +171,13 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@12152e6" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.mesh.bilinear_simplex" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@12152e6" name="test_mesh.element.bilinear_simplex" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.mesh.biquadratic_lagrange" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@12152e6" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
@@ -206,12 +206,16 @@
   
 
   <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@c9ba38"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@1e0be38"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
+    </variables>
   </PiecewiseField>
   
 

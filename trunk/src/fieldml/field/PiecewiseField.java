@@ -16,7 +16,6 @@ public class PiecewiseField
     @SerializationAsString
     public final PiecewiseTemplate template;
 
-    @SerializationAsString
     public final SimpleMap<String, ContinuousEvaluator> variables;
 
 

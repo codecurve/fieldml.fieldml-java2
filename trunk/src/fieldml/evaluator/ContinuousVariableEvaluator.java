@@ -26,13 +26,19 @@ public class ContinuousVariableEvaluator
     public ContinuousDomainValue evaluate( DomainValues context )
     {
         ContinuousEvaluator variable = context.getContinuousVariable( name );
-        
+
         return variable.evaluate( context );
     }
 
 
     @Override
     public String getName()
+    {
+        return name;
+    }
+
+
+    public String toString()
     {
         return name;
     }

@@ -138,7 +138,7 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@b66cc" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
@@ -159,12 +159,16 @@
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@8a0d5d"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.x" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@173831b"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.y" />
+    </variables>
   </PiecewiseField>
   
 

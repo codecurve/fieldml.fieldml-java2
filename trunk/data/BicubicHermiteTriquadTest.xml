@@ -205,22 +205,22 @@
   </ContinuousParameters>
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dx/ds" valueWeights="test_mesh.node.ds1.weights" name="test_mesh.node.dx/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dx/ds" source2="test_mesh.node.ds1.weights" name="test_mesh.node.dx/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dx/ds" valueWeights="test_mesh.node.ds2.weights" name="test_mesh.node.dx/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dx/ds" source2="test_mesh.node.ds2.weights" name="test_mesh.node.dx/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dy/ds" valueWeights="test_mesh.node.ds1.weights" name="test_mesh.node.dy/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dy/ds" source2="test_mesh.node.ds1.weights" name="test_mesh.node.dy/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dy/ds" valueWeights="test_mesh.node.ds2.weights" name="test_mesh.node.dy/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dy/ds" source2="test_mesh.node.ds2.weights" name="test_mesh.node.dy/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dz/ds" valueWeights="test_mesh.node.ds1.weights" name="test_mesh.node.dz/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dz/ds" source2="test_mesh.node.ds1.weights" name="test_mesh.node.dz/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
-  <DotProductEvaluator valueSource="test_mesh.node.dz/ds" valueWeights="test_mesh.node.ds2.weights" name="test_mesh.node.dz/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
+  <DotProductEvaluator source1="test_mesh.node.dz/ds" source2="test_mesh.node.ds2.weights" name="test_mesh.node.dz/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 
   <ContinuousAggregateEvaluator name="test_mesh.bicubic_parameters.x" valueDomain="library.bicubic_hermite.nodal.parameters">
@@ -238,7 +238,7 @@
   </ContinuousAggregateEvaluator>
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@b1c5fa" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="test_mesh.bicubic_dofs" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
@@ -256,17 +256,23 @@
   
 
   <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@13caecd"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.bicubic_dofs" value="test_mesh.bicubic_parameters.x" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@f84386"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.bicubic_dofs" value="test_mesh.bicubic_parameters.y" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@1194a4e"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.bicubic_dofs" value="test_mesh.bicubic_parameters.z" />
+    </variables>
   </PiecewiseField>
   
 
