@@ -312,10 +312,10 @@
   </ContinuousAggregateEvaluator>
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@471e30" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.linear.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@10ef90c" valueScale="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="test_mesh.hermite.dofs" valueScale="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
@@ -352,17 +352,23 @@
   
 
   <PiecewiseField template="test_mesh.coordinates.L2" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@8965fb"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.linear.dofs" value="test_mesh.node.x" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.L2" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@867e89"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.linear.dofs" value="test_mesh.node.y" />
+    </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.H3" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@1dd7056"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.hermite.dofs" value="test_mesh.bicubic_parameters.z" />
+    </variables>
   </PiecewiseField>
   
 

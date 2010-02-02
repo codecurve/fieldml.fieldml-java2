@@ -84,7 +84,7 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.mesh.quadratic_bspline" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@15c7850" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <PiecewiseTemplate name="test_mesh.coordinates" meshDomain="test_mesh.domain">
@@ -99,7 +99,9 @@
   
 
   <PiecewiseField template="test_mesh.coordinates" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <variables>"fieldml.util.SimpleMapEntry@7a84e4"  </variables>
+    <variables>
+      <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.dofs.z" />
+    </variables>
   </PiecewiseField>
   
 
