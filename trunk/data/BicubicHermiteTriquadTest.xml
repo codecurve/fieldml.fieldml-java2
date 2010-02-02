@@ -205,24 +205,6 @@
   </ContinuousParameters>
   
 
-  <ContinuousParameters defaultValue="[1.0, 1.0, 1.0, 1.0]" name="test_mesh.cubic_hermite_scaling.z" valueDomain="library.bicubic_hermite.scaling">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
-    <entries />
-  </ContinuousParameters>
-  
-
-  <ContinuousParameters defaultValue="[1.0, 1.0, 1.0, 1.0]" name="test_mesh.cubic_hermite_scaling.x" valueDomain="library.bicubic_hermite.scaling">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
-    <entries />
-  </ContinuousParameters>
-  
-
-  <ContinuousParameters defaultValue="[1.0, 1.0, 1.0, 1.0]" name="test_mesh.cubic_hermite_scaling.y" valueDomain="library.bicubic_hermite.scaling">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
-    <entries />
-  </ContinuousParameters>
-  
-
   <DirectMap valueSource="test_mesh.node.dx/ds" valueWeights="test_mesh.node.ds1.weights" name="test_mesh.node.dx/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
   
 

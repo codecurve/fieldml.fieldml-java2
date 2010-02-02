@@ -39,8 +39,6 @@ public class IndirectMap
 
     public double evaluate( DomainValues context, ContinuousEvaluator indexedValues )
     {
-        // TODO Currently assumes that indexedValues is scalar.
-
         int[] indexes = valueIndexes.evaluate( context ).values;
         double[] weights = valueWeights.evaluate( context ).values;
         double[] values;

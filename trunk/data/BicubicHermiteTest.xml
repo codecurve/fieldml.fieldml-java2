@@ -291,37 +291,6 @@
   </ContinuousParameters>
   
 
-  <ContinuousParameters defaultValue="[1.0, 1.0, 1.0, 1.0]" name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.scaling">
-    <parameterDomains>"test_mesh.elements"  "library.local_nodes.quad.1x1"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>2  1  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  2.0  1.0  2.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  2  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  2.0  1.0  2.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  3  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  2.0  1.0  2.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  4  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  2.0  1.0  2.0  </values>
-        </ContinuousDomainValue>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
   <ContinuousCompositeEvaluator name="test_mesh.node.dz/ds1" valueDomain="test_mesh.co-ordinates.dz/ds">
     <operations>
       <ImportOperation field="test_mesh.node.direction.ds1" />
@@ -351,7 +320,7 @@
   <IndirectMap name="test_mesh.element.bilinear_lagrange" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" />
   
 
-  <IndirectMap name="test_mesh.element.bicubic_hermite" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" />
+  <IndirectMap name="test_mesh.node.hermite_params" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" />
   
 
   <EnsembleParameters defaultValue="1" name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction">
@@ -376,8 +345,8 @@
 
   <PiecewiseTemplate name="test_mesh.coordinates.H3" meshDomain="test_mesh.domain" totalDofSets="1">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.element.bicubic_hermite" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.element.bicubic_hermite" dofSet="1" />
+      <TemplateMap element="1" map="test_mesh.node.hermite_params" dofSet="1" />
+      <TemplateMap element="2" map="test_mesh.node.hermite_params" dofSet="1" />
     </elementMaps>
   </PiecewiseTemplate>
   
