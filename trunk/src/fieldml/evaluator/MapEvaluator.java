@@ -1,9 +1,10 @@
 package fieldml.evaluator;
 
+import java.util.Arrays;
+
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.map.IndirectMap;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
@@ -12,36 +13,74 @@ public class MapEvaluator
     implements ContinuousEvaluator
 {
     @SerializationAsString
-    public final IndirectMap map;
+    public final EnsembleListEvaluator valueIndexes;
 
     @SerializationAsString
-    public final ContinuousEvaluator indexedValues;
+    public final ContinuousListEvaluator valueWeights;
+
+    @SerializationAsString
+    public final ContinuousEvaluator valueSource;
+
+    @SerializationAsString
+    public final ContinuousListEvaluator valueScale;
+
+    private final EnsembleDomain iteratedDomain;
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, IndirectMap map, ContinuousEvaluator indexedValues,
-        EnsembleDomain spannedDomain )
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleListEvaluator valueIndexes, ContinuousListEvaluator valueWeights,
+        ContinuousEvaluator valueSource )
     {
-        super( name, valueDomain );
-
-        this.map = map;
-        this.indexedValues = indexedValues;
+        this( name, valueDomain, valueIndexes, valueWeights, valueSource, null );
     }
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, IndirectMap map, ContinuousEvaluator indexedValues )
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleListEvaluator valueIndexes, ContinuousListEvaluator valueWeights,
+        ContinuousEvaluator valueSource, ContinuousListEvaluator valueScale )
     {
-        this( name, valueDomain, map, indexedValues, null );
+        super( name, valueDomain );
+
+        this.valueIndexes = valueIndexes;
+        this.valueWeights = valueWeights;
+        this.valueSource = valueSource;
+        this.valueScale = valueScale;
+
+        iteratedDomain = valueIndexes.getValueDomain().elementDomain;
     }
 
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
+        int[] indexes = valueIndexes.evaluate( context ).values;
+        double[] weights = valueWeights.evaluate( context ).values;
         double[] values;
-        
-        values = new double[1];
-        values[0] = map.evaluate( context, indexedValues );
+        double[] scales;
+        double finalValue = 0;
 
-        return valueDomain.makeValue( values );
+        int valueSize = valueSource.getValueDomain().dimensions;
+        if( valueScale != null )
+        {
+            scales = valueScale.evaluate( context ).values;
+        }
+        else
+        {
+            scales = new double[weights.length];
+            Arrays.fill( scales, 1.0 );
+        }
+
+        int weightIndex = 0;
+        for( int i = 0; i < indexes.length; i++ )
+        {
+            context.set( iteratedDomain, indexes[i] );
+
+            values = valueSource.evaluate( context ).values;
+            for( int j = 0; j < valueSize; j++ )
+            {
+                finalValue += weights[weightIndex] * values[j] * scales[weightIndex];
+                weightIndex++;
+            }
+        }
+
+        return valueDomain.makeValue( finalValue );
     }
 }

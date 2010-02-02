@@ -70,6 +70,9 @@
   </ContinuousParameters>
   
 
+  <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="tv_test.mesh.quadratic_lagrange" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@360be0" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />
+  
+
   <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.weighting.1d">
     <parameterDomains>"test_mesh.dofs"  "tv_test.time.dofs.domain"  </parameterDomains>
     <entries>
@@ -371,30 +374,27 @@
   </ContinuousParameters>
   
 
-  <IndirectMap name="test_mesh.element.quadratic_lagrange_map" valueIndexes="tv_test.time.element_dof_indexes" valueWeights="tv_test.mesh.quadratic_lagrange" />
-  
-
-  <PiecewiseTemplate name="tv_test.time.template" meshDomain="tv_test.time.mesh" totalDofSets="1">
+  <PiecewiseTemplate name="tv_test.time.template" meshDomain="tv_test.time.mesh">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
-      <TemplateMap element="3" map="test_mesh.element.quadratic_lagrange_map" dofSet="1" />
+      <TemplateMap element="1" evaluator="test_mesh.element.quadratic_lagrange_map" />
+      <TemplateMap element="2" evaluator="test_mesh.element.quadratic_lagrange_map" />
+      <TemplateMap element="3" evaluator="test_mesh.element.quadratic_lagrange_map" />
     </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="tv_test.time.template" name="tv_test.time" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"tv_test.time.dofs.values"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@1c78e57"  </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates" name="tv_test.coordinates.sliced_z" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"tv_test.dofs.z"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@5224ee"  </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="tv_test.time.template" name="tv_test.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"tv_test.coordinates.sliced_z"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@f6a746"  </variables>
   </PiecewiseField>
   
 

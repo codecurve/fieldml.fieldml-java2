@@ -312,15 +312,15 @@
   </ContinuousAggregateEvaluator>
   
 
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@471e30" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@10ef90c" valueScale="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
+  
+
   <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  "test_mesh.coordinates.z"  </sourceFields>
   </ContinuousAggregateEvaluator>
-  
-
-  <IndirectMap name="test_mesh.element.bilinear_lagrange" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" />
-  
-
-  <IndirectMap name="test_mesh.node.hermite_params" valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" />
   
 
   <EnsembleParameters defaultValue="1" name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction">
@@ -335,34 +335,34 @@
   </EnsembleParameters>
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.L2" meshDomain="test_mesh.domain" totalDofSets="1">
+  <PiecewiseTemplate name="test_mesh.coordinates.L2" meshDomain="test_mesh.domain">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.element.bilinear_lagrange" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.element.bilinear_lagrange" dofSet="1" />
+      <TemplateMap element="1" evaluator="test_mesh.element.bilinear_lagrange" />
+      <TemplateMap element="2" evaluator="test_mesh.element.bilinear_lagrange" />
     </elementMaps>
   </PiecewiseTemplate>
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.H3" meshDomain="test_mesh.domain" totalDofSets="1">
+  <PiecewiseTemplate name="test_mesh.coordinates.H3" meshDomain="test_mesh.domain">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.node.hermite_params" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.node.hermite_params" dofSet="1" />
+      <TemplateMap element="1" evaluator="test_mesh.element.bicubic_hermite" />
+      <TemplateMap element="2" evaluator="test_mesh.element.bicubic_hermite" />
     </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="test_mesh.coordinates.L2" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.node.x"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@8965fb"  </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.L2" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.node.y"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@867e89"  </variables>
   </PiecewiseField>
   
 
   <PiecewiseField template="test_mesh.coordinates.H3" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.bicubic_parameters.z"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@1dd7056"  </variables>
   </PiecewiseField>
   
 

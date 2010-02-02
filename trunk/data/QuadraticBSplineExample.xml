@@ -35,7 +35,7 @@
   </MeshDomain>
   
 
-  <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.weighting.1d">
+  <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d">
     <parameterDomains>"test_mesh.dofs"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -84,22 +84,22 @@
   </ContinuousParameters>
   
 
-  <IndirectMap name="test_mesh.element.quadratic_bspline_map" valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.mesh.quadratic_bspline" />
+  <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.mesh.quadratic_bspline" valueSource="fieldml.evaluator.ContinuousVariableEvaluator@15c7850" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates" meshDomain="test_mesh.domain" totalDofSets="1">
+  <PiecewiseTemplate name="test_mesh.coordinates" meshDomain="test_mesh.domain">
     <elementMaps>
-      <TemplateMap element="1" map="test_mesh.element.quadratic_bspline_map" dofSet="1" />
-      <TemplateMap element="2" map="test_mesh.element.quadratic_bspline_map" dofSet="1" />
-      <TemplateMap element="3" map="test_mesh.element.quadratic_bspline_map" dofSet="1" />
-      <TemplateMap element="4" map="test_mesh.element.quadratic_bspline_map" dofSet="1" />
-      <TemplateMap element="5" map="test_mesh.element.quadratic_bspline_map" dofSet="1" />
+      <TemplateMap element="1" evaluator="test_mesh.element.quadratic_bspline_map" />
+      <TemplateMap element="2" evaluator="test_mesh.element.quadratic_bspline_map" />
+      <TemplateMap element="3" evaluator="test_mesh.element.quadratic_bspline_map" />
+      <TemplateMap element="4" evaluator="test_mesh.element.quadratic_bspline_map" />
+      <TemplateMap element="5" evaluator="test_mesh.element.quadratic_bspline_map" />
     </elementMaps>
   </PiecewiseTemplate>
   
 
   <PiecewiseField template="test_mesh.coordinates" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
-    <dofs>"test_mesh.dofs.z"  </dofs>
+    <variables>"fieldml.util.SimpleMapEntry@7a84e4"  </variables>
   </PiecewiseField>
   
 

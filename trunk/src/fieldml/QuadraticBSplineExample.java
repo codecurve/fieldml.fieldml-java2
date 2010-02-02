@@ -21,15 +21,17 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.hardcoded.QuadraticBSpline;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
-import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValues;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class QuadraticBSplineExample
@@ -92,7 +94,7 @@ public class QuadraticBSplineExample
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
         ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
-
+        DomainValues context = new DomainValues();
         ContinuousDomainValue output;
 
         double[] bsplineValues = new double[3];
@@ -104,7 +106,8 @@ public class QuadraticBSplineExample
         params[0] = rawDofs[0];
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
-        output = meshZ.evaluate( meshDomain, 1, xi );
+        context.set( meshDomain, 1, xi );
+        output = meshZ.evaluate( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( xi[0] );
 
         expectedValue = ( bsplineValues[0] * params[0] ) + ( bsplineValues[1] * params[1] ) + ( bsplineValues[2] * params[2] );
@@ -115,7 +118,8 @@ public class QuadraticBSplineExample
         params[0] = rawDofs[3];
         params[1] = rawDofs[4];
         params[2] = rawDofs[5];
-        output = meshZ.evaluate( meshDomain, 4, xi );
+        context.set( meshDomain, 4, xi );
+        output = meshZ.evaluate( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( xi[0] );
 
         expectedValue = ( bsplineValues[0] * params[0] ) + ( bsplineValues[1] * params[1] ) + ( bsplineValues[2] * params[2] );
@@ -165,18 +169,18 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( lineNodeList );
 
-        ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
-        ContinuousParameters dofs = new ContinuousParameters( "test_mesh.dofs.z", weighting, globalDofsDomain );
-        dofs.setValue( 0.954915, 1 );
-        dofs.setValue( 1.0450850, 2 );
-        dofs.setValue( -0.427051, 3 );
-        dofs.setValue( -1.190983, 4 );
-        dofs.setValue( -0.427051, 5 );
-        dofs.setValue( 1.0450850, 6 );
-        dofs.setValue( 0.954915, 7 );
+        ContinuousParameters zDofs = new ContinuousParameters( "test_mesh.dofs.z", rc1CoordinatesDomain, globalDofsDomain );
+        zDofs.setValue( 0.954915, 1 );
+        zDofs.setValue( 1.0450850, 2 );
+        zDofs.setValue( -0.427051, 3 );
+        zDofs.setValue( -1.190983, 4 );
+        zDofs.setValue( -0.427051, 5 );
+        zDofs.setValue( 1.0450850, 6 );
+        zDofs.setValue( 0.954915, 7 );
 
-        testRegion.addEvaluator( dofs );
+        testRegion.addEvaluator( zDofs );
 
         EnsembleListDomain dofIndexesDomain = new EnsembleListDomain( "test_mesh.dof_indexes", globalDofsDomain );
         testRegion.addDomain( dofIndexesDomain );
@@ -193,21 +197,21 @@ public class QuadraticBSplineExample
         ContinuousListEvaluator quadraticBSpline = new QuadraticBSpline( "test_mesh.mesh.quadratic_bspline", meshDomain );
         testRegion.addEvaluator( quadraticBSpline );
 
-        IndirectMap elementBSpline = new IndirectMap( "test_mesh.element.quadratic_bspline_map", elementDofIndexes, quadraticBSpline );
-        testRegion.addMap( elementBSpline );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain );
+        
+        MapEvaluator elementBSpline = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, elementDofIndexes, quadraticBSpline, dofs );
+        testRegion.addEvaluator( elementBSpline );
 
-        PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "test_mesh.coordinates", meshDomain, 1 );
-        meshCoordinates.setMap( 1, elementBSpline, 1 );
-        meshCoordinates.setMap( 2, elementBSpline, 1 );
-        meshCoordinates.setMap( 3, elementBSpline, 1 );
-        meshCoordinates.setMap( 4, elementBSpline, 1 );
-        meshCoordinates.setMap( 5, elementBSpline, 1 );
+        PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "test_mesh.coordinates", meshDomain );
+        meshCoordinates.setEvaluator( 1, elementBSpline );
+        meshCoordinates.setEvaluator( 2, elementBSpline );
+        meshCoordinates.setEvaluator( 3, elementBSpline );
+        meshCoordinates.setEvaluator( 4, elementBSpline );
+        meshCoordinates.setEvaluator( 5, elementBSpline );
         testRegion.addPiecewiseTemplate( meshCoordinates );
 
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", rc1CoordinatesDomain, meshCoordinates );
-        meshCoordinatesZ.setDofs( 1, dofs );
+        meshCoordinatesZ.setVariable( "test_mesh.dofs", zDofs );
 
         testRegion.addEvaluator( meshCoordinatesZ );
 

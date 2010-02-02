@@ -22,15 +22,16 @@ import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousListParameters;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
 import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.evaluator.hardcoded.BicubicHermite;
 import fieldml.evaluator.hardcoded.BilinearLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
-import fieldml.map.IndirectMap;
 import fieldml.region.Region;
 import fieldmlx.util.MinimalColladaExporter;
 
@@ -183,8 +184,8 @@ public class BicubicHermiteTest
 
         ContinuousListParameters hermiteScaling = new ContinuousListParameters( "test_mesh.cubic_hermite_scaling",
             bicubicHermiteScalingDomain, testMeshElementDomain );
-        hermiteScaling.setDefaultValue( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
-        hermiteScaling.setDefaultValue( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 );
+        hermiteScaling.setValue( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+        hermiteScaling.setValue( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 );
         testRegion.addEvaluator( hermiteScaling );
 
         EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
@@ -220,35 +221,39 @@ public class BicubicHermiteTest
         ContinuousListEvaluator meshBilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
         testRegion.addEvaluator( meshBilinearLagrange );
         
-        IndirectMap elementBilinearMap = new IndirectMap( "test_mesh.element.bilinear_lagrange", quadNodeList, meshBilinearLagrange );
-        testRegion.addMap( elementBilinearMap );
+        ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", mesh1DDomain );
+        
+        MapEvaluator elementBilinearMap = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList, meshBilinearLagrange, linearDofs );
+        testRegion.addEvaluator( elementBilinearMap );
 
-        PiecewiseTemplate meshCoordinatesL2 = new PiecewiseTemplate( "test_mesh.coordinates.L2", meshDomain, 1 );
-        meshCoordinatesL2.setMap( 1, elementBilinearMap, 1 );
-        meshCoordinatesL2.setMap( 2, elementBilinearMap, 1 );
+        PiecewiseTemplate meshCoordinatesL2 = new PiecewiseTemplate( "test_mesh.coordinates.L2", meshDomain );
+        meshCoordinatesL2.setEvaluator( 1, elementBilinearMap );
+        meshCoordinatesL2.setEvaluator( 2, elementBilinearMap );
         testRegion.addPiecewiseTemplate( meshCoordinatesL2 );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesX.setDofs( 1, meshX );
+        meshCoordinatesX.setVariable( "test_mesh.linear.dofs", meshX );
         testRegion.addEvaluator( meshCoordinatesX );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesL2 );
-        meshCoordinatesY.setDofs( 1, meshY );
+        meshCoordinatesY.setVariable( "test_mesh.linear.dofs", meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
         ContinuousListEvaluator meshBicubicHermite = new BicubicHermite( "test_mesh.mesh.bicubic_hermite", meshDomain );
         testRegion.addEvaluator( meshBicubicHermite );
+        
+        ContinuousVariableEvaluator hermiteDofs = new ContinuousVariableEvaluator( "test_mesh.hermite.dofs", bicubicHermiteNodalParametersDomain );
+        
+        MapEvaluator elementBicubicHermite = new MapEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain, quadNodeList, meshBicubicHermite, hermiteDofs, hermiteScaling );
+        testRegion.addEvaluator( elementBicubicHermite );
 
-        IndirectMap elementBicubicHermiteMap = new IndirectMap( "test_mesh.node.hermite_params", quadNodeList, meshBicubicHermite );
-        testRegion.addMap( elementBicubicHermiteMap );
-
-        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain, 1 );
-        meshCoordinatesH3.setMap( 1, elementBicubicHermiteMap, 1 );
-        meshCoordinatesH3.setMap( 2, elementBicubicHermiteMap, 1 );
+        PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain );
+        meshCoordinatesH3.setEvaluator( 1, elementBicubicHermite );
+        meshCoordinatesH3.setEvaluator( 2, elementBicubicHermite );
         testRegion.addPiecewiseTemplate( meshCoordinatesH3 );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
-        meshCoordinatesZ.setDofs( 1, cubicHermiteZParameters );
+        meshCoordinatesZ.setVariable( "test_mesh.hermite.dofs", cubicHermiteZParameters );
         testRegion.addEvaluator( meshCoordinatesZ );
 
         ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates", mesh3DDomain );

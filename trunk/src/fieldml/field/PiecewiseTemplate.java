@@ -6,7 +6,6 @@ import java.util.List;
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.map.ContinuousMap;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
@@ -17,16 +16,13 @@ public class PiecewiseTemplate
         public final int element;
         
         @SerializationAsString
-        public final ContinuousMap map;
-
-        public final int dofSet;
+        public final ContinuousEvaluator evaluator;
 
 
-        public TemplateMap( int element, ContinuousMap map, int dofSet )
+        public TemplateMap( int element, ContinuousEvaluator evaluator )
         {
             this.element = element;
-            this.map = map;
-            this.dofSet = dofSet;
+            this.evaluator = evaluator;
         }
     }
 
@@ -37,14 +33,11 @@ public class PiecewiseTemplate
 
     public final List<TemplateMap> elementMaps;
 
-    public final int totalDofSets;
 
-
-    public PiecewiseTemplate( String name, MeshDomain meshDomain, int totalDofSets )
+    public PiecewiseTemplate( String name, MeshDomain meshDomain )
     {
         this.name = name;
         this.meshDomain = meshDomain;
-        this.totalDofSets = totalDofSets;
 
         elementMaps = new ArrayList<TemplateMap>();
         for( int i = 0; i <= meshDomain.elementDomain.getValueCount(); i++ )
@@ -54,13 +47,13 @@ public class PiecewiseTemplate
     }
 
 
-    public void setMap( int index, ContinuousMap map, int dofSet )
+    public void setEvaluator( int index, ContinuousEvaluator evaluator )
     {
-        elementMaps.set( index, new TemplateMap( index, map, dofSet ) );
+        elementMaps.set( index, new TemplateMap( index, evaluator ) );
     }
 
 
-    public double evaluate( DomainValues context, ContinuousEvaluator[] dofs )
+    public double[] evaluate( DomainValues context )
     {
         MeshDomainValue v = context.get( meshDomain );
 
@@ -68,12 +61,12 @@ public class PiecewiseTemplate
 
         if( templateMap != null )
         {
-            return templateMap.map.evaluate( context, dofs[templateMap.dofSet - 1] );
+            return templateMap.evaluator.evaluate( context ).values;
         }
 
         assert false;
 
-        return 0;
+        return null;
     }
 
 
