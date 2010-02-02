@@ -31,7 +31,6 @@ import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.map.IndirectMap;
-import fieldml.map.NestedMap;
 import fieldml.region.Region;
 import fieldmlx.util.MinimalColladaExporter;
 
@@ -183,12 +182,9 @@ public class BicubicHermiteTest
         ContinuousListDomain bicubicHermiteScalingDomain = library.getContinuousListDomain( "library.bicubic_hermite.scaling" );
 
         ContinuousListParameters hermiteScaling = new ContinuousListParameters( "test_mesh.cubic_hermite_scaling",
-            bicubicHermiteScalingDomain, testMeshElementDomain, quad1x1LocalNodeDomain );
-        hermiteScaling.setDefaultValue( 1, 1, 1, 1 );
-        hermiteScaling.setValue( new int[]{2, 1}, 1, 2, 1, 2 );
-        hermiteScaling.setValue( new int[]{2, 2}, 1, 2, 1, 2 );
-        hermiteScaling.setValue( new int[]{2, 3}, 1, 2, 1, 2 );
-        hermiteScaling.setValue( new int[]{2, 4}, 1, 2, 1, 2 );
+            bicubicHermiteScalingDomain, testMeshElementDomain );
+        hermiteScaling.setDefaultValue( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
+        hermiteScaling.setDefaultValue( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 );
         testRegion.addEvaluator( hermiteScaling );
 
         EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
@@ -240,13 +236,10 @@ public class BicubicHermiteTest
         meshCoordinatesY.setDofs( 1, meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
-        IndirectMap scaledNodalParams = new IndirectMap( "test_mesh.node.scaled_params", quadNodeList, hermiteScaling );
-        testRegion.addMap( scaledNodalParams );
-
         ContinuousListEvaluator meshBicubicHermite = new BicubicHermite( "test_mesh.mesh.bicubic_hermite", meshDomain );
         testRegion.addEvaluator( meshBicubicHermite );
 
-        NestedMap elementBicubicHermiteMap = new NestedMap( "test_mesh.element.bicubic_hermite", quadNodeList, meshBicubicHermite, scaledNodalParams );
+        IndirectMap elementBicubicHermiteMap = new IndirectMap( "test_mesh.node.hermite_params", quadNodeList, meshBicubicHermite );
         testRegion.addMap( elementBicubicHermiteMap );
 
         PiecewiseTemplate meshCoordinatesH3 = new PiecewiseTemplate( "test_mesh.coordinates.H3", meshDomain, 1 );

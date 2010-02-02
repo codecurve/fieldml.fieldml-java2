@@ -47,6 +47,8 @@ public class Region
         EnsembleDomain quad1x1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.quad.1x1" );
         quad1x1LocalNodeDomain.addValues( 1, 2, 3, 4 );
         region.addDomain( quad1x1LocalNodeDomain );
+        
+        region.addDomain( new EnsembleListDomain( "library.local_nodes.quad.1x1_list", quad1x1LocalNodeDomain ) );
 
         EnsembleDomain line1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.line.1" );
         line1LocalNodeDomain.addValues( 1, 2 );
@@ -191,6 +193,16 @@ public class Region
     public EnsembleDomain getEnsembleDomain( String name )
     {
         EnsembleDomain domain = ensembleDomains.get( name );
+
+        assert domain != null : "Domain " + name + " does not exist in region " + this.name;
+
+        return domain;
+    }
+
+
+    public EnsembleListDomain getEnsembleListDomain( String name )
+    {
+        EnsembleListDomain domain = ensembleListDomains.get( name );
 
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
 
