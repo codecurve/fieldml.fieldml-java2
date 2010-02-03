@@ -49,6 +49,11 @@ public class DomainValues
     public void set( DomainValue<? extends Domain> value )
     {
         values.put( value.domain, value );
+        if( value instanceof MeshDomainValue )// TODO This is ugly
+        {
+            MeshDomainValue v = (MeshDomainValue)value;
+            set( v.domain.elementDomain, v.indexValue );
+        }
     }
 
 
@@ -67,7 +72,6 @@ public class DomainValues
     public void set( MeshDomain domain, int indexValue, double... chartValues )
     {
         set( domain.makeValue( indexValue, chartValues ) );
-        set( domain.elementDomain.makeValue( indexValue ) );// TODO This is ugly
     }
 
 

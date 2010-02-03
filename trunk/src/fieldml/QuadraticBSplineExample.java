@@ -47,7 +47,7 @@ public class QuadraticBSplineExample
 
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
-        s.append( "1____2____3____4____5\n" );
+        s.append( "x____x____x____x____x____x\n" );
 
         Comment comment1 = new Comment( s.toString() );
         root.addContent( comment1 );

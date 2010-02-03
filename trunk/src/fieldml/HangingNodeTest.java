@@ -163,28 +163,28 @@ public class HangingNodeTest
 
         ContinuousListDomain weighting = library.getContinuousListDomain( "library.weighting.list" );
 
-        ContinuousListParameters p2nArithmeticMeanWeights = new ContinuousListParameters( "test_mesh.p2nA.weights", weighting,
+        ContinuousListParameters globalToLocalWeights = new ContinuousListParameters( "test_mesh.global_to_local.weights", weighting,
             localDofsDomain );
-        p2nArithmeticMeanWeights.setValue( 1, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 2, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 3, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 4, 0.5, 0.5 );
-        p2nArithmeticMeanWeights.setValue( 5, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 6, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 7, 1.0 );
-        p2nArithmeticMeanWeights.setValue( 8, 1.0 );
-        testRegion.addEvaluator( p2nArithmeticMeanWeights );
+        globalToLocalWeights.setValue( 1, 1.0 );
+        globalToLocalWeights.setValue( 2, 1.0 );
+        globalToLocalWeights.setValue( 3, 1.0 );
+        globalToLocalWeights.setValue( 4, 0.5, 0.5 );
+        globalToLocalWeights.setValue( 5, 1.0 );
+        globalToLocalWeights.setValue( 6, 1.0 );
+        globalToLocalWeights.setValue( 7, 1.0 );
+        globalToLocalWeights.setValue( 8, 1.0 );
+        testRegion.addEvaluator( globalToLocalWeights );
 
-        EnsembleListParameters p2nIndexes = new EnsembleListParameters( "test_mesh.p2nA.indexes", globalDofListDomain, localDofsDomain );
-        p2nIndexes.setValue( 1, 1 );
-        p2nIndexes.setValue( 2, 2 );
-        p2nIndexes.setValue( 3, 3 );
-        p2nIndexes.setValue( 4, 2, 6 );
-        p2nIndexes.setValue( 5, 4 );
-        p2nIndexes.setValue( 6, 5 );
-        p2nIndexes.setValue( 7, 6 );
-        p2nIndexes.setValue( 8, 7 );
-        testRegion.addEvaluator( p2nIndexes );
+        EnsembleListParameters globalToLocalIndexes = new EnsembleListParameters( "test_mesh.global_to_local.indexes", globalDofListDomain, localDofsDomain );
+        globalToLocalIndexes.setValue( 1, 1 );
+        globalToLocalIndexes.setValue( 2, 2 );
+        globalToLocalIndexes.setValue( 3, 3 );
+        globalToLocalIndexes.setValue( 4, 2, 6 );
+        globalToLocalIndexes.setValue( 5, 4 );
+        globalToLocalIndexes.setValue( 6, 5 );
+        globalToLocalIndexes.setValue( 7, 6 );
+        globalToLocalIndexes.setValue( 8, 7 );
+        testRegion.addEvaluator( globalToLocalIndexes );
 
         EnsembleListParameters quadNodeList = new EnsembleListParameters( "test_mesh.quad_nodes", localDofListDomain, testMeshElementDomain );
         quadNodeList.setValue( 1, 6, 7, 1, 2 );
@@ -223,7 +223,7 @@ public class HangingNodeTest
 
         ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
 
-        MapEvaluator localDofs = new MapEvaluator( "test_mesh.local_dofs", mesh1DDomain, p2nIndexes, p2nArithmeticMeanWeights, globalDofs );
+        MapEvaluator localDofs = new MapEvaluator( "test_mesh.local_dofs", mesh1DDomain, globalToLocalIndexes, globalToLocalWeights, globalDofs );
         testRegion.addEvaluator( localDofs );
 
         MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList,

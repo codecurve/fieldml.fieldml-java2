@@ -110,7 +110,7 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="test_mesh.p2nA.indexes" valueWeights="test_mesh.p2nA.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
@@ -121,7 +121,7 @@
   </ContinuousAggregateEvaluator>
   
 
-  <ContinuousListParameters name="test_mesh.p2nA.weights" valueDomain="library.weighting.list">
+  <ContinuousListParameters name="test_mesh.global_to_local.weights" valueDomain="library.weighting.list">
     <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -171,7 +171,7 @@
   </BilinearLagrange>
   
 
-  <EnsembleListParameters name="test_mesh.p2nA.indexes" valueDomain="test_mesh_global_dof_list">
+  <EnsembleListParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh_global_dof_list">
     <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
     <entries>
       <MapEntry>
