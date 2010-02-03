@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fieldml>
   <!--
-1____2____3____4____5
+x____x____x____x____x____x
 -->
   <EnsembleDomain name="test_mesh.elements">
     <values>1  2  3  4  5  </values>
