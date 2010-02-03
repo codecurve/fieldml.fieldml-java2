@@ -178,13 +178,13 @@ public class TimeVaryingExample
         tvRegion.addDomain( timeDofsListDomain );
 
         ContinuousParameters timeDofs = new ContinuousParameters( "tv_test.time.dofs.values", rc1CoordinatesDomain, timeDofsDomain );
-        timeDofs.setValue( 0, 1 );
-        timeDofs.setValue( 1, 2 );
-        timeDofs.setValue( 2.5, 3 );
+        timeDofs.setValue( 1, 0 );
+        timeDofs.setValue( 2, 1 );
+        timeDofs.setValue( 3, 2.5 );
         timeDofs.setValue( 4, 4 );
-        timeDofs.setValue( 5.0, 5 );
-        timeDofs.setValue( 6.625, 6 );
-        timeDofs.setValue( 10.0, 7 );// Deliberately non-linear. C1 continuous for my own amusement.
+        timeDofs.setValue( 5, 5.0 );
+        timeDofs.setValue( 6, 6.625 );
+        timeDofs.setValue( 7, 10.0 );// Deliberately non-linear. C1 continuous for my own amusement.
         tvRegion.addEvaluator( timeDofs );
 
         EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
@@ -200,8 +200,8 @@ public class TimeVaryingExample
 
         ContinuousVariableEvaluator tvMeshDofs = new ContinuousVariableEvaluator( "tv_test.mesh.dofs", rc1CoordinatesDomain );
 
-        MapEvaluator elementQLagrange = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain, elementDofIndexes, quadraticLagrange,
-            tvMeshDofs );
+        MapEvaluator elementQLagrange = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain,
+            elementDofIndexes, quadraticLagrange, tvMeshDofs );
         tvRegion.addEvaluator( elementQLagrange );
 
         PiecewiseTemplate meshTimeTemplate = new PiecewiseTemplate( "tv_test.time.template", timeMeshDomain );
@@ -217,61 +217,61 @@ public class TimeVaryingExample
         EnsembleDomain bsplineDofsDomain = bsplineRegion.getEnsembleDomain( "test_mesh.dofs" );
 
         ContinuousParameters dofs = new ContinuousParameters( "tv_test.dofs.z", weighting, bsplineDofsDomain, timeDofsDomain );
-        dofs.setValue( 0.954915, 1, 1 );
-        dofs.setValue( 1.0450850, 2, 1 );
-        dofs.setValue( -0.427051, 3, 1 );
-        dofs.setValue( -1.190983, 4, 1 );
-        dofs.setValue( -0.427051, 5, 1 );
-        dofs.setValue( 1.0450850, 6, 1 );
-        dofs.setValue( 0.954915, 7, 1 );
+        dofs.setValue( new int[]{ 1, 1 }, 0.954915 );
+        dofs.setValue( new int[]{ 2, 1 }, 1.0450850 );
+        dofs.setValue( new int[]{ 3, 1 }, -0.427051 );
+        dofs.setValue( new int[]{ 4, 1 }, -1.190983 );
+        dofs.setValue( new int[]{ 5, 1 }, -0.427051 );
+        dofs.setValue( new int[]{ 6, 1 }, 1.0450850 );
+        dofs.setValue( new int[]{ 7, 1 }, 0.954915 );
 
-        dofs.setValue( 0.0, 1, 2 );
-        dofs.setValue( 0.0, 2, 2 );
-        dofs.setValue( 0.0, 3, 2 );
-        dofs.setValue( 0.0, 4, 2 );
-        dofs.setValue( 0.0, 5, 2 );
-        dofs.setValue( 0.0, 6, 2 );
-        dofs.setValue( 0.0, 7, 2 );
+        dofs.setValue( new int[]{ 1, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 2, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 3, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 4, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 5, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 6, 2 }, 0.0 );
+        dofs.setValue( new int[]{ 7, 2 }, 0.0 );
 
-        dofs.setValue( -0.954915, 1, 3 );
-        dofs.setValue( -1.0450850, 2, 3 );
-        dofs.setValue( 0.427051, 3, 3 );
-        dofs.setValue( 1.190983, 4, 3 );
-        dofs.setValue( 0.427051, 5, 3 );
-        dofs.setValue( -1.0450850, 6, 3 );
-        dofs.setValue( -0.954915, 7, 3 );
+        dofs.setValue( new int[]{ 1, 3 }, -0.954915 );
+        dofs.setValue( new int[]{ 2, 3 }, -1.0450850 );
+        dofs.setValue( new int[]{ 3, 3 }, 0.427051 );
+        dofs.setValue( new int[]{ 4, 3 }, 1.190983 );
+        dofs.setValue( new int[]{ 5, 3 }, 0.427051 );
+        dofs.setValue( new int[]{ 6, 3 }, -1.0450850 );
+        dofs.setValue( new int[]{ 7, 3 }, -0.954915 );
 
-        dofs.setValue( 0.0, 1, 4 );
-        dofs.setValue( 0.0, 2, 4 );
-        dofs.setValue( 0.0, 3, 4 );
-        dofs.setValue( 0.0, 4, 4 );
-        dofs.setValue( 0.0, 5, 4 );
-        dofs.setValue( 0.0, 6, 4 );
-        dofs.setValue( 0.0, 7, 4 );
+        dofs.setValue( new int[]{ 1, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 2, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 3, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 4, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 5, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 6, 4 }, 0.0 );
+        dofs.setValue( new int[]{ 7, 4 }, 0.0 );
 
-        dofs.setValue( 0.954915, 1, 5 );
-        dofs.setValue( 1.0450850, 2, 5 );
-        dofs.setValue( -0.427051, 3, 5 );
-        dofs.setValue( -1.190983, 4, 5 );
-        dofs.setValue( -0.427051, 5, 5 );
-        dofs.setValue( 1.0450850, 6, 5 );
-        dofs.setValue( 0.954915, 7, 5 );
+        dofs.setValue( new int[]{ 1, 5 }, 0.954915 );
+        dofs.setValue( new int[]{ 2, 5 }, 1.0450850 );
+        dofs.setValue( new int[]{ 3, 5 }, -0.427051 );
+        dofs.setValue( new int[]{ 4, 5 }, -1.190983 );
+        dofs.setValue( new int[]{ 5, 5 }, -0.427051 );
+        dofs.setValue( new int[]{ 6, 5 }, 1.0450850 );
+        dofs.setValue( new int[]{ 7, 5 }, 0.954915 );
 
-        dofs.setValue( 0.0, 1, 6 );
-        dofs.setValue( 0.0, 2, 6 );
-        dofs.setValue( 0.0, 3, 6 );
-        dofs.setValue( 0.0, 4, 6 );
-        dofs.setValue( 0.0, 5, 6 );
-        dofs.setValue( 0.0, 6, 6 );
-        dofs.setValue( 0.0, 7, 6 );
+        dofs.setValue( new int[]{ 1, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 2, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 3, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 4, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 5, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 6, 6 }, 0.0 );
+        dofs.setValue( new int[]{ 7, 6 }, 0.0 );
 
-        dofs.setValue( -0.954915, 1, 7 );
-        dofs.setValue( -1.0450850, 2, 7 );
-        dofs.setValue( 0.427051, 3, 7 );
-        dofs.setValue( 1.190983, 4, 7 );
-        dofs.setValue( 0.427051, 5, 7 );
-        dofs.setValue( -1.0450850, 6, 7 );
-        dofs.setValue( -0.954915, 7, 7 );
+        dofs.setValue( new int[]{ 1, 7 }, -0.954915 );
+        dofs.setValue( new int[]{ 2, 7 }, -1.0450850 );
+        dofs.setValue( new int[]{ 3, 7 }, 0.427051 );
+        dofs.setValue( new int[]{ 4, 7 }, 1.190983 );
+        dofs.setValue( new int[]{ 5, 7 }, 0.427051 );
+        dofs.setValue( new int[]{ 6, 7 }, -1.0450850 );
+        dofs.setValue( new int[]{ 7, 7 }, -0.954915 );
         tvRegion.addEvaluator( dofs );
 
         PiecewiseTemplate bsplineTemplate = bsplineRegion.getPiecewiseTemplate( "test_mesh.coordinates" );
@@ -304,19 +304,20 @@ public class TimeVaryingExample
         MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
 
         ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
-        nodalX.setValue( 0.0, 1 );
-        nodalX.setValue( 1.0, 2 );
-        nodalX.setValue( 2.0, 3 );
-        nodalX.setValue( 3.0, 4 );
-        nodalX.setValue( 4.0, 5 );
-        nodalX.setValue( 5.0, 6 );
+        nodalX.setValue( 1, 0.0 );
+        nodalX.setValue( 2, 1.0 );
+        nodalX.setValue( 3, 2.0 );
+        nodalX.setValue( 4, 3.0 );
+        nodalX.setValue( 5, 4.0 );
+        nodalX.setValue( 6, 5.0 );
 
         ContinuousListEvaluator linearLagrange = new LinearLagrange( "test_mesh.mesh.linear_lagrange", bsplineDomain );
         testRegion.addEvaluator( linearLagrange );
-        
+
         ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain );
 
-        MapEvaluator elementLLagrange = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, lineNodeList, linearLagrange, linearDofs );
+        MapEvaluator elementLLagrange = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, lineNodeList,
+            linearLagrange, linearDofs );
         testRegion.addEvaluator( elementLLagrange );
 
         PiecewiseTemplate linearMeshCoordinates = new PiecewiseTemplate( "test_mesh.linear_coordinates", bsplineDomain );

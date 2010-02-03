@@ -102,6 +102,7 @@
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.dofs.z" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 

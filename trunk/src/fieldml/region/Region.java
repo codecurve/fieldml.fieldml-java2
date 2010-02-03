@@ -78,7 +78,7 @@ public class Region
 
         region.addDomain( new ContinuousDomain( "library.co-ordinates.rc.3d", 3 ) );
 
-        region.addDomain( new ContinuousListDomain( "library.bicubic_hermite.scaling", weighting ) );
+        region.addDomain( new ContinuousDomain( "library.bicubic_hermite.scaling", 16 ) );
 
         region.addDomain( new ContinuousListDomain( "library.linear_lagrange.parameters", weighting ) );
 

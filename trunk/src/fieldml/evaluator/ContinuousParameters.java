@@ -14,9 +14,15 @@ public class ContinuousParameters
     }
 
 
-    public void setValue( double value, int... keys )
+    public void setValue( int key, double ... values )
     {
-        setValue( valueDomain.makeValue( value ), keys );
+        setValue( valueDomain.makeValue( values ), key );
+    }
+
+
+    public void setValue( int[] keys, double... values )
+    {
+        setValue( valueDomain.makeValue( values ), keys );
     }
 
 

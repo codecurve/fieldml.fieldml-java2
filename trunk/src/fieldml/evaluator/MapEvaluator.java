@@ -22,7 +22,7 @@ public class MapEvaluator
     public final ContinuousEvaluator valueSource;
 
     @SerializationAsString
-    public final ContinuousListEvaluator valueScale;
+    public final ContinuousEvaluator valueScale;
 
     private final EnsembleDomain iteratedDomain;
 
@@ -35,7 +35,7 @@ public class MapEvaluator
 
 
     public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleListEvaluator valueIndexes, ContinuousListEvaluator valueWeights,
-        ContinuousEvaluator valueSource, ContinuousListEvaluator valueScale )
+        ContinuousEvaluator valueSource, ContinuousEvaluator valueScale )
     {
         super( name, valueDomain );
 

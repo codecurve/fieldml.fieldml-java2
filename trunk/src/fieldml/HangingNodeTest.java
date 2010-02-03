@@ -87,7 +87,7 @@ public class HangingNodeTest
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
         DomainValues context = new DomainValues();
-        
+
         ContinuousDomainValue output;
 
         context.set( meshDomain, 1, 0.5, 0.5 );
@@ -197,24 +197,24 @@ public class HangingNodeTest
         ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
-        meshPointsX.setValue( 00.0, 1 );
-        meshPointsX.setValue( 20.0, 2 );
-        meshPointsX.setValue( 30.0, 3 );
-        meshPointsX.setValue( 30.0, 4 );
-        meshPointsX.setValue( 00.0, 5 );
-        meshPointsX.setValue( 20.0, 6 );
-        meshPointsX.setValue( 30.0, 7 );
+        meshPointsX.setValue( 1, 00.0 );
+        meshPointsX.setValue( 2, 20.0 );
+        meshPointsX.setValue( 3, 30.0 );
+        meshPointsX.setValue( 4, 30.0 );
+        meshPointsX.setValue( 5, 00.0 );
+        meshPointsX.setValue( 6, 20.0 );
+        meshPointsX.setValue( 7, 30.0 );
 
         testRegion.addEvaluator( meshPointsX );
 
         ContinuousParameters meshPointsY = new ContinuousParameters( "test_mesh.point.y", mesh1DDomain, globalDofsDomain );
-        meshPointsY.setValue( 20.0, 1 );
-        meshPointsY.setValue( 20.0, 2 );
-        meshPointsY.setValue( 20.0, 3 );
-        meshPointsY.setValue( 10.0, 4 );
-        meshPointsY.setValue( 00.0, 5 );
-        meshPointsY.setValue( 00.0, 6 );
-        meshPointsY.setValue( 00.0, 7 );
+        meshPointsY.setValue( 1, 20.0 );
+        meshPointsY.setValue( 2, 20.0 );
+        meshPointsY.setValue( 3, 20.0 );
+        meshPointsY.setValue( 4, 10.0 );
+        meshPointsY.setValue( 5, 00.0 );
+        meshPointsY.setValue( 6, 00.0 );
+        meshPointsY.setValue( 7, 00.0 );
 
         testRegion.addEvaluator( meshPointsY );
 
@@ -226,8 +226,8 @@ public class HangingNodeTest
         MapEvaluator localDofs = new MapEvaluator( "test_mesh.local_dofs", mesh1DDomain, p2nIndexes, p2nArithmeticMeanWeights, globalDofs );
         testRegion.addEvaluator( localDofs );
 
-        MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList, bilinearLagrange,
-            localDofs );
+        MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList,
+            bilinearLagrange, localDofs );
         testRegion.addEvaluator( elementBilinearLagrange );
 
         PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.coordinates.template", meshDomain );
@@ -291,82 +291,58 @@ public class HangingNodeTest
         EnsembleListParameters elementIndexes = new EnsembleListParameters( "test_mesh.e1.dof_indexes", globalDofIndexesDomain,
             testMeshElementDomain, quad1x1NodeDomain );
 
-        elementWeights.setValue( new int[]
-        { 1, 1 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 1, 2 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 1, 3 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 1, 4 }, 1.0 );
+        elementWeights.setValue( new int[]{ 1, 1 }, 1.0 );
+        elementWeights.setValue( new int[]{ 1, 2 }, 1.0 );
+        elementWeights.setValue( new int[]{ 1, 3 }, 1.0 );
+        elementWeights.setValue( new int[]{ 1, 4 }, 1.0 );
 
-        elementIndexes.setValue( new int[]
-        { 1, 1 }, 5 );
-        elementIndexes.setValue( new int[]
-        { 1, 2 }, 6 );
-        elementIndexes.setValue( new int[]
-        { 1, 3 }, 1 );
-        elementIndexes.setValue( new int[]
-        { 1, 4 }, 2 );
+        elementIndexes.setValue( new int[]{ 1, 1 }, 5 );
+        elementIndexes.setValue( new int[]{ 1, 2 }, 6 );
+        elementIndexes.setValue( new int[]{ 1, 3 }, 1 );
+        elementIndexes.setValue( new int[]{ 1, 4 }, 2 );
 
-        elementWeights.setValue( new int[]
-        { 2, 1 }, 0.5, 0.5 );
-        elementWeights.setValue( new int[]
-        { 2, 2 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 2, 3 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 2, 4 }, 1.0 );
+        elementWeights.setValue( new int[]{ 2, 1 }, 0.5, 0.5 );
+        elementWeights.setValue( new int[]{ 2, 2 }, 1.0 );
+        elementWeights.setValue( new int[]{ 2, 3 }, 1.0 );
+        elementWeights.setValue( new int[]{ 2, 4 }, 1.0 );
 
-        elementIndexes.setValue( new int[]
-        { 2, 1 }, 2, 6 );
-        elementIndexes.setValue( new int[]
-        { 2, 2 }, 4 );
-        elementIndexes.setValue( new int[]
-        { 2, 3 }, 2 );
-        elementIndexes.setValue( new int[]
-        { 2, 4 }, 3 );
+        elementIndexes.setValue( new int[]{ 2, 1 }, 2, 6 );
+        elementIndexes.setValue( new int[]{ 2, 2 }, 4 );
+        elementIndexes.setValue( new int[]{ 2, 3 }, 2 );
+        elementIndexes.setValue( new int[]{ 2, 4 }, 3 );
 
-        elementWeights.setValue( new int[]
-        { 3, 1 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 3, 2 }, 1.0 );
-        elementWeights.setValue( new int[]
-        { 3, 3 }, 0.5, 0.5 );
-        elementWeights.setValue( new int[]
-        { 3, 4 }, 1.0 );
+        elementWeights.setValue( new int[]{ 3, 1 }, 1.0 );
+        elementWeights.setValue( new int[]{ 3, 2 }, 1.0 );
+        elementWeights.setValue( new int[]{ 3, 3 }, 0.5, 0.5 );
+        elementWeights.setValue( new int[]{ 3, 4 }, 1.0 );
 
-        elementIndexes.setValue( new int[]
-        { 3, 1 }, 5 );
-        elementIndexes.setValue( new int[]
-        { 3, 2 }, 7 );
-        elementIndexes.setValue( new int[]
-        { 3, 3 }, 2, 6 );
-        elementIndexes.setValue( new int[]
-        { 3, 4 }, 4 );
+        elementIndexes.setValue( new int[]{ 3, 1 }, 5 );
+        elementIndexes.setValue( new int[]{ 3, 2 }, 7 );
+        elementIndexes.setValue( new int[]{ 3, 3 }, 2, 6 );
+        elementIndexes.setValue( new int[]{ 3, 4 }, 4 );
 
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
-        meshPointsX.setValue( 00.0, 1 );
-        meshPointsX.setValue( 20.0, 2 );
-        meshPointsX.setValue( 30.0, 3 );
-        meshPointsX.setValue( 30.0, 4 );
-        meshPointsX.setValue( 00.0, 5 );
-        meshPointsX.setValue( 20.0, 6 );
-        meshPointsX.setValue( 30.0, 7 );
+        meshPointsX.setValue( 1, 00.0 );
+        meshPointsX.setValue( 2, 20.0 );
+        meshPointsX.setValue( 3, 30.0 );
+        meshPointsX.setValue( 4, 30.0 );
+        meshPointsX.setValue( 5, 00.0 );
+        meshPointsX.setValue( 6, 20.0 );
+        meshPointsX.setValue( 7, 30.0 );
 
         testRegion.addEvaluator( meshPointsX );
 
         ContinuousParameters meshPointsY = new ContinuousParameters( "test_mesh.point.y", mesh1DDomain, globalDofsDomain );
-        meshPointsY.setValue( 20.0, 1 );
-        meshPointsY.setValue( 20.0, 2 );
-        meshPointsY.setValue( 20.0, 3 );
-        meshPointsY.setValue( 10.0, 4 );
-        meshPointsY.setValue( 00.0, 5 );
-        meshPointsY.setValue( 00.0, 6 );
-        meshPointsY.setValue( 00.0, 7 );
+        meshPointsY.setValue( 1, 20.0 );
+        meshPointsY.setValue( 2, 20.0 );
+        meshPointsY.setValue( 3, 20.0 );
+        meshPointsY.setValue( 4, 10.0 );
+        meshPointsY.setValue( 5, 00.0 );
+        meshPointsY.setValue( 6, 00.0 );
+        meshPointsY.setValue( 7, 00.0 );
 
         testRegion.addEvaluator( meshPointsY );
 
@@ -378,10 +354,11 @@ public class HangingNodeTest
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
 
-        MapEvaluator bilinearElementDofs = new MapEvaluator( "test_mesh.element.bilinear_dofs", mesh1DDomain, elementIndexes, elementWeights, dofs );
+        MapEvaluator bilinearElementDofs = new MapEvaluator( "test_mesh.element.bilinear_dofs", mesh1DDomain, elementIndexes,
+            elementWeights, dofs );
 
-        MapEvaluator elementBilinear = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, elementDofIndexes, bilinearQuad,
-            bilinearElementDofs );
+        MapEvaluator elementBilinear = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, elementDofIndexes,
+            bilinearQuad, bilinearElementDofs );
 
         PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.coordinates.template", meshDomain );
         meshCoordinatesTemplate.setEvaluator( 1, elementBilinear );
