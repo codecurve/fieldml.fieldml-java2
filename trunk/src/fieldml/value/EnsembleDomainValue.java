@@ -5,20 +5,20 @@ import fieldml.domain.EnsembleDomain;
 public class EnsembleDomainValue
     extends DomainValue<EnsembleDomain>
 {
-    public final int indexValue;
+    public final int values[];
 
 
     public EnsembleDomainValue( EnsembleDomain domain, int indexValue )
     {
         super( domain );
 
-        this.indexValue = indexValue;
+        this.values = new int[]{indexValue};
     }
 
 
     @Override
     public String toString()
     {
-        return "" + indexValue;
+        return "" + values[0];
     }
 }

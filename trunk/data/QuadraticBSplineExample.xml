@@ -40,51 +40,104 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>0.954915  </values>
-        </ContinuousDomainValue>
+        <values>0.954915  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>1.045085  </values>
-        </ContinuousDomainValue>
+        <values>1.045085  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>-0.427051  </values>
-        </ContinuousDomainValue>
+        <values>-0.427051  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>-1.190983  </values>
-        </ContinuousDomainValue>
+        <values>-1.190983  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>-0.427051  </values>
-        </ContinuousDomainValue>
+        <values>-0.427051  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>1.045085  </values>
-        </ContinuousDomainValue>
+        <values>1.045085  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>0.954915  </values>
-        </ContinuousDomainValue>
+        <values>0.954915  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
   
 
   <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <QuadraticBSpline name="test_mesh.mesh.quadratic_bspline" valueDomain="library.quadratic_bspline.parameters">
+    <MeshDomain dimensions="1" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.line.0_1" />
+        <entry key="2" value="library.shape.line.0_1" />
+        <entry key="3" value="library.shape.line.0_1" />
+        <entry key="4" value="library.shape.line.0_1" />
+        <entry key="5" value="library.shape.line.0_1" />
+      </shapes>
+    </MeshDomain>
+  </QuadraticBSpline>
+  
+
+  <EnsembleListParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1  2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>2  3  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>3  4  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>4  5  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>5  6  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
+  
+
+  <EnsembleListParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1  2  3  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>2  3  4  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>3  4  5  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>4  5  6  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>5  6  7  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates" meshDomain="test_mesh.domain">
