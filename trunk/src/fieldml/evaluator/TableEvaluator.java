@@ -37,7 +37,7 @@ public abstract class TableEvaluator<D extends Domain, V extends DomainValue<D>>
         {
             for( int i = 0; i < parameterDomains.length; i++ )
             {
-                if( values.get( parameterDomains[i] ).indexValue != keys[i] )
+                if( values.get( parameterDomains[i] ).values[0] != keys[i] )
                 {
                     return false;
                 }

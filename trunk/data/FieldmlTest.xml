@@ -36,51 +36,35 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>30.0  </values>
-        </ContinuousDomainValue>
+        <values>30.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>13  </keys>
-        <ContinuousDomainValue>
-          <values>30.0  </values>
-        </ContinuousDomainValue>
+        <values>30.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -91,81 +75,55 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>8  </keys>
-        <ContinuousDomainValue>
-          <values>5.0  </values>
-        </ContinuousDomainValue>
+        <values>5.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>9  </keys>
-        <ContinuousDomainValue>
-          <values>5.0  </values>
-        </ContinuousDomainValue>
+        <values>5.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>10  </keys>
-        <ContinuousDomainValue>
-          <values>5.0  </values>
-        </ContinuousDomainValue>
+        <values>5.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>11  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>12  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>13  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -183,6 +141,83 @@
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
+  
+
+  <BilinearLagrange name="test_mesh.mesh.bilinear_lagrange" valueDomain="library.bilinear_lagrange.parameters">
+    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.triangle.00_10_01" />
+        <entry key="3" value="library.shape.triangle.00_10_01" />
+        <entry key="4" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+    </MeshDomain>
+  </BilinearLagrange>
+  
+
+  <BiquadraticLagrange name="test_mesh.mesh.biquadratic_lagrange" valueDomain="library.biquadratic_lagrange.parameters">
+    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.triangle.00_10_01" />
+        <entry key="3" value="library.shape.triangle.00_10_01" />
+        <entry key="4" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+    </MeshDomain>
+  </BiquadraticLagrange>
+  
+
+  <BilinearSimplex name="test_mesh.mesh.bilinear_simplex" valueDomain="library.bilinear_simplex.parameters">
+    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.triangle.00_10_01" />
+        <entry key="3" value="library.shape.triangle.00_10_01" />
+        <entry key="4" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+    </MeshDomain>
+  </BilinearSimplex>
+  
+
+  <EnsembleListParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>2  5  3  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>6  3  5  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
+  
+
+  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>4  5  1  2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>6  13  3  7  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
+  
+
+  <EnsembleListParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>6  12  13  8  9  10  3  11  7  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates.template1" meshDomain="test_mesh.domain">

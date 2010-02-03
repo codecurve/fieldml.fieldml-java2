@@ -45,45 +45,31 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>30.0  </values>
-        </ContinuousDomainValue>
+        <values>30.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>30.0  </values>
-        </ContinuousDomainValue>
+        <values>30.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>30.0  </values>
-        </ContinuousDomainValue>
+        <values>30.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -94,45 +80,31 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>20.0  </values>
-        </ContinuousDomainValue>
+        <values>20.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>10.0  </values>
-        </ContinuousDomainValue>
+        <values>10.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -147,6 +119,114 @@
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
+  
+
+  <ContinuousListParameters name="test_mesh.p2nA.weights" valueDomain="library.weighting.list">
+    <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>0.5  0.5  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>8  </keys>
+        <values>1.0  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <BilinearLagrange name="test_mesh.mesh.bilinear_lagrange" valueDomain="library.bilinear_lagrange.parameters">
+    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.quad.00_10_01_11" />
+        <entry key="3" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+    </MeshDomain>
+  </BilinearLagrange>
+  
+
+  <EnsembleListParameters name="test_mesh.p2nA.indexes" valueDomain="test_mesh_global_dof_list">
+    <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>3  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>2  6  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>4  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <values>5  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <values>6  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>8  </keys>
+        <values>7  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
+  
+
+  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh_local_dof_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>6  7  1  2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>4  5  2  3  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>7  8  4  5  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain">

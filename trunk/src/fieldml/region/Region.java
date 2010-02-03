@@ -343,7 +343,15 @@ public class Region
             }
             ReflectiveWalker.Walk( k.value, handler );
         }
+        for( SimpleMapEntry<String, ContinuousListEvaluator> k : continuousListEvaluators )
+        {
+            ReflectiveWalker.Walk( k.value, handler );
+        }
         for( SimpleMapEntry<String, EnsembleEvaluator> k : ensembleEvaluators )
+        {
+            ReflectiveWalker.Walk( k.value, handler );
+        }
+        for( SimpleMapEntry<String, EnsembleListEvaluator> k : ensembleListEvaluators )
         {
             ReflectiveWalker.Walk( k.value, handler );
         }

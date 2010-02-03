@@ -7,6 +7,10 @@ import java.util.Map.Entry;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.annotations.SerializationBlocked;
+import fieldml.value.ContinuousDomainValue;
+import fieldml.value.ContinuousListDomainValue;
+import fieldml.value.EnsembleDomainValue;
+import fieldml.value.EnsembleListDomainValue;
 
 /**
  * Uses reflection to walk an object's instantiation graph.
@@ -123,35 +127,48 @@ public class ReflectiveWalker
 
             try
             {
-                Class<?> type = f.get( o ).getClass();
+                Class<?> fieldType = f.get( o ).getClass();
 
-                if( Iterable.class.isAssignableFrom( type ) )
+                if( Iterable.class.isAssignableFrom( fieldType ) )
                 {
                     handler.onStartList( o, f.getName() );
                     WalkList( f, f.get( o ), handler );
                     handler.onEndList( o );
                     continue;
                 }
-                if( Map.class.isAssignableFrom( type ) )
+                if( Map.class.isAssignableFrom( fieldType ) )
                 {
                     handler.onStartList( o, f.getName() );
                     WalkMap( (Map<?, ?>)f.get( o ), handler );
                     handler.onEndList( o );
                     continue;
                 }
-                if( type.isArray() )
+                if( ContinuousDomainValue.class.isAssignableFrom( fieldType )
+                    || ContinuousListDomainValue.class.isAssignableFrom( fieldType )
+                    || EnsembleDomainValue.class.isAssignableFrom( fieldType )
+                    || EnsembleListDomainValue.class.isAssignableFrom( fieldType ) )
+                {
+                    Object domainValue = f.get( o );
+                    Field valuesField = domainValue.getClass().getField( "values" );
+                    Object values = valuesField.get( domainValue );
+                    handler.onStartList( values, valuesField.getName() );
+                    WalkArray( valuesField, values, handler );
+                    handler.onEndList( values );
+                    continue;
+                }
+                if( fieldType.isArray() )
                 {
                     handler.onStartList( o, f.getName() );
                     WalkArray( f, f.get( o ), handler );
                     handler.onEndList( o );
                     continue;
                 }
-                if( type == String.class )
+                if( fieldType == String.class )
                 {
                     handler.onStringField( f.getName(), (String)f.get( o ) );
                     continue;
                 }
-                else if( type == Integer.class )
+                else if( fieldType == Integer.class )
                 {
                     handler.onIntField( f.getName(), (Integer)f.get( o ) );
                     continue;

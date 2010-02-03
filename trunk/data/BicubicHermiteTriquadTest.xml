@@ -59,45 +59,31 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>-1.0  </values>
-        </ContinuousDomainValue>
+        <values>-1.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>1.0  </values>
-        </ContinuousDomainValue>
+        <values>1.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>-0.5  </values>
-        </ContinuousDomainValue>
+        <values>-0.5  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>0.5  </values>
-        </ContinuousDomainValue>
+        <values>0.5  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -108,45 +94,31 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>0.5773502691896257  </values>
-        </ContinuousDomainValue>
+        <values>0.5773502691896257  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>0.5773502691896257  </values>
-        </ContinuousDomainValue>
+        <values>0.5773502691896257  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>0.5773502691896257  </values>
-        </ContinuousDomainValue>
+        <values>0.5773502691896257  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>-0.28867513459481287  </values>
-        </ContinuousDomainValue>
+        <values>-0.28867513459481287  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>-0.28867513459481287  </values>
-        </ContinuousDomainValue>
+        <values>-0.28867513459481287  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>-1.1547005383792515  </values>
-        </ContinuousDomainValue>
+        <values>-1.1547005383792515  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
@@ -157,64 +129,53 @@
     <entries>
       <MapEntry>
         <keys>1  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>2  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>3  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>4  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>5  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>6  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
       <MapEntry>
         <keys>7  </keys>
-        <ContinuousDomainValue>
-          <values>0.0  </values>
-        </ContinuousDomainValue>
+        <values>0.0  </values>
       </MapEntry>
     </entries>
   </ContinuousParameters>
   
 
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.node.d2x/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
+  <ContinuousParameters name="test_mesh.node.d2x/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  </values>
     <entries />
   </ContinuousParameters>
   
 
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.node.d2y/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
+  <ContinuousParameters name="test_mesh.node.d2y/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  </values>
     <entries />
   </ContinuousParameters>
   
 
-  <ContinuousParameters defaultValue="[0.0]" name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
+  <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  </values>
     <entries />
   </ContinuousParameters>
   
@@ -240,6 +201,254 @@
   <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  "test_mesh.coordinates.z"  </sourceFields>
   </ContinuousAggregateEvaluator>
+  
+
+  <ContinuousListParameters name="test_mesh.node.ds1.weights" valueDomain="library.weighting.list">
+    <parameterDomains>"test_mesh.elements"  "test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  4  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  5  </keys>
+        <values>1.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  2  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  6  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  3  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  5  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  2  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  6  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  5  </keys>
+        <values>0.0  -1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  7  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  4  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <ContinuousListParameters name="test_mesh.node.ds2.weights" valueDomain="library.weighting.list">
+    <parameterDomains>"test_mesh.elements"  "test_mesh.nodes"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  4  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  5  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  1  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>1  2  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  6  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  3  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  5  </keys>
+        <values>0.0  -1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  2  </keys>
+        <values>0.0  -1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  6  </keys>
+        <values>-1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  5  </keys>
+        <values>-1.0  -1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  7  </keys>
+        <values>-1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  4  </keys>
+        <values>-1.0  0.0  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <BicubicHermite name="test_mesh.mesh.bicubic_hermite" valueDomain="library.bicubic_hermite.parameters">
+    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.quad.00_10_01_11" />
+        <entry key="3" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+    </MeshDomain>
+  </BicubicHermite>
+  
+
+  <ContinuousListParameters name="test_mesh.node.dx/ds" valueDomain="test_mesh.co-ordinates.d/ds.list">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  0.0  </values>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>0.0  -1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>0.8660254037844387  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>0.0  0.8660254037844387  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <values>0.0  -0.8660254037844387  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <values>0.5000000000000001  -0.4999999999999998  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <ContinuousListParameters name="test_mesh.node.dy/ds" valueDomain="test_mesh.co-ordinates.d/ds.list">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  0.0  </values>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>0.49999999999999994  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>1.0  -0.49999999999999994  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <values>1.0  0.49999999999999994  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <values>0.8660254037844386  0.8660254037844387  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <ContinuousListParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.co-ordinates.d/ds.list">
+    <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    <values>0.0  0.0  </values>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>0.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>0.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>4  </keys>
+        <values>0.0  1.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>5  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>6  </keys>
+        <values>1.0  0.0  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>7  </keys>
+        <values>0.0  0.0  </values>
+      </MapEntry>
+    </entries>
+  </ContinuousListParameters>
+  
+
+  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.node_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>4  5  1  2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>6  3  5  2  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>3  </keys>
+        <values>6  5  7  4  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleListParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates.h3" meshDomain="test_mesh.domain">
