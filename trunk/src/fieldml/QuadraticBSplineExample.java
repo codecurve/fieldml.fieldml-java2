@@ -60,7 +60,7 @@ public class QuadraticBSplineExample
         XMLOutputter outputter = new XMLOutputter( format );
         try
         {
-            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName()  + ".xml");
+            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName() + ".xml" );
             outputter.output( doc, output );
         }
         catch( IOException e )
@@ -172,13 +172,13 @@ public class QuadraticBSplineExample
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 
         ContinuousParameters zDofs = new ContinuousParameters( "test_mesh.dofs.z", rc1CoordinatesDomain, globalDofsDomain );
-        zDofs.setValue( 0.954915, 1 );
-        zDofs.setValue( 1.0450850, 2 );
-        zDofs.setValue( -0.427051, 3 );
-        zDofs.setValue( -1.190983, 4 );
-        zDofs.setValue( -0.427051, 5 );
-        zDofs.setValue( 1.0450850, 6 );
-        zDofs.setValue( 0.954915, 7 );
+        zDofs.setValue( 1, 0.954915 );
+        zDofs.setValue( 2, 1.0450850 );
+        zDofs.setValue( 3, -0.427051 );
+        zDofs.setValue( 4, -1.190983 );
+        zDofs.setValue( 5, -0.427051 );
+        zDofs.setValue( 6, 1.0450850 );
+        zDofs.setValue( 7, 0.954915 );
 
         testRegion.addEvaluator( zDofs );
 
@@ -198,8 +198,9 @@ public class QuadraticBSplineExample
         testRegion.addEvaluator( quadraticBSpline );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain );
-        
-        MapEvaluator elementBSpline = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, elementDofIndexes, quadraticBSpline, dofs );
+
+        MapEvaluator elementBSpline = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, elementDofIndexes,
+            quadraticBSpline, dofs );
         testRegion.addEvaluator( elementBSpline );
 
         PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "test_mesh.coordinates", meshDomain );

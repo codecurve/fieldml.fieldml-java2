@@ -387,6 +387,7 @@
     <variables>
       <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.time.dofs.values" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 
@@ -394,6 +395,7 @@
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="tv_test.dofs.z" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 
@@ -401,6 +403,7 @@
     <variables>
       <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.coordinates.sliced_z" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 

@@ -8,6 +8,7 @@ import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ContinuousListEvaluator;
 
 public class DomainValues
 {
@@ -15,12 +16,14 @@ public class DomainValues
 
     private final Map<String, ContinuousEvaluator> continuousVariables;
 
+    private final Map<String, ContinuousListEvaluator> continuousListVariables;
+
 
     public DomainValues()
     {
         values = new HashMap<Domain, DomainValue<? extends Domain>>();
-
         continuousVariables = new HashMap<String, ContinuousEvaluator>();
+        continuousListVariables = new HashMap<String, ContinuousListEvaluator>();
     }
 
 
@@ -35,6 +38,10 @@ public class DomainValues
         for( String name : input.continuousVariables.keySet() )
         {
             continuousVariables.put( name, input.continuousVariables.get( name ) );
+        }
+        for( String name : input.continuousListVariables.keySet() )
+        {
+            continuousListVariables.put( name, input.continuousListVariables.get( name ) );
         }
     }
 
@@ -94,8 +101,20 @@ public class DomainValues
     }
 
 
+    public void setVariable( String name, ContinuousListEvaluator evaluator )
+    {
+        continuousListVariables.put( name, evaluator );
+    }
+
+
     public ContinuousEvaluator getContinuousVariable( String name )
     {
         return continuousVariables.get( name );
+    }
+
+
+    public ContinuousListEvaluator getContinuousListVariable( String name )
+    {
+        return continuousListVariables.get( name );
     }
 }

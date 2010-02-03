@@ -209,6 +209,7 @@
     <variables>
       <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 
@@ -216,6 +217,7 @@
     <variables>
       <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
     </variables>
+    <listVariables />
   </PiecewiseField>
   
 
