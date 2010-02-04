@@ -48,14 +48,15 @@ public class PiecewiseField
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
+        DomainValues localContext = new DomainValues( context );
         for( SimpleMapEntry<String, ContinuousEvaluator> e : variables )
         {
-            context.setVariable( e.key, e.value );
+            localContext.setVariable( e.key, e.value );
         }
         for( SimpleMapEntry<String, ContinuousListEvaluator> e : listVariables )
         {
-            context.setVariable( e.key, e.value );
+            localContext.setVariable( e.key, e.value );
         }
-        return valueDomain.makeValue( template.evaluate( context ) );
+        return valueDomain.makeValue( template.evaluate( localContext ) );
     }
 }

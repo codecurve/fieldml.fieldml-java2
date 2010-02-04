@@ -14,19 +14,18 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
 import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
-import fieldml.evaluator.hardcoded.BicubicHermite;
-import fieldml.evaluator.hardcoded.BilinearLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
@@ -88,6 +87,8 @@ public class BicubicHermiteTest
         Region library = Region.getLibrary();
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+
+        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
 
         Region testRegion = new Region( REGION_NAME );
 
@@ -167,7 +168,8 @@ public class BicubicHermiteTest
         bicubicHermiteParameters.setSourceField( 4, nodald2UdS2Dofs );
         testRegion.addEvaluator( bicubicHermiteParameters );
 
-        ContinuousListEvaluator meshBilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
+        FunctionEvaluator meshBilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( meshBilinearLagrange );
 
         MapEvaluator elementBilinearMap = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList,
@@ -179,7 +181,8 @@ public class BicubicHermiteTest
         meshCoordinatesL2.setEvaluator( 2, elementBilinearMap );
         testRegion.addPiecewiseTemplate( meshCoordinatesL2 );
 
-        ContinuousListEvaluator meshBicubicHermite = new BicubicHermite( "test_mesh.mesh.bicubic_hermite", meshDomain );
+        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bicubic_hermite" ) );
         testRegion.addEvaluator( meshBicubicHermite );
 
         MapEvaluator elementBicubicHermite = new MapEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain, quadNodeList,
@@ -220,18 +223,30 @@ public class BicubicHermiteTest
 
         ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshdZdomain, globalNodesDomain,
             edgeDirectionDomain );
-        meshdZ.setValue( new int[]{ 1, 1 }, -1.0 );
-        meshdZ.setValue( new int[]{ 1, 2 }, 1.0 );
-        meshdZ.setValue( new int[]{ 2, 1 }, 1.0 );
-        meshdZ.setValue( new int[]{ 2, 2 }, 1.0 );
-        meshdZ.setValue( new int[]{ 3, 1 }, -1.0 );
-        meshdZ.setValue( new int[]{ 3, 2 }, -1.0 );
-        meshdZ.setValue( new int[]{ 4, 1 }, 1.0 );
-        meshdZ.setValue( new int[]{ 4, 2 }, -1.0 );
-        meshdZ.setValue( new int[]{ 5, 1 }, -1.0 );
-        meshdZ.setValue( new int[]{ 5, 2 }, 1.0 );
-        meshdZ.setValue( new int[]{ 6, 1 }, -1.0 );
-        meshdZ.setValue( new int[]{ 6, 2 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 1, 1 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 1, 2 }, 1.0 );
+        meshdZ.setValue( new int[]
+        { 2, 1 }, 1.0 );
+        meshdZ.setValue( new int[]
+        { 2, 2 }, 1.0 );
+        meshdZ.setValue( new int[]
+        { 3, 1 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 3, 2 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 4, 1 }, 1.0 );
+        meshdZ.setValue( new int[]
+        { 4, 2 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 5, 1 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 5, 2 }, 1.0 );
+        meshdZ.setValue( new int[]
+        { 6, 1 }, -1.0 );
+        meshdZ.setValue( new int[]
+        { 6, 2 }, -1.0 );
         testRegion.addEvaluator( meshdZ );
 
         ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2Zdomain, globalNodesDomain );

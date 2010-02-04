@@ -14,6 +14,15 @@ import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleListEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
+import fieldml.function.BicubicHermite;
+import fieldml.function.BilinearLagrange;
+import fieldml.function.BilinearSimplex;
+import fieldml.function.BiquadraticLagrange;
+import fieldml.function.ContinuousFunction;
+import fieldml.function.CubicHermite;
+import fieldml.function.LinearLagrange;
+import fieldml.function.QuadraticBSpline;
+import fieldml.function.QuadraticLagrange;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
@@ -39,6 +48,28 @@ public class Region
     {
         Region region = new Region( LIBRARY_NAME );
 
+        buildLibraryDomains( region );
+        
+        buildLibraryFunctions( region );
+        
+        return region;
+    }
+    
+    private static void buildLibraryFunctions( Region region )
+    {
+        region.addFunction( "library.function.linear_lagrange", new LinearLagrange() );
+        region.addFunction( "library.function.bilinear_lagrange", new BilinearLagrange() );
+        region.addFunction( "library.function.quadratic_lagrange", new QuadraticLagrange() );
+        region.addFunction( "library.function.biquadratic_lagrange", new BiquadraticLagrange() );
+        region.addFunction( "library.function.cubic_hermite", new CubicHermite() );
+        region.addFunction( "library.function.bicubic_hermite", new BicubicHermite() );
+        region.addFunction( "library.function.bilinear_simplex", new BilinearSimplex() );
+        region.addFunction( "library.function.quadratic_bspline", new QuadraticBSpline() );
+    }
+    
+    
+    private static void buildLibraryDomains( Region region )
+    {
         EnsembleDomain triangle1x1LocalNodeDomain = new EnsembleDomain( "library.local_nodes.triangle.1x1" );
         triangle1x1LocalNodeDomain.addValues( 1, 2, 3 );
         region.addDomain( triangle1x1LocalNodeDomain );
@@ -99,8 +130,6 @@ public class Region
         region.addDomain( new ContinuousListDomain( "library.weighting.list", weighting ) );
 
         region.addDomain( new ContinuousDomain( "library.bicubic_hermite.nodal.parameters", 4 ) );
-        
-        return region;
     }
 
 
@@ -129,6 +158,8 @@ public class Region
 
     private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
 
+    private final SimpleMap<String, ContinuousFunction> functions;
+    
     private final Map<String, Region> subregions;
 
     private final String name;
@@ -148,6 +179,7 @@ public class Region
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
         ensembleListEvaluators = new SimpleMap<String, EnsembleListEvaluator>();
         piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
+        functions = new SimpleMap<String, ContinuousFunction>();
         subregions = new HashMap<String, Region>();
 
         assert regions.get( name ) == null;
@@ -205,6 +237,15 @@ public class Region
         return domain;
     }
 
+    
+    public ContinuousFunction getContinuousFunction( String name )
+    {
+        ContinuousFunction function = functions.get( name );
+
+        assert function != null : "Function " + name + " does not exist in region " + this.name;
+
+        return function;
+    }
 
     public ContinuousEvaluator getContinuousEvaluator( String name )
     {
@@ -285,6 +326,11 @@ public class Region
         ensembleListDomains.put( domain.name, domain );
     }
 
+    
+    public void addFunction( String name, ContinuousFunction function )
+    {
+        functions.put( name, function );
+    }
 
     public void addEvaluator( ContinuousEvaluator evaluator )
     {

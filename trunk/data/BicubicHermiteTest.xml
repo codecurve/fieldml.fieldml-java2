@@ -61,10 +61,10 @@
   </ContinuousAggregateEvaluator>
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bicubic_hermite" valueSource="test_mesh.node.bicubic_parameters" valueScale="test_mesh.element.bicubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bicubic_hermite" valueSource="test_mesh.node.bicubic_parameters" valueScale="test_mesh.element.bicubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
@@ -266,24 +266,10 @@
   </ContinuousAggregateEvaluator>
   
 
-  <BilinearLagrange name="test_mesh.mesh.bilinear_lagrange" valueDomain="library.bilinear_lagrange.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BilinearLagrange>
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
-  <BicubicHermite name="test_mesh.mesh.bicubic_hermite" valueDomain="library.bicubic_hermite.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BicubicHermite>
+  <FunctionEvaluator function="fieldml.function.BicubicHermite@1e859c0" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
   
 
   <EnsembleParameters name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction">

@@ -1,16 +1,7 @@
-package fieldml.evaluator.hardcoded;
-
-import fieldml.domain.ContinuousListDomain;
-import fieldml.domain.MeshDomain;
-import fieldml.evaluator.AbstractEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
-import fieldml.region.Region;
-import fieldml.value.ContinuousListDomainValue;
-import fieldml.value.DomainValues;
+package fieldml.function;
 
 public class BicubicHermite
-    extends AbstractEvaluator<ContinuousListDomain, ContinuousListDomainValue>
-    implements ContinuousListEvaluator
+    implements ContinuousFunction
 {
     public static double[] evaluateDirect( double x1, double x2 )
     {
@@ -42,26 +33,14 @@ public class BicubicHermite
         value[7] = x1_v[3] * x2_v[1];
         value[11] = x1_v[1] * x2_v[3];
         value[15] = x1_v[3] * x2_v[3];
-        
+
         return value;
-    }
-
-    public final MeshDomain xiDomain;
-
-
-    public BicubicHermite( String name, MeshDomain xiDomain )
-    {
-        super( name, Region.getLibrary().getContinuousListDomain( "library.bicubic_hermite.parameters" ) );
-
-        this.xiDomain = xiDomain;
     }
 
 
     @Override
-    public ContinuousListDomainValue evaluate( DomainValues context )
+    public double[] evaluate( double... args )
     {
-        double xi[] = context.get( xiDomain ).chartValues;
-
-        return valueDomain.makeValue( evaluateDirect( xi[0], xi[1] ) );
+        return evaluateDirect( args[0], args[1] );
     }
 }
