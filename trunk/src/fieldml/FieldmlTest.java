@@ -13,19 +13,17 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.hardcoded.BilinearLagrange;
-import fieldml.evaluator.hardcoded.BilinearSimplex;
-import fieldml.evaluator.hardcoded.BiquadraticLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
@@ -201,47 +199,18 @@ public class FieldmlTest
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 
-        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
-        meshX.setValue( 1, 00.0 );
-        meshX.setValue( 2, 10.0 );
-        meshX.setValue( 3, 20.0 );
-        meshX.setValue( 4, 00.0 );
-        meshX.setValue( 5, 10.0 );
-        meshX.setValue( 6, 20.0 );
-        meshX.setValue( 7, 30.0 );
-        meshX.setValue( 13, 30.0 );
+        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
 
-        testRegion.addEvaluator( meshX );
-
-        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
-        meshY.setValue( 1, 10.0 );
-        meshY.setValue( 2, 10.0 );
-        meshY.setValue( 3, 10.0 );
-        meshY.setValue( 4, 00.0 );
-        meshY.setValue( 5, 00.0 );
-        meshY.setValue( 6, 00.0 );
-        meshY.setValue( 7, 10.0 );
-        meshY.setValue( 8, 05.0 );
-        meshY.setValue( 9, 05.0 );
-        meshY.setValue( 10, 05.0 );
-        meshY.setValue( 11, 10.0 );
-        meshY.setValue( 12, 00.0 );
-        meshY.setValue( 13, 00.0 );
-
-        testRegion.addEvaluator( meshY );
-
-        /*
-         * 
-         * Because piecewise fields are strictly scalar, there is (probably) no reason to share evaluators. Aggregate fields
-         * wishing to share components can do so simply by sharing entire piecewise fields.
-         */
-        ContinuousListEvaluator bilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
-        ContinuousListEvaluator biquadraticLagrange = new BiquadraticLagrange( "test_mesh.mesh.biquadratic_lagrange", meshDomain );
+        FunctionEvaluator biquadraticLagrange = new FunctionEvaluator( "test_mesh.biquadratic_lagrange", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.biquadratic_lagrange" ) );
         testRegion.addEvaluator( biquadraticLagrange );
 
-        ContinuousListEvaluator bilinearSimplex = new BilinearSimplex( "test_mesh.mesh.bilinear_simplex", meshDomain );
+        FunctionEvaluator bilinearSimplex = new FunctionEvaluator( "test_mesh.bilinear_simplex", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bilinear_simplex" ) );
         testRegion.addEvaluator( bilinearSimplex );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", mesh1DDomain );
@@ -263,16 +232,45 @@ public class FieldmlTest
         meshCoordinatesT1.setEvaluator( 4, elementBilinearLagrange );
         testRegion.addPiecewiseTemplate( meshCoordinatesT1 );
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesT1 );
-        meshCoordinatesX.setVariable( "test_mesh.mesh.dofs", meshX );
-        testRegion.addEvaluator( meshCoordinatesX );
-
         PiecewiseTemplate meshCoordinatesT2 = new PiecewiseTemplate( "test_mesh.coordinates.template2", meshDomain );
         meshCoordinatesT2.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT2.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 3, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 4, elementBiquadraticLagrange );
         testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
+
+        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
+        meshX.setValue( 1, 00.0 );
+        meshX.setValue( 2, 10.0 );
+        meshX.setValue( 3, 20.0 );
+        meshX.setValue( 4, 00.0 );
+        meshX.setValue( 5, 10.0 );
+        meshX.setValue( 6, 20.0 );
+        meshX.setValue( 7, 30.0 );
+        meshX.setValue( 13, 30.0 );
+
+        testRegion.addEvaluator( meshX );
+
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesT1 );
+        meshCoordinatesX.setVariable( "test_mesh.mesh.dofs", meshX );
+        testRegion.addEvaluator( meshCoordinatesX );
+
+        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
+        meshY.setValue( 1, 10.0 );
+        meshY.setValue( 2, 10.0 );
+        meshY.setValue( 3, 10.0 );
+        meshY.setValue( 4, 00.0 );
+        meshY.setValue( 5, 00.0 );
+        meshY.setValue( 6, 00.0 );
+        meshY.setValue( 7, 10.0 );
+        meshY.setValue( 8, 05.0 );
+        meshY.setValue( 9, 05.0 );
+        meshY.setValue( 10, 05.0 );
+        meshY.setValue( 11, 10.0 );
+        meshY.setValue( 12, 00.0 );
+        meshY.setValue( 13, 00.0 );
+
+        testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesT2 );
         meshCoordinatesY.setVariable( "test_mesh.mesh.dofs", meshY );

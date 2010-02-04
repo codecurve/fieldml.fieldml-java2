@@ -19,13 +19,12 @@ import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousListParameters;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.hardcoded.BilinearLagrange;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
@@ -161,9 +160,9 @@ public class HangingNodeTest
         EnsembleListDomain localDofListDomain = new EnsembleListDomain( "test_mesh_local_dof_list", localDofsDomain );
         testRegion.addDomain( localDofListDomain );
 
-        ContinuousListDomain weighting = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
 
-        ContinuousListParameters globalToLocalWeights = new ContinuousListParameters( "test_mesh.global_to_local.weights", weighting,
+        ContinuousListParameters globalToLocalWeights = new ContinuousListParameters( "test_mesh.global_to_local.weights", weightingDomain,
             localDofsDomain );
         globalToLocalWeights.setValue( 1, 1.0 );
         globalToLocalWeights.setValue( 2, 1.0 );
@@ -218,7 +217,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        ContinuousListEvaluator bilinearLagrange = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
         ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
@@ -281,12 +281,12 @@ public class HangingNodeTest
 
         EnsembleListDomain globalDofIndexesDomain = new EnsembleListDomain( "test_mesh.global_dof_list", globalDofsDomain );
 
-        ContinuousListDomain weighting = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
 
         EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
         EnsembleListDomain quad1x1NodeListDomain = new EnsembleListDomain( "test_mesh.1x1.nodes", quad1x1NodeDomain );
 
-        ContinuousListParameters elementWeights = new ContinuousListParameters( "test_mesh.element.dof_weights", weighting,
+        ContinuousListParameters elementWeights = new ContinuousListParameters( "test_mesh.element.dof_weights", weightingDomain,
             testMeshElementDomain, quad1x1NodeDomain );
         EnsembleListParameters elementIndexes = new EnsembleListParameters( "test_mesh.e1.dof_indexes", globalDofIndexesDomain,
             testMeshElementDomain, quad1x1NodeDomain );
@@ -349,8 +349,9 @@ public class HangingNodeTest
         EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "test_mesh.element.dof_indexes", quad1x1NodeListDomain );
         elementDofIndexes.setValue( 1, 2, 3, 4 );
 
-        ContinuousListEvaluator bilinearQuad = new BilinearLagrange( "test_mesh.mesh.bilinear_lagrange", meshDomain );
-        testRegion.addEvaluator( bilinearQuad );
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
+        testRegion.addEvaluator( bilinearLagrange );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
 
@@ -358,7 +359,7 @@ public class HangingNodeTest
             elementWeights, dofs );
 
         MapEvaluator elementBilinear = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, elementDofIndexes,
-            bilinearQuad, bilinearElementDofs );
+            bilinearLagrange, bilinearElementDofs );
 
         PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.coordinates.template", meshDomain );
         meshCoordinatesTemplate.setEvaluator( 1, elementBilinear );

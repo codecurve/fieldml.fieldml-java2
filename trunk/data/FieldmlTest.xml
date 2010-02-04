@@ -31,6 +31,15 @@
   </MeshDomain>
   
 
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  
+
   <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
     <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     <entries>
@@ -129,54 +138,18 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
-  
-
-  <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.co-ordinates.rc.1d" />
-  
-
-  <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
-  
-
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
-  <BilinearLagrange name="test_mesh.mesh.bilinear_lagrange" valueDomain="library.bilinear_lagrange.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.triangle.00_10_01" />
-        <entry key="3" value="library.shape.triangle.00_10_01" />
-        <entry key="4" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BilinearLagrange>
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
-  <BiquadraticLagrange name="test_mesh.mesh.biquadratic_lagrange" valueDomain="library.biquadratic_lagrange.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.triangle.00_10_01" />
-        <entry key="3" value="library.shape.triangle.00_10_01" />
-        <entry key="4" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BiquadraticLagrange>
+  <FunctionEvaluator function="fieldml.function.BiquadraticLagrange@337d0f" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
   
 
-  <BilinearSimplex name="test_mesh.mesh.bilinear_simplex" valueDomain="library.bilinear_simplex.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.triangle.00_10_01" />
-        <entry key="3" value="library.shape.triangle.00_10_01" />
-        <entry key="4" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BilinearSimplex>
+  <FunctionEvaluator function="fieldml.function.BilinearSimplex@578ceb" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
   
 
   <EnsembleListParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">

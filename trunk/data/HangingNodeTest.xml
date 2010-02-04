@@ -113,7 +113,7 @@
   <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
@@ -160,15 +160,7 @@
   </ContinuousListParameters>
   
 
-  <BilinearLagrange name="test_mesh.mesh.bilinear_lagrange" valueDomain="library.bilinear_lagrange.parameters">
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
-      <shapes>
-        <entry key="1" value="library.shape.quad.00_10_01_11" />
-        <entry key="2" value="library.shape.quad.00_10_01_11" />
-        <entry key="3" value="library.shape.quad.00_10_01_11" />
-      </shapes>
-    </MeshDomain>
-  </BilinearLagrange>
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
   <EnsembleListParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh_global_dof_list">

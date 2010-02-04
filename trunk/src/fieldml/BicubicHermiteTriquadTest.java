@@ -19,15 +19,14 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousListParameters;
 import fieldml.evaluator.ContinuousListVariableEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.DotProductEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.hardcoded.BicubicHermite;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
@@ -195,7 +194,8 @@ public class BicubicHermiteTriquadTest
 
         testRegion.addEvaluator( bicubicHermiteParameters );
 
-        ContinuousListEvaluator meshBicubicHermite = new BicubicHermite( "test_mesh.mesh.bicubic_hermite", meshDomain );
+        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.bicubic_hermite" ) );
         testRegion.addEvaluator( meshBicubicHermite );
 
         MapEvaluator elementBicubicHermite = new MapEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain, quadNodeList,

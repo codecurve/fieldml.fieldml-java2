@@ -15,18 +15,19 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousListEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.hardcoded.QuadraticBSpline;
 import fieldml.field.PiecewiseField;
 import fieldml.field.PiecewiseTemplate;
+import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
@@ -194,7 +195,10 @@ public class QuadraticBSplineExample
         elementDofIndexes.setValue( 5, 5, 6, 7 );
         testRegion.addEvaluator( elementDofIndexes );
 
-        ContinuousListEvaluator quadraticBSpline = new QuadraticBSpline( "test_mesh.mesh.quadratic_bspline", meshDomain );
+        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
+
+        FunctionEvaluator quadraticBSpline = new FunctionEvaluator( "test_mesh.quadratic_bspline", weightingDomain, meshDomain, library
+            .getContinuousFunction( "library.function.quadratic_bspline" ) );
         testRegion.addEvaluator( quadraticBSpline );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain );
