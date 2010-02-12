@@ -1,0 +1,114 @@
+<fieldml>
+  <continuous_domain id="library::unit_square" value="real" >
+    <component id="xi1" min="0" max="1" />
+    <component id="xi2" min="0" max="1" />
+  </continuous_domain>
+  
+  <continuous_domain id="library::2d_cartesian" value="real" >
+    <component id="x" />
+    <component id="y" />
+  </continuous_domain>
+  
+  <continuous_domain id="library::infinite_line" value="real" >
+    <component id="value" />
+  </continuous_domain>
+
+  <continuous_domain id="library::bilinear_interpolation_parameters" value="real" >
+    <component id="u1" />
+    <component id="u2" />
+    <component id="u3" />
+    <component id="u4" />
+  </continuous_domain>
+
+  <continuous_domain id="library::bicubic_hermite_interpolation_parameters" value="real" >
+    <component id="node1" />
+    <component id="node2" />
+    <component id="node3" />
+    <component id="node4" />
+    <component id="node1dds1" />
+    <component id="node2dds1" />
+    <component id="node3dds1" />
+    <component id="node4dds1" />
+    <component id="node1dds2" />
+    <component id="node2dds2" />
+    <component id="node3dds2" />
+    <component id="node4dds2" />
+    <component id="node1d2ds1ds2" />
+    <component id="node2d2ds1ds2" />
+    <component id="node3d2ds1ds2" />
+    <component id="node4d2ds1ds2" />
+  </continuous_domain>
+
+  <computed_field id="library::bilinear_lagrange" value_domain="library::bilinear_interpolation_parameters">
+    <parameter id="xi" domain="library::unit_square" />
+    
+    <evaluate_component id="node1">
+      <multiply>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value id="xi" component="xi1" />
+        </subtract>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value id="xi" component="xi2" />
+        </subtract>
+      </multiply>
+    </evaluate_component>
+
+    <evaluate_component id="node2">
+      <multiply>
+        <parameter_value id="xi" component="xi1" />
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value id="xi" component="xi2" />
+        </subtract>
+      </multiply>
+    </evaluate_component>
+
+    <evaluate_component id="node3">
+      <multiply>
+        <subtract>
+          <constant_value value="1" />
+          <parameter_value id="xi" component="xi1" />
+        </subtract>
+        <parameter_value id="xi" component="xi2" />
+      </multiply>
+    </evaluate_component>
+
+    <evaluate_component id="node4">
+      <multiply>
+        <parameter_value id="xi" component="xi1" />
+        <parameter_value id="xi" component="xi2" />
+      </multiply>
+    </evaluate_component>
+  </computed_field>
+  
+  <computed_field id="library::bilinear_interpolation" value_domain="library::infinite_line">
+    <parameter id="parameters" domain="library::bilinear_interpolation_parameters" />
+    <parameter id="xi" domain="library::unit_square" />
+    
+    <derived_value id="phi" field="library::bilinear_lagrange">
+      <parameter id="xi" />
+    </derived_value>
+    
+    <evaluate_component id="value">
+      <dot_product>
+        <parameter_vector id="parameters" />
+        <parameter_vector id="phi" />
+      </dot_product>
+    </evaluate_component>
+  </computed_field>
+  
+  <computed_field id="library::bilinear_dot_product" value_domain="library::infinite_line">
+    <parameter id="parameter_vector" domain="library::bilinear_interpolation_parameters" />
+    <parameter id="phi_vector" domain="library::bilinear_interpolation_parameters" />
+    
+    <evaluate_component id="value">
+      <dot_product>
+        <parameter_vector id="parameter_vector" />
+        <parameter_vector id="phi_vector" />
+      </dot_product>
+    </evaluate_component>
+  </computed_field>
+    
+</fieldml>
