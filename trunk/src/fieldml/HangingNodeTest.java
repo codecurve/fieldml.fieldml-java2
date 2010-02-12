@@ -136,7 +136,7 @@ public class HangingNodeTest
 
         Region testRegion = new Region( REGION_NAME );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
+        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.element_index" );
         testMeshElementDomain.addValues( 1, 2, 3 );
         testRegion.addDomain( testMeshElementDomain );
 
@@ -146,18 +146,18 @@ public class HangingNodeTest
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs" );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs_index" );
         globalDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7 );
         testRegion.addDomain( globalDofsDomain );
 
-        EnsembleListDomain globalDofListDomain = new EnsembleListDomain( "test_mesh_global_dof_list", globalDofsDomain );
+        EnsembleListDomain globalDofListDomain = new EnsembleListDomain( "test_mesh.global_dof_index_list", globalDofsDomain );
         testRegion.addDomain( globalDofListDomain );
 
-        EnsembleDomain localDofsDomain = new EnsembleDomain( "test_mesh.local_dofs" );
+        EnsembleDomain localDofsDomain = new EnsembleDomain( "test_mesh.local_dof_index" );
         localDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8 );
         testRegion.addDomain( localDofsDomain );
 
-        EnsembleListDomain localDofListDomain = new EnsembleListDomain( "test_mesh_local_dof_list", localDofsDomain );
+        EnsembleListDomain localDofListDomain = new EnsembleListDomain( "test_mesh.local_dof_index_list", localDofsDomain );
         testRegion.addDomain( localDofListDomain );
 
         ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
@@ -230,7 +230,7 @@ public class HangingNodeTest
             bilinearLagrange, localDofs );
         testRegion.addEvaluator( elementBilinearLagrange );
 
-        PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.coordinates.template", meshDomain );
+        PiecewiseTemplate meshCoordinatesTemplate = new PiecewiseTemplate( "test_mesh.template.bilinear_lagrange", meshDomain );
         meshCoordinatesTemplate.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesTemplate.setEvaluator( 2, elementBilinearLagrange );
         meshCoordinatesTemplate.setEvaluator( 3, elementBilinearLagrange );
@@ -265,7 +265,7 @@ public class HangingNodeTest
 
         Region testRegion = new Region( REGION_NAME );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
+        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.element_index" );
         testMeshElementDomain.addValues( 1, 2, 3 );
         testRegion.addDomain( testMeshElementDomain );
 
@@ -275,20 +275,20 @@ public class HangingNodeTest
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs" );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs_index" );
         globalDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7 );
         testRegion.addDomain( globalDofsDomain );
 
-        EnsembleListDomain globalDofIndexesDomain = new EnsembleListDomain( "test_mesh.global_dof_list", globalDofsDomain );
+        EnsembleListDomain globalDofIndexesDomain = new EnsembleListDomain( "test_mesh.global_dof_index_list", globalDofsDomain );
 
         ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
 
         EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
-        EnsembleListDomain quad1x1NodeListDomain = new EnsembleListDomain( "test_mesh.1x1.nodes", quad1x1NodeDomain );
+        EnsembleListDomain quad1x1NodeListDomain = new EnsembleListDomain( "test_mesh.nodes.1x1", quad1x1NodeDomain );
 
         ContinuousListParameters elementWeights = new ContinuousListParameters( "test_mesh.element.dof_weights", weightingDomain,
             testMeshElementDomain, quad1x1NodeDomain );
-        EnsembleListParameters elementIndexes = new EnsembleListParameters( "test_mesh.e1.dof_indexes", globalDofIndexesDomain,
+        EnsembleListParameters elementIndexes = new EnsembleListParameters( "test_mesh.element.dof_indexes", globalDofIndexesDomain,
             testMeshElementDomain, quad1x1NodeDomain );
 
         elementWeights.setValue( new int[]{ 1, 1 }, 1.0 );

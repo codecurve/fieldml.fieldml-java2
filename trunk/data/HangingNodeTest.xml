@@ -10,28 +10,28 @@
 |      | *3 |
 6______7____8
 -->
-  <EnsembleDomain name="test_mesh.elements">
+  <EnsembleDomain name="test_mesh.element_index">
     <values>1  2  3  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.global_dofs">
+  <EnsembleDomain name="test_mesh.global_dofs_index">
     <values>1  2  3  4  5  6  7  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.local_dofs">
+  <EnsembleDomain name="test_mesh.local_dof_index">
     <values>1  2  3  4  5  6  7  8  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="test_mesh.global_dofs" name="test_mesh_global_dof_list" />
+  <EnsembleListDomain elementDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list" />
   
 
-  <EnsembleListDomain elementDomain="test_mesh.local_dofs" name="test_mesh_local_dof_list" />
+  <EnsembleListDomain elementDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list" />
   
 
-  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+  <MeshDomain dimensions="2" elementDomain="test_mesh.element_index" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.quad.00_10_01_11" />
       <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -41,7 +41,7 @@
   
 
   <ContinuousParameters name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"test_mesh.global_dofs"  </parameterDomains>
+    <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  </keys>
@@ -76,7 +76,7 @@
   
 
   <ContinuousParameters name="test_mesh.point.y" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"test_mesh.global_dofs"  </parameterDomains>
+    <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  </keys>
@@ -122,7 +122,7 @@
   
 
   <ContinuousListParameters name="test_mesh.global_to_local.weights" valueDomain="library.weighting.list">
-    <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
+    <parameterDomains>"test_mesh.local_dof_index"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  </keys>
@@ -163,8 +163,8 @@
   <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
-  <EnsembleListParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh_global_dof_list">
-    <parameterDomains>"test_mesh.local_dofs"  </parameterDomains>
+  <EnsembleListParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh.global_dof_index_list">
+    <parameterDomains>"test_mesh.local_dof_index"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  </keys>
@@ -202,8 +202,8 @@
   </EnsembleListParameters>
   
 
-  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh_local_dof_list">
-    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index_list">
+    <parameterDomains>"test_mesh.element_index"  </parameterDomains>
     <entries>
       <MapEntry>
         <keys>1  </keys>
@@ -221,7 +221,7 @@
   </EnsembleListParameters>
   
 
-  <PiecewiseTemplate name="test_mesh.coordinates.template" meshDomain="test_mesh.domain">
+  <PiecewiseTemplate name="test_mesh.template.bilinear_lagrange" meshDomain="test_mesh.domain">
     <elementMaps>
       <TemplateMap element="1" evaluator="test_mesh.element.bilinear_lagrange" />
       <TemplateMap element="2" evaluator="test_mesh.element.bilinear_lagrange" />
@@ -230,7 +230,7 @@
   </PiecewiseTemplate>
   
 
-  <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
+  <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.x" />
     </variables>
@@ -238,7 +238,7 @@
   </PiecewiseField>
   
 
-  <PiecewiseField template="test_mesh.coordinates.template" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
+  <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.y" />
     </variables>

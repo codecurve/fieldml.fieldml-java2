@@ -27,7 +27,7 @@ public class DotProductEvaluator
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        // TODO Currently assumes that indexedValues is scalar.
+        // TODO Currently assumes that values is scalar.
 
         double[] weights = source2.evaluate( context ).values;
         double[] values = source1.evaluate( context ).values;

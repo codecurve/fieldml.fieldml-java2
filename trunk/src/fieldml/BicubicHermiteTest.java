@@ -223,30 +223,18 @@ public class BicubicHermiteTest
 
         ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshdZdomain, globalNodesDomain,
             edgeDirectionDomain );
-        meshdZ.setValue( new int[]
-        { 1, 1 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 1, 2 }, 1.0 );
-        meshdZ.setValue( new int[]
-        { 2, 1 }, 1.0 );
-        meshdZ.setValue( new int[]
-        { 2, 2 }, 1.0 );
-        meshdZ.setValue( new int[]
-        { 3, 1 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 3, 2 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 4, 1 }, 1.0 );
-        meshdZ.setValue( new int[]
-        { 4, 2 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 5, 1 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 5, 2 }, 1.0 );
-        meshdZ.setValue( new int[]
-        { 6, 1 }, -1.0 );
-        meshdZ.setValue( new int[]
-        { 6, 2 }, -1.0 );
+        meshdZ.setValue( new int[]{ 1, 1 }, -1.0 );
+        meshdZ.setValue( new int[]{ 1, 2 }, 1.0 );
+        meshdZ.setValue( new int[]{ 2, 1 }, 1.0 );
+        meshdZ.setValue( new int[]{ 2, 2 }, 1.0 );
+        meshdZ.setValue( new int[]{ 3, 1 }, -1.0 );
+        meshdZ.setValue( new int[]{ 3, 2 }, -1.0 );
+        meshdZ.setValue( new int[]{ 4, 1 }, 1.0 );
+        meshdZ.setValue( new int[]{ 4, 2 }, -1.0 );
+        meshdZ.setValue( new int[]{ 5, 1 }, -1.0 );
+        meshdZ.setValue( new int[]{ 5, 2 }, 1.0 );
+        meshdZ.setValue( new int[]{ 6, 1 }, -1.0 );
+        meshdZ.setValue( new int[]{ 6, 2 }, -1.0 );
         testRegion.addEvaluator( meshdZ );
 
         ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2Zdomain, globalNodesDomain );
