@@ -314,7 +314,7 @@ public class TimeVaryingExample
         nodalX.setValue( 6, 5.0 );
 
         FunctionEvaluator linearLagrange = new FunctionEvaluator( "test_mesh.linear_lagrange", weightingDomain, bsplineDomain, library
-            .getContinuousFunction( "library.function.quadratic_lagrange" ) );
+            .getContinuousFunction( "library.function.linear_lagrange" ) );
         testRegion.addEvaluator( linearLagrange );
 
         ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain );
