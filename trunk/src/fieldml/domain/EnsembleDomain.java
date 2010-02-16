@@ -1,47 +1,61 @@
 package fieldml.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
+import fieldml.annotations.SerializationAsString;
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsembleDomain
     extends Domain
 {
-    public final List<Integer> values;
+    public final int[] values;
+
+    public final int componentCount;
+    
+    @SerializationAsString
+    public final EnsembleDomain componentDomain; 
 
 
-    public EnsembleDomain( String name )
+    public EnsembleDomain( String name, int... indexValues )
     {
         super( name );
 
-        values = new ArrayList<Integer>();
+        values = indexValues;
+        componentCount = 1;
+        componentDomain = this;
     }
 
 
-    public EnsembleDomainValue makeValue( int indexValue )
+    public EnsembleDomain( String name, EnsembleDomain itemDomain, int componentCount )
     {
-        return new EnsembleDomainValue( this, indexValue );
+        super( name );
+
+        values = Arrays.copyOf( itemDomain.values, itemDomain.values.length );
+        this.componentCount = componentCount;
+        this.componentDomain = itemDomain;
+    }
+
+
+    public EnsembleDomain( String name, EnsembleDomain itemDomain )
+    {
+        //TODO Eek! Magic number 0 means 'no limit'
+        this( name, itemDomain, 0 );
+    }
+
+
+    public EnsembleDomainValue makeValue( int... indexValues )
+    {
+        if( componentCount != 0 )
+        {
+            assert indexValues.length == componentCount;
+        }
+
+        return new EnsembleDomainValue( this, indexValues );
     }
 
 
     public int getValueCount()
     {
-        return values.size();
-    }
-
-
-    public void addValue( int value )
-    {
-        values.add( value );
-    }
-
-
-    public void addValues( int... values )
-    {
-        for( int value : values )
-        {
-            addValue( value );
-        }
+        return values.length;
     }
 }

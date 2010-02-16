@@ -8,17 +8,19 @@
 |    |/*3 |    |
 4____5____6_12_13
 -->
-  <EnsembleDomain name="test_mesh.elements">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.elements" name="test_mesh.elements">
     <values>1  2  3  4  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.nodes">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.nodes" name="test_mesh.nodes">
     <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="test_mesh.nodes" name="test_mesh.nodes_list" />
+  <EnsembleDomain componentCount="0" componentDomain="test_mesh.nodes" name="test_mesh.nodes_list">
+    <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
+  </EnsembleDomain>
   
 
   <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
@@ -29,6 +31,15 @@
       <entry key="4" value="library.shape.quad.00_10_01_11" />
     </shapes>
   </MeshDomain>
+  
+
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@186db54" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+  
+
+  <FunctionEvaluator function="fieldml.function.BiquadraticLagrange@1e51060" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
+  
+
+  <FunctionEvaluator function="fieldml.function.BilinearSimplex@19616c7" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
@@ -143,16 +154,7 @@
   </ContinuousAggregateEvaluator>
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
-  
-
-  <FunctionEvaluator function="fieldml.function.BiquadraticLagrange@337d0f" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
-  
-
-  <FunctionEvaluator function="fieldml.function.BilinearSimplex@578ceb" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
-  
-
-  <EnsembleListParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
+  <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
     <parameterDomains>"test_mesh.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -164,10 +166,10 @@
         <values>6  3  5  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
-  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
     <parameterDomains>"test_mesh.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -179,10 +181,10 @@
         <values>6  13  3  7  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
-  <EnsembleListParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
+  <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
     <parameterDomains>"test_mesh.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -190,7 +192,7 @@
         <values>6  12  13  8  9  10  3  11  7  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates.template1" meshDomain="test_mesh.domain">
@@ -217,7 +219,6 @@
     <variables>
       <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
@@ -225,7 +226,6 @@
     <variables>
       <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 

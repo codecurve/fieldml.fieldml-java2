@@ -10,13 +10,13 @@ public class DotProductEvaluator
     implements ContinuousEvaluator
 {
     @SerializationAsString
-    public final ContinuousListEvaluator source1;
+    public final ContinuousEvaluator source1;
 
     @SerializationAsString
-    public final ContinuousListEvaluator source2;
+    public final ContinuousEvaluator source2;
 
 
-    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousListEvaluator valueSource, ContinuousListEvaluator valueWeights )
+    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousEvaluator valueSource, ContinuousEvaluator valueWeights )
     {
         super( name, valueDomain );
         this.source1 = valueSource;

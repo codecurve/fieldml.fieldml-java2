@@ -8,9 +8,7 @@ import java.util.Map.Entry;
 import fieldml.annotations.SerializationAsString;
 import fieldml.annotations.SerializationBlocked;
 import fieldml.value.ContinuousDomainValue;
-import fieldml.value.ContinuousListDomainValue;
 import fieldml.value.EnsembleDomainValue;
-import fieldml.value.EnsembleListDomainValue;
 
 /**
  * Uses reflection to walk an object's instantiation graph.
@@ -144,9 +142,8 @@ public class ReflectiveWalker
                     continue;
                 }
                 if( ContinuousDomainValue.class.isAssignableFrom( fieldType )
-                    || ContinuousListDomainValue.class.isAssignableFrom( fieldType )
                     || EnsembleDomainValue.class.isAssignableFrom( fieldType )
-                    || EnsembleListDomainValue.class.isAssignableFrom( fieldType ) )
+                    )
                 {
                     Object domainValue = f.get( o );
                     Field valuesField = domainValue.getClass().getField( "values" );

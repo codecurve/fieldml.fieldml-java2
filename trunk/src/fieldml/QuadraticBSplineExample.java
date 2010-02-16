@@ -15,14 +15,12 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
-import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
@@ -137,8 +135,7 @@ public class QuadraticBSplineExample
 
         Region testRegion = new Region( REGION_NAME );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
-        testMeshElementDomain.addValues( 1, 2, 3, 4, 5 );
+        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 1, 2, 3, 4, 5 );
         testRegion.addDomain( testMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 1, testMeshElementDomain );
@@ -149,18 +146,16 @@ public class QuadraticBSplineExample
         meshDomain.setShape( 5, "library.shape.line.0_1" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.dofs" );
-        globalDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.dofs", 1, 2, 3, 4, 5, 6, 7 );
         testRegion.addDomain( globalDofsDomain );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
-        globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 1, 2, 3, 4, 5, 6 );
         testRegion.addDomain( globalNodesDomain );
 
-        EnsembleListDomain lineNodesDomain = new EnsembleListDomain( "test_mesh.line_nodes.domain", globalNodesDomain );
+        EnsembleDomain lineNodesDomain = new EnsembleDomain( "test_mesh.line_nodes.domain", globalNodesDomain );
         testRegion.addDomain( lineNodesDomain );
 
-        EnsembleListParameters lineNodeList = new EnsembleListParameters( "test_mesh.line_nodes", lineNodesDomain, testMeshElementDomain );
+        EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, testMeshElementDomain );
 
         lineNodeList.setValue( 1, 1, 2 );
         lineNodeList.setValue( 2, 2, 3 );
@@ -183,10 +178,10 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( zDofs );
 
-        EnsembleListDomain dofIndexesDomain = new EnsembleListDomain( "test_mesh.dof_indexes", globalDofsDomain );
+        EnsembleDomain dofIndexesDomain = new EnsembleDomain( "test_mesh.dof_indexes", globalDofsDomain );
         testRegion.addDomain( dofIndexesDomain );
 
-        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "test_mesh.element_dof_indexes", dofIndexesDomain,
+        EnsembleParameters elementDofIndexes = new EnsembleParameters( "test_mesh.element_dof_indexes", dofIndexesDomain,
             testMeshElementDomain );
         elementDofIndexes.setValue( 1, 1, 2, 3 );
         elementDofIndexes.setValue( 2, 2, 3, 4 );
@@ -195,7 +190,7 @@ public class QuadraticBSplineExample
         elementDofIndexes.setValue( 5, 5, 6, 7 );
         testRegion.addEvaluator( elementDofIndexes );
 
-        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         FunctionEvaluator quadraticBSpline = new FunctionEvaluator( "test_mesh.quadratic_bspline", weightingDomain, meshDomain, library
             .getContinuousFunction( "library.function.quadratic_bspline" ) );

@@ -14,14 +14,11 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
-import fieldml.evaluator.EnsembleListParameters;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
@@ -88,16 +85,14 @@ public class BicubicHermiteTest
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
-        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         Region testRegion = new Region( REGION_NAME );
 
-        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction" );
-        edgeDirectionDomain.addValues( 1, 2 );
+        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction", 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements" );
-        testMeshElementDomain.addValues( 1, 2 );
+        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 1, 2 );
         testRegion.addDomain( testMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
@@ -105,14 +100,13 @@ public class BicubicHermiteTest
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes" );
-        globalNodesDomain.addValues( 1, 2, 3, 4, 5, 6 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 1, 2, 3, 4, 5, 6 );
         testRegion.addDomain( globalNodesDomain );
 
-        EnsembleListDomain globalNodesListDomain = new EnsembleListDomain( "test_mesh.node_list", globalNodesDomain );
+        EnsembleDomain globalNodesListDomain = new EnsembleDomain( "test_mesh.node_list", globalNodesDomain );
         testRegion.addDomain( globalNodesListDomain );
 
-        EnsembleListParameters quadNodeList = new EnsembleListParameters( "test_mesh.quad_nodes", globalNodesListDomain,
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesListDomain,
             testMeshElementDomain );
         quadNodeList.setValue( 1, 1, 2, 3, 4 );
         quadNodeList.setValue( 2, 2, 5, 4, 6 );

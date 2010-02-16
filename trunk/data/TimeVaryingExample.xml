@@ -3,17 +3,19 @@
   <!--
 1____2____3____4____5
 -->
-  <EnsembleDomain name="tv_test.time.elements">
+  <EnsembleDomain componentCount="1" componentDomain="tv_test.time.elements" name="tv_test.time.elements">
     <values>1  2  3  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="tv_test.time.dofs.domain">
+  <EnsembleDomain componentCount="1" componentDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain">
     <values>1  2  3  4  5  6  7  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.list.domain" />
+  <EnsembleDomain componentCount="0" componentDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.list.domain">
+    <values>1  2  3  4  5  6  7  </values>
+  </EnsembleDomain>
   
 
   <MeshDomain dimensions="1" elementDomain="tv_test.time.elements" defaultShape="line_0_1" name="tv_test.time.mesh">
@@ -54,6 +56,9 @@
       </MapEntry>
     </entries>
   </ContinuousParameters>
+  
+
+  <FunctionEvaluator function="fieldml.function.QuadraticLagrange@1c78e57" functionDomain="tv_test.time.mesh" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="test_mesh.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />
@@ -262,10 +267,7 @@
   </ContinuousParameters>
   
 
-  <FunctionEvaluator function="fieldml.function.QuadraticLagrange@1b90b39" functionDomain="tv_test.time.mesh" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
-  
-
-  <EnsembleListParameters name="tv_test.time.element_dof_indexes" valueDomain="tv_test.time.dofs.list.domain">
+  <EnsembleParameters name="tv_test.time.element_dof_indexes" valueDomain="tv_test.time.dofs.list.domain">
     <parameterDomains>"tv_test.time.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -281,7 +283,7 @@
         <values>5  6  7  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
   <PiecewiseTemplate name="tv_test.time.template" meshDomain="tv_test.time.mesh">
@@ -297,7 +299,6 @@
     <variables>
       <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.time.dofs.values" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
@@ -305,7 +306,6 @@
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="tv_test.dofs.z" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
@@ -313,7 +313,6 @@
     <variables>
       <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.coordinates.sliced_z" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 

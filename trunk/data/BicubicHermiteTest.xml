@@ -8,28 +8,30 @@
 |    |    |
 3____4____6
 -->
-  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.dz/ds" />
+  <ContinuousDomain componentCount="1" componentDomain="test_mesh.co-ordinates.dz/ds" name="test_mesh.co-ordinates.dz/ds" />
   
 
-  <ContinuousDomain dimensions="1" name="test_mesh.co-ordinates.d2z/ds1ds2" />
+  <ContinuousDomain componentCount="1" componentDomain="test_mesh.co-ordinates.d2z/ds1ds2" name="test_mesh.co-ordinates.d2z/ds1ds2" />
   
 
-  <EnsembleDomain name="test_mesh.edge_direction">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.edge_direction" name="test_mesh.edge_direction">
     <values>1  2  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.elements">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.elements" name="test_mesh.elements">
     <values>1  2  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.nodes">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.nodes" name="test_mesh.nodes">
     <values>1  2  3  4  5  6  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="test_mesh.nodes" name="test_mesh.node_list" />
+  <EnsembleDomain componentCount="0" componentDomain="test_mesh.nodes" name="test_mesh.node_list">
+    <values>1  2  3  4  5  6  </values>
+  </EnsembleDomain>
   
 
   <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
@@ -61,7 +63,13 @@
   </ContinuousAggregateEvaluator>
   
 
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@186db54" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+  
+
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <FunctionEvaluator function="fieldml.function.BicubicHermite@a97b0b" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bicubic_hermite" valueSource="test_mesh.node.bicubic_parameters" valueScale="test_mesh.element.bicubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
@@ -266,10 +274,19 @@
   </ContinuousAggregateEvaluator>
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1e0be38" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
-  
-
-  <FunctionEvaluator function="fieldml.function.BicubicHermite@1e859c0" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.node_list">
+    <parameterDomains>"test_mesh.elements"  </parameterDomains>
+    <entries>
+      <MapEntry>
+        <keys>1  </keys>
+        <values>1  2  3  4  </values>
+      </MapEntry>
+      <MapEntry>
+        <keys>2  </keys>
+        <values>2  5  4  6  </values>
+      </MapEntry>
+    </entries>
+  </EnsembleParameters>
   
 
   <EnsembleParameters name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction">
@@ -284,21 +301,6 @@
     <values>2  </values>
     <entries />
   </EnsembleParameters>
-  
-
-  <EnsembleListParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.node_list">
-    <parameterDomains>"test_mesh.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>1  2  3  4  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>2  5  4  6  </values>
-      </MapEntry>
-    </entries>
-  </EnsembleListParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates.L2" meshDomain="test_mesh.domain">
@@ -321,7 +323,6 @@
     <variables>
       <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.x" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
@@ -329,7 +330,6 @@
     <variables>
       <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.y" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
@@ -340,7 +340,6 @@
       <SimpleMapEntry key="test_mesh.node.dofs.d2u/ds2" value="test_mesh.node.d2z/ds1ds2" />
       <SimpleMapEntry key="test_mesh.element.bicubic_hermite_scaling" value="test_mesh.cubic_hermite_scaling" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 
