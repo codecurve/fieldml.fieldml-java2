@@ -1,5 +1,7 @@
 package fieldml.value;
 
+import java.util.Arrays;
+
 import fieldml.domain.EnsembleDomain;
 
 public class EnsembleDomainValue
@@ -8,17 +10,17 @@ public class EnsembleDomainValue
     public final int values[];
 
 
-    public EnsembleDomainValue( EnsembleDomain domain, int indexValue )
+    public EnsembleDomainValue( EnsembleDomain domain, int ...indexValues )
     {
         super( domain );
 
-        this.values = new int[]{indexValue};
+        this.values = Arrays.copyOf( indexValues, indexValues.length );
     }
 
 
     @Override
     public String toString()
     {
-        return "" + values[0];
+        return Arrays.toString( values );
     }
 }

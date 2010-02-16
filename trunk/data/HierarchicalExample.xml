@@ -3,17 +3,19 @@
   <!--
 1____2____3____4____5
 -->
-  <EnsembleDomain name="hierarchical_mesh.elements">
+  <EnsembleDomain componentCount="1" componentDomain="hierarchical_mesh.elements" name="hierarchical_mesh.elements">
     <values>1  2  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="hierarchical_mesh.dofs">
+  <EnsembleDomain componentCount="1" componentDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
     <values>1  2  3  4  5  6  7  8  9  10  11  12  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dof_indexes" />
+  <EnsembleDomain componentCount="0" componentDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dof_indexes">
+    <values>1  2  3  4  5  6  7  8  9  10  11  12  </values>
+  </EnsembleDomain>
   
 
   <MeshDomain dimensions="1" elementDomain="hierarchical_mesh.elements" name="hierarchical_mesh.domain">
@@ -79,14 +81,14 @@
   </ContinuousParameters>
   
 
-  <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
-  
-
-  <ContinuousListParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list">
+  <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list">
     <parameterDomains />
     <values>1.0  1.0  1.0  1.0  1.0  1.0  1.0  </values>
     <entries />
-  </ContinuousListParameters>
+  </ContinuousParameters>
+  
+
+  <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <PiecewiseTemplate name="hierarchical_mesh.coordinates" meshDomain="hierarchical_mesh.domain">
@@ -101,7 +103,6 @@
     <variables>
       <SimpleMapEntry key="hierarchical_mesh.dofs" value="hierarchical_mesh.dofs.z" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 

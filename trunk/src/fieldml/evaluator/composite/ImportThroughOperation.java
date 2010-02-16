@@ -31,7 +31,7 @@ public class ImportThroughOperation
         this.iteratedDomain = iteratedDomain;
         this.valueDomain = valueDomain;
 
-        assert parameters.valueDomain.dimensions == 1;
+        assert parameters.valueDomain.componentCount == 1;
         
         // VALIDATE Scan the whole parameters field and make sure that exactly valueDomain.dimensions entries are defined for each value in iteratedDomain
     }
@@ -55,7 +55,7 @@ public class ImportThroughOperation
             }
         }
         
-        assert parameterCount == valueDomain.dimensions : "" + parameterCount + " != " + valueDomain.dimensions;
+        assert parameterCount == valueDomain.componentCount : "" + parameterCount + " != " + valueDomain.componentCount;
 
         values.set( valueDomain, value );
     }

@@ -3,25 +3,29 @@
   <!--
 x____x____x____x____x____x
 -->
-  <EnsembleDomain name="test_mesh.elements">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.elements" name="test_mesh.elements">
     <values>1  2  3  4  5  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.dofs">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.dofs" name="test_mesh.dofs">
     <values>1  2  3  4  5  6  7  </values>
   </EnsembleDomain>
   
 
-  <EnsembleDomain name="test_mesh.nodes">
+  <EnsembleDomain componentCount="1" componentDomain="test_mesh.nodes" name="test_mesh.nodes">
     <values>1  2  3  4  5  6  </values>
   </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" />
+  <EnsembleDomain componentCount="0" componentDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain">
+    <values>1  2  3  4  5  6  </values>
+  </EnsembleDomain>
   
 
-  <EnsembleListDomain elementDomain="test_mesh.dofs" name="test_mesh.dof_indexes" />
+  <EnsembleDomain componentCount="0" componentDomain="test_mesh.dofs" name="test_mesh.dof_indexes">
+    <values>1  2  3  4  5  6  7  </values>
+  </EnsembleDomain>
   
 
   <MeshDomain dimensions="1" elementDomain="test_mesh.elements" name="test_mesh.domain">
@@ -70,13 +74,13 @@ x____x____x____x____x____x
   </ContinuousParameters>
   
 
+  <FunctionEvaluator function="fieldml.function.QuadraticBSpline@fa7e74" functionDomain="test_mesh.domain" name="test_mesh.quadratic_bspline" valueDomain="library.weighting.list" />
+  
+
   <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <FunctionEvaluator function="fieldml.function.QuadraticBSpline@a20892" functionDomain="test_mesh.domain" name="test_mesh.quadratic_bspline" valueDomain="library.weighting.list" />
-  
-
-  <EnsembleListParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
+  <EnsembleParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
     <parameterDomains>"test_mesh.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -100,10 +104,10 @@ x____x____x____x____x____x
         <values>5  6  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
-  <EnsembleListParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
+  <EnsembleParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
     <parameterDomains>"test_mesh.elements"  </parameterDomains>
     <entries>
       <MapEntry>
@@ -127,7 +131,7 @@ x____x____x____x____x____x
         <values>5  6  7  </values>
       </MapEntry>
     </entries>
-  </EnsembleListParameters>
+  </EnsembleParameters>
   
 
   <PiecewiseTemplate name="test_mesh.coordinates" meshDomain="test_mesh.domain">
@@ -145,7 +149,6 @@ x____x____x____x____x____x
     <variables>
       <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.dofs.z" />
     </variables>
-    <listVariables />
   </PiecewiseField>
   
 

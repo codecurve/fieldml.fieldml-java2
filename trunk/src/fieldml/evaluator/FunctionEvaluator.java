@@ -1,16 +1,16 @@
 package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.ContinuousListDomain;
+import fieldml.domain.ContinuousDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.function.ContinuousFunction;
-import fieldml.value.ContinuousListDomainValue;
+import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class FunctionEvaluator
-    extends AbstractEvaluator<ContinuousListDomain, ContinuousListDomainValue>
-    implements ContinuousListEvaluator
+    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
+    implements ContinuousEvaluator
 {
     @SerializationAsString
     public final ContinuousFunction function;
@@ -19,7 +19,7 @@ public class FunctionEvaluator
     public final MeshDomain functionDomain;
 
 
-    public FunctionEvaluator( String name, ContinuousListDomain valueDomain, MeshDomain functionDomain, ContinuousFunction function )
+    public FunctionEvaluator( String name, ContinuousDomain valueDomain, MeshDomain functionDomain, ContinuousFunction function )
     {
         //TODO For now, this class only supports evaluation on a mesh.
         super( name, valueDomain );
@@ -30,7 +30,7 @@ public class FunctionEvaluator
 
 
     @Override
-    public ContinuousListDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue evaluate( DomainValues context )
     {
         MeshDomainValue value = context.get( functionDomain );
 

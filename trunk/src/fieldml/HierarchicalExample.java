@@ -15,15 +15,12 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousListParameters;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
-import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.evaluator.hardcoded.RegularLinearSubdivision;
@@ -140,8 +137,7 @@ public class HierarchicalExample
         
         Region testRegion = new Region( REGION_NAME );
         
-        EnsembleDomain hierarchicalMeshElementDomain = new EnsembleDomain( "hierarchical_mesh.elements" );
-        hierarchicalMeshElementDomain.addValues( 1, 2 );
+        EnsembleDomain hierarchicalMeshElementDomain = new EnsembleDomain( "hierarchical_mesh.elements", 1, 2 );
         testRegion.addDomain( hierarchicalMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "hierarchical_mesh.domain", 1, hierarchicalMeshElementDomain );
@@ -149,8 +145,7 @@ public class HierarchicalExample
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "hierarchical_mesh.dofs" );
-        globalDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( "hierarchical_mesh.dofs", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 );
         testRegion.addDomain( globalDofsDomain );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
@@ -173,10 +168,10 @@ public class HierarchicalExample
 
         EnsembleDomain submeshGlobalDofsDomain = subRegion.getEnsembleDomain( "test_mesh.dofs" );
 
-        EnsembleListDomain dofIndexesDomain = new EnsembleListDomain( "hierarchical_mesh.dof_indexes", globalDofsDomain );
+        EnsembleDomain dofIndexesDomain = new EnsembleDomain( "hierarchical_mesh.dof_indexes", globalDofsDomain );
         testRegion.addDomain( dofIndexesDomain );
 
-        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "hierarchical_mesh.element_dof_indexes", dofIndexesDomain,
+        EnsembleParameters elementDofIndexes = new EnsembleParameters( "hierarchical_mesh.element_dof_indexes", dofIndexesDomain,
             hierarchicalMeshElementDomain, submeshGlobalDofsDomain );
         elementDofIndexes.setValue( new int[]{1, 1}, 1 );
         elementDofIndexes.setValue( new int[]{1, 2}, 2 );
@@ -193,9 +188,9 @@ public class HierarchicalExample
         elementDofIndexes.setValue( new int[]{2, 6}, 11 );
         elementDofIndexes.setValue( new int[]{2, 7}, 12 );
 
-        ContinuousListDomain weighting = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousDomain weighting = library.getContinuousDomain( "library.weighting.list" );
 
-        ContinuousListParameters elementDofWeights = new ContinuousListParameters( "hierarchical_mesh.element_dof_weights", weighting );
+        ContinuousParameters elementDofWeights = new ContinuousParameters( "hierarchical_mesh.element_dof_weights", weighting );
         elementDofWeights.setDefaultValue( 1, 1, 1, 1, 1, 1, 1 );
         testRegion.addEvaluator( elementDofWeights );
 

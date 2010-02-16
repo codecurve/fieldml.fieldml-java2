@@ -13,9 +13,15 @@ public class EnsembleParameters
     }
 
 
-    public void setValue( int value, int... keys )
+    public void setValue( int key, int ... values  )
     {
-        setValue( valueDomain.makeValue( value ), keys );
+        setValue( valueDomain.makeValue( values ), key );
+    }
+
+
+    public void setValue( int[] keys, int ... values  )
+    {
+        setValue( valueDomain.makeValue( values ), keys );
     }
 
 

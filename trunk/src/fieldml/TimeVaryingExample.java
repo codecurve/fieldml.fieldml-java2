@@ -15,16 +15,14 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.ContinuousListDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.domain.EnsembleListDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousVariableEvaluator;
-import fieldml.evaluator.EnsembleListEvaluator;
-import fieldml.evaluator.EnsembleListParameters;
+import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
@@ -161,20 +159,18 @@ public class TimeVaryingExample
         tvRegion.addSubregion( bsplineRegion );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
-        EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements" );
-        timeElementDomain.addValues( 1, 2, 3 );
+        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
+        EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements", 1, 2, 3 );
         tvRegion.addDomain( timeElementDomain );
 
         MeshDomain timeMeshDomain = new MeshDomain( "tv_test.time.mesh", 1, timeElementDomain );
         timeMeshDomain.setDefaultShape( "line_0_1" );
         tvRegion.addDomain( timeMeshDomain );
 
-        EnsembleDomain timeDofsDomain = new EnsembleDomain( "tv_test.time.dofs.domain" );
-        timeDofsDomain.addValues( 1, 2, 3, 4, 5, 6, 7 );
+        EnsembleDomain timeDofsDomain = new EnsembleDomain( "tv_test.time.dofs.domain", 1, 2, 3, 4, 5, 6, 7 );
         tvRegion.addDomain( timeDofsDomain );
 
-        EnsembleListDomain timeDofsListDomain = new EnsembleListDomain( "tv_test.time.dofs.list.domain", timeDofsDomain );
+        EnsembleDomain timeDofsListDomain = new EnsembleDomain( "tv_test.time.dofs.list.domain", timeDofsDomain );
         tvRegion.addDomain( timeDofsListDomain );
 
         ContinuousParameters timeDofs = new ContinuousParameters( "tv_test.time.dofs.values", rc1CoordinatesDomain, timeDofsDomain );
@@ -187,7 +183,7 @@ public class TimeVaryingExample
         timeDofs.setValue( 7, 10.0 );// Deliberately non-linear. C1 continuous for my own amusement.
         tvRegion.addEvaluator( timeDofs );
 
-        EnsembleListParameters elementDofIndexes = new EnsembleListParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
+        EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
             timeElementDomain );
         elementDofIndexes.setValue( 1, 1, 2, 3 );
         elementDofIndexes.setValue( 2, 3, 4, 5 );
@@ -296,13 +292,13 @@ public class TimeVaryingExample
         Region testRegion = buildRegion();
         Region bsplineRegion = testRegion.getSubregion( QuadraticBSplineExample.REGION_NAME );
 
-        ContinuousListDomain weightingDomain = library.getContinuousListDomain( "library.weighting.list" );
+        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
         // These are only for visualization. Do not serialize.
 
         EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
-        EnsembleListEvaluator lineNodeList = bsplineRegion.getEnsembleListEvaluator( "test_mesh.line_nodes" );
+        EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
         MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
 
         ContinuousParameters nodalX = new ContinuousParameters( "test_mesh.node.x", rc1CoordinatesDomain, globalNodesDomain );
@@ -314,7 +310,7 @@ public class TimeVaryingExample
         nodalX.setValue( 6, 5.0 );
 
         FunctionEvaluator linearLagrange = new FunctionEvaluator( "test_mesh.linear_lagrange", weightingDomain, bsplineDomain, library
-            .getContinuousFunction( "library.function.quadratic_lagrange" ) );
+            .getContinuousFunction( "library.function.linear_lagrange" ) );
         testRegion.addEvaluator( linearLagrange );
 
         ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain );

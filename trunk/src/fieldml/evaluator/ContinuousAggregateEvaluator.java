@@ -22,9 +22,9 @@ public class ContinuousAggregateEvaluator
     {
         super( name, valueDomain );
 
-        count = valueDomain.dimensions;
+        count = valueDomain.componentCount;
         sourceFields = new ArrayList<ContinuousEvaluator>();
-        for( int i = 0; i < valueDomain.dimensions; i++ )
+        for( int i = 0; i < valueDomain.componentCount; i++ )
         {
             sourceFields.add( null );
         }

@@ -13,10 +13,10 @@ public class MapEvaluator
     implements ContinuousEvaluator
 {
     @SerializationAsString
-    public final EnsembleListEvaluator valueIndexes;
+    public final EnsembleEvaluator valueIndexes;
 
     @SerializationAsString
-    public final ContinuousListEvaluator valueWeights;
+    public final ContinuousEvaluator valueWeights;
 
     @SerializationAsString
     public final ContinuousEvaluator valueSource;
@@ -27,14 +27,14 @@ public class MapEvaluator
     private final EnsembleDomain iteratedDomain;
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleListEvaluator valueIndexes, ContinuousListEvaluator valueWeights,
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleEvaluator valueIndexes, ContinuousEvaluator valueWeights,
         ContinuousEvaluator valueSource )
     {
         this( name, valueDomain, valueIndexes, valueWeights, valueSource, null );
     }
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleListEvaluator valueIndexes, ContinuousListEvaluator valueWeights,
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleEvaluator valueIndexes, ContinuousEvaluator valueWeights,
         ContinuousEvaluator valueSource, ContinuousEvaluator valueScale )
     {
         super( name, valueDomain );
@@ -44,7 +44,7 @@ public class MapEvaluator
         this.valueSource = valueSource;
         this.valueScale = valueScale;
 
-        iteratedDomain = valueIndexes.getValueDomain().elementDomain;
+        iteratedDomain = valueIndexes.getValueDomain().componentDomain;
     }
 
 
@@ -57,7 +57,7 @@ public class MapEvaluator
         double[] scales;
         double finalValue = 0;
 
-        int valueSize = valueSource.getValueDomain().dimensions;
+        int valueSize = valueSource.getValueDomain().componentCount;
         if( valueScale != null )
         {
             scales = valueScale.evaluate( context ).values;
