@@ -3,22 +3,17 @@
   <!--
 1____2____3____4____5
 -->
-  <EnsembleDomain componentCount="1" componentDomain="hierarchical_mesh.elements" name="hierarchical_mesh.elements">
-    <values>1  2  </values>
+  <EnsembleDomain baseDomain="hierarchical_mesh.elements" name="hierarchical_mesh.elements" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="2" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="1" componentDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
-    <values>1  2  3  4  5  6  7  8  9  10  11  12  </values>
+  <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="12" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="0" componentDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dof_indexes">
-    <values>1  2  3  4  5  6  7  8  9  10  11  12  </values>
-  </EnsembleDomain>
-  
-
-  <MeshDomain dimensions="1" elementDomain="hierarchical_mesh.elements" name="hierarchical_mesh.domain">
+  <MeshDomain dimensions="1" elementDomain="hierarchical_mesh.elements" name="hierarchical_mesh.domain" componentCount="1">
     <shapes>
       <entry key="1" value="library.shape.line.0_1" />
       <entry key="2" value="library.shape.line.0_1" />
@@ -26,77 +21,22 @@
   </MeshDomain>
   
 
-  <ContinuousParameters name="hierarchical_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"hierarchical_mesh.dofs"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>-1.190983  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>8  </keys>
-        <values>0.663119  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>9  </keys>
-        <values>-0.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>10  </keys>
-        <values>-0.572949  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>11  </keys>
-        <values>-1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>12  </keys>
-        <values>-0.954915  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
+  <ContinuousParameters name="hierarchical_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list">
-    <parameterDomains />
-    <values>1.0  1.0  1.0  1.0  1.0  1.0  1.0  </values>
-    <entries />
-  </ContinuousParameters>
+  <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <PiecewiseTemplate name="hierarchical_mesh.coordinates" meshDomain="hierarchical_mesh.domain">
+  <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.elements" name="hierarchical_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
+    <variables />
     <elementMaps>
-      <TemplateMap element="1" evaluator="hierarchical_mesh.submesh_evaluator" />
-      <TemplateMap element="2" evaluator="hierarchical_mesh.submesh_evaluator" />
+      <TemplateMap index="1" evaluator="hierarchical_mesh.submesh_evaluator" />
+      <TemplateMap index="2" evaluator="hierarchical_mesh.submesh_evaluator" />
     </elementMaps>
-  </PiecewiseTemplate>
+  </ContinuousPiecewiseEvaluator>
   
 
   <PiecewiseField template="hierarchical_mesh.coordinates" name="hierarchical_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">

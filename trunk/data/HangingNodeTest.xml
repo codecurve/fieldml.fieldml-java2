@@ -10,32 +10,32 @@
 |      | *3 |
 6______7____8
 -->
-  <EnsembleDomain componentCount="1" componentDomain="test_mesh.element_index" name="test_mesh.element_index">
-    <values>1  2  3  </values>
+  <EnsembleDomain baseDomain="test_mesh.element_index" name="test_mesh.element_index" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="3" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="1" componentDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
-    <values>1  2  3  4  5  6  7  </values>
+  <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="0" componentDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list">
-    <values>1  2  3  4  5  6  7  </values>
+  <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list" componentDomain="library.anonymous" componentCount="0">
+    <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="1" componentDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index">
-    <values>1  2  3  4  5  6  7  8  </values>
+  <EnsembleDomain baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="8" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="0" componentDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list">
-    <values>1  2  3  4  5  6  7  8  </values>
+  <EnsembleDomain baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list" componentDomain="library.anonymous" componentCount="0">
+    <ContiguousEnsembleBounds valueCount="8" />
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="2" elementDomain="test_mesh.element_index" name="test_mesh.domain">
+  <MeshDomain dimensions="2" elementDomain="test_mesh.element_index" name="test_mesh.domain" componentCount="1">
     <shapes>
       <entry key="1" value="library.shape.quad.00_10_01_11" />
       <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -44,116 +44,16 @@
   </MeshDomain>
   
 
-  <ContinuousParameters name="test_mesh.global_to_local.weights" valueDomain="library.weighting.list">
-    <parameterDomains>"test_mesh.local_dof_index"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>0.5  0.5  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>8  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
+  <ContinuousParameters name="test_mesh.global_to_local.weights" valueDomain="library.weighting.list" />
   
 
-  <ContinuousParameters name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>20.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>30.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>30.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>20.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>30.0  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
+  <ContinuousParameters name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <ContinuousParameters name="test_mesh.point.y" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>20.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>20.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>20.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>10.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
+  <ContinuousParameters name="test_mesh.point.y" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearLagrange@186db54" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="fieldml.function.BilinearLagrange@1c39a2d" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
@@ -162,76 +62,25 @@
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
+  <ContinuousPiecewiseEvaluator indexDomain="test_mesh.element_index" name="test_mesh.template.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d">
+    <variables />
+    <elementMaps>
+      <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
+      <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
+      <TemplateMap index="3" evaluator="test_mesh.element.bilinear_lagrange" />
+    </elementMaps>
+  </ContinuousPiecewiseEvaluator>
+  
+
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
     <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
   </ContinuousAggregateEvaluator>
   
 
-  <EnsembleParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh.global_dof_index_list">
-    <parameterDomains>"test_mesh.local_dof_index"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>1  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>2  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>3  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>2  6  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>4  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>5  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>6  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>8  </keys>
-        <values>7  </values>
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
+  <EnsembleParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh.global_dof_index_list" />
   
 
-  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index_list">
-    <parameterDomains>"test_mesh.element_index"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>6  7  1  2  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>4  5  2  3  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>7  8  4  5  </values>
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
-  
-
-  <PiecewiseTemplate name="test_mesh.template.bilinear_lagrange" meshDomain="test_mesh.domain">
-    <elementMaps>
-      <TemplateMap element="1" evaluator="test_mesh.element.bilinear_lagrange" />
-      <TemplateMap element="2" evaluator="test_mesh.element.bilinear_lagrange" />
-      <TemplateMap element="3" evaluator="test_mesh.element.bilinear_lagrange" />
-    </elementMaps>
-  </PiecewiseTemplate>
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index_list" />
   
 
   <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">

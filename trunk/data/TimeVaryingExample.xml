@@ -3,296 +3,49 @@
   <!--
 1____2____3____4____5
 -->
-  <EnsembleDomain componentCount="1" componentDomain="tv_test.time.elements" name="tv_test.time.elements">
-    <values>1  2  3  </values>
+  <EnsembleDomain baseDomain="tv_test.time.elements" name="tv_test.time.elements" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="3" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="1" componentDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain">
-    <values>1  2  3  4  5  6  7  </values>
+  <EnsembleDomain baseDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain" componentCount="1">
+    <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain componentCount="0" componentDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.list.domain">
-    <values>1  2  3  4  5  6  7  </values>
+  <EnsembleDomain baseDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.list.domain" componentDomain="library.local_nodes.line.2" componentCount="3">
+    <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="1" elementDomain="tv_test.time.elements" defaultShape="line_0_1" name="tv_test.time.mesh">
+  <MeshDomain dimensions="1" elementDomain="tv_test.time.elements" defaultShape="line_0_1" name="tv_test.time.mesh" componentCount="1">
     <shapes />
   </MeshDomain>
   
 
-  <ContinuousParameters name="tv_test.time.dofs.values" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"tv_test.time.dofs.domain"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>1.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>2.5  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  </keys>
-        <values>4.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  </keys>
-        <values>5.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  </keys>
-        <values>6.625  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  </keys>
-        <values>10.0  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
+  <ContinuousParameters name="tv_test.time.dofs.values" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <FunctionEvaluator function="fieldml.function.QuadraticLagrange@1c78e57" functionDomain="tv_test.time.mesh" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="fieldml.function.QuadraticLagrange@1b90b39" functionDomain="tv_test.time.mesh" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="test_mesh.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />
   
 
-  <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.co-ordinates.rc.1d">
-    <parameterDomains>"test_mesh.dofs"  "tv_test.time.dofs.domain"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  1  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  1  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  1  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  1  </keys>
-        <values>-1.190983  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  1  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  1  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  1  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  2  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  3  </keys>
-        <values>-0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  3  </keys>
-        <values>-1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  3  </keys>
-        <values>0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  3  </keys>
-        <values>1.190983  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  3  </keys>
-        <values>0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  3  </keys>
-        <values>-1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  3  </keys>
-        <values>-0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  4  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  5  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  5  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  5  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  5  </keys>
-        <values>-1.190983  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  5  </keys>
-        <values>-0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  5  </keys>
-        <values>1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  5  </keys>
-        <values>0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  6  </keys>
-        <values>0.0  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>1  7  </keys>
-        <values>-0.954915  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  7  </keys>
-        <values>-1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  7  </keys>
-        <values>0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>4  7  </keys>
-        <values>1.190983  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>5  7  </keys>
-        <values>0.427051  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>6  7  </keys>
-        <values>-1.045085  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>7  7  </keys>
-        <values>-0.954915  </values>
-      </MapEntry>
-    </entries>
-  </ContinuousParameters>
-  
-
-  <EnsembleParameters name="tv_test.time.element_dof_indexes" valueDomain="tv_test.time.dofs.list.domain">
-    <parameterDomains>"tv_test.time.elements"  </parameterDomains>
-    <entries>
-      <MapEntry>
-        <keys>1  </keys>
-        <values>1  2  3  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>2  </keys>
-        <values>3  4  5  </values>
-      </MapEntry>
-      <MapEntry>
-        <keys>3  </keys>
-        <values>5  6  7  </values>
-      </MapEntry>
-    </entries>
-  </EnsembleParameters>
-  
-
-  <PiecewiseTemplate name="tv_test.time.template" meshDomain="tv_test.time.mesh">
+  <ContinuousPiecewiseEvaluator indexDomain="tv_test.time.elements" name="tv_test.time.template" valueDomain="library.co-ordinates.rc.1d">
+    <variables />
     <elementMaps>
-      <TemplateMap element="1" evaluator="test_mesh.element.quadratic_lagrange_map" />
-      <TemplateMap element="2" evaluator="test_mesh.element.quadratic_lagrange_map" />
-      <TemplateMap element="3" evaluator="test_mesh.element.quadratic_lagrange_map" />
+      <TemplateMap index="1" evaluator="test_mesh.element.quadratic_lagrange_map" />
+      <TemplateMap index="2" evaluator="test_mesh.element.quadratic_lagrange_map" />
+      <TemplateMap index="3" evaluator="test_mesh.element.quadratic_lagrange_map" />
     </elementMaps>
-  </PiecewiseTemplate>
+  </ContinuousPiecewiseEvaluator>
+  
+
+  <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.co-ordinates.rc.1d" />
+  
+
+  <EnsembleParameters name="tv_test.time.element_dof_indexes" valueDomain="tv_test.time.dofs.list.domain" />
   
 
   <PiecewiseField template="tv_test.time.template" name="tv_test.time" valueDomain="library.co-ordinates.rc.1d">

@@ -4,13 +4,27 @@ import fieldml.domain.MeshDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
-public interface MeshEvaluator
+public abstract class MeshEvaluator
+    extends AbstractEvaluator<MeshDomain, MeshDomainValue>
 {
-    public String getName();
+    public MeshEvaluator( String name, MeshDomain valueDomain )
+    {
+        super( name, valueDomain );
+    }
 
 
-    public MeshDomainValue evaluate( DomainValues context );
-    
-    
-    public MeshDomain getValueDomain();
+    public abstract MeshDomainValue evaluate( DomainValues context );
+
+
+    @Override
+    public MeshDomainValue evaluate( DomainValues context, MeshDomain domain )
+    {
+        if( domain == valueDomain )
+        {
+            // Desired domain matches native domain.
+            return evaluate( context );
+        }
+
+        return null;
+    }
 }

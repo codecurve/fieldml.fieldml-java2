@@ -27,17 +27,20 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
     }
 
 
-    public abstract V evaluate( DomainValues context );
-    
-    
     public final D getValueDomain()
     {
         return valueDomain;
     }
-    
-    
+
+
     public final String getName()
     {
         return name;
     }
+
+
+    public abstract V evaluate( DomainValues context, D domain );
+
+
+    public abstract V evaluate( DomainValues context );
 }

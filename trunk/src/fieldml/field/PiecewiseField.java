@@ -2,7 +2,6 @@ package fieldml.field;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.evaluator.AbstractEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
@@ -10,21 +9,22 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class PiecewiseField
-    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
-    implements ContinuousEvaluator
+    extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final PiecewiseTemplate template;
+    public final ContinuousEvaluator template;
 
     public final SimpleMap<String, ContinuousEvaluator> variables;
 
 
-    public PiecewiseField( String name, ContinuousDomain valueDomain, PiecewiseTemplate template )
+    public PiecewiseField( String name, ContinuousDomain valueDomain, ContinuousEvaluator template )
     {
         super( name, valueDomain );
 
-        this.template = template;
+        assert valueDomain == template.valueDomain;
         
+        this.template = template;
+
         variables = new SimpleMap<String, ContinuousEvaluator>();
     }
 
@@ -43,6 +43,6 @@ public class PiecewiseField
         {
             localContext.setVariable( e.key, e.value );
         }
-        return valueDomain.makeValue( template.evaluate( localContext ) );
+        return template.evaluate( localContext );
     }
 }

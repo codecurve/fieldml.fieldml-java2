@@ -16,25 +16,8 @@ import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
 
-public class Region
+public abstract class Region
 {
-    private static final Region library;
-
-    private static final SimpleMap<String, Region> regions;
-
-    static
-    {
-        regions = new SimpleMap<String, Region>();
-
-        library = new Library();
-    }
-
-
-    public static Region getLibrary()
-    {
-        return library;
-    }
-
     private final SimpleMap<String, MeshDomain> meshDomains;
 
     private final SimpleMap<String, ContinuousDomain> continuousDomains;
@@ -48,7 +31,7 @@ public class Region
     private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
 
     private final SimpleMap<String, ContinuousFunction> functions;
-    
+
     private final Map<String, Region> subregions;
 
     private final String name;
@@ -66,10 +49,6 @@ public class Region
         piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
         functions = new SimpleMap<String, ContinuousFunction>();
         subregions = new HashMap<String, Region>();
-
-        assert regions.get( name ) == null;
-
-        regions.put( name, this );
     }
 
 
@@ -111,6 +90,7 @@ public class Region
 
         return function;
     }
+
 
     public ContinuousEvaluator getContinuousEvaluator( String name )
     {
@@ -164,6 +144,7 @@ public class Region
     {
         functions.put( name, function );
     }
+
 
     public void addEvaluator( ContinuousEvaluator evaluator )
     {
@@ -235,4 +216,13 @@ public class Region
     {
         return subregions.get( name );
     }
+
+
+    public String getName()
+    {
+        return name;
+    }
+    
+    
+    public abstract Region getLibrary();
 }

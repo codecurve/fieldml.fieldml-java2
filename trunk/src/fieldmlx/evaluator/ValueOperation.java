@@ -1,10 +1,10 @@
-package fieldml.evaluator.composite;
+package fieldmlx.evaluator;
 
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
 public class ValueOperation
-    implements CompositeOperation
+    implements CompositionOperation
 {
     public final DomainValue<?> value;
 

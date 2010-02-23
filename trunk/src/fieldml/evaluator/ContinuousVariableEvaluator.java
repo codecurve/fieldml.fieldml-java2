@@ -5,8 +5,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class ContinuousVariableEvaluator
-    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
-    implements ContinuousEvaluator
+    extends ContinuousEvaluator
 {
     public ContinuousVariableEvaluator( String name, ContinuousDomain valueDomain )
     {
