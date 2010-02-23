@@ -1,7 +1,5 @@
 package fieldml.evaluator;
 
-import java.util.Arrays;
-
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
@@ -9,8 +7,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class MapEvaluator
-    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
-    implements ContinuousEvaluator
+    extends ContinuousEvaluator
 {
     @SerializationAsString
     public final EnsembleEvaluator valueIndexes;
@@ -21,65 +18,32 @@ public class MapEvaluator
     @SerializationAsString
     public final ContinuousEvaluator valueSource;
 
-    @SerializationAsString
-    public final ContinuousEvaluator valueScale;
-
-    private final EnsembleDomain iteratedDomain;
-
 
     public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleEvaluator valueIndexes, ContinuousEvaluator valueWeights,
         ContinuousEvaluator valueSource )
-    {
-        this( name, valueDomain, valueIndexes, valueWeights, valueSource, null );
-    }
-
-
-    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleEvaluator valueIndexes, ContinuousEvaluator valueWeights,
-        ContinuousEvaluator valueSource, ContinuousEvaluator valueScale )
     {
         super( name, valueDomain );
 
         this.valueIndexes = valueIndexes;
         this.valueWeights = valueWeights;
         this.valueSource = valueSource;
-        this.valueScale = valueScale;
-
-        iteratedDomain = valueIndexes.getValueDomain().componentDomain;
     }
 
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        int[] indexes = valueIndexes.evaluate( context ).values;
         double[] weights = valueWeights.evaluate( context ).values;
-        double[] values;
-        double[] scales;
-        double finalValue = 0;
+        int[] indexes = valueIndexes.evaluate( context ).values;
+        double[] values = new double[indexes.length];
 
-        int valueSize = valueSource.getValueDomain().componentCount;
-        if( valueScale != null )
-        {
-            scales = valueScale.evaluate( context ).values;
-        }
-        else
-        {
-            scales = new double[weights.length];
-            Arrays.fill( scales, 1.0 );
-        }
-
-        int weightIndex = 0;
         for( int i = 0; i < indexes.length; i++ )
         {
-            context.set( iteratedDomain, indexes[i] );
-
-            values = valueSource.evaluate( context ).values;
-            for( int j = 0; j < valueSize; j++ )
-            {
-                finalValue += weights[weightIndex] * values[j] * scales[weightIndex];
-                weightIndex++;
-            }
+            context.set( valueIndexes.getValueDomain().baseDomain, indexes[i] );
+            values[i] = valueSource.evaluate( context ).values[0];
         }
+
+        double finalValue = DotProductEvaluator.dotProduct( values, weights );
 
         return valueDomain.makeValue( finalValue );
     }

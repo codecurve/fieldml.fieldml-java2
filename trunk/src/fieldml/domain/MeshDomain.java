@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fieldml.annotations.SerializationAsString;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.value.MeshDomainValue;
 
 public class MeshDomain
@@ -21,7 +22,7 @@ public class MeshDomain
 
     public MeshDomain( String name, int dimensions, EnsembleDomain elementDomain )
     {
-        super( name );
+        super( name, null );
 
         this.dimensions = dimensions;
         this.elementDomain = elementDomain;
@@ -50,5 +51,10 @@ public class MeshDomain
     public void setShape( int element, String shapeName )
     {
         shapes.put( element, shapeName );
+    }
+
+
+    public void setPointConnectivity( String arrangement, EnsembleEvaluator nodeList, String pointsName )
+    {
     }
 }

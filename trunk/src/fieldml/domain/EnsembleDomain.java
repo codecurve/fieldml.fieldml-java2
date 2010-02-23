@@ -1,61 +1,58 @@
 package fieldml.domain;
 
-import java.util.Arrays;
-
 import fieldml.annotations.SerializationAsString;
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsembleDomain
     extends Domain
 {
-    public final int[] values;
+    public final EnsembleBounds bounds;
 
-    public final int componentCount;
-    
     @SerializationAsString
-    public final EnsembleDomain componentDomain; 
+    public final EnsembleDomain baseDomain;
 
 
-    public EnsembleDomain( String name, int... indexValues )
+    public EnsembleDomain( String name, EnsembleDomain componentDomain, EnsembleDomain baseDomain )
     {
-        super( name );
+        super( name, componentDomain );
 
-        values = indexValues;
-        componentCount = 1;
-        componentDomain = this;
+        assert baseDomain.componentCount == 1;
+
+        this.bounds = baseDomain.bounds;
+        this.baseDomain = baseDomain;
     }
 
 
-    public EnsembleDomain( String name, EnsembleDomain itemDomain, int componentCount )
+    public EnsembleDomain( String name, EnsembleBounds bounds )
     {
-        super( name );
+        super( name, null );
 
-        values = Arrays.copyOf( itemDomain.values, itemDomain.values.length );
-        this.componentCount = componentCount;
-        this.componentDomain = itemDomain;
+        this.bounds = bounds;
+        this.baseDomain = this;
     }
 
 
-    public EnsembleDomain( String name, EnsembleDomain itemDomain )
+    public EnsembleDomain( String name, int... values )
     {
-        //TODO Eek! Magic number 0 means 'no limit'
-        this( name, itemDomain, 0 );
+        this( name, new ArbitraryEnsembleBounds( values ) );
     }
 
 
-    public EnsembleDomainValue makeValue( int... indexValues )
+    public EnsembleDomain( String name, int valueCount )
     {
-        if( componentCount != 0 )
-        {
-            assert indexValues.length == componentCount;
-        }
-
-        return new EnsembleDomainValue( this, indexValues );
+        this( name, new ContiguousEnsembleBounds( valueCount ) );
     }
 
 
     public int getValueCount()
     {
-        return values.length;
+        // MUSTDO Audit
+        return bounds.getValueCount();
+    }
+
+
+    public EnsembleDomainValue makeValue( int... indexValues )
+    {
+        return new EnsembleDomainValue( this, indexValues );
     }
 }

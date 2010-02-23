@@ -1,8 +1,8 @@
-package fieldml.evaluator.composite;
+package fieldmlx.evaluator;
 
 import fieldml.value.DomainValues;
 
-public interface CompositeOperation
+public interface CompositionOperation
 {
     public void perform( DomainValues values );
 }

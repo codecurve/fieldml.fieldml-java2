@@ -17,19 +17,21 @@ import org.jdom.output.Format.TextMode;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
+import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.composite.ContinuousCompositeEvaluator;
 import fieldml.evaluator.hardcoded.RegularLinearSubdivision;
 import fieldml.field.PiecewiseField;
-import fieldml.field.PiecewiseTemplate;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
+import fieldml.region.SubRegion;
+import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldmlx.util.MinimalColladaExporter;
@@ -39,7 +41,8 @@ public class HierarchicalExample
 {
     public void testSerialize()
     {
-        Region region = buildRegion();
+        WorldRegion world = new WorldRegion();
+        Region region = buildRegion( world );
 
         Document doc = new Document();
         Element root = new Element( "fieldml" );
@@ -88,7 +91,8 @@ public class HierarchicalExample
     
     public void testEvaluation()
     {
-        Region region = buildRegion();
+        WorldRegion world = new WorldRegion();
+        Region region = buildRegion( world );
 
         MeshDomain meshDomain = region.getMeshDomain( "hierarchical_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "hierarchical_mesh.element.parameters" );
@@ -129,15 +133,13 @@ public class HierarchicalExample
     public static String REGION_NAME = "Hierarchical_Test";
 
 
-    public static Region buildRegion()
+    public static Region buildRegion( Region parent )
     {
-        Region library = Region.getLibrary();
-
-        Region subRegion = QuadraticBSplineExample.buildRegion();
+        Region library = parent.getLibrary();
+        Region testRegion = new SubRegion( REGION_NAME, parent );
+        Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
-        Region testRegion = new Region( REGION_NAME );
-        
-        EnsembleDomain hierarchicalMeshElementDomain = new EnsembleDomain( "hierarchical_mesh.elements", 1, 2 );
+        EnsembleDomain hierarchicalMeshElementDomain = new EnsembleDomain( "hierarchical_mesh.elements", 2 );
         testRegion.addDomain( hierarchicalMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "hierarchical_mesh.domain", 1, hierarchicalMeshElementDomain );
@@ -145,7 +147,7 @@ public class HierarchicalExample
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "hierarchical_mesh.dofs", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( "hierarchical_mesh.dofs", 12 );
         testRegion.addDomain( globalDofsDomain );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
@@ -168,10 +170,7 @@ public class HierarchicalExample
 
         EnsembleDomain submeshGlobalDofsDomain = subRegion.getEnsembleDomain( "test_mesh.dofs" );
 
-        EnsembleDomain dofIndexesDomain = new EnsembleDomain( "hierarchical_mesh.dof_indexes", globalDofsDomain );
-        testRegion.addDomain( dofIndexesDomain );
-
-        EnsembleParameters elementDofIndexes = new EnsembleParameters( "hierarchical_mesh.element_dof_indexes", dofIndexesDomain,
+        EnsembleParameters elementDofIndexes = new EnsembleParameters( "hierarchical_mesh.element_dof_indexes", globalDofsDomain,
             hierarchicalMeshElementDomain, submeshGlobalDofsDomain );
         elementDofIndexes.setValue( new int[]{1, 1}, 1 );
         elementDofIndexes.setValue( new int[]{1, 2}, 2 );
@@ -201,7 +200,7 @@ public class HierarchicalExample
         testRegion.addEvaluator( elementLocalDofs );
         
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );
-        PiecewiseTemplate submeshTemplate = subRegion.getPiecewiseTemplate( "test_mesh.coordinates" );
+        ContinuousEvaluator submeshTemplate = subRegion.getContinuousEvaluator( "test_mesh.coordinates" );
         
         PiecewiseField delegatedEvaluator = new PiecewiseField( "hierarchical_mesh.delegated", rc1CoordinatesDomain, submeshTemplate );
         delegatedEvaluator.setVariable( "test_mesh.dofs", elementLocalDofs );
@@ -212,10 +211,10 @@ public class HierarchicalExample
         submeshEvaluator.importField( submeshAtlas );
         submeshEvaluator.importField( delegatedEvaluator );
 
-        PiecewiseTemplate meshCoordinates = new PiecewiseTemplate( "hierarchical_mesh.coordinates", meshDomain );
+        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "hierarchical_mesh.coordinates", rc1CoordinatesDomain, meshDomain.elementDomain );
         meshCoordinates.setEvaluator( 1, submeshEvaluator );
         meshCoordinates.setEvaluator( 2, submeshEvaluator );
-        testRegion.addPiecewiseTemplate( meshCoordinates );
+        testRegion.addEvaluator( meshCoordinates );
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "hierarchical_mesh.coordinates.z", rc1CoordinatesDomain, meshCoordinates );
         meshCoordinatesZ.setVariable( "hierarchical_mesh.dofs", zDofs );
@@ -228,7 +227,8 @@ public class HierarchicalExample
 
     public void test()
     {
-        Region testRegion = buildRegion();
+        WorldRegion world = new WorldRegion();
+        Region testRegion = buildRegion( world );
 
         try
         {

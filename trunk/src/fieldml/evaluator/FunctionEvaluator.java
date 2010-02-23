@@ -9,8 +9,7 @@ import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
 
 public class FunctionEvaluator
-    extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
-    implements ContinuousEvaluator
+    extends ContinuousEvaluator
 {
     @SerializationAsString
     public final ContinuousFunction function;
@@ -21,7 +20,7 @@ public class FunctionEvaluator
 
     public FunctionEvaluator( String name, ContinuousDomain valueDomain, MeshDomain functionDomain, ContinuousFunction function )
     {
-        //TODO For now, this class only supports evaluation on a mesh.
+        // TODO For now, this class only supports evaluation on a mesh.
         super( name, valueDomain );
 
         this.function = function;

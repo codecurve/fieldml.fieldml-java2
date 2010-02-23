@@ -1,4 +1,4 @@
-package fieldml.evaluator.composite;
+package fieldmlx.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.evaluator.AbstractEvaluator;
@@ -6,7 +6,7 @@ import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
 public class ImportOperation
-    implements CompositeOperation
+    implements CompositionOperation
 {
     @SerializationAsString
     public final AbstractEvaluator<?,?> field;
@@ -19,12 +19,12 @@ public class ImportOperation
 
 
     @Override
-    public void perform( DomainValues values )
+    public void perform( DomainValues context )
     {
-        DomainValue<?> v = field.evaluate( values );
+        DomainValue<?> v = field.evaluate( context );
         if( v != null )
         {
-            values.set( v );
+            context.set( v );
         }
     }
 }

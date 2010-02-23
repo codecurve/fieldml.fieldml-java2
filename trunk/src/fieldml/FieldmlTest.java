@@ -18,14 +18,16 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
+import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.field.PiecewiseTemplate;
 import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
+import fieldml.region.SubRegion;
+import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
@@ -37,7 +39,8 @@ public class FieldmlTest
 
     public void testSerialization()
     {
-        Region region = buildRegion();
+        WorldRegion world = new WorldRegion();
+        Region region = buildRegion( world );
 
         Document doc = new Document();
         Element root = new Element( "fieldml" );
@@ -75,7 +78,8 @@ public class FieldmlTest
 
     public void testEvaluation()
     {
-        Region region = buildRegion();
+        WorldRegion world = new WorldRegion();
+        Region region = buildRegion( world );
 
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
@@ -152,25 +156,27 @@ public class FieldmlTest
     }
 
 
-    public static Region buildRegion()
+    public static Region buildRegion( Region parent )
     {
-        Region library = Region.getLibrary();
-        Region testRegion = new Region( REGION_NAME );
+        Region testRegion = new SubRegion( REGION_NAME, parent );
+        Region library = testRegion.getLibrary();
 
         EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 1, 2, 3, 4 );
         testRegion.addDomain( testMeshElementDomain );
 
         MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
-        meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
-        meshDomain.setShape( 2, "library.shape.triangle.00_10_01" );
-        meshDomain.setShape( 3, "library.shape.triangle.00_10_01" );
-        meshDomain.setShape( 4, "library.shape.quad.00_10_01_11" );
+        meshDomain.setShape( 1, "library.shape.quad" );
+        meshDomain.setShape( 2, "library.shape.triangle" );
+        meshDomain.setShape( 3, "library.shape.triangle" );
+        meshDomain.setShape( 4, "library.shape.quad" );
         testRegion.addDomain( meshDomain );
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
         testRegion.addDomain( globalNodesDomain );
+        
+        EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 
-        EnsembleDomain globalNodesListDomain = new EnsembleDomain( "test_mesh.nodes_list", globalNodesDomain );
+        EnsembleDomain globalNodesListDomain = new EnsembleDomain( "test_mesh.nodes_list", anonymous, globalNodesDomain );
         testRegion.addDomain( globalNodesListDomain );
 
         EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesListDomain,
@@ -192,8 +198,8 @@ public class FieldmlTest
 
         testRegion.addEvaluator( biquadNodeList );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
@@ -209,50 +215,33 @@ public class FieldmlTest
             .getContinuousFunction( "library.function.bilinear_simplex" ) );
         testRegion.addEvaluator( bilinearSimplex );
 
-        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", mesh1DDomain );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain );
 
-        MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, quadNodeList,
+        MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", rc1Domain, quadNodeList,
             bilinearLagrange, dofs );
         testRegion.addEvaluator( elementBilinearLagrange );
-        MapEvaluator elementBilinearSimplex = new MapEvaluator( "test_mesh.element.bilinear_simplex", mesh1DDomain, triangleNodeList,
+        MapEvaluator elementBilinearSimplex = new MapEvaluator( "test_mesh.element.bilinear_simplex", rc1Domain, triangleNodeList,
             bilinearSimplex, dofs );
         testRegion.addEvaluator( elementBilinearSimplex );
-        MapEvaluator elementBiquadraticLagrange = new MapEvaluator( "test_mesh.element.biquadratic_lagrange", mesh1DDomain, biquadNodeList,
+        MapEvaluator elementBiquadraticLagrange = new MapEvaluator( "test_mesh.element.biquadratic_lagrange", rc1Domain, biquadNodeList,
             biquadraticLagrange, dofs );
         testRegion.addEvaluator( elementBiquadraticLagrange );
 
-        /*
-        PiecewiseTemplate meshInterpolationT3 = new PiecewiseTemplate( "test_mesh.coordinates.template3", meshDomain );
-        meshInterpolationT3.setEvaluator( 1, bilinearLagrange );
-        meshInterpolationT3.setEvaluator( 2, bilinearSimplex );
-        meshInterpolationT3.setEvaluator( 3, bilinearSimplex );
-        meshInterpolationT3.setEvaluator( 4, bilinearLagrange );
-        testRegion.addPiecewiseTemplate( meshInterpolationT3 );
-        PiecewiseTemplate meshIndexesT3 = new PiecewiseTemplate( "test_mesh.coordinates.template3", meshDomain, globalNodesListDomain );
-        meshIndexesT3.setEvaluator( 1, quadNodeList );
-        meshIndexesT3.setEvaluator( 2, triangleNodeList );
-        meshIndexesT3.setEvaluator( 3, triangleNodeList );
-        meshIndexesT3.setEvaluator( 4, quadNodeList );
-        testRegion.addPiecewiseTemplate( meshIndexesT3 );
-        MapEvaluator template3Evaluator = new MapEvaluator( "test_mesh.template3", mesh1DDomain, meshIndexesT3,
-            meshInterpolationT3, dofs );
-            */
-        
-        PiecewiseTemplate meshCoordinatesT1 = new PiecewiseTemplate( "test_mesh.coordinates.template1", meshDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesT1 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template1", rc1Domain, testMeshElementDomain );
         meshCoordinatesT1.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT1.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 3, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 4, elementBilinearLagrange );
-        testRegion.addPiecewiseTemplate( meshCoordinatesT1 );
+        testRegion.addEvaluator( meshCoordinatesT1 );
 
-        PiecewiseTemplate meshCoordinatesT2 = new PiecewiseTemplate( "test_mesh.coordinates.template2", meshDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesT2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template2", rc1Domain, testMeshElementDomain );
         meshCoordinatesT2.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT2.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 3, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 4, elementBiquadraticLagrange );
-        testRegion.addPiecewiseTemplate( meshCoordinatesT2 );
+        testRegion.addEvaluator( meshCoordinatesT2 );
 
-        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
+        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", rc1Domain, globalNodesDomain );
         meshX.setValue( 1, 00.0 );
         meshX.setValue( 2, 10.0 );
         meshX.setValue( 3, 20.0 );
@@ -264,11 +253,11 @@ public class FieldmlTest
 
         testRegion.addEvaluator( meshX );
 
-        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", mesh1DDomain, meshCoordinatesT1 );
+        PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1Domain, meshCoordinatesT1 );
         meshCoordinatesX.setVariable( "test_mesh.mesh.dofs", meshX );
         testRegion.addEvaluator( meshCoordinatesX );
 
-        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
+        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", rc1Domain, globalNodesDomain );
         meshY.setValue( 1, 10.0 );
         meshY.setValue( 2, 10.0 );
         meshY.setValue( 3, 10.0 );
@@ -285,11 +274,11 @@ public class FieldmlTest
 
         testRegion.addEvaluator( meshY );
 
-        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", mesh1DDomain, meshCoordinatesT2 );
+        PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", rc1Domain, meshCoordinatesT2 );
         meshCoordinatesY.setVariable( "test_mesh.mesh.dofs", meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
-        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", mesh2DDomain );
+        ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", rc2Domain );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 

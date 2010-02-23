@@ -1,32 +1,58 @@
 package fieldml.evaluator;
 
 import fieldml.domain.EnsembleDomain;
+import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldmlx.evaluator.ParameterTable;
 
 public class EnsembleParameters
-    extends TableEvaluator<EnsembleDomain, EnsembleDomainValue>
-    implements EnsembleEvaluator
+    extends EnsembleEvaluator
 {
+    private final ParameterTable<EnsembleDomainValue> table;
+
+
     public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )
     {
-        super( name, valueDomain, parameterDomains );
+        super( name, valueDomain );
+
+        table = new ParameterTable<EnsembleDomainValue>( parameterDomains );
     }
 
 
-    public void setValue( int key, int ... values  )
+    public void setValue( int key, int... values )
     {
-        setValue( valueDomain.makeValue( values ), key );
+        if( table.parameterCount() == 1 )
+        {
+            table.setValue( key, valueDomain.makeValue( values ) );
+        }
+        else
+        {
+            int[] keys = new int[2];
+            keys[0] = key;
+            for( int i = 1; i <= values.length; i++ )
+            {
+                keys[1] = i;
+                setValue( keys, values[i - 1] );
+            }
+        }
     }
 
 
-    public void setValue( int[] keys, int ... values  )
+    public void setValue( int[] keys, int... values )
     {
-        setValue( valueDomain.makeValue( values ), keys );
+        table.setValue( keys, valueDomain.makeValue( values ) );
     }
 
 
-    public void setDefaultValue( int value )
+    public void setDefaultValue( int... values )
     {
-        setDefaultValue( valueDomain.makeValue( value ) );
+        table.setDefaultValue( valueDomain.makeValue( values ) );
+    }
+
+
+    @Override
+    public EnsembleDomainValue evaluate( DomainValues context )
+    {
+        return table.evaluate( context );
     }
 }
