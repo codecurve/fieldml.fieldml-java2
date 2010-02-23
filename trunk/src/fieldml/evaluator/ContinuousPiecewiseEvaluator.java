@@ -65,6 +65,7 @@ public class ContinuousPiecewiseEvaluator
     }
 
 
+    @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
         DomainValues localContext = new DomainValues( context );

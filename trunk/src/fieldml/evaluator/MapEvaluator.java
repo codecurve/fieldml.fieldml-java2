@@ -2,7 +2,6 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 

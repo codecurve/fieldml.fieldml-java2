@@ -14,6 +14,7 @@ public abstract class ContinuousEvaluator
     }
 
 
+    @Override
     public abstract ContinuousDomainValue evaluate( DomainValues context );
 
 
