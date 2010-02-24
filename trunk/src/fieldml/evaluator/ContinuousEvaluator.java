@@ -40,14 +40,14 @@ public abstract class ContinuousEvaluator
             // Desired domain matches native domain.
             return evaluate( context );
         }
-        else if( ( valueDomain.componentDomain == null ) && ( domain.componentDomain != null ) )
+        else if( ( valueDomain.componentCount == 1 ) && ( domain.componentCount > 1 ) )
         {
             // Native domain is scalar, desired domain is not.
             // MUSTDO Check native vs. desired bounds.
 
             return domain.makeValue( evaluateAll( context, domain.componentDomain ) );
         }
-        else if( ( valueDomain.componentDomain != null ) && ( domain.componentDomain == null ) )
+        else if( ( valueDomain.componentCount > 1 ) && ( domain.componentCount == 1 ) )
         {
             // MUSTDO Check native vs. desired bounds.
             ContinuousDomainValue v = evaluate( context );

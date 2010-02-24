@@ -33,9 +33,9 @@ public class CompositionEvaluator<D extends Domain, V extends DomainValue<D>>
     }
 
 
-    public void importField( AbstractEvaluator<?, ?> field )
+    public void importField( AbstractEvaluator<?, ?> field, Domain domain )
     {
-        operations.add( new ImportOperation( field ) );
+        operations.add( new ImportOperation( field, domain ) );
     }
 
 
