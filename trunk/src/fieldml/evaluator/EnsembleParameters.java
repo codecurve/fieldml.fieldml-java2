@@ -38,6 +38,20 @@ public class EnsembleParameters
     }
 
 
+    public void setValues( int... values )
+    {
+        if( table.parameterCount() == 1 )
+        {
+            int[] keys = new int[1];
+            for( int i = 1; i <= values.length; i++ )
+            {
+                keys[0] = i;
+                setValue( keys, values[i - 1] );
+            }
+        }
+    }
+
+
     public void setValue( int[] keys, int... values )
     {
         table.setValue( keys, valueDomain.makeValue( values ) );

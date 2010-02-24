@@ -47,7 +47,7 @@ public abstract class EnsembleEvaluator
             // MUSTDO Check native vs. desired bounds.
             EnsembleDomainValue v = evaluate( context );
 
-            return domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0]] );
+            return domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0] - 1] );
         }
 
         return null;

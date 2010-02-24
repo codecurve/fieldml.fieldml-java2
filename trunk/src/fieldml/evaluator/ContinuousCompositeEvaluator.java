@@ -1,7 +1,9 @@
 package fieldml.evaluator;
 
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.Domain;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldmlx.evaluator.CompositionEvaluator;
@@ -26,10 +28,16 @@ public class ContinuousCompositeEvaluator
     }
 
     
-    public void importField( AbstractEvaluator<?, ?> field )
+    public <D extends Domain> void importField( AbstractEvaluator<D, ? extends DomainValue<D>> evaluator, D domain )
     {
-        composer.importField( field );
+        composer.importField( evaluator, domain );
     }
+
+    public <D extends Domain> void importField( AbstractEvaluator<D, ? extends DomainValue<D>> evaluator )
+    {
+        importField( evaluator, evaluator.valueDomain );
+    }
+
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
