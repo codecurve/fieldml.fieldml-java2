@@ -9,7 +9,7 @@ import fieldmlx.evaluator.ParameterTable;
 public class ContinuousParameters
     extends ContinuousEvaluator
 {
-    private final ParameterTable<ContinuousDomainValue> table;
+    public final ParameterTable<ContinuousDomainValue> table;
 
 
     public ContinuousParameters( String name, ContinuousDomain valueDomain, EnsembleDomain... parameterDomains )
