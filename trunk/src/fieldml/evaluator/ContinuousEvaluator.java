@@ -4,6 +4,7 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleDomainValue;
 
 public abstract class ContinuousEvaluator
     extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
@@ -27,7 +28,7 @@ public abstract class ContinuousEvaluator
             context.set( spannedDomain, i );
             values[i - 1] = evaluate( context ).values[0];
         }
-        
+
         return values;
     }
 
@@ -50,9 +51,11 @@ public abstract class ContinuousEvaluator
         else if( ( valueDomain.componentCount > 1 ) && ( domain.componentCount == 1 ) )
         {
             // MUSTDO Check native vs. desired bounds.
-            ContinuousDomainValue v = evaluate( context );
+            ContinuousDomainValue value = evaluate( context );
 
-            return domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0]] );
+            EnsembleDomainValue componentIndex = context.get( valueDomain.componentDomain );
+
+            return domain.makeValue( value.values[componentIndex.values[0] - 1] );
         }
 
         return null;
