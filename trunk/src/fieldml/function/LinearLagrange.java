@@ -1,7 +1,7 @@
 package fieldml.function;
 
 public class LinearLagrange
-    implements ContinuousFunction
+    extends ContinuousFunction
 {
     // NOTE Making this method public static simplifies testing.
     public static double[] evaluateDirect( double x1 )

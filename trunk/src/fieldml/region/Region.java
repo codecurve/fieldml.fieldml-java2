@@ -9,7 +9,6 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.field.PiecewiseTemplate;
 import fieldml.function.ContinuousFunction;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
@@ -28,8 +27,6 @@ public abstract class Region
 
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
-    private final SimpleMap<String, PiecewiseTemplate> piecewiseTemplates;
-
     private final SimpleMap<String, ContinuousFunction> functions;
 
     private final Map<String, Region> subregions;
@@ -46,7 +43,6 @@ public abstract class Region
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
-        piecewiseTemplates = new SimpleMap<String, PiecewiseTemplate>();
         functions = new SimpleMap<String, ContinuousFunction>();
         subregions = new HashMap<String, Region>();
     }
@@ -112,16 +108,6 @@ public abstract class Region
     }
 
 
-    public PiecewiseTemplate getPiecewiseTemplate( String name )
-    {
-        PiecewiseTemplate template = piecewiseTemplates.get( name );
-
-        assert template != null : "Template " + name + " does not exist in region " + this.name;
-
-        return template;
-    }
-
-
     public void addDomain( MeshDomain domain )
     {
         meshDomains.put( domain.name, domain );
@@ -158,12 +144,6 @@ public abstract class Region
     }
 
 
-    public void addPiecewiseTemplate( PiecewiseTemplate template )
-    {
-        piecewiseTemplates.put( template.name, template );
-    }
-
-
     public void walkObjects( ReflectiveHandler handler )
     {
         for( SimpleMapEntry<String, ContinuousDomain> k : continuousDomains )
@@ -188,10 +168,6 @@ public abstract class Region
             ReflectiveWalker.Walk( k.value, handler );
         }
         for( SimpleMapEntry<String, EnsembleEvaluator> k : ensembleEvaluators )
-        {
-            ReflectiveWalker.Walk( k.value, handler );
-        }
-        for( SimpleMapEntry<String, PiecewiseTemplate> k : piecewiseTemplates )
         {
             ReflectiveWalker.Walk( k.value, handler );
         }

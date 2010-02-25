@@ -8,7 +8,7 @@ import fieldmlx.evaluator.ParameterTable;
 public class EnsembleParameters
     extends EnsembleEvaluator
 {
-    private final ParameterTable<EnsembleDomainValue> table;
+    public final ParameterTable<EnsembleDomainValue> table;
 
 
     public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )

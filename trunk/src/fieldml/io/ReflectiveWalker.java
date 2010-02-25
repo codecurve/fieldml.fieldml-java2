@@ -23,11 +23,18 @@ public class ReflectiveWalker
     @SuppressWarnings( "unchecked" )
     private static void WalkList( Field f, Object o, ReflectiveHandler handler )
     {
+        boolean doneHeader = false;
+        
         for( Object o2 : (Iterable<? extends Object>)o )
         {
             if( o2 == null )
             {
                 continue;
+            }
+            if( !doneHeader ) 
+            {
+                handler.onStartList( o, f.getName() );
+                doneHeader = true;
             }
             if( o2.getClass() == String.class )
             {
@@ -45,6 +52,10 @@ public class ReflectiveWalker
             {
                 Walk( o2, handler );
             }
+        }
+        if( doneHeader )
+        {
+            handler.onEndList( o );
         }
     }
 
@@ -129,9 +140,7 @@ public class ReflectiveWalker
 
                 if( Iterable.class.isAssignableFrom( fieldType ) )
                 {
-                    handler.onStartList( o, f.getName() );
                     WalkList( f, f.get( o ), handler );
-                    handler.onEndList( o );
                     continue;
                 }
                 if( Map.class.isAssignableFrom( fieldType ) )

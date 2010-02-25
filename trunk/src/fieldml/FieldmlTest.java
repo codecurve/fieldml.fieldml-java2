@@ -150,9 +150,44 @@ public class FieldmlTest
         assert output.values[1] == 5;
 
         context.set( meshDomain, 4, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        meshXY.evaluate( context );
+        output = context.get( meshXY.getValueDomain() );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
+        
+        
+        
+/*
+        //Contexty
+        context.set( meshDomain, 4, 0.5, 0.5 );
+        meshXY.evaluate( context );
+        output = context.get( meshXY.getValueDomain() );
+        
+        // Derivates and maps are difficult/impossible.
+
+        //Pipeliney
+        EnsembleConstantEvaluator element = new EnsembleConstantEvaluator( meshDomain.elementDomain );
+        element.setValue( 3 );
+        
+        ContinuousConstantEvaluator xi = new ContinuousConstantEvaluator( meshDomain.chartDomain );
+        element.setValue( 0.5, 0.5 );
+        
+        meshXYPressure.setVariable( "test_mesh.element_value", element );
+        meshXYPressure.setVariable( "test_mesh.xi_value", xi );
+        
+        foo = meshXY.evaluate();
+        
+        pressure.setVariable( "test_mesh.element_value", element );
+        pressure.setVariable( "test_mesh.xi_value", xi );
+        
+        bob = pressure.evaluate();
+        
+        element.setValue( 4 );
+        
+        bar = meshXY.evaluate();
+        
+        // Repetitive set value calls. Multiple return types impossible (without structs).
+*/
     }
 
 

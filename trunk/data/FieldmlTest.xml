@@ -8,28 +8,28 @@
 |    |/*3 |    |
 4____5____6_12_13
 -->
-  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
     <ArbitraryEnsembleBounds>
       <values>1  2  3  4  </values>
     </ArbitraryEnsembleBounds>
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
     <ArbitraryEnsembleBounds>
       <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
     </ArbitraryEnsembleBounds>
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes_list" componentDomain="library.anonymous" componentCount="0">
+  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes_list" componentDomain="library.anonymous">
     <ArbitraryEnsembleBounds>
       <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
     </ArbitraryEnsembleBounds>
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain" componentCount="1">
+  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.quad" />
       <entry key="2" value="library.shape.triangle" />
@@ -39,13 +39,13 @@
   </MeshDomain>
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearLagrange@c2a132" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="BilinearLagrange" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
-  <FunctionEvaluator function="fieldml.function.BiquadraticLagrange@1e51060" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="BiquadraticLagrange" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearSimplex@19616c7" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="BilinearSimplex" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
@@ -58,7 +58,6 @@
   
 
   <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.template1" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
       <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -69,7 +68,6 @@
   
 
   <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.template2" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
       <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -79,10 +77,14 @@
   </ContinuousPiecewiseEvaluator>
   
 
-  <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
@@ -90,13 +92,19 @@
   </ContinuousAggregateEvaluator>
   
 
-  <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list" />
+  <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
-  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list" />
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
-  <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list" />
+  <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
   <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">

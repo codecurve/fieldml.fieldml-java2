@@ -1,7 +1,7 @@
 package fieldml.function;
 
 public class CubicHermite
-    implements ContinuousFunction
+    extends ContinuousFunction
 {
     public static double[] evaluateDirect( double x1 )
     {

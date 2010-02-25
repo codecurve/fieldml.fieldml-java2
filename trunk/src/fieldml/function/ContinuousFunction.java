@@ -1,6 +1,12 @@
 package fieldml.function;
 
-public interface ContinuousFunction
+public abstract class ContinuousFunction
 {
-    public double[] evaluate( double ... args );
+    public abstract double[] evaluate( double ... args );
+    
+    
+    public String toString()
+    {
+        return getClass().getSimpleName();
+    }
 }
