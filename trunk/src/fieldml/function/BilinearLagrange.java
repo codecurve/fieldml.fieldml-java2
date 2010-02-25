@@ -1,7 +1,7 @@
 package fieldml.function;
 
 public class BilinearLagrange
-    implements ContinuousFunction
+    extends ContinuousFunction
 {
     // NOTE Making this method public simplifies testing.
     public static double[] evaluateDirect( double x1, double x2 )

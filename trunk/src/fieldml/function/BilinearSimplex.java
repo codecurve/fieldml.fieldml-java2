@@ -1,7 +1,7 @@
 package fieldml.function;
 
 public class BilinearSimplex
-    implements ContinuousFunction
+    extends ContinuousFunction
 {
     public static double[] evaluateDirect( double x1, double x2 )
     {

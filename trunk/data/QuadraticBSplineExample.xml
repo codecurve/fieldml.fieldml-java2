@@ -3,32 +3,32 @@
   <!--
 x____x____x____x____x____x
 -->
-  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
     <ContiguousEnsembleBounds valueCount="5" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dofs" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dofs">
     <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
     <ContiguousEnsembleBounds valueCount="6" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" componentDomain="library.local_nodes.line.1" componentCount="2">
+  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" componentDomain="library.local_nodes.line.1">
     <ContiguousEnsembleBounds valueCount="6" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dof_indexes" componentDomain="library.interpolation.bspline.quadratic" componentCount="3">
+  <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dof_indexes" componentDomain="library.interpolation.bspline.quadratic">
     <ContiguousEnsembleBounds valueCount="7" />
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="1" elementDomain="test_mesh.elements" name="test_mesh.domain" componentCount="1">
+  <MeshDomain dimensions="1" elementDomain="test_mesh.elements" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.line.0_1" />
       <entry key="2" value="library.shape.line.0_1" />
@@ -39,17 +39,18 @@ x____x____x____x____x____x
   </MeshDomain>
   
 
-  <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <FunctionEvaluator function="fieldml.function.QuadraticBSpline@a1807c" functionDomain="test_mesh.domain" name="test_mesh.quadratic_bspline" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="QuadraticBSpline" functionDomain="test_mesh.domain" name="test_mesh.quadratic_bspline" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.element.quadratic_bspline_map" />
       <TemplateMap index="2" evaluator="test_mesh.element.quadratic_bspline_map" />
@@ -60,10 +61,14 @@ x____x____x____x____x____x
   </ContinuousPiecewiseEvaluator>
   
 
-  <EnsembleParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain" />
+  <EnsembleParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
-  <EnsembleParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes" />
+  <EnsembleParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
   <PiecewiseField template="test_mesh.coordinates" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">

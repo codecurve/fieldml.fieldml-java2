@@ -8,30 +8,30 @@
 |    |    |
 3____4____6
 -->
-  <ContinuousDomain name="test_mesh.co-ordinates.dz/ds" componentCount="1" />
+  <ContinuousDomain name="test_mesh.co-ordinates.dz/ds" />
   
 
-  <ContinuousDomain name="test_mesh.co-ordinates.d2z/ds1ds2" componentCount="1" />
+  <ContinuousDomain name="test_mesh.co-ordinates.d2z/ds1ds2" />
   
 
-  <EnsembleDomain baseDomain="test_mesh.edge_direction" name="test_mesh.edge_direction" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.edge_direction" name="test_mesh.edge_direction">
     <ArbitraryEnsembleBounds>
       <values>1  2  </values>
     </ArbitraryEnsembleBounds>
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements" componentCount="1">
+  <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
     <ContiguousEnsembleBounds valueCount="2" />
   </EnsembleDomain>
   
 
-  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentDomain="library.local_nodes.quad.1x1" componentCount="4">
+  <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentDomain="library.local_nodes.quad.1x1">
     <ContiguousEnsembleBounds valueCount="16" />
   </EnsembleDomain>
   
 
-  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain" componentCount="1">
+  <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
     <shapes>
       <entry key="1" value="library.shape.quad.00_10_01_11" />
       <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -60,7 +60,6 @@
   
 
   <ContinuousPiecewiseEvaluator indexDomain="library.interpolation.hermite.derivatives" name="test_mesh.node.bicubic_parameters" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.node.dofs.u" />
       <TemplateMap index="2" evaluator="test_mesh.node.du/ds1" />
@@ -70,14 +69,13 @@
   </ContinuousPiecewiseEvaluator>
   
 
-  <FunctionEvaluator function="fieldml.function.BilinearLagrange@cac268" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="BilinearLagrange" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.L2" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
       <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
@@ -85,17 +83,18 @@
   </ContinuousPiecewiseEvaluator>
   
 
-  <FunctionEvaluator function="fieldml.function.BicubicHermite@1cde100" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
+  <FunctionEvaluator function="BicubicHermite" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
   
 
-  <ContinuousParameters name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.parameters" />
+  <ContinuousParameters name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.parameters">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
   <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" scales="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
   
 
   <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.H3" valueDomain="library.co-ordinates.rc.1d">
-    <variables />
     <elementMaps>
       <TemplateMap index="1" evaluator="test_mesh.element.bicubic_hermite" />
       <TemplateMap index="2" evaluator="test_mesh.element.bicubic_hermite" />
@@ -103,19 +102,29 @@
   </ContinuousPiecewiseEvaluator>
   
 
-  <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <ContinuousParameters name="test_mesh.node.z" valueDomain="library.co-ordinates.rc.1d" />
+  <ContinuousParameters name="test_mesh.node.z" valueDomain="library.co-ordinates.rc.1d">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.co-ordinates.dz/ds" />
+  <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.co-ordinates.dz/ds">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
-  <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2z/ds1ds2" />
+  <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2z/ds1ds2">
+    <ParameterTable />
+  </ContinuousParameters>
   
 
   <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
@@ -123,13 +132,19 @@
   </ContinuousAggregateEvaluator>
   
 
-  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes" />
+  <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
-  <EnsembleParameters name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction" />
+  <EnsembleParameters name="test_mesh.node.direction.ds1" valueDomain="test_mesh.edge_direction">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
-  <EnsembleParameters name="test_mesh.node.direction.ds2" valueDomain="test_mesh.edge_direction" />
+  <EnsembleParameters name="test_mesh.node.direction.ds2" valueDomain="test_mesh.edge_direction">
+    <ParameterTable />
+  </EnsembleParameters>
   
 
   <PiecewiseField template="test_mesh.coordinates.L2" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">

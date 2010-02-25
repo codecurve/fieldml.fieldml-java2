@@ -1,6 +1,7 @@
 package fieldml.domain;
 
 import fieldml.annotations.SerializationAsString;
+import fieldml.annotations.SerializationBlocked;
 
 public abstract class Domain
 {
@@ -9,6 +10,7 @@ public abstract class Domain
     @SerializationAsString
     public final EnsembleDomain componentDomain;
 
+    @SerializationBlocked
     public final int componentCount;
 
     public Object units;
