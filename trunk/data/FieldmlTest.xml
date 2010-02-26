@@ -78,12 +78,98 @@
   
 
   <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>20.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>6  </key>
+        <values>20.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>7  </key>
+        <values>30.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>13  </key>
+        <values>30.0  </values>
+      </SimpleMapEntry>
+    </table>
   </ContinuousParameters>
   
 
   <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>6  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>7  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>8  </key>
+        <values>5.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>9  </key>
+        <values>5.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>10  </key>
+        <values>5.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>11  </key>
+        <values>10.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>12  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>13  </key>
+        <values>0.0  </values>
+      </SimpleMapEntry>
+    </table>
   </ContinuousParameters>
   
 
@@ -93,17 +179,40 @@
   
 
   <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>2  5  3  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>6  3  5  </values>
+      </SimpleMapEntry>
+    </table>
   </EnsembleParameters>
   
 
   <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>4  5  1  2  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>6  13  3  7  </values>
+      </SimpleMapEntry>
+    </table>
   </EnsembleParameters>
   
 
   <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>6  12  13  8  9  10  3  11  7  </values>
+      </SimpleMapEntry>
+    </table>
   </EnsembleParameters>
   
 

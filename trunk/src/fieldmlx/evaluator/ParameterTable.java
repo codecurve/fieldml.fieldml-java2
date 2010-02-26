@@ -2,13 +2,16 @@ package fieldmlx.evaluator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 import fieldml.domain.EnsembleDomain;
+import fieldml.util.SimpleMapEntry;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
 public class ParameterTable<V extends DomainValue<?>>
+    implements Iterable<SimpleMapEntry<int[], V>>
 {
     private EnsembleDomain[] parameterDomains;
 
@@ -17,6 +20,58 @@ public class ParameterTable<V extends DomainValue<?>>
     private final ArrayList<int[]> keys;
 
     private final ArrayList<V> values;
+
+    private class TableIterator
+        implements Iterator<SimpleMapEntry<int[], V>>
+    {
+        private int currentIndex;
+        private SimpleMapEntry<int[], V> nextEntry;
+
+
+        private TableIterator()
+        {
+            currentIndex = 0;
+            updateNextEntry();
+        }
+
+
+        private void updateNextEntry()
+        {
+            if( currentIndex >= keys.size() )
+            {
+                nextEntry = null;
+            }
+            else
+            {
+                nextEntry = new SimpleMapEntry<int[], V>( keys.get( currentIndex ), values.get( currentIndex ) );
+            }
+        }
+
+
+        @Override
+        public boolean hasNext()
+        {
+            return nextEntry != null;
+        }
+
+
+        @Override
+        public SimpleMapEntry<int[], V> next()
+        {
+            SimpleMapEntry<int[], V> entry = nextEntry;
+            currentIndex++;
+            updateNextEntry();
+
+            return entry;
+        }
+
+
+        @Override
+        public void remove()
+        {
+            throw new UnsupportedOperationException();
+        }
+    }
 
 
     public ParameterTable( EnsembleDomain... parameterDomains )
@@ -89,5 +144,12 @@ public class ParameterTable<V extends DomainValue<?>>
     public int parameterCount()
     {
         return parameterDomains.length;
+    }
+
+
+    @Override
+    public Iterator<SimpleMapEntry<int[], V>> iterator()
+    {
+        return new TableIterator();
     }
 }

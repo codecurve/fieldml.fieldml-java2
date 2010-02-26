@@ -40,7 +40,36 @@ x____x____x____x____x____x
   
 
   <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>0.954915  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>1.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>-0.427051  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>-1.190983  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>-0.427051  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>6  </key>
+        <values>1.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>7  </key>
+        <values>0.954915  </values>
+      </SimpleMapEntry>
+    </table>
   </ContinuousParameters>
   
 
@@ -62,12 +91,54 @@ x____x____x____x____x____x
   
 
   <EnsembleParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>1  2  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>2  3  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>3  4  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>4  5  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>5  6  </values>
+      </SimpleMapEntry>
+    </table>
   </EnsembleParameters>
   
 
   <EnsembleParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>1  2  3  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>2  3  4  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>3  4  5  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>4  5  6  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>5  6  7  </values>
+      </SimpleMapEntry>
+    </table>
   </EnsembleParameters>
   
 
