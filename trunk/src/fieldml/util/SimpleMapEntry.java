@@ -10,7 +10,7 @@ public class SimpleMapEntry<K, V>
     @SerializationAsString
     public final V value;
     
-    SimpleMapEntry( K key, V value )
+    public SimpleMapEntry( K key, V value )
     {
         this.key = key;
         this.value = value;

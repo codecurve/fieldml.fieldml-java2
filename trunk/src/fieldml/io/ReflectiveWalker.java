@@ -62,7 +62,7 @@ public class ReflectiveWalker
 
     private static void WalkArray( Field f, Object o, ReflectiveHandler handler )
     {
-        Class<?> type = f.getType();
+        Class<?> type = o.getClass();
 
         if( type == int[].class )
         {

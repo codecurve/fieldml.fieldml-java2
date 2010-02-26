@@ -22,13 +22,60 @@
   
 
   <ContinuousParameters name="hierarchical_mesh.dofs.z" valueDomain="library.co-ordinates.rc.1d">
-    <ParameterTable />
+    <table>
+      <SimpleMapEntry>
+        <key>1  </key>
+        <values>0.954915  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>2  </key>
+        <values>1.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>3  </key>
+        <values>-0.427051  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>4  </key>
+        <values>-1.190983  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>5  </key>
+        <values>-0.427051  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>6  </key>
+        <values>1.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>7  </key>
+        <values>0.954915  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>8  </key>
+        <values>0.663119  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>9  </key>
+        <values>-0.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>10  </key>
+        <values>-0.572949  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>11  </key>
+        <values>-1.045085  </values>
+      </SimpleMapEntry>
+      <SimpleMapEntry>
+        <key>12  </key>
+        <values>-0.954915  </values>
+      </SimpleMapEntry>
+    </table>
   </ContinuousParameters>
   
 
-  <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list">
-    <ParameterTable />
-  </ContinuousParameters>
+  <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list" />
   
 
   <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
