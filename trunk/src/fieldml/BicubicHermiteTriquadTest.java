@@ -60,10 +60,9 @@ public class BicubicHermiteTriquadTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 1, 2, 3 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
@@ -75,7 +74,7 @@ public class BicubicHermiteTriquadTest
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
         
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+            meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 2, 6, 3, 5, 2 );
         quadNodeList.setValue( 3, 6, 5, 7, 4 );
@@ -104,7 +103,7 @@ public class BicubicHermiteTriquadTest
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         ContinuousParameters meshd_ds1Weights = new ContinuousParameters( "test_mesh.node.ds1.weights", weightingDomain,
-            testMeshElementDomain, globalNodesDomain );
+            meshDomain.getElementDomain(), globalNodesDomain );
         meshd_ds1Weights.setValue( new int[]{ 1, 4 }, 1.0, 0.0 );
         meshd_ds1Weights.setValue( new int[]{ 1, 5 }, 1.0, 1.0 );
         meshd_ds1Weights.setValue( new int[]{ 1, 1 }, 1.0, 0.0 );
@@ -123,7 +122,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addEvaluator( meshd_ds1Weights );
 
         ContinuousParameters meshd_ds2Weights = new ContinuousParameters( "test_mesh.node.ds2.weights", weightingDomain,
-            testMeshElementDomain, globalNodesDomain );
+            meshDomain.getElementDomain(), globalNodesDomain );
         meshd_ds2Weights.setValue( new int[]{ 1, 4 }, 0.0, 1.0 );
         meshd_ds2Weights.setValue( new int[]{ 1, 5 }, 1.0, 0.0 );
         meshd_ds2Weights.setValue( new int[]{ 1, 1 }, 0.0, 1.0 );
@@ -188,7 +187,7 @@ public class BicubicHermiteTriquadTest
             elementHermiteParameters, meshBicubicHermite );
         testRegion.addEvaluator( elementBicubicHermite );
 
-        ContinuousPiecewiseEvaluator meshCoordinatesH3 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.h3", mesh1DDomain, meshDomain.elementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesH3 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.h3", mesh1DDomain, meshDomain.getElementDomain() );
         meshCoordinatesH3.setEvaluator( 1, elementBicubicHermite );
         meshCoordinatesH3.setEvaluator( 2, elementBicubicHermite );
         meshCoordinatesH3.setEvaluator( 3, elementBicubicHermite );

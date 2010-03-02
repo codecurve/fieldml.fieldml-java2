@@ -22,17 +22,12 @@
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
-      <ContiguousEnsembleBounds valueCount="2" />
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentDomain="library.local_nodes.quad.1x1">
       <ContiguousEnsembleBounds valueCount="16" />
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad.00_10_01_11" />
         <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -77,7 +72,7 @@
     <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.L2" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.L2" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
@@ -105,7 +100,7 @@
     <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" scales="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.H3" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.H3" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bicubic_hermite" />
         <TemplateMap index="2" evaluator="test_mesh.element.bicubic_hermite" />

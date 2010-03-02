@@ -108,10 +108,9 @@ public class HierarchicalExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
-        EnsembleDomain hierarchicalMeshElementDomain = new EnsembleDomain( "hierarchical_mesh.elements", 2 );
-        testRegion.addDomain( hierarchicalMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( "hierarchical_mesh.domain", 1, hierarchicalMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "hierarchical_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         testRegion.addDomain( meshDomain );
@@ -140,7 +139,7 @@ public class HierarchicalExample
         EnsembleDomain submeshGlobalDofsDomain = subRegion.getEnsembleDomain( "test_mesh.dofs" );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "hierarchical_mesh.element_dof_indexes", globalDofsDomain,
-            hierarchicalMeshElementDomain, submeshGlobalDofsDomain );
+            meshDomain.getElementDomain(), submeshGlobalDofsDomain );
         elementDofIndexes.setValue( new int[]{1, 1}, 1 );
         elementDofIndexes.setValue( new int[]{1, 2}, 2 );
         elementDofIndexes.setValue( new int[]{1, 3}, 3 );
@@ -180,7 +179,7 @@ public class HierarchicalExample
         submeshEvaluator.importField( submeshAtlas );
         submeshEvaluator.importField( delegatedEvaluator );
 
-        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "hierarchical_mesh.coordinates", rc1CoordinatesDomain, meshDomain.elementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "hierarchical_mesh.coordinates", rc1CoordinatesDomain, meshDomain.getElementDomain() );
         meshCoordinates.setEvaluator( 1, submeshEvaluator );
         meshCoordinates.setEvaluator( 2, submeshEvaluator );
         testRegion.addEvaluator( meshCoordinates );

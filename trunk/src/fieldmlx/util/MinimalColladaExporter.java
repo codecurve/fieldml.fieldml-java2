@@ -25,7 +25,7 @@ public class MinimalColladaExporter
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
         ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
-        final int elementCount = meshDomain.elementDomain.getValueCount();
+        final int elementCount = meshDomain.getElementDomain().getValueCount();
         DomainValues context = new DomainValues();
 
         ContinuousDomainValue v;
@@ -87,8 +87,8 @@ public class MinimalColladaExporter
         MeshDomain mesh1Domain = region.getMeshDomain( mesh1Name );
         MeshDomain mesh2Domain = region.getMeshDomain( mesh2Name );
         ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
-        final int element1Count = mesh1Domain.elementDomain.getValueCount();
-        final int element2Count = mesh2Domain.elementDomain.getValueCount();
+        final int element1Count = mesh1Domain.getElementDomain().getValueCount();
+        final int element2Count = mesh2Domain.getElementDomain().getValueCount();
 
         ContinuousDomainValue v;
 
@@ -157,7 +157,7 @@ public class MinimalColladaExporter
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
         ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
-        int elementCount = meshDomain.elementDomain.getValueCount();
+        int elementCount = meshDomain.getElementDomain().getValueCount();
         double deltaX = 1.0 / discretisation;
         double x = deltaX;
         ContinuousDomainValue v;

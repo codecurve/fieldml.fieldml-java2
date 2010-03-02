@@ -104,10 +104,9 @@ public class HangingNodeTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.element_index", 3 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
@@ -153,7 +152,7 @@ public class HangingNodeTest
         globalToLocalIndexes.setValue( 8, 7 );
         testRegion.addEvaluator( globalToLocalIndexes );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofListDomain, testMeshElementDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofListDomain, meshDomain.getElementDomain() );
         quadNodeList.setValue( 1, 6, 7, 1, 2 );
         quadNodeList.setValue( 2, 4, 5, 2, 3 );
         quadNodeList.setValue( 3, 7, 8, 4, 5 );
@@ -200,7 +199,7 @@ public class HangingNodeTest
         testRegion.addEvaluator( elementBilinearLagrange );
 
         ContinuousPiecewiseEvaluator meshCoordinatesTemplate = new ContinuousPiecewiseEvaluator( "test_mesh.template.bilinear_lagrange",
-            mesh1DDomain, testMeshElementDomain );
+            mesh1DDomain, meshDomain.getElementDomain() );
         meshCoordinatesTemplate.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesTemplate.setEvaluator( 2, elementBilinearLagrange );
         meshCoordinatesTemplate.setEvaluator( 3, elementBilinearLagrange );
@@ -235,10 +234,9 @@ public class HangingNodeTest
         Region library = world.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, world );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.element_index", 3 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
@@ -257,9 +255,9 @@ public class HangingNodeTest
         EnsembleDomain quad1x1NodeListDomain = new EnsembleDomain( "test_mesh.nodes.1x1", anonymous, quad1x1NodeDomain );
 
         ContinuousParameters elementWeights = new ContinuousParameters( "test_mesh.element.dof_weights", weightingDomain,
-            testMeshElementDomain, quad1x1NodeDomain );
+            meshDomain.getElementDomain(), quad1x1NodeDomain );
         EnsembleParameters elementIndexes = new EnsembleParameters( "test_mesh.element.dof_indexes", globalDofIndexesDomain,
-            testMeshElementDomain, quad1x1NodeDomain );
+            meshDomain.getElementDomain(), quad1x1NodeDomain );
 
         elementWeights.setValue( new int[]{ 1, 1 }, 1.0 );
         elementWeights.setValue( new int[]{ 1, 2 }, 1.0 );
@@ -331,7 +329,7 @@ public class HangingNodeTest
         MapEvaluator elementBilinear = new MapEvaluator( "test_mesh.element.bilinear_lagrange", mesh1DDomain, elementLocalDofIndexes,
             bilinearLagrange, bilinearElementDofs );
 
-        ContinuousPiecewiseEvaluator meshCoordinatesTemplate = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template", mesh1DDomain, testMeshElementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesTemplate = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template", mesh1DDomain, meshDomain.getElementDomain() );
         meshCoordinatesTemplate.setEvaluator( 1, elementBilinear );
         meshCoordinatesTemplate.setEvaluator( 2, elementBilinear );
         meshCoordinatesTemplate.setEvaluator( 3, elementBilinear );

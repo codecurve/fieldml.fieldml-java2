@@ -4,17 +4,12 @@
 1____2____3____4____5
 -->
   <Region name="Hierarchical_Test">
-    <EnsembleDomain baseDomain="hierarchical_mesh.elements" name="hierarchical_mesh.elements">
-      <ContiguousEnsembleBounds valueCount="2" />
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
       <ContiguousEnsembleBounds valueCount="12" />
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="1" elementDomain="hierarchical_mesh.elements" name="hierarchical_mesh.domain">
+    <MeshDomain name="hierarchical_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.line.0_1" />
         <entry key="2" value="library.shape.line.0_1" />
@@ -83,7 +78,7 @@
     <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.elements" name="hierarchical_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="hierarchical_mesh.submesh_evaluator" />
         <TemplateMap index="2" evaluator="hierarchical_mesh.submesh_evaluator" />

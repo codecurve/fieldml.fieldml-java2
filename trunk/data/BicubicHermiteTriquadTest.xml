@@ -19,19 +19,12 @@
     <ContinuousDomain name="test_mesh.co-ordinates.d2/ds1ds2" />
     
 
-    <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
-      <ArbitraryEnsembleBounds>
-        <values>1  2  3  </values>
-      </ArbitraryEnsembleBounds>
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad.00_10_01_11" />
         <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -171,7 +164,7 @@
     <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.h3" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.h3" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bicubic_hermite" />
         <TemplateMap index="2" evaluator="test_mesh.element.bicubic_hermite" />

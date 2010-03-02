@@ -13,29 +13,34 @@ import fieldml.value.MeshDomainValue;
 public class MeshDomain
     extends Domain
 {
-    public final int dimensions;
+    private final ContinuousDomain xiDomain;
 
-    @SerializationAsString
-    public final EnsembleDomain elementDomain;
+    private final EnsembleDomain elementDomain;
 
     private EnsembleDomain pointDomain;
-    
+
     public final Map<Integer, String> shapes;
 
     public String defaultShape;
-    
+
     public final Map<String, EnsembleEvaluator> pointConnectivity;
-    
+
     @SerializationAsString
     public final List<ContinuousEvaluator> fields;
 
 
-    public MeshDomain( String name, int dimensions, EnsembleDomain elementDomain )
+    public MeshDomain( String name, EnsembleDomain xiEnsemble, int elementCount )
+    {
+        this( name, xiEnsemble, new ContiguousEnsembleBounds( elementCount ) );
+    }
+
+
+    public MeshDomain( String name, EnsembleDomain xiEnsemble, EnsembleBounds elementBounds )
     {
         super( name, null );
 
-        this.dimensions = dimensions;
-        this.elementDomain = elementDomain;
+        this.xiDomain = new ContinuousDomain( name + ".xi", xiEnsemble );
+        this.elementDomain = new EnsembleDomain( name + ".elements", elementBounds );
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<String, EnsembleEvaluator>();
@@ -43,14 +48,14 @@ public class MeshDomain
     }
 
 
-    public MeshDomainValue makeValue( int indexValue, double... chartValues )
+    public MeshDomainValue makeValue( int element, double... chartValues )
     {
-        if( chartValues.length < dimensions )
+        if( chartValues.length < xiDomain.componentCount )
         {
             return null;
         }
 
-        return new MeshDomainValue( this, indexValue, chartValues );
+        return new MeshDomainValue( this, element, chartValues );
     }
 
 
@@ -64,8 +69,8 @@ public class MeshDomain
     {
         shapes.put( element, shapeName );
     }
-    
-    
+
+
     public void setPointConnectivity( String arrangement, EnsembleEvaluator evaluator )
     {
         if( pointDomain == null )
@@ -76,11 +81,23 @@ public class MeshDomain
         {
             assert pointDomain == evaluator.valueDomain.baseDomain;
         }
-        
+
         pointConnectivity.put( arrangement, evaluator );
     }
-    
-    
+
+
+    public ContinuousDomain getXiDomain()
+    {
+        return xiDomain;
+    }
+
+
+    public EnsembleDomain getElementDomain()
+    {
+        return elementDomain;
+    }
+
+
     public void addField( ContinuousEvaluator field )
     {
         fields.add( field );

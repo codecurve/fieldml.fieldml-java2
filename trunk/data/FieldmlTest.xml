@@ -9,13 +9,6 @@
 4____5____6_12_13
 -->
   <Region name="Fieldml_Test">
-    <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
-      <ArbitraryEnsembleBounds>
-        <values>1  2  3  4  </values>
-      </ArbitraryEnsembleBounds>
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ArbitraryEnsembleBounds>
         <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
@@ -30,7 +23,7 @@
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="2" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad" />
         <entry key="2" value="library.shape.triangle" />
@@ -64,7 +57,7 @@
     <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.template1" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -74,7 +67,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates.template2" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />

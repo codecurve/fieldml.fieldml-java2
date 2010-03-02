@@ -115,10 +115,10 @@ public class TimeVaryingExample
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
-        EnsembleDomain timeElementDomain = new EnsembleDomain( "tv_test.time.elements", 3 );
-        tvRegion.addDomain( timeElementDomain );
 
-        MeshDomain timeMeshDomain = new MeshDomain( "tv_test.time.mesh", 1, timeElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
+
+        MeshDomain timeMeshDomain = new MeshDomain( "tv_test.time.mesh", xiComponentDomain, 3 );
         timeMeshDomain.setDefaultShape( "line_0_1" );
         tvRegion.addDomain( timeMeshDomain );
 
@@ -141,7 +141,7 @@ public class TimeVaryingExample
         tvRegion.addDomain( timeDofsListDomain );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
-            timeElementDomain );
+            timeMeshDomain.getElementDomain() );
         elementDofIndexes.setValue( 1, 1, 2, 3 );
         elementDofIndexes.setValue( 2, 3, 4, 5 );
         elementDofIndexes.setValue( 3, 5, 6, 7 );
@@ -158,7 +158,7 @@ public class TimeVaryingExample
             elementDofIndexes, quadraticLagrange, tvMeshDofs );
         tvRegion.addEvaluator( elementQLagrange );
 
-        ContinuousPiecewiseEvaluator meshTimeTemplate = new ContinuousPiecewiseEvaluator( "tv_test.time.template", rc1CoordinatesDomain, timeElementDomain );
+        ContinuousPiecewiseEvaluator meshTimeTemplate = new ContinuousPiecewiseEvaluator( "tv_test.time.template", rc1CoordinatesDomain, timeMeshDomain.getElementDomain() );
         meshTimeTemplate.setEvaluator( 1, elementQLagrange );
         meshTimeTemplate.setEvaluator( 2, elementQLagrange );
         meshTimeTemplate.setEvaluator( 3, elementQLagrange );
@@ -277,7 +277,7 @@ public class TimeVaryingExample
             linearLagrange, linearDofs );
         testRegion.addEvaluator( elementLLagrange );
 
-        ContinuousPiecewiseEvaluator linearMeshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.linear_coordinates", rc1CoordinatesDomain, bsplineDomain.elementDomain );
+        ContinuousPiecewiseEvaluator linearMeshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.linear_coordinates", rc1CoordinatesDomain, bsplineDomain.getElementDomain() );
         linearMeshCoordinates.setEvaluator( 1, elementLLagrange );
         linearMeshCoordinates.setEvaluator( 2, elementLLagrange );
         linearMeshCoordinates.setEvaluator( 3, elementLLagrange );
