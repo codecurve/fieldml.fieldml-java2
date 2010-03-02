@@ -172,13 +172,11 @@ public class FieldmlTest
         ContinuousConstantEvaluator xi = new ContinuousConstantEvaluator( meshDomain.chartDomain );
         element.setValue( 0.5, 0.5 );
         
-        meshXYPressure.setVariable( "test_mesh.element_value", element );
+        context.setVariable( "test_mesh.element_value", element );
         meshXYPressure.setVariable( "test_mesh.xi_value", xi );
         
-        foo = meshXY.evaluate();
+        foo = meshXY.evaluate(context);
         
-        pressure.setVariable( "test_mesh.element_value", element );
-        pressure.setVariable( "test_mesh.xi_value", xi );
         
         bob = pressure.evaluate();
         
@@ -232,6 +230,10 @@ public class FieldmlTest
         biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
 
         testRegion.addEvaluator( biquadNodeList );
+        
+        meshDomain.setPointConnectivity( "simplex_1x1", triangleNodeList );
+        meshDomain.setPointConnectivity( "quad_1x1", quadNodeList );
+        meshDomain.setPointConnectivity( "quad_2x2", biquadNodeList );
 
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );

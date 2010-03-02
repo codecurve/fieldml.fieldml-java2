@@ -36,6 +36,11 @@
       <entry key="3" value="library.shape.triangle" />
       <entry key="4" value="library.shape.quad" />
     </shapes>
+    <connectivity>
+      <entry key="simplex_1x1" value="test_mesh.triangle_nodes" />
+      <entry key="quad_1x1" value="test_mesh.quad_nodes" />
+      <entry key="quad_2x2" value="test_mesh.biquad_nodes" />
+    </connectivity>
   </MeshDomain>
   
 

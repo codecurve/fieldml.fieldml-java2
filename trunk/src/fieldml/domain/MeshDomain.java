@@ -15,9 +15,13 @@ public class MeshDomain
     @SerializationAsString
     public final EnsembleDomain elementDomain;
 
+    private EnsembleDomain pointDomain;
+    
     public final Map<Integer, String> shapes;
 
     public String defaultShape;
+    
+    public final Map<String, EnsembleEvaluator> pointConnectivity;
 
 
     public MeshDomain( String name, int dimensions, EnsembleDomain elementDomain )
@@ -28,6 +32,7 @@ public class MeshDomain
         this.elementDomain = elementDomain;
 
         shapes = new HashMap<Integer, String>();
+        pointConnectivity = new HashMap<String, EnsembleEvaluator>();
     }
 
 
@@ -52,9 +57,19 @@ public class MeshDomain
     {
         shapes.put( element, shapeName );
     }
-
-
-    public void setPointConnectivity( String arrangement, EnsembleEvaluator nodeList, String pointsName )
+    
+    
+    public void setPointConnectivity( String arrangement, EnsembleEvaluator evaluator )
     {
+        if( pointDomain == null )
+        {
+            pointDomain = evaluator.valueDomain.baseDomain;
+        }
+        else
+        {
+            assert pointDomain == evaluator.valueDomain.baseDomain;
+        }
+        
+        pointConnectivity.put( arrangement, evaluator );
     }
 }
