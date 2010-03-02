@@ -64,10 +64,9 @@ public class BicubicHermiteTest
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( "test_mesh.edge_direction", 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 2 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         testRegion.addDomain( meshDomain );
@@ -78,7 +77,7 @@ public class BicubicHermiteTest
         EnsembleDomain globalNodesListDomain = new EnsembleDomain( "test_mesh.nodes", quad1x1LocalNodeDomain, globalNodesDomain );
         testRegion.addDomain( globalNodesListDomain );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesListDomain, testMeshElementDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesListDomain, meshDomain.getElementDomain() );
         quadNodeList.setValue( 1, 1, 2, 3, 4 );
         quadNodeList.setValue( 2, 2, 5, 4, 6 );
         testRegion.addEvaluator( quadNodeList );
@@ -99,12 +98,12 @@ public class BicubicHermiteTest
         ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain );
 
         EnsembleParameters meshds1Direction = new EnsembleParameters( "test_mesh.node.direction.ds1", edgeDirectionDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+            meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
         meshds1Direction.setDefaultValue( 1 );
         testRegion.addEvaluator( meshds1Direction );
 
         EnsembleParameters meshds2Direction = new EnsembleParameters( "test_mesh.node.direction.ds2", edgeDirectionDomain,
-            testMeshElementDomain, quad1x1LocalNodeDomain );
+            meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
         meshds2Direction.setDefaultValue( 2 );
         testRegion.addEvaluator( meshds2Direction );
 
@@ -137,7 +136,7 @@ public class BicubicHermiteTest
         testRegion.addEvaluator( elementBilinearMap );
 
         ContinuousPiecewiseEvaluator meshCoordinatesL2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.L2", mesh1DDomain,
-            meshDomain.elementDomain );
+            meshDomain.getElementDomain() );
         meshCoordinatesL2.setEvaluator( 1, elementBilinearMap );
         meshCoordinatesL2.setEvaluator( 2, elementBilinearMap );
         testRegion.addEvaluator( meshCoordinatesL2 );
@@ -159,7 +158,7 @@ public class BicubicHermiteTest
         ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
 
         ContinuousParameters hermiteScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling", bicubicHermiteParametersDomain,
-            testMeshElementDomain );
+            meshDomain.getElementDomain() );
         hermiteScaling.setValue( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
         hermiteScaling.setValue( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 );
         testRegion.addEvaluator( hermiteScaling );
@@ -180,7 +179,7 @@ public class BicubicHermiteTest
         testRegion.addEvaluator( elementBicubicHermite );
 
         ContinuousPiecewiseEvaluator meshCoordinatesH3 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.H3", mesh1DDomain,
-            meshDomain.elementDomain );
+            meshDomain.getElementDomain() );
         meshCoordinatesH3.setEvaluator( 1, elementBicubicHermite );
         meshCoordinatesH3.setEvaluator( 2, elementBicubicHermite );
         testRegion.addEvaluator( meshCoordinatesH3 );

@@ -44,7 +44,8 @@ public class DomainValues
         if( value instanceof MeshDomainValue )// TODO This is ugly
         {
             MeshDomainValue v = (MeshDomainValue)value;
-            set( v.domain.elementDomain, v.indexValue );
+            set( v.domain.getElementDomain(), v.indexValue );
+            set( v.domain.getXiDomain(), v.chartValues );
         }
     }
 

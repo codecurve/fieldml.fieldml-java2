@@ -4,11 +4,6 @@
 x____x____x____x____x____x
 -->
   <Region name="QuadraticBSpline_Test">
-    <EnsembleDomain baseDomain="test_mesh.elements" name="test_mesh.elements">
-      <ContiguousEnsembleBounds valueCount="5" />
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dofs">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
@@ -29,7 +24,7 @@ x____x____x____x____x____x
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="1" elementDomain="test_mesh.elements" name="test_mesh.domain">
+    <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.line.0_1" />
         <entry key="2" value="library.shape.line.0_1" />
@@ -81,7 +76,7 @@ x____x____x____x____x____x
     <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.elements" name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.quadratic_bspline_map" />
         <TemplateMap index="2" evaluator="test_mesh.element.quadratic_bspline_map" />

@@ -11,11 +11,6 @@
 6______7____8
 -->
   <Region name="HangingNode_Test">
-    <EnsembleDomain baseDomain="test_mesh.element_index" name="test_mesh.element_index">
-      <ContiguousEnsembleBounds valueCount="3" />
-    </EnsembleDomain>
-    
-
     <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
@@ -36,7 +31,7 @@
     </EnsembleDomain>
     
 
-    <MeshDomain dimensions="2" elementDomain="test_mesh.element_index" name="test_mesh.domain">
+    <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad.00_10_01_11" />
         <entry key="2" value="library.shape.quad.00_10_01_11" />
@@ -161,7 +156,7 @@
     <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.element_index" name="test_mesh.template.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />

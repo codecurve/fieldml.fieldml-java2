@@ -160,10 +160,9 @@ public class FieldmlTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region library = testRegion.getLibrary();
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 1, 2, 3, 4 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 2, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
         meshDomain.setShape( 2, "library.shape.triangle" );
         meshDomain.setShape( 3, "library.shape.triangle" );
@@ -179,20 +178,20 @@ public class FieldmlTest
         testRegion.addDomain( globalNodesListDomain );
 
         EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesListDomain,
-            testMeshElementDomain );
+            meshDomain.getElementDomain() );
         triangleNodeList.setValue( 2, 2, 5, 3 );
         triangleNodeList.setValue( 3, 6, 3, 5 );
         testRegion.addEvaluator( triangleNodeList );
 
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesListDomain,
-            testMeshElementDomain );
+            meshDomain.getElementDomain() );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 4, 6, 13, 3, 7 );
 
         testRegion.addEvaluator( quadNodeList );
 
         EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesListDomain,
-            testMeshElementDomain );
+            meshDomain.getElementDomain() );
         biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
 
         testRegion.addEvaluator( biquadNodeList );
@@ -230,14 +229,14 @@ public class FieldmlTest
             biquadraticLagrange, dofs );
         testRegion.addEvaluator( elementBiquadraticLagrange );
 
-        ContinuousPiecewiseEvaluator meshCoordinatesT1 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template1", rc1Domain, testMeshElementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesT1 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template1", rc1Domain, meshDomain.getElementDomain() );
         meshCoordinatesT1.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT1.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 3, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 4, elementBilinearLagrange );
         testRegion.addEvaluator( meshCoordinatesT1 );
 
-        ContinuousPiecewiseEvaluator meshCoordinatesT2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template2", rc1Domain, testMeshElementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinatesT2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template2", rc1Domain, meshDomain.getElementDomain() );
         meshCoordinatesT2.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT2.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 3, elementBilinearSimplex );

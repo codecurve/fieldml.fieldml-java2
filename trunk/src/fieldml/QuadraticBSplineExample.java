@@ -107,10 +107,9 @@ public class QuadraticBSplineExample
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain testMeshElementDomain = new EnsembleDomain( "test_mesh.elements", 5 );
-        testRegion.addDomain( testMeshElementDomain );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", 1, testMeshElementDomain );
+        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         meshDomain.setShape( 3, "library.shape.line.0_1" );
@@ -129,7 +128,7 @@ public class QuadraticBSplineExample
         EnsembleDomain lineNodesDomain = new EnsembleDomain( "test_mesh.line_nodes.domain", line1Domain, globalNodesDomain );
         testRegion.addDomain( lineNodesDomain );
 
-        EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, testMeshElementDomain );
+        EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, meshDomain.getElementDomain() );
 
         lineNodeList.setValue( 1, 1, 2 );
         lineNodeList.setValue( 2, 2, 3 );
@@ -158,7 +157,7 @@ public class QuadraticBSplineExample
         testRegion.addDomain( dofIndexesDomain );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "test_mesh.element_dof_indexes", dofIndexesDomain,
-            testMeshElementDomain );
+            meshDomain.getElementDomain() );
         elementDofIndexes.setValue( 1, 1, 2, 3 );
         elementDofIndexes.setValue( 2, 2, 3, 4 );
         elementDofIndexes.setValue( 3, 3, 4, 5 );
@@ -178,7 +177,7 @@ public class QuadraticBSplineExample
             quadraticBSpline, dofs );
         testRegion.addEvaluator( elementBSpline );
 
-        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates", rc1CoordinatesDomain, testMeshElementDomain );
+        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates", rc1CoordinatesDomain, meshDomain.getElementDomain() );
         meshCoordinates.setEvaluator( 1, elementBSpline );
         meshCoordinates.setEvaluator( 2, elementBSpline );
         meshCoordinates.setEvaluator( 3, elementBSpline );

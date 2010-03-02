@@ -21,10 +21,10 @@ public class RegularLinearSubdivision
 
         this.sourceDomain = sourceDomain;
 
-        assert sourceDomain.dimensions == 1;
-        assert destinationDomain.dimensions == 1;
+        assert sourceDomain.getXiDomain().componentCount == 1;
+        assert destinationDomain.getXiDomain().componentCount == 1;
 
-        divisions = destinationDomain.elementDomain.getValueCount();
+        divisions = destinationDomain.getElementDomain().getValueCount();
     }
 
 
