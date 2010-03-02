@@ -2,16 +2,6 @@ package fieldml;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintStream;
-
-import junit.framework.TestCase;
-
-import org.jdom.Comment;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format.TextMode;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
@@ -27,14 +17,13 @@ import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class BicubicHermiteTest
-    extends TestCase
+    extends FieldmlTestCase
 {
     public static String REGION_NAME = "BicubicHermite_Test";
 
@@ -44,10 +33,6 @@ public class BicubicHermiteTest
         WorldRegion world = new WorldRegion();
         Region region = buildRegion( world );
 
-        Document doc = new Document();
-        Element root = new Element( "fieldml" );
-        doc.setRootElement( root );
-
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
         s.append( "1____2____5\n" );
@@ -56,25 +41,8 @@ public class BicubicHermiteTest
         s.append( "|  1 |  2 |\n" );
         s.append( "|    |    |\n" );
         s.append( "3____4____6\n" );
-
-        Comment comment1 = new Comment( s.toString() );
-        root.addContent( comment1 );
-
-        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
-        region.walkObjects( handler );
-
-        Format format = Format.getPrettyFormat();
-        format.setTextMode( TextMode.PRESERVE );
-        XMLOutputter outputter = new XMLOutputter( format );
-        try
-        {
-            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName() + ".xml" );
-            outputter.output( doc, output );
-        }
-        catch( IOException e )
-        {
-            System.err.println( e );
-        }
+        
+        serialize( region, s.toString() ); 
     }
 
 

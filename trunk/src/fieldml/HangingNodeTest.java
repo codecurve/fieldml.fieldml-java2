@@ -1,17 +1,5 @@
 package fieldml;
 
-import java.io.IOException;
-import java.io.PrintStream;
-
-import junit.framework.TestCase;
-
-import org.jdom.Comment;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
-import org.jdom.output.Format.TextMode;
-
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
@@ -24,7 +12,6 @@ import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
@@ -32,7 +19,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class HangingNodeTest
-    extends TestCase
+    extends FieldmlTestCase
 {
     public static String REGION_NAME = "HangingNode_Test";
 
@@ -42,10 +29,6 @@ public class HangingNodeTest
         WorldRegion world = new WorldRegion();
         // Region region = buildDirectMapRegion();
         Region region = buildVirtualNodeRegion( world );
-
-        Document doc = new Document();
-        Element root = new Element( "fieldml" );
-        doc.setRootElement( root );
 
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
@@ -58,24 +41,7 @@ public class HangingNodeTest
         s.append( "|      | *3 |\n" );
         s.append( "6______7____8\n" );
 
-        Comment comment1 = new Comment( s.toString() );
-        root.addContent( comment1 );
-
-        JdomReflectiveHandler handler = new JdomReflectiveHandler( root );
-        region.walkObjects( handler );
-
-        Format format = Format.getPrettyFormat();
-        format.setTextMode( TextMode.PRESERVE );
-        XMLOutputter outputter = new XMLOutputter( format );
-        try
-        {
-            PrintStream output = new PrintStream( "trunk\\data\\" + getClass().getSimpleName() + ".xml" );
-            outputter.output( doc, output );
-        }
-        catch( IOException e )
-        {
-            System.err.println( e );
-        }
+        serialize( region, s.toString() ); 
     }
 
 
