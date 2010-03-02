@@ -42,6 +42,7 @@
         <entry key="quad_1x1" value="test_mesh.quad_nodes" />
         <entry key="quad_2x2" value="test_mesh.biquad_nodes" />
       </pointConnectivity>
+      <fields>"test_mesh.coordinates.template1"  "test_mesh.coordinates.template2"  "test_mesh.coordinates.xy"  </fields>
     </MeshDomain>
     
 
