@@ -286,6 +286,10 @@ public class FieldmlTest
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
+        
+        meshDomain.addField( meshCoordinatesT1 );
+        meshDomain.addField( meshCoordinatesT2 );
+        meshDomain.addField( meshCoordinates );
 
         return testRegion;
     }
