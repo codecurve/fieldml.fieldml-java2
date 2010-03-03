@@ -175,7 +175,7 @@ public class BicubicHermiteTriquadTest
         elementHermiteParameter.importField( hermiteNodeParameterNumber );
         elementHermiteParameter.importField( bicubicHermiteParameters );
 
-        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain, library
+        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bicubic_hermite" ) );
         testRegion.addEvaluator( meshBicubicHermite );
 

@@ -167,7 +167,7 @@ public class QuadraticBSplineExample
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
-        FunctionEvaluator quadraticBSpline = new FunctionEvaluator( "test_mesh.quadratic_bspline", weightingDomain, meshDomain, library
+        FunctionEvaluator quadraticBSpline = new FunctionEvaluator( "test_mesh.quadratic_bspline", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.quadratic_bspline" ) );
         testRegion.addEvaluator( quadraticBSpline );
 

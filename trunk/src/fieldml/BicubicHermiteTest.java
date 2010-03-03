@@ -127,7 +127,7 @@ public class BicubicHermiteTest
         bicubicHermiteParameters.setEvaluator( 4, nodald2UdS2Dofs );
         testRegion.addEvaluator( bicubicHermiteParameters );
 
-        FunctionEvaluator meshBilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+        FunctionEvaluator meshBilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( meshBilinearLagrange );
 
@@ -141,7 +141,7 @@ public class BicubicHermiteTest
         meshCoordinatesL2.setEvaluator( 2, elementBilinearMap );
         testRegion.addEvaluator( meshCoordinatesL2 );
 
-        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain, library
+        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bicubic_hermite" ) );
         testRegion.addEvaluator( meshBicubicHermite );
 

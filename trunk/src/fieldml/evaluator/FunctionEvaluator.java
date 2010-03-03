@@ -2,11 +2,9 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.MeshDomain;
 import fieldml.function.ContinuousFunction;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
-import fieldml.value.MeshDomainValue;
 
 public class FunctionEvaluator
     extends ContinuousEvaluator
@@ -15,25 +13,23 @@ public class FunctionEvaluator
     public final ContinuousFunction function;
 
     @SerializationAsString
-    public final MeshDomain functionDomain;
+    public final ContinuousDomain inputDomain;
 
 
-    public FunctionEvaluator( String name, ContinuousDomain valueDomain, MeshDomain functionDomain, ContinuousFunction function )
+    public FunctionEvaluator( String name, ContinuousDomain outputDomain, ContinuousDomain inputDomain, ContinuousFunction function )
     {
         // TODO For now, this class only supports evaluation on a mesh.
-        super( name, valueDomain );
+        super( name, outputDomain );
 
         this.function = function;
-        this.functionDomain = functionDomain;
+        this.inputDomain = inputDomain;
     }
 
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        MeshDomainValue value = context.get( functionDomain );
-
-        return valueDomain.makeValue( function.evaluate( value.chartValues ) );
+        return valueDomain.makeValue( function.evaluate( context.get( inputDomain ).values ) );
     }
 
 }

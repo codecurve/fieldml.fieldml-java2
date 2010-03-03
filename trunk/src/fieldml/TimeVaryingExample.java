@@ -148,7 +148,7 @@ public class TimeVaryingExample
 
         tvRegion.addEvaluator( elementDofIndexes );
 
-        FunctionEvaluator quadraticLagrange = new FunctionEvaluator( "test_mesh.quadratic_lagrange", weightingDomain, timeMeshDomain, library
+        FunctionEvaluator quadraticLagrange = new FunctionEvaluator( "test_mesh.quadratic_lagrange", weightingDomain, timeMeshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.quadratic_lagrange" ) );
         tvRegion.addEvaluator( quadraticLagrange );
 
@@ -267,7 +267,7 @@ public class TimeVaryingExample
         nodalX.setValue( 5, 4.0 );
         nodalX.setValue( 6, 5.0 );
 
-        FunctionEvaluator linearLagrange = new FunctionEvaluator( "test_mesh.linear_lagrange", weightingDomain, bsplineDomain, library
+        FunctionEvaluator linearLagrange = new FunctionEvaluator( "test_mesh.linear_lagrange", weightingDomain, bsplineDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.linear_lagrange" ) );
         testRegion.addEvaluator( linearLagrange );
 
