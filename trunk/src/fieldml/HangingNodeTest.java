@@ -184,7 +184,7 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
@@ -317,7 +317,7 @@ public class HangingNodeTest
         EnsembleParameters elementLocalDofIndexes = new EnsembleParameters( "test_mesh.element.local_dof_indexes", quad1x1NodeListDomain );
         elementLocalDofIndexes.setDefaultValue( 1, 2, 3, 4 );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 

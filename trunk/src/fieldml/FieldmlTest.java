@@ -205,15 +205,15 @@ public class FieldmlTest
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain, library
+        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
-        FunctionEvaluator biquadraticLagrange = new FunctionEvaluator( "test_mesh.biquadratic_lagrange", weightingDomain, meshDomain, library
+        FunctionEvaluator biquadraticLagrange = new FunctionEvaluator( "test_mesh.biquadratic_lagrange", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.biquadratic_lagrange" ) );
         testRegion.addEvaluator( biquadraticLagrange );
 
-        FunctionEvaluator bilinearSimplex = new FunctionEvaluator( "test_mesh.bilinear_simplex", weightingDomain, meshDomain, library
+        FunctionEvaluator bilinearSimplex = new FunctionEvaluator( "test_mesh.bilinear_simplex", weightingDomain, meshDomain.getXiDomain(), library
             .getContinuousFunction( "library.function.bilinear_simplex" ) );
         testRegion.addEvaluator( bilinearSimplex );
 

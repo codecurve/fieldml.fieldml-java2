@@ -39,13 +39,13 @@
     </MeshDomain>
     
 
-    <FunctionEvaluator function="BilinearLagrange" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
     
 
-    <FunctionEvaluator function="BiquadraticLagrange" functionDomain="test_mesh.domain" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="BiquadraticLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
     
 
-    <FunctionEvaluator function="BilinearSimplex" functionDomain="test_mesh.domain" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="BilinearSimplex" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
     
 
     <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
