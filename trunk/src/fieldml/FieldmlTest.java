@@ -214,7 +214,8 @@ public class FieldmlTest
             .getContinuousFunction( "library.function.bilinear_simplex" ) );
         testRegion.addEvaluator( bilinearSimplex );
 
-        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain, globalNodesDomain );
+        testRegion.addEvaluator( dofs );
 
         MapEvaluator elementBilinearLagrange = new MapEvaluator( "test_mesh.element.bilinear_lagrange", rc1Domain, quadNodeList,
             bilinearLagrange, dofs );

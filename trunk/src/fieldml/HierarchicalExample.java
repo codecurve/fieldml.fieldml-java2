@@ -159,7 +159,8 @@ public class HierarchicalExample
         elementDofWeights.setDefaultValue( 1, 1, 1, 1, 1, 1, 1 );
         testRegion.addEvaluator( elementDofWeights );
 
-        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "hierarchical_mesh.dofs", rc1CoordinatesDomain );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "hierarchical_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
+        testRegion.addEvaluator( dofs );
 
         MapEvaluator elementLocalDofs = new MapEvaluator( "hierarchical_mesh.element.local_dofs", rc1CoordinatesDomain, elementDofIndexes,
             elementDofWeights, dofs );

@@ -65,6 +65,11 @@
     <FunctionEvaluator function="QuadraticLagrange" inputDomain="tv_test.time.mesh.xi" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
     
 
+    <ContinuousVariableEvaluator name="tv_test.mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"tv_test.time.dofs.domain"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
     <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="test_mesh.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />
     
 

@@ -56,6 +56,11 @@
     <FunctionEvaluator function="BilinearSimplex" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
     
 
+    <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
     <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
     
 

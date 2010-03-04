@@ -42,6 +42,21 @@
     </MeshDomain>
     
 
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.u" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.du/ds" valueDomain="test_mesh.co-ordinates.d/ds">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.d2u/ds2" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
     <ContinuousParameters name="test_mesh.node.ds1.weights" valueDomain="library.weighting.list">
       <table>
         <SimpleMapEntry>
