@@ -62,14 +62,12 @@ public class BicubicHermiteTriquadTest
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 7 );
-        testRegion.addDomain( globalNodesDomain );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 7 );
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
         
@@ -83,16 +81,13 @@ public class BicubicHermiteTriquadTest
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
         ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
 
-        ContinuousDomain meshddsDomain = new ContinuousDomain( "test_mesh.co-ordinates.d/ds" );
-        testRegion.addDomain( meshddsDomain );
+        ContinuousDomain meshddsDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d/ds" );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
         
-        ContinuousDomain meshddsListDomain = new ContinuousDomain( "test_mesh.co-ordinates.d/ds", anonymous );
-        testRegion.addDomain( meshddsDomain );
+        ContinuousDomain meshddsListDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d/ds", anonymous );
 
-        ContinuousDomain meshd2dsDomain = new ContinuousDomain( "test_mesh.co-ordinates.d2/ds1ds2" );
-        testRegion.addDomain( meshd2dsDomain );
+        ContinuousDomain meshd2dsDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d2/ds1ds2" );
 
         ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain );
 

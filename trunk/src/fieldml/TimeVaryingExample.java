@@ -118,12 +118,10 @@ public class TimeVaryingExample
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
 
-        MeshDomain timeMeshDomain = new MeshDomain( "tv_test.time.mesh", xiComponentDomain, 3 );
+        MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", xiComponentDomain, 3 );
         timeMeshDomain.setDefaultShape( "line_0_1" );
-        tvRegion.addDomain( timeMeshDomain );
 
-        EnsembleDomain timeDofsDomain = new EnsembleDomain( "tv_test.time.dofs.domain", 7 );
-        tvRegion.addDomain( timeDofsDomain );
+        EnsembleDomain timeDofsDomain = new EnsembleDomain( tvRegion, "tv_test.time.dofs.domain", 7 );
         
         ContinuousParameters timeDofs = new ContinuousParameters( "tv_test.time.dofs.values", rc1CoordinatesDomain, timeDofsDomain );
         timeDofs.setValue( 1, 0 );
@@ -137,8 +135,7 @@ public class TimeVaryingExample
 
         EnsembleDomain quadraticParamsDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
         
-        EnsembleDomain timeDofsListDomain = new EnsembleDomain( "tv_test.time.dofs.list.domain", quadraticParamsDomain, timeDofsDomain );
-        tvRegion.addDomain( timeDofsListDomain );
+        EnsembleDomain timeDofsListDomain = new EnsembleDomain( tvRegion, "tv_test.time.dofs.list.domain", quadraticParamsDomain, timeDofsDomain );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsListDomain,
             timeMeshDomain.getElementDomain() );

@@ -109,24 +109,20 @@ public class QuadraticBSplineExample
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 5 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         meshDomain.setShape( 3, "library.shape.line.0_1" );
         meshDomain.setShape( 4, "library.shape.line.0_1" );
         meshDomain.setShape( 5, "library.shape.line.0_1" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.dofs", 7 );
-        testRegion.addDomain( globalDofsDomain );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.dofs", 7 );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 6 );
-        testRegion.addDomain( globalNodesDomain );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 6 );
 
         EnsembleDomain line1Domain = library.getEnsembleDomain( "library.local_nodes.line.1" );
 
-        EnsembleDomain lineNodesDomain = new EnsembleDomain( "test_mesh.line_nodes.domain", line1Domain, globalNodesDomain );
-        testRegion.addDomain( lineNodesDomain );
+        EnsembleDomain lineNodesDomain = new EnsembleDomain( testRegion, "test_mesh.line_nodes.domain", line1Domain, globalNodesDomain );
 
         EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, meshDomain.getElementDomain() );
 
@@ -153,8 +149,7 @@ public class QuadraticBSplineExample
 
         EnsembleDomain bsplineDofsDomain = library.getEnsembleDomain( "library.interpolation.bspline.quadratic" );
 
-        EnsembleDomain dofIndexesDomain = new EnsembleDomain( "test_mesh.dof_indexes", bsplineDofsDomain, globalDofsDomain );
-        testRegion.addDomain( dofIndexesDomain );
+        EnsembleDomain dofIndexesDomain = new EnsembleDomain( testRegion, "test_mesh.dof_indexes", bsplineDofsDomain, globalDofsDomain );
 
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "test_mesh.element_dof_indexes", dofIndexesDomain,
             meshDomain.getElementDomain() );

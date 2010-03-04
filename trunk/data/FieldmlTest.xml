@@ -9,6 +9,14 @@
 4____5____6_12_13
 -->
   <Region name="Fieldml_Test">
+    <ContinuousDomain name="test_mesh.domain.xi" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="4" />
+    </EnsembleDomain>
+    
+
     <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ArbitraryEnsembleBounds>
         <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>

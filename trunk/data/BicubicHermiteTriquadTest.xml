@@ -13,10 +13,18 @@
         7        
 -->
   <Region name="BicubicHermiteTriquad_Test">
-    <ContinuousDomain name="test_mesh.co-ordinates.d/ds" />
+    <ContinuousDomain name="test_mesh.domain.xi" />
+    
+
+    <ContinuousDomain name="test_mesh.co-ordinates.d/ds" componentDomain="library.anonymous" />
     
 
     <ContinuousDomain name="test_mesh.co-ordinates.d2/ds1ds2" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="3" />
+    </EnsembleDomain>
     
 
     <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
@@ -158,7 +166,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <FunctionEvaluator function="BicubicHermite" functionDomain="test_mesh.domain" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="BicubicHermite" inputDomain="test_mesh.domain.xi" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
     
 
     <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />

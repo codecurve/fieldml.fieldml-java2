@@ -11,6 +11,14 @@
 6______7____8
 -->
   <Region name="HangingNode_Test">
+    <ContinuousDomain name="test_mesh.domain.xi" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="3" />
+    </EnsembleDomain>
+    
+
     <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
@@ -147,7 +155,7 @@
     </ContinuousParameters>
     
 
-    <FunctionEvaluator function="BilinearLagrange" functionDomain="test_mesh.domain" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
     
 
     <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />

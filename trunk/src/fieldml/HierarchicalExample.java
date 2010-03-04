@@ -110,13 +110,11 @@ public class HierarchicalExample
         
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( "hierarchical_mesh.domain", xiComponentDomain, 2 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "hierarchical_mesh.dofs", 12 );
-        testRegion.addDomain( globalDofsDomain );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "hierarchical_mesh.dofs", 12 );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
 

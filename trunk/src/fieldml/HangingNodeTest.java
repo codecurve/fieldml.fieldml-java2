@@ -106,25 +106,20 @@ public class HangingNodeTest
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs_index", 7 );
-        testRegion.addDomain( globalDofsDomain );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", 7 );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 
-        EnsembleDomain globalDofListDomain = new EnsembleDomain( "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
-        testRegion.addDomain( globalDofListDomain );
+        EnsembleDomain globalDofListDomain = new EnsembleDomain( testRegion, "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
 
-        EnsembleDomain localDofsDomain = new EnsembleDomain( "test_mesh.local_dof_index", 8 );
-        testRegion.addDomain( localDofsDomain );
+        EnsembleDomain localDofsDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index", 8 );
 
-        EnsembleDomain localDofListDomain = new EnsembleDomain( "test_mesh.local_dof_index_list", anonymous, localDofsDomain );
-        testRegion.addDomain( localDofListDomain );
+        EnsembleDomain localDofListDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index_list", anonymous, localDofsDomain );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
@@ -236,23 +231,21 @@ public class HangingNodeTest
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( "test_mesh.global_dofs_index", 7 );
-        testRegion.addDomain( globalDofsDomain );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", 7 );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 
-        EnsembleDomain globalDofIndexesDomain = new EnsembleDomain( "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
+        EnsembleDomain globalDofIndexesDomain = new EnsembleDomain( testRegion, "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
-        EnsembleDomain quad1x1NodeListDomain = new EnsembleDomain( "test_mesh.nodes.1x1", anonymous, quad1x1NodeDomain );
+        EnsembleDomain quad1x1NodeListDomain = new EnsembleDomain( testRegion, "test_mesh.nodes.1x1", anonymous, quad1x1NodeDomain );
 
         ContinuousParameters elementWeights = new ContinuousParameters( "test_mesh.element.dof_weights", weightingDomain,
             meshDomain.getElementDomain(), quad1x1NodeDomain );

@@ -4,6 +4,14 @@
 1____2____3____4____5
 -->
   <Region name="Hierarchical_Test">
+    <ContinuousDomain name="hierarchical_mesh.domain.xi" />
+    
+
+    <EnsembleDomain baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="2" />
+    </EnsembleDomain>
+    
+
     <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
       <ContiguousEnsembleBounds valueCount="12" />
     </EnsembleDomain>

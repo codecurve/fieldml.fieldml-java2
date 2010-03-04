@@ -1,19 +1,22 @@
 package fieldml.domain;
 
+import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 
 public class ContinuousDomain
     extends Domain
 {
-    public ContinuousDomain( String name, EnsembleDomain componentDomain )
+    public ContinuousDomain( Region owner, String name, EnsembleDomain componentDomain )
     {
         super( name, componentDomain );
+        
+        owner.addDomain( this );
     }
 
 
-    public ContinuousDomain( String name )
+    public ContinuousDomain( Region owner, String name )
     {
-        super( name, null );
+        this( owner, name, null );
     }
 
 
