@@ -83,6 +83,11 @@
     <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list" />
     
 
+    <ContinuousVariableEvaluator name="hierarchical_mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"hierarchical_mesh.dofs"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
     <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
     
 

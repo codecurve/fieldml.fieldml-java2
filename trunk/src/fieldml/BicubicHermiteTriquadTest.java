@@ -89,11 +89,14 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain meshd2dsDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d2/ds1ds2" );
 
-        ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain );
+        ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodesDomain );
+        testRegion.addEvaluator( nodalUDofs );
 
-        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du/ds", meshddsListDomain );
+        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du/ds", meshddsListDomain, globalNodesDomain );
+        testRegion.addEvaluator( nodaldUdSDofs );
 
-        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain );
+        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain, globalNodesDomain );
+        testRegion.addEvaluator( nodald2UdS2Dofs );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 

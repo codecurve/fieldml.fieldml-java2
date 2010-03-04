@@ -149,7 +149,8 @@ public class TimeVaryingExample
             .getContinuousFunction( "library.function.quadratic_lagrange" ) );
         tvRegion.addEvaluator( quadraticLagrange );
 
-        ContinuousVariableEvaluator tvMeshDofs = new ContinuousVariableEvaluator( "tv_test.mesh.dofs", rc1CoordinatesDomain );
+        ContinuousVariableEvaluator tvMeshDofs = new ContinuousVariableEvaluator( "tv_test.mesh.dofs", rc1CoordinatesDomain, timeDofsDomain );
+        tvRegion.addEvaluator( tvMeshDofs );
 
         MapEvaluator elementQLagrange = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain,
             elementDofIndexes, quadraticLagrange, tvMeshDofs );
@@ -268,7 +269,8 @@ public class TimeVaryingExample
             .getContinuousFunction( "library.function.linear_lagrange" ) );
         testRegion.addEvaluator( linearLagrange );
 
-        ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain );
+        ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain, globalNodesDomain );
+        testRegion.addEvaluator( linearDofs );
 
         MapEvaluator elementLLagrange = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, lineNodeList,
             linearLagrange, linearDofs );

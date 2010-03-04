@@ -183,7 +183,8 @@ public class HangingNodeTest
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
-        ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
+        ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
+        testRegion.addEvaluator( globalDofs );
 
         MapEvaluator localDofs = new MapEvaluator( "test_mesh.local_dofs", mesh1DDomain, globalToLocalIndexes, globalToLocalWeights,
             globalDofs );
@@ -314,7 +315,8 @@ public class HangingNodeTest
             .getContinuousFunction( "library.function.bilinear_lagrange" ) );
         testRegion.addEvaluator( bilinearLagrange );
 
-        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
+        testRegion.addEvaluator( dofs );
 
         MapEvaluator bilinearElementDofs = new MapEvaluator( "test_mesh.element.bilinear_dofs", mesh1DDomain, elementIndexes,
             elementWeights, dofs );

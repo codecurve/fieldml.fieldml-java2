@@ -158,6 +158,11 @@
     <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
     
 
+    <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+      <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
     <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
     
 

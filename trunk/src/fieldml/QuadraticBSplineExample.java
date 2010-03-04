@@ -166,7 +166,8 @@ public class QuadraticBSplineExample
             .getContinuousFunction( "library.function.quadratic_bspline" ) );
         testRegion.addEvaluator( quadraticBSpline );
 
-        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain );
+        ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
+        testRegion.addEvaluator( dofs );
 
         MapEvaluator elementBSpline = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, elementDofIndexes,
             quadraticBSpline, dofs );
