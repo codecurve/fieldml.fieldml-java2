@@ -8,6 +8,7 @@ import java.util.Map;
 import fieldml.annotations.SerializationAsString;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.region.Region;
 import fieldml.value.MeshDomainValue;
 
 public class MeshDomain
@@ -29,22 +30,24 @@ public class MeshDomain
     public final List<ContinuousEvaluator> fields;
 
 
-    public MeshDomain( String name, EnsembleDomain xiEnsemble, int elementCount )
+    public MeshDomain( Region owner, String name, EnsembleDomain xiEnsemble, int elementCount )
     {
-        this( name, xiEnsemble, new ContiguousEnsembleBounds( elementCount ) );
+        this( owner, name, xiEnsemble, new ContiguousEnsembleBounds( elementCount ) );
     }
 
 
-    public MeshDomain( String name, EnsembleDomain xiEnsemble, EnsembleBounds elementBounds )
+    public MeshDomain( Region owner, String name, EnsembleDomain xiEnsemble, EnsembleBounds elementBounds )
     {
         super( name, null );
 
-        this.xiDomain = new ContinuousDomain( name + ".xi", xiEnsemble );
-        this.elementDomain = new EnsembleDomain( name + ".elements", elementBounds );
+        this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiEnsemble );
+        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBounds );
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<String, EnsembleEvaluator>();
         fields = new ArrayList<ContinuousEvaluator>();
+        
+        owner.addDomain( this );
     }
 
 

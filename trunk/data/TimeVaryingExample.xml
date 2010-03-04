@@ -4,6 +4,14 @@
 1____2____3____4____5
 -->
   <Region name="TimeVaryingExample_Test">
+    <ContinuousDomain name="tv_test.time.mesh.xi" />
+    
+
+    <EnsembleDomain baseDomain="tv_test.time.mesh.elements" name="tv_test.time.mesh.elements">
+      <ContiguousEnsembleBounds valueCount="3" />
+    </EnsembleDomain>
+    
+
     <EnsembleDomain baseDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
@@ -54,7 +62,7 @@
     </ContinuousParameters>
     
 
-    <FunctionEvaluator function="QuadraticLagrange" functionDomain="tv_test.time.mesh" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
+    <FunctionEvaluator function="QuadraticLagrange" inputDomain="tv_test.time.mesh.xi" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
     
 
     <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="test_mesh.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />

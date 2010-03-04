@@ -162,20 +162,17 @@ public class FieldmlTest
 
         EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( "test_mesh.domain", xiComponentDomain, 4 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
         meshDomain.setShape( 2, "library.shape.triangle" );
         meshDomain.setShape( 3, "library.shape.triangle" );
         meshDomain.setShape( 4, "library.shape.quad" );
-        testRegion.addDomain( meshDomain );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( "test_mesh.nodes", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
-        testRegion.addDomain( globalNodesDomain );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
         
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 
-        EnsembleDomain globalNodesListDomain = new EnsembleDomain( "test_mesh.nodes_list", anonymous, globalNodesDomain );
-        testRegion.addDomain( globalNodesListDomain );
+        EnsembleDomain globalNodesListDomain = new EnsembleDomain( testRegion, "test_mesh.nodes_list", anonymous, globalNodesDomain );
 
         EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesListDomain,
             meshDomain.getElementDomain() );
