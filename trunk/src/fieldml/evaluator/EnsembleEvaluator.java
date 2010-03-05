@@ -1,5 +1,6 @@
 package fieldml.evaluator;
 
+import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
@@ -7,9 +8,19 @@ import fieldml.value.EnsembleDomainValue;
 public abstract class EnsembleEvaluator
     extends AbstractEvaluator<EnsembleDomain, EnsembleDomainValue>
 {
+    @SerializationAsString
+    public EnsembleEvaluator fallback;
+
+
     public EnsembleEvaluator( String name, EnsembleDomain valueDomain )
     {
         super( name, valueDomain );
+    }
+
+
+    public void setFallback( EnsembleEvaluator fallback )
+    {
+        this.fallback = fallback;
     }
 
 
@@ -30,26 +41,33 @@ public abstract class EnsembleEvaluator
     @Override
     public EnsembleDomainValue evaluate( DomainValues context, EnsembleDomain domain )
     {
+        EnsembleDomainValue value = null;
+
         if( domain == valueDomain )
         {
             // Desired domain matches native domain.
-            return evaluate( context );
+            value = evaluate( context );
         }
         else if( ( valueDomain.componentDomain == null ) && ( domain.componentDomain != null ) )
         {
             // Native domain is scalar, desired domain is not.
             // MUSTDO Check native vs. desired bounds.
 
-            return domain.makeValue( evaluateAll( context, domain.componentDomain ) );
+            value = domain.makeValue( evaluateAll( context, domain.componentDomain ) );
         }
         else if( ( valueDomain.componentDomain != null ) && ( domain.componentDomain == null ) )
         {
             // MUSTDO Check native vs. desired bounds.
             EnsembleDomainValue v = evaluate( context );
 
-            return domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0] - 1] );
+            value = domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0] - 1] );
         }
 
-        return null;
+        if( ( value == null ) && ( fallback != null ) )
+        {
+            value = fallback.evaluate( context, domain );
+        }
+
+        return value;
     }
 }

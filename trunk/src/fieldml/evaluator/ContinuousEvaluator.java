@@ -1,5 +1,6 @@
 package fieldml.evaluator;
 
+import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
@@ -9,9 +10,19 @@ import fieldml.value.EnsembleDomainValue;
 public abstract class ContinuousEvaluator
     extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
 {
+    @SerializationAsString
+    public ContinuousEvaluator fallback;
+
+
     public ContinuousEvaluator( String name, ContinuousDomain valueDomain )
     {
         super( name, valueDomain );
+    }
+
+
+    public void setFallback( ContinuousEvaluator fallback )
+    {
+        this.fallback = fallback;
     }
 
 
@@ -19,7 +30,7 @@ public abstract class ContinuousEvaluator
     public abstract ContinuousDomainValue evaluate( DomainValues context );
 
 
-    protected final double[] evaluateAll( DomainValues context, EnsembleDomain spannedDomain )
+    protected double[] evaluateAll( DomainValues context, EnsembleDomain spannedDomain )
     {
         double[] values = new double[spannedDomain.getValueCount()];
 
@@ -36,28 +47,35 @@ public abstract class ContinuousEvaluator
     @Override
     public ContinuousDomainValue evaluate( DomainValues context, ContinuousDomain domain )
     {
+        ContinuousDomainValue value = null;
+
         if( domain == valueDomain )
         {
             // Desired domain matches native domain.
-            return evaluate( context );
+            value = evaluate( context );
         }
         else if( ( valueDomain.componentCount == 1 ) && ( domain.componentCount > 1 ) )
         {
             // Native domain is scalar, desired domain is not.
             // MUSTDO Check native vs. desired bounds.
 
-            return domain.makeValue( evaluateAll( context, domain.componentDomain ) );
+            value = domain.makeValue( evaluateAll( context, domain.componentDomain ) );
         }
         else if( ( valueDomain.componentCount > 1 ) && ( domain.componentCount == 1 ) )
         {
             // MUSTDO Check native vs. desired bounds.
-            ContinuousDomainValue value = evaluate( context );
+            ContinuousDomainValue values = evaluate( context );
 
             EnsembleDomainValue componentIndex = context.get( valueDomain.componentDomain );
 
-            return domain.makeValue( value.values[componentIndex.values[0] - 1] );
+            value = domain.makeValue( values.values[componentIndex.values[0] - 1] );
         }
 
-        return null;
+        if( ( value == null ) && ( fallback != null ) )
+        {
+            value = fallback.evaluate( context, domain );
+        }
+
+        return value;
     }
 }
