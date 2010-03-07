@@ -45,14 +45,15 @@ public class Library
 
     private void buildLibraryFunctions()
     {
-        addFunction( "library.function.linear_lagrange", new LinearLagrange() );
-        addFunction( "library.function.bilinear_lagrange", new BilinearLagrange() );
-        addFunction( "library.function.quadratic_lagrange", new QuadraticLagrange() );
-        addFunction( "library.function.biquadratic_lagrange", new BiquadraticLagrange() );
-        addFunction( "library.function.cubic_hermite", new CubicHermite() );
-        addFunction( "library.function.bicubic_hermite", new BicubicHermite() );
-        addFunction( "library.function.bilinear_simplex", new BilinearSimplex() );
-        addFunction( "library.function.quadratic_bspline", new QuadraticBSpline() );
+        
+        addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_lagrange", anonymousList, xi2d, new BilinearLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi1d, new QuadraticLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.biquadratic_lagrange", anonymousList, xi2d, new BiquadraticLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.cubic_hermite", anonymousList, xi1d, new CubicHermite() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_simplex", anonymousList, xi2d, new BilinearSimplex() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
     }
 
 
@@ -74,11 +75,11 @@ public class Library
 
         EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", 16 );
 
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1", 1 );
+        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", 1 );
 
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2", 2 );
+        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", 2 );
 
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3", 3 );
+        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", 3 );
 
         new EnsembleDomain( this, "library.edge_direction.quad", 2 );
 
@@ -90,11 +91,11 @@ public class Library
 
         addDomain( new ContinuousDomain( this, "library.weighting" ) );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.1d", rc1CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.1d", rc1CoordinateDomain );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.2d", rc2CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.2d", rc2CoordinateDomain );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.3d", rc3CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.3d", rc3CoordinateDomain );
 
         new ContinuousDomain( this, "library.linear_lagrange.parameters", line1LocalNodeDomain );
 
@@ -168,7 +169,7 @@ public class Library
             return null;
         }
 
-        evaluator = new FunctionEvaluator( name, anonymousList, xiSource.getValueDomain(), tensorBasis );
+        evaluator = new FunctionEvaluator( name, anonymousList, xiSource, tensorBasis );
         addEvaluator( evaluator );
         
         return evaluator;

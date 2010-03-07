@@ -27,6 +27,8 @@ public class ContinuousVariableEvaluator
     {
         ContinuousEvaluator variable = context.getContinuousVariable( name );
 
+        assert variable != null : "Variable " + name + " is not set for " + getName();
+        
         return variable.evaluate( context );
     }
 }

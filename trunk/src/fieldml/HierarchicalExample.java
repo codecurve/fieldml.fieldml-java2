@@ -24,6 +24,7 @@ import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.evaluator.ContinuousClientVariableEvaluator;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class HierarchicalExample
@@ -67,6 +68,9 @@ public class HierarchicalExample
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "hierarchical_mesh.element.parameters" );
         ContinuousEvaluator meshZ = region.getContinuousEvaluator( "hierarchical_mesh.coordinates.z" );
         DomainValues context = new DomainValues();
+        ContinuousClientVariableEvaluator xiV = new ContinuousClientVariableEvaluator( "xi", meshDomain.getXiDomain() );
+        context.setVariable( "library.xi.rc.1d", xiV );
+        
         ContinuousDomainValue output;
 
         double[] bsplineValues = new double[3];
@@ -75,6 +79,7 @@ public class HierarchicalExample
         double expectedValue;
 
         xi[0] = 0.1;
+        xiV.setValue( xi );
         context.set( meshDomain, 1, xi );
         output = meshZ.evaluate( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( 0.5 );
@@ -87,6 +92,7 @@ public class HierarchicalExample
         assertEquals( expectedValue, output.values[0] );
 
         xi[0] = 0.48;
+        xiV.setValue( xi );
         context.set( meshDomain, 2, xi );
         output = meshZ.evaluate( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( 0.4 );
@@ -108,7 +114,7 @@ public class HierarchicalExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.1d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
@@ -116,7 +122,7 @@ public class HierarchicalExample
 
         EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "hierarchical_mesh.dofs", 12 );
 
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
         ContinuousParameters zDofs = new ContinuousParameters( "hierarchical_mesh.dofs.z", rc1CoordinatesDomain, globalDofsDomain );
         zDofs.setValue( 1, 0.954915 );

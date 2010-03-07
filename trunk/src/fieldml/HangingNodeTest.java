@@ -9,7 +9,6 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
@@ -17,6 +16,7 @@ import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.evaluator.ContinuousClientVariableEvaluator;
 
 public class HangingNodeTest
     extends FieldmlTestCase
@@ -53,23 +53,26 @@ public class HangingNodeTest
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
         DomainValues context = new DomainValues();
+        ContinuousClientVariableEvaluator xi = new ContinuousClientVariableEvaluator( "xi", meshDomain.getXiDomain() );
+        context.setVariable( "library.xi.rc.2d", xi );
 
         ContinuousDomainValue output;
 
+        xi.setValue( 0.5, 0.5 );
         context.set( meshDomain, 1, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 10;
-        assert output.values[1] == 10;
+        assertEquals( 10.0, output.values[0] );
+        assertEquals( 10.0, output.values[1] );
 
         context.set( meshDomain, 2, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 25;
-        assert output.values[1] == 15;
+        assertEquals( 25.0, output.values[0] );
+        assertEquals( 15.0, output.values[1] );
 
         context.set( meshDomain, 3, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 25;
-        assert output.values[1] == 5;
+        assertEquals( 25.0, output.values[0] );
+        assertEquals( 5.0, output.values[1] );
 
         region = buildDirectMapRegion();
 
@@ -77,21 +80,22 @@ public class HangingNodeTest
         meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
 
         context = new DomainValues();
+        context.setVariable( "library.xi.rc.2d", xi );
         
         context.set( meshDomain, 1, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 10;
-        assert output.values[1] == 10;
+        assertEquals( 10.0, output.values[0] );
+        assertEquals( 10.0, output.values[1] );
 
         context.set( meshDomain, 2, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 25;
-        assert output.values[1] == 15;
+        assertEquals( 25.0, output.values[0] );
+        assertEquals( 15.0, output.values[1] );
 
         context.set( meshDomain, 3, 0.5, 0.5 );
         output = meshXY.evaluate( context );
-        assert output.values[0] == 25;
-        assert output.values[1] == 5;
+        assertEquals( 25.0, output.values[0] );
+        assertEquals( 5.0, output.values[1] );
     }
 
 
@@ -104,7 +108,7 @@ public class HangingNodeTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -154,8 +158,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( quadNodeList );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
         meshPointsX.setValue( 1, 00.0 );
@@ -179,9 +183,7 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
-        testRegion.addEvaluator( bilinearLagrange );
+        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
 
         ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
         testRegion.addEvaluator( globalDofs );
@@ -230,7 +232,7 @@ public class HangingNodeTest
         Region library = world.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, world );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -283,8 +285,8 @@ public class HangingNodeTest
         elementIndexes.setValue( new int[]{ 3, 3 }, 2, 6 );
         elementIndexes.setValue( new int[]{ 3, 4 }, 4 );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
         meshPointsX.setValue( 1, 00.0 );
@@ -311,9 +313,7 @@ public class HangingNodeTest
         EnsembleParameters elementLocalDofIndexes = new EnsembleParameters( "test_mesh.element.local_dof_indexes", quad1x1NodeListDomain );
         elementLocalDofIndexes.setDefaultValue( 1, 2, 3, 4 );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
-        testRegion.addEvaluator( bilinearLagrange );
+        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
