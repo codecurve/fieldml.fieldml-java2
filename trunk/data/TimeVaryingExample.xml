@@ -4,7 +4,7 @@
 1____2____3____4____5
 -->
   <Region name="TimeVaryingExample_Test">
-    <ContinuousDomain name="tv_test.time.mesh.xi" />
+    <ContinuousDomain name="tv_test.time.mesh.xi" componentDomain="library.coordinates.rc.1d" />
     
 
     <EnsembleDomain baseDomain="tv_test.time.mesh.elements" name="tv_test.time.mesh.elements">
@@ -28,7 +28,7 @@
     </MeshDomain>
     
 
-    <ContinuousParameters name="tv_test.time.dofs.values" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="tv_test.time.dofs.values" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -62,18 +62,15 @@
     </ContinuousParameters>
     
 
-    <FunctionEvaluator function="QuadraticLagrange" inputDomain="tv_test.time.mesh.xi" name="test_mesh.quadratic_lagrange" valueDomain="library.weighting.list" />
-    
-
-    <ContinuousVariableEvaluator name="tv_test.mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousVariableEvaluator name="tv_test.mesh.dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"tv_test.time.dofs.domain"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="test_mesh.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueWeights="library.function.quadratic_lagrange" valueSource="tv_test.mesh.dofs" name="test_mesh.element.quadratic_lagrange_map" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="tv_test.time.mesh.elements" name="tv_test.time.template" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="tv_test.time.mesh.elements" name="tv_test.time.template" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.quadratic_lagrange_map" />
         <TemplateMap index="2" evaluator="test_mesh.element.quadratic_lagrange_map" />
@@ -82,7 +79,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="tv_test.dofs.z" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  1  </key>
@@ -302,21 +299,22 @@
     </EnsembleParameters>
     
 
-    <PiecewiseField template="tv_test.time.template" name="tv_test.time" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="tv_test.time.template" name="tv_test.time" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.time.dofs.values" />
       </variables>
     </PiecewiseField>
     
 
-    <PiecewiseField template="test_mesh.coordinates" name="tv_test.coordinates.sliced_z" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates" name="tv_test.coordinates.sliced_z" valueDomain="library.coordinates.rc.1d">
       <variables>
+        <SimpleMapEntry key="library.xi.rc.1d" value="tv_test.spatial_xi" />
         <SimpleMapEntry key="test_mesh.dofs" value="tv_test.dofs.z" />
       </variables>
     </PiecewiseField>
     
 
-    <PiecewiseField template="tv_test.time.template" name="tv_test.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="tv_test.time.template" name="tv_test.coordinates.z" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="tv_test.mesh.dofs" value="tv_test.coordinates.sliced_z" />
       </variables>

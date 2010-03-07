@@ -13,23 +13,24 @@ public class FunctionEvaluator
     public final ContinuousFunction function;
 
     @SerializationAsString
-    public final ContinuousDomain inputDomain;
+    public final ContinuousEvaluator inputSource;
 
 
-    public FunctionEvaluator( String name, ContinuousDomain outputDomain, ContinuousDomain inputDomain, ContinuousFunction function )
+    public FunctionEvaluator( String name, ContinuousDomain outputDomain, ContinuousEvaluator inputSource, ContinuousFunction function )
     {
         // TODO For now, this class only supports evaluation on a mesh.
         super( name, outputDomain );
 
         this.function = function;
-        this.inputDomain = inputDomain;
+        this.inputSource = inputSource;
     }
 
 
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        return valueDomain.makeValue( function.evaluate( context.get( inputDomain ).values ) );
+        double[] args = inputSource.evaluate( context ).values;
+        return valueDomain.makeValue( function.evaluate( args ) );
     }
 
 }

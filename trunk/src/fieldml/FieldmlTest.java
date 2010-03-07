@@ -9,7 +9,6 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
@@ -17,6 +16,7 @@ import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.evaluator.ContinuousClientVariableEvaluator;
 
 public class FieldmlTest
     extends FieldmlTestCase
@@ -52,72 +52,88 @@ public class FieldmlTest
         ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
 
         DomainValues context = new DomainValues();
+        ContinuousClientVariableEvaluator xi = new ContinuousClientVariableEvaluator( "xi", meshDomain.getXiDomain() );
+        context.setVariable( "library.xi.rc.2d", xi );
 
         ContinuousDomainValue output;
 
         // Test element 1
+        xi.setValue( 0.0, 0.0 );
         context.set( meshDomain, 1, 0.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 0;
 
+        xi.setValue( 0.0, 1.0 );
         context.set( meshDomain, 1, 0.0, 1.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 0;
 
+        xi.setValue( 0.5, 0.0 );
         context.set( meshDomain, 1, 0.5, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 5;
 
+        xi.setValue( 1.0, 0.0 );
         context.set( meshDomain, 1, 1.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 10;
 
+        xi.setValue( 1.0, 1.0 );
         context.set( meshDomain, 1, 1.0, 1.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 10;
 
         // Test element 2
+        xi.setValue( 0.0, 0.0 );
         context.set( meshDomain, 2, 0.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 10;
 
+        xi.setValue( 1.0, 0.0 );
         context.set( meshDomain, 2, 1.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 10;
 
+        xi.setValue( 0.0, 1.0 );
         context.set( meshDomain, 2, 0.0, 1.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 20;
 
+        xi.setValue( 0.5, 0.5 );
         context.set( meshDomain, 2, 0.5, 0.5 );
         output = meshX.evaluate( context );
         assert output.values[0] == 15;
 
         // Test element 3
+        xi.setValue( 0.0, 0.0 );
         context.set( meshDomain, 3, 0.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 20;
 
+        xi.setValue( 1.0, 0.0 );
         context.set( meshDomain, 3, 1.0, 0.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 20;
 
+        xi.setValue( 0.0, 1.0 );
         context.set( meshDomain, 3, 0.0, 1.0 );
         output = meshX.evaluate( context );
         assert output.values[0] == 10;
 
+        xi.setValue( 0.5, 0.5 );
         context.set( meshDomain, 3, 0.5, 0.5 );
         output = meshX.evaluate( context );
         assert output.values[0] == 15;
 
+        xi.setValue( 0.5, 0.5 );
         context.set( meshDomain, 3, 0.5, 0.5 );
         output = meshXY.evaluate( context );
         assert output.values[0] == 15;
         assert output.values[1] == 5;
 
+        xi.setValue( 0.5, 0.5 );
         context.set( meshDomain, 4, 0.5, 0.5 );
-        meshXY.evaluate( context );
-        output = context.get( meshXY.getValueDomain() );
+        output = meshXY.evaluate( context );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
         
@@ -160,7 +176,7 @@ public class FieldmlTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region library = testRegion.getLibrary();
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
@@ -197,22 +213,14 @@ public class FieldmlTest
         meshDomain.setPointConnectivity( "quad_1x1", quadNodeList );
         meshDomain.setPointConnectivity( "quad_2x2", biquadNodeList );
 
-        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
-        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
+        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
 
-        FunctionEvaluator bilinearLagrange = new FunctionEvaluator( "test_mesh.bilinear_lagrange", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.bilinear_lagrange" ) );
-        testRegion.addEvaluator( bilinearLagrange );
+        ContinuousEvaluator biquadraticLagrange = library.getContinuousEvaluator( "library.function.biquadratic_lagrange" );
 
-        FunctionEvaluator biquadraticLagrange = new FunctionEvaluator( "test_mesh.biquadratic_lagrange", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.biquadratic_lagrange" ) );
-        testRegion.addEvaluator( biquadraticLagrange );
-
-        FunctionEvaluator bilinearSimplex = new FunctionEvaluator( "test_mesh.bilinear_simplex", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.bilinear_simplex" ) );
-        testRegion.addEvaluator( bilinearSimplex );
+        ContinuousEvaluator bilinearSimplex = library.getContinuousEvaluator( "library.function.bilinear_simplex" );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain, globalNodesDomain );
         testRegion.addEvaluator( dofs );
