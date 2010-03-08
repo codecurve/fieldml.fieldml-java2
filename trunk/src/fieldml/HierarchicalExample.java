@@ -8,13 +8,14 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.MapEvaluator;
+import fieldml.evaluator.MeshEvaluator;
+import fieldml.evaluator.MeshVariableEvaluator;
 import fieldml.evaluator.hardcoded.RegularLinearSubdivision;
 import fieldml.field.PiecewiseField;
 import fieldml.function.QuadraticBSpline;
@@ -175,11 +176,14 @@ public class HierarchicalExample
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );
         ContinuousEvaluator submeshTemplate = subRegion.getContinuousEvaluator( "test_mesh.coordinates" );
         
+        MeshVariableEvaluator parentMeshValue = new MeshVariableEvaluator( "hierarchical_mesh.value", meshDomain );
+        MeshEvaluator submeshAtlas = new RegularLinearSubdivision( "hierarchical_mesh.submesh_atlas", submeshDomain, parentMeshValue );
+        ContinuousEvaluator childXi = new XiEvaluator( "hierarchical_mesh.child_xi", submeshAtlas );
+        
         PiecewiseField delegatedEvaluator = new PiecewiseField( "hierarchical_mesh.delegated", rc1CoordinatesDomain, submeshTemplate );
         delegatedEvaluator.setVariable( "test_mesh.dofs", elementLocalDofs );
-        
-        RegularLinearSubdivision submeshAtlas = new RegularLinearSubdivision( "hierarchical_mesh.submesh_atlas", submeshDomain, meshDomain );
-        
+        delegatedEvaluator.setVariable( "library.xi.rc.1d", childXi );
+
         ContinuousCompositeEvaluator submeshEvaluator = new ContinuousCompositeEvaluator( "hierarchical_mesh.submesh_evaluator", rc1CoordinatesDomain );
         submeshEvaluator.importField( submeshAtlas );
         submeshEvaluator.importField( delegatedEvaluator );

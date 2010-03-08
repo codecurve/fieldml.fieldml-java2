@@ -1,6 +1,7 @@
 package fieldml.evaluator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import fieldml.annotations.SerializationAsString;
@@ -48,5 +49,19 @@ public class ContinuousAggregateEvaluator
         }
 
         return valueDomain.makeValue( value );
+    }
+
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        ArrayList<Evaluator<?>> variables = new ArrayList<Evaluator<?>>();
+
+        for( ContinuousEvaluator e : sourceFields )
+        {
+            variables.addAll( e.getVariables() );
+        }
+
+        return variables;
     }
 }

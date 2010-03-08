@@ -52,16 +52,22 @@
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="library.function.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="library.function.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" indexedVariable="test_mesh.dof_index" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="library.function.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="library.function.bilinear_simplex" valueSource="test_mesh.mesh.dofs" indexedVariable="test_mesh.dof_index" name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="library.function.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="library.function.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" indexedVariable="test_mesh.dof_index" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexSource="test_mesh.value" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
+      <continuousVariables>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.value" />
+      </continuousVariables>
+      <ensembleVariables>
+        <SimpleMapEntry key="test_mesh.dof_index" value="test_mesh.dof_index" />
+      </ensembleVariables>
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -71,7 +77,13 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexSource="test_mesh.value" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
+      <continuousVariables>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.value" />
+      </continuousVariables>
+      <ensembleVariables>
+        <SimpleMapEntry key="test_mesh.dof_index" value="test_mesh.dof_index" />
+      </ensembleVariables>
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -182,6 +194,11 @@
     </ContinuousAggregateEvaluator>
     
 
+    <EnsembleVariableEvaluator name="test_mesh.dof_index" valueDomain="test_mesh.nodes">
+      <parameterDomains />
+    </EnsembleVariableEvaluator>
+    
+
     <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
       <table>
         <SimpleMapEntry>
@@ -221,16 +238,16 @@
     
 
     <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
-      <variables>
+      <continuousVariables>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
-      </variables>
+      </continuousVariables>
     </PiecewiseField>
     
 
     <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
-      <variables>
+      <continuousVariables>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
-      </variables>
+      </continuousVariables>
     </PiecewiseField>
     
 

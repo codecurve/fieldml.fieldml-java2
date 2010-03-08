@@ -8,8 +8,8 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.evaluator.MeshEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.function.ContinuousFunction;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
@@ -27,7 +27,7 @@ public abstract class Region
 
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
-    private final SimpleMap<String, ContinuousFunction> functions;
+    private final SimpleMap<String, MeshEvaluator> meshEvaluators;
 
     private final Map<String, Region> subregions;
 
@@ -43,7 +43,7 @@ public abstract class Region
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
-        functions = new SimpleMap<String, ContinuousFunction>();
+        meshEvaluators = new SimpleMap<String, MeshEvaluator>();
         subregions = new HashMap<String, Region>();
     }
 
@@ -78,13 +78,13 @@ public abstract class Region
     }
 
 
-    public ContinuousFunction getContinuousFunction( String name )
+    public MeshEvaluator getMeshEvaluator( String name )
     {
-        ContinuousFunction function = functions.get( name );
+        MeshEvaluator evaluator = meshEvaluators.get( name );
 
-        assert function != null : "Function " + name + " does not exist in region " + this.name;
+        assert evaluator != null : "Evaluator " + name + " does not exist in region " + this.name;
 
-        return function;
+        return evaluator;
     }
 
 
@@ -126,9 +126,9 @@ public abstract class Region
     }
 
 
-    public void addFunction( String name, ContinuousFunction function )
+    public void addEvaluator( String name, MeshEvaluator meshEvaluator )
     {
-        functions.put( name, function );
+        meshEvaluators.put( name, meshEvaluator );
     }
 
 
@@ -141,6 +141,12 @@ public abstract class Region
     public void addEvaluator( EnsembleEvaluator evaluator )
     {
         ensembleEvaluators.put( evaluator.getName(), evaluator );
+    }
+
+
+    public void addEvaluator( MeshEvaluator evaluator )
+    {
+        meshEvaluators.put( evaluator.getName(), evaluator );
     }
 
 

@@ -8,7 +8,4 @@ public interface ContinuousEvaluator
     extends Evaluator<ContinuousDomain>
 {
     public ContinuousDomainValue evaluate( DomainValues context );
-
-
-    public ContinuousDomainValue evaluate( DomainValues context, ContinuousDomain domain );
 }

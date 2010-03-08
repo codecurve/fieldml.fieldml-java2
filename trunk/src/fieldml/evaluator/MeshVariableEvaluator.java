@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
-import fieldml.value.ContinuousDomainValue;
+import fieldml.domain.MeshDomain;
 import fieldml.value.DomainValues;
+import fieldml.value.MeshDomainValue;
 
-public class ContinuousVariableEvaluator
-    extends AbstractContinuousEvaluator
+public class MeshVariableEvaluator
+    extends AbstractMeshEvaluator
 {
     // This is only an advisory that the users of the variable may not work unless these dependencies exist.
     @SerializationAsString
     public Domain[] parameterDomains;
 
 
-    public ContinuousVariableEvaluator( String name, ContinuousDomain valueDomain, Domain... parameterDomains )
+    public MeshVariableEvaluator( String name, MeshDomain valueDomain, Domain... parameterDomains )
     {
         super( name, valueDomain );
 
@@ -26,9 +26,9 @@ public class ContinuousVariableEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public MeshDomainValue evaluate( DomainValues context )
     {
-        ContinuousEvaluator variable = context.getContinuousVariable( name );
+        MeshEvaluator variable = context.getMeshVariable( name );
 
         assert variable != null : "Variable " + name + " is not set for " + getName();
         

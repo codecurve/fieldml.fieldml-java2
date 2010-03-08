@@ -8,7 +8,4 @@ public interface MeshEvaluator
     extends Evaluator<MeshDomain>
 {
     public abstract MeshDomainValue evaluate( DomainValues context );
-
-
-    public MeshDomainValue evaluate( DomainValues context, MeshDomain domain );
 }

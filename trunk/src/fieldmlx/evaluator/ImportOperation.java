@@ -32,7 +32,7 @@ public  class ImportOperation<D extends Domain, V extends DomainValue<D>>
     @Override
     public void perform( DomainValues context )
     {
-        V v = evaluator.evaluate( context, domain );
+        V v = evaluator.evaluate( context );
         if( v != null )
         {
             context.set( v );

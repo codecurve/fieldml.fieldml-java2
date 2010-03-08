@@ -10,7 +10,7 @@ import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
-import fieldmlx.evaluator.ContinuousClientVariableEvaluator;
+import fieldmlx.evaluator.MeshClientVariableEvaluator;
 
 /**
  * Very very simplistic FieldML-java to Collada converter.
@@ -33,8 +33,8 @@ public class MinimalColladaExporter
 
         StringBuilder xyzArray = new StringBuilder();
         StringBuilder polygonBlock = new StringBuilder();
-        ContinuousClientVariableEvaluator xi = new ContinuousClientVariableEvaluator( "xi", meshDomain.getXiDomain() );
-        context.setVariable( "library.xi.rc.2d", xi );
+        MeshClientVariableEvaluator meshValue = new MeshClientVariableEvaluator( "mesh", meshDomain );
+        context.setVariable( "test_mesh.value", meshValue );
         for( int elementNumber = 1; elementNumber <= elementCount; elementNumber++ )
         {
             for( int i = 0; i <= discretisation; i++ )
@@ -45,8 +45,7 @@ public class MinimalColladaExporter
                     final double xi1 = i / (double)discretisation;
                     final double xi2 = j / (double)discretisation;
 
-                    xi.setValue( xi1, xi2 );
-                    context.set( meshDomain, elementNumber, xi1, xi2 );
+                    meshValue.setValue( elementNumber, xi1, xi2 );
                     v = mesh.evaluate( context );
                     xyzArray.append( "\n" );
                     xyzArray.append( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
@@ -99,10 +98,10 @@ public class MinimalColladaExporter
         StringBuilder xyzArray = new StringBuilder();
         StringBuilder polygonBlock = new StringBuilder();
         DomainValues context = new DomainValues();
-        ContinuousClientVariableEvaluator xi1V = new ContinuousClientVariableEvaluator( "xi", mesh1Domain.getXiDomain() );
-        context.setVariable( "tv_test.spatial_xi", xi1V );
-        ContinuousClientVariableEvaluator xi2V = new ContinuousClientVariableEvaluator( "xi", mesh2Domain.getXiDomain() );
-        context.setVariable( "library.xi.rc.1d", xi2V );
+        MeshClientVariableEvaluator mesh1 = new MeshClientVariableEvaluator( "mesh1", mesh1Domain );
+        context.setVariable( "tv_test.spatial_xi", mesh1 );
+        MeshClientVariableEvaluator mesh2 = new MeshClientVariableEvaluator( "mesh2", mesh2Domain );
+        context.setVariable( "library.xi.rc.1d", mesh2 );
 
         int elementNumber = 0;
         for( int element1Number = 1; element1Number <= element1Count; element1Number++ )
@@ -117,10 +116,8 @@ public class MinimalColladaExporter
                         final double xi1 = i / (double)discretisation;
                         final double xi2 = j / (double)discretisation;
 
-                        xi1V.setValue( xi1 );
-                        context.set( mesh1Domain, element1Number, xi1 );
-                        xi2V.setValue( xi2 );
-                        context.set( mesh2Domain, element2Number, xi2 );
+                        mesh1.setValue( element1Number, xi1 );
+                        mesh2.setValue( element2Number, xi2 );
 
                         v = mesh.evaluate( context );
                         xyzArray.append( "\n" );
@@ -175,8 +172,8 @@ public class MinimalColladaExporter
 
         StringBuilder xyzArray = new StringBuilder();
         StringBuilder polygonBlock = new StringBuilder();
-        ContinuousClientVariableEvaluator xi = new ContinuousClientVariableEvaluator( "xi", meshDomain.getXiDomain() );
-        context.setVariable( "library.xi.rc.1d", xi );
+        MeshClientVariableEvaluator meshValue = new MeshClientVariableEvaluator( "mesh", meshDomain );
+        context.setVariable( meshName, meshValue );
         for( int elementNumber = 1; elementNumber <= elementCount; elementNumber++ )
         {
             x -= deltaX;
@@ -184,8 +181,7 @@ public class MinimalColladaExporter
             {
                 final double xi1 = j / (double)discretisation;
 
-                xi.setValue( xi1 );
-                context.set( meshDomain, elementNumber, xi1 );
+                meshValue.setValue( elementNumber, xi1 );
                 v = mesh.evaluate( context );
                 xyzArray.append( "\n" );
                 xyzArray.append( " " + x + " " + v.values[0] + " 0.0" );

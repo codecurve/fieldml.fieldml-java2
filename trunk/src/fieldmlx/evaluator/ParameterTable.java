@@ -7,8 +7,6 @@ import java.util.Iterator;
 import fieldml.domain.EnsembleDomain;
 import fieldml.util.SimpleMapEntry;
 import fieldml.value.DomainValue;
-import fieldml.value.DomainValues;
-import fieldml.value.EnsembleDomainValue;
 
 public class ParameterTable<V extends DomainValue<?>>
     implements Iterable<SimpleMapEntry<int[], V>>
@@ -109,18 +107,8 @@ public class ParameterTable<V extends DomainValue<?>>
     }
 
 
-    public V evaluate( DomainValues context )
+    public V evaluate( int[] indexes )
     {
-        int[] indexes = new int[parameterDomains.length];
-
-        EnsembleDomainValue index;
-        for( int i = 0; i < parameterDomains.length; i++ )
-        {
-            index = context.get( parameterDomains[i] );
-            assert index != null : "Index " + parameterDomains[i] + " is missing";
-            indexes[i] = index.values[0];
-        }
-
         V value = null;
         for( int i = 0; i < keys.size(); i++ )
         {
