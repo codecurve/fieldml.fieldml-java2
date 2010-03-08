@@ -6,7 +6,7 @@ import fieldml.value.EnsembleDomainValue;
 import fieldmlx.evaluator.CompositionEvaluator;
 
 public class EnsembleCompositeEvaluator
-    extends EnsembleEvaluator
+    extends AbstractEnsembleEvaluator
 {
     public final CompositionEvaluator<EnsembleDomain, EnsembleDomainValue> composer;
 

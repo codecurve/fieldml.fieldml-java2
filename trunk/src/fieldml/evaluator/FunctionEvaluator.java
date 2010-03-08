@@ -7,7 +7,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class FunctionEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     @SerializationAsString
     public final ContinuousFunction function;

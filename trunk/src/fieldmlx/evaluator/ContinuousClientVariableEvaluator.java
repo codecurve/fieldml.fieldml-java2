@@ -1,12 +1,12 @@
 package fieldmlx.evaluator;
 
 import fieldml.domain.ContinuousDomain;
-import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.AbstractContinuousEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class ContinuousClientVariableEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     public ContinuousClientVariableEvaluator( String name, ContinuousDomain valueDomain )
     {

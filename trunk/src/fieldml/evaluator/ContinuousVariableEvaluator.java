@@ -7,7 +7,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class ContinuousVariableEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     // This is only an advisory that the users of the variable may not work unless these dependencies exist.
     @SerializationAsString
