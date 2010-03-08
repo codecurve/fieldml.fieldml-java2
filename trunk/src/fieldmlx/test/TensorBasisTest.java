@@ -2,7 +2,6 @@ package fieldmlx.test;
 
 import junit.framework.TestCase;
 
-import org.junit.Assert;
 
 import fieldml.function.BilinearLagrange;
 import fieldml.function.BiquadraticLagrange;
@@ -17,7 +16,7 @@ public class TensorBasisTest
         assertEquals( expected.length, actual.length );
         for( int i = 0; i < expected.length; i++ )
         {
-            Assert.assertEquals( "Mismatch at entry " + i, expected[i], actual[i], 0.000001 );
+            assertEquals( "Mismatch at entry " + i, expected[i], actual[i], 0.000001 );
         }
     }
     
