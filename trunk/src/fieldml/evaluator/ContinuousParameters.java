@@ -7,7 +7,7 @@ import fieldml.value.DomainValues;
 import fieldmlx.evaluator.ParameterTable;
 
 public class ContinuousParameters
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     public final ParameterTable<ContinuousDomainValue> table;
 

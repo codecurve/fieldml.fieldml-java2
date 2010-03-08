@@ -6,7 +6,7 @@ import fieldml.value.EnsembleDomainValue;
 import fieldmlx.evaluator.ParameterTable;
 
 public class EnsembleParameters
-    extends EnsembleEvaluator
+    extends AbstractEnsembleEvaluator
 {
     public final ParameterTable<EnsembleDomainValue> table;
 

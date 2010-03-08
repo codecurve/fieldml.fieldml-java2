@@ -9,7 +9,7 @@ import fieldml.value.EnsembleDomainValue;
 import fieldmlx.evaluator.CompositionEvaluator;
 
 public class ContinuousCompositeEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     public final CompositionEvaluator<ContinuousDomain, ContinuousDomainValue> composer;
 

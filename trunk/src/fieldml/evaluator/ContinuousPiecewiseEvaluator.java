@@ -13,7 +13,7 @@ import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
 public class ContinuousPiecewiseEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     public static class TemplateMap
     {

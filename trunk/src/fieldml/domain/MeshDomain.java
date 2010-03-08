@@ -46,7 +46,7 @@ public class MeshDomain
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<String, EnsembleEvaluator>();
         fields = new ArrayList<ContinuousEvaluator>();
-        
+
         owner.addDomain( this );
     }
 
@@ -78,11 +78,11 @@ public class MeshDomain
     {
         if( pointDomain == null )
         {
-            pointDomain = evaluator.valueDomain.baseDomain;
+            pointDomain = evaluator.getValueDomain().baseDomain;
         }
         else
         {
-            assert pointDomain == evaluator.valueDomain.baseDomain;
+            assert pointDomain == evaluator.getValueDomain().baseDomain;
         }
 
         pointConnectivity.put( arrangement, evaluator );

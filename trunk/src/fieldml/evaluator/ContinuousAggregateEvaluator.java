@@ -9,7 +9,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class ContinuousAggregateEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     @SerializationAsString
     public final List<ContinuousEvaluator> sourceFields;

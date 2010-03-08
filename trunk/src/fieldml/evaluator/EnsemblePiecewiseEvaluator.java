@@ -11,7 +11,7 @@ import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
 public class EnsemblePiecewiseEvaluator
-    extends EnsembleEvaluator
+    extends AbstractEnsembleEvaluator
 {
     public static class TemplateMap
     {

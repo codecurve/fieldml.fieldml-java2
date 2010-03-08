@@ -119,7 +119,7 @@ public class ReflectiveWalker
             return;
         }
 
-        Field[] fields = o.getClass().getFields();
+        Field[] fields = o.getClass().getDeclaredFields();
 
         for( Field f : fields )
         {

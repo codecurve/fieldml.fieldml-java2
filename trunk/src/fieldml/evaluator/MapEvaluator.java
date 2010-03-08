@@ -6,7 +6,7 @@ import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
 public class MapEvaluator
-    extends ContinuousEvaluator
+    extends AbstractContinuousEvaluator
 {
     @SerializationAsString
     public final EnsembleEvaluator valueIndexes;

@@ -6,6 +6,7 @@ import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
 public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<D>>
+    implements Evaluator<D>
 {
     public final String name;
 
