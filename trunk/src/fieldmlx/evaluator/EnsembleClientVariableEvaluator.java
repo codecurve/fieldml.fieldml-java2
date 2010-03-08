@@ -3,31 +3,31 @@ package fieldmlx.evaluator;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import fieldml.domain.ContinuousDomain;
-import fieldml.evaluator.AbstractContinuousEvaluator;
+import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.AbstractEnsembleEvaluator;
 import fieldml.evaluator.Evaluator;
-import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleDomainValue;
 
-public class ContinuousClientVariableEvaluator
-    extends AbstractContinuousEvaluator
+public class EnsembleClientVariableEvaluator
+    extends AbstractEnsembleEvaluator
 {
-    public ContinuousClientVariableEvaluator( String name, ContinuousDomain valueDomain )
+    public EnsembleClientVariableEvaluator( String name, EnsembleDomain valueDomain )
     {
         super( name, valueDomain );
     }
 
-    private ContinuousDomainValue value;
+    private EnsembleDomainValue value;
 
 
-    public void setValue( double... values )
+    public void setValue( int... values )
     {
         value = valueDomain.makeValue( values );
     }
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public EnsembleDomainValue evaluate( DomainValues context )
     {
         return value;
     }

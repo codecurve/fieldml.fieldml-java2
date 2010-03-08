@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import fieldml.annotations.SerializationAsString;
-import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
-import fieldml.value.ContinuousDomainValue;
+import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleDomainValue;
 
-public class ContinuousVariableEvaluator
-    extends AbstractContinuousEvaluator
+public class EnsembleVariableEvaluator
+    extends AbstractEnsembleEvaluator
 {
     // This is only an advisory that the users of the variable may not work unless these dependencies exist.
     @SerializationAsString
     public Domain[] parameterDomains;
 
 
-    public ContinuousVariableEvaluator( String name, ContinuousDomain valueDomain, Domain... parameterDomains )
+    public EnsembleVariableEvaluator( String name, EnsembleDomain valueDomain, Domain... parameterDomains )
     {
         super( name, valueDomain );
 
@@ -26,12 +26,12 @@ public class ContinuousVariableEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public EnsembleDomainValue evaluate( DomainValues context )
     {
-        ContinuousEvaluator variable = context.getContinuousVariable( name );
+        EnsembleEvaluator variable = context.getEnsembleVariable( name );
 
         assert variable != null : "Variable " + name + " is not set for " + getName();
-        
+
         return variable.evaluate( context );
     }
 

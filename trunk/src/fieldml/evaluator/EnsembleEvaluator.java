@@ -8,7 +8,4 @@ public interface EnsembleEvaluator
     extends Evaluator<EnsembleDomain>
 {
     public EnsembleDomainValue evaluate( DomainValues context );
-
-
-    public EnsembleDomainValue evaluate( DomainValues context, EnsembleDomain domain );
 }

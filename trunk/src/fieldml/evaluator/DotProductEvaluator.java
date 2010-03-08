@@ -1,5 +1,8 @@
 package fieldml.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.value.ContinuousDomainValue;
@@ -77,5 +80,21 @@ public class DotProductEvaluator
             double[] tScales = scales.evaluate( context ).values;
             return valueDomain.makeValue( dotProduct( tWeights, tValues, tScales ) );
         }
+    }
+
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        ArrayList<Evaluator<?>> variables = new ArrayList<Evaluator<?>>();
+
+        variables.addAll( weights.getVariables() );
+        variables.addAll( values.getVariables() );
+        if( scales != null )
+        {
+            variables.addAll( scales.getVariables() );
+        }
+
+        return variables;
     }
 }

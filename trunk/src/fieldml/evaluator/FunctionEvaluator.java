@@ -1,5 +1,7 @@
 package fieldml.evaluator;
 
+import java.util.Collection;
+
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.function.ContinuousFunction;
@@ -33,4 +35,10 @@ public class FunctionEvaluator
         return valueDomain.makeValue( function.evaluate( args ) );
     }
 
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        return inputSource.getVariables();
+    }
 }

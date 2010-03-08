@@ -1,5 +1,8 @@
 package fieldml.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
@@ -10,12 +13,22 @@ public class EnsembleParameters
 {
     public final ParameterTable<EnsembleDomainValue> table;
 
+    private final EnsembleEvaluator[] indexEvaluators;
 
-    public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleDomain... parameterDomains )
+
+    public EnsembleParameters( String name, EnsembleDomain valueDomain, EnsembleEvaluator... indexEvaluators )
     {
         super( name, valueDomain );
 
+        EnsembleDomain[] parameterDomains = new EnsembleDomain[indexEvaluators.length];
+        for( int i = 0; i < indexEvaluators.length; i++ )
+        {
+            parameterDomains[i] = indexEvaluators[i].getValueDomain();
+        }
+
         table = new ParameterTable<EnsembleDomainValue>( parameterDomains );
+
+        this.indexEvaluators = indexEvaluators;
     }
 
 
@@ -67,6 +80,19 @@ public class EnsembleParameters
     @Override
     public EnsembleDomainValue evaluate( DomainValues context )
     {
-        return table.evaluate( context );
+        int[] indexes = new int[indexEvaluators.length];
+        for( int i = 0; i < indexEvaluators.length; i++ )
+        {
+            indexes[i] = indexEvaluators[i].evaluate( context ).values[0];
+        }
+
+        return table.evaluate( indexes );
+    }
+
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        return new ArrayList<Evaluator<?>>();
     }
 }

@@ -1,6 +1,7 @@
 package fieldml.evaluator;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import fieldml.annotations.SerializationAsString;
@@ -29,22 +30,22 @@ public class EnsemblePiecewiseEvaluator
     }
 
     @SerializationAsString
-    public final EnsembleDomain indexDomain;
+    public final EnsembleEvaluator indexSource;
 
     public final SimpleMap<String, ContinuousEvaluator> variables;
 
     public final List<TemplateMap> elementMaps;
 
 
-    public EnsemblePiecewiseEvaluator( String name, EnsembleDomain valueDomain, EnsembleDomain indexDomain )
+    public EnsemblePiecewiseEvaluator( String name, EnsembleDomain valueDomain, EnsembleEvaluator indexSource )
     {
         super( name, valueDomain );
 
-        this.indexDomain = indexDomain;
+        this.indexSource = indexSource;
 
         elementMaps = new ArrayList<TemplateMap>();
         variables = new SimpleMap<String, ContinuousEvaluator>();
-        for( int i = 0; i <= indexDomain.getValueCount(); i++ )
+        for( int i = 0; i <= indexSource.getValueDomain().getValueCount(); i++ )
         {
             elementMaps.add( null );
         }
@@ -72,7 +73,7 @@ public class EnsemblePiecewiseEvaluator
             localContext.setVariable( e.key, e.value );
         }
 
-        EnsembleDomainValue v = context.get( indexDomain );
+        EnsembleDomainValue v = indexSource.evaluate( context );
 
         TemplateMap templateMap = elementMaps.get( v.values[0] );
 
@@ -91,5 +92,19 @@ public class EnsemblePiecewiseEvaluator
     public String toString()
     {
         return name;
+    }
+
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        ArrayList<Evaluator<?>> variables = new ArrayList<Evaluator<?>>();
+
+        for( TemplateMap t : elementMaps )
+        {
+            variables.addAll( t.evaluator.getVariables() );
+        }
+
+        return variables;
     }
 }

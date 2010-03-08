@@ -1,5 +1,8 @@
 package fieldml.evaluator;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
@@ -11,12 +14,22 @@ public class ContinuousParameters
 {
     public final ParameterTable<ContinuousDomainValue> table;
 
+    private final EnsembleEvaluator[] indexEvaluators;
 
-    public ContinuousParameters( String name, ContinuousDomain valueDomain, EnsembleDomain... parameterDomains )
+
+    public ContinuousParameters( String name, ContinuousDomain valueDomain, EnsembleEvaluator... indexEvaluators )
     {
         super( name, valueDomain );
 
+        EnsembleDomain[] parameterDomains = new EnsembleDomain[indexEvaluators.length];
+        for( int i = 0; i < indexEvaluators.length; i++ )
+        {
+            parameterDomains[i] = indexEvaluators[i].getValueDomain();
+        }
+
         table = new ParameterTable<ContinuousDomainValue>( parameterDomains );
+        
+        this.indexEvaluators = indexEvaluators;
     }
 
 
@@ -54,6 +67,19 @@ public class ContinuousParameters
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        return table.evaluate( context );
+        int[] indexes = new int[indexEvaluators.length];
+        for( int i = 0; i < indexEvaluators.length; i++ )
+        {
+            indexes[i] = indexEvaluators[i].evaluate( context ).values[0];
+        }
+
+        return table.evaluate( indexes );
+    }
+
+
+    @Override
+    public Collection<? extends Evaluator<?>> getVariables()
+    {
+        return new ArrayList<Evaluator<?>>();
     }
 }
