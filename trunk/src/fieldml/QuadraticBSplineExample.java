@@ -107,7 +107,7 @@ public class QuadraticBSplineExample
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.1d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
@@ -134,7 +134,7 @@ public class QuadraticBSplineExample
 
         testRegion.addEvaluator( lineNodeList );
 
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
         ContinuousParameters zDofs = new ContinuousParameters( "test_mesh.dofs.z", rc1CoordinatesDomain, globalDofsDomain );
         zDofs.setValue( 1, 0.954915 );

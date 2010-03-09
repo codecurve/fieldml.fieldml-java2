@@ -9,7 +9,7 @@
 4____5____6_12_13
 -->
   <Region name="Fieldml_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" />
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
     <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
@@ -56,21 +56,21 @@
     <FunctionEvaluator function="BilinearSimplex" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
     
 
-    <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -80,7 +80,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
@@ -90,7 +90,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -128,7 +128,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -186,7 +186,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
       <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
     </ContinuousAggregateEvaluator>
     
@@ -229,14 +229,14 @@
     </EnsembleParameters>
     
 
-    <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
       </variables>
     </PiecewiseField>
     
 
-    <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
       </variables>

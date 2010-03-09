@@ -11,7 +11,7 @@
 6______7____8
 -->
   <Region name="HangingNode_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" />
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
     <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
@@ -87,7 +87,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.point.x" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.point.x" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -121,7 +121,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.point.y" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.point.y" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -158,18 +158,18 @@
     <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
     
 
-    <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.local_dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.bilinear_lagrange" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
@@ -178,7 +178,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.co-ordinates.rc.2d">
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
       <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
     </ContinuousAggregateEvaluator>
     
@@ -239,14 +239,14 @@
     </EnsembleParameters>
     
 
-    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.x" />
       </variables>
     </PiecewiseField>
     
 
-    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.y" />
       </variables>

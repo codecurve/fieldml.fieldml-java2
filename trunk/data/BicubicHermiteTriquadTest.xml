@@ -13,13 +13,13 @@
         7        
 -->
   <Region name="BicubicHermiteTriquad_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" />
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
-    <ContinuousDomain name="test_mesh.co-ordinates.d/ds" componentDomain="library.anonymous" />
+    <ContinuousDomain name="test_mesh.coordinates.d/ds" componentDomain="library.anonymous" />
     
 
-    <ContinuousDomain name="test_mesh.co-ordinates.d2/ds1ds2" />
+    <ContinuousDomain name="test_mesh.coordinates.d2/ds1ds2" />
     
 
     <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
@@ -42,17 +42,17 @@
     </MeshDomain>
     
 
-    <ContinuousVariableEvaluator name="test_mesh.node.dofs.u" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.u" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousVariableEvaluator name="test_mesh.node.dofs.du/ds" valueDomain="test_mesh.co-ordinates.d/ds">
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.du/ds" valueDomain="test_mesh.coordinates.d/ds">
       <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousVariableEvaluator name="test_mesh.node.dofs.d2u/ds2" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.d2u/ds2" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
@@ -165,13 +165,13 @@
     </ContinuousParameters>
     
 
-    <DotProductEvaluator values="test_mesh.node.dofs.du/ds" weights="test_mesh.node.ds1.weights" name="test_mesh.node.du/ds1" valueDomain="test_mesh.co-ordinates.d/ds" />
+    <DotProductEvaluator values="test_mesh.node.dofs.du/ds" weights="test_mesh.node.ds1.weights" name="test_mesh.node.du/ds1" valueDomain="test_mesh.coordinates.d/ds" />
     
 
-    <DotProductEvaluator values="test_mesh.node.dofs.du/ds" weights="test_mesh.node.ds2.weights" name="test_mesh.node.du/ds2" valueDomain="test_mesh.co-ordinates.d/ds" />
+    <DotProductEvaluator values="test_mesh.node.dofs.du/ds" weights="test_mesh.node.ds2.weights" name="test_mesh.node.du/ds2" valueDomain="test_mesh.coordinates.d/ds" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="library.interpolation.hermite.derivatives" name="test_mesh.bicubic_hermite_parameters" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="library.interpolation.hermite.derivatives" name="test_mesh.bicubic_hermite_parameters" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.node.dofs.u" />
         <TemplateMap index="2" evaluator="test_mesh.node.du/ds1" />
@@ -184,10 +184,10 @@
     <FunctionEvaluator function="BicubicHermite" inputDomain="test_mesh.domain.xi" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
     
 
-    <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.co-ordinates.rc.1d" />
+    <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.h3" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.h3" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
         <TemplateMap index="1" evaluator="test_mesh.element.bicubic_hermite" />
         <TemplateMap index="2" evaluator="test_mesh.element.bicubic_hermite" />
@@ -196,7 +196,7 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -230,7 +230,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -264,7 +264,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.z" valueDomain="library.co-ordinates.rc.1d">
+    <ContinuousParameters name="test_mesh.node.z" valueDomain="library.coordinates.rc.1d">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -298,7 +298,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.dx/ds" valueDomain="test_mesh.co-ordinates.d/ds">
+    <ContinuousParameters name="test_mesh.node.dx/ds" valueDomain="test_mesh.coordinates.d/ds">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -332,7 +332,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.dy/ds" valueDomain="test_mesh.co-ordinates.d/ds">
+    <ContinuousParameters name="test_mesh.node.dy/ds" valueDomain="test_mesh.coordinates.d/ds">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -366,7 +366,7 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.co-ordinates.d/ds">
+    <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.coordinates.d/ds">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -400,16 +400,16 @@
     </ContinuousParameters>
     
 
-    <ContinuousParameters name="test_mesh.node.d2x/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2" />
+    <ContinuousParameters name="test_mesh.node.d2x/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
     
 
-    <ContinuousParameters name="test_mesh.node.d2y/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2" />
+    <ContinuousParameters name="test_mesh.node.d2y/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
     
 
-    <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.co-ordinates.d2/ds1ds2" />
+    <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
     
 
-    <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.co-ordinates.rc.3d">
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.coordinates.rc.3d">
       <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  "test_mesh.coordinates.z"  </sourceFields>
     </ContinuousAggregateEvaluator>
     
@@ -468,7 +468,7 @@
     </EnsembleParameters>
     
 
-    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.x" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.x" />
         <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dx/ds" />
@@ -477,7 +477,7 @@
     </PiecewiseField>
     
 
-    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.y" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.y" />
         <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dy/ds" />
@@ -486,7 +486,7 @@
     </PiecewiseField>
     
 
-    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.z" valueDomain="library.co-ordinates.rc.1d">
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.z" valueDomain="library.coordinates.rc.1d">
       <variables>
         <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.z" />
         <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dz/ds" />

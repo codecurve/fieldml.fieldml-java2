@@ -74,11 +74,11 @@ public class Library
 
         EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", 16 );
 
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1", 1 );
+        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", 1 );
 
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2", 2 );
+        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", 2 );
 
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3", 3 );
+        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", 3 );
 
         new EnsembleDomain( this, "library.edge_direction.quad", 2 );
 
@@ -90,11 +90,11 @@ public class Library
 
         addDomain( new ContinuousDomain( this, "library.weighting" ) );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.1d", rc1CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.1d", rc1CoordinateDomain );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.2d", rc2CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.2d", rc2CoordinateDomain );
 
-        new ContinuousDomain( this, "library.co-ordinates.rc.3d", rc3CoordinateDomain );
+        new ContinuousDomain( this, "library.coordinates.rc.3d", rc3CoordinateDomain );
 
         new ContinuousDomain( this, "library.linear_lagrange.parameters", line1LocalNodeDomain );
 
