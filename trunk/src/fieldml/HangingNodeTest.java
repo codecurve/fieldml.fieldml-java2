@@ -104,7 +104,7 @@ public class HangingNodeTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -154,8 +154,8 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( quadNodeList );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
         meshPointsX.setValue( 1, 00.0 );
@@ -230,7 +230,7 @@ public class HangingNodeTest
         Region library = world.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, world );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -283,8 +283,8 @@ public class HangingNodeTest
         elementIndexes.setValue( new int[]{ 3, 3 }, 2, 6 );
         elementIndexes.setValue( new int[]{ 3, 4 }, 4 );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh2DDomain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
         ContinuousParameters meshPointsX = new ContinuousParameters( "test_mesh.point.x", mesh1DDomain, globalDofsDomain );
         meshPointsX.setValue( 1, 00.0 );

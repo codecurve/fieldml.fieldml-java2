@@ -113,10 +113,10 @@ public class TimeVaryingExample
 
         tvRegion.addSubregion( bsplineRegion );
 
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.1d" );
 
         MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", xiComponentDomain, 3 );
         timeMeshDomain.setDefaultShape( "line_0_1" );
@@ -249,8 +249,8 @@ public class TimeVaryingExample
         Region bsplineRegion = testRegion.getSubregion( QuadraticBSplineExample.REGION_NAME );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.coordinates.rc.3d" );
         // These are only for visualization. Do not serialize.
 
         EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );

@@ -64,7 +64,7 @@ public class BicubicHermiteTest
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -79,12 +79,12 @@ public class BicubicHermiteTest
         quadNodeList.setValue( 2, 2, 5, 4, 6 );
         testRegion.addEvaluator( quadNodeList );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.coordinates.rc.3d" );
 
-        ContinuousDomain meshdZdomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.dz/ds" );
+        ContinuousDomain meshdZdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.dz/ds" );
 
-        ContinuousDomain meshd2Zdomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d2z/ds1ds2" );
+        ContinuousDomain meshd2Zdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d2z/ds1ds2" );
 
         ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodesDomain );
         testRegion.addEvaluator( nodalUDofs );

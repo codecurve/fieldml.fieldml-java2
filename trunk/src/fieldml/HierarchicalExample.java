@@ -108,7 +108,7 @@ public class HierarchicalExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.1d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.1d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", xiComponentDomain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
@@ -116,7 +116,7 @@ public class HierarchicalExample
 
         EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "hierarchical_mesh.dofs", 12 );
 
-        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
+        ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
         ContinuousParameters zDofs = new ContinuousParameters( "hierarchical_mesh.dofs.z", rc1CoordinatesDomain, globalDofsDomain );
         zDofs.setValue( 1, 0.954915 );

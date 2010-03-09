@@ -60,7 +60,7 @@ public class BicubicHermiteTriquadTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -78,16 +78,16 @@ public class BicubicHermiteTriquadTest
         quadNodeList.setValue( 3, 6, 5, 7, 4 );
         testRegion.addEvaluator( quadNodeList );
 
-        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.co-ordinates.rc.3d" );
+        ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.coordinates.rc.3d" );
 
-        ContinuousDomain meshddsDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d/ds" );
+        ContinuousDomain meshddsDomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d/ds" );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
         
-        ContinuousDomain meshddsListDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d/ds", anonymous );
+        ContinuousDomain meshddsListDomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d/ds", anonymous );
 
-        ContinuousDomain meshd2dsDomain = new ContinuousDomain( testRegion, "test_mesh.co-ordinates.d2/ds1ds2" );
+        ContinuousDomain meshd2dsDomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d2/ds1ds2" );
 
         ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodesDomain );
         testRegion.addEvaluator( nodalUDofs );

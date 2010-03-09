@@ -117,7 +117,7 @@ public class FieldmlTest
 
         context.set( meshDomain, 4, 0.5, 0.5 );
         meshXY.evaluate( context );
-        output = context.get( meshXY.getValueDomain() );
+        output = meshXY.evaluate( context );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
         
@@ -160,7 +160,7 @@ public class FieldmlTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region library = testRegion.getLibrary();
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.co-ordinates.rc.2d" );
+        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
@@ -197,8 +197,8 @@ public class FieldmlTest
         meshDomain.setPointConnectivity( "quad_1x1", quadNodeList );
         meshDomain.setPointConnectivity( "quad_2x2", biquadNodeList );
 
-        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.co-ordinates.rc.1d" );
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.co-ordinates.rc.2d" );
+        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
