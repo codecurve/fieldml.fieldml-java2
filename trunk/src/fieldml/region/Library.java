@@ -109,6 +109,8 @@ public class Library
         new ContinuousDomain( this, "library.bilinear_simplex.parameters", triangle1x1LocalNodeDomain );
 
         new ContinuousDomain( this, "library.bicubic_hermite.parameters", bicubicHermiteParameterDomain );
+        
+        new ContinuousDomain( this, "library.bicubic_hermite.scaling", bicubicHermiteParameterDomain );
 
         new ContinuousDomain( this, "library.quadratic_bspline.parameters", quadraticBSplineParameterDomain );
 

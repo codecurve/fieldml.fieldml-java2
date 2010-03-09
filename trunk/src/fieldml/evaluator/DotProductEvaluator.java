@@ -9,13 +9,13 @@ public class DotProductEvaluator
     extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final ContinuousEvaluator values;
+    public final ContinuousDomain values;
 
     @SerializationAsString
-    public final ContinuousEvaluator weights;
+    public final ContinuousDomain weights;
 
     @SerializationAsString
-    public final ContinuousEvaluator scales;
+    public final ContinuousDomain scales;
 
 
     public static double dotProduct( double[] v1, double v2[] )
@@ -44,8 +44,8 @@ public class DotProductEvaluator
     }
 
 
-    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousEvaluator valueSource,
-        ContinuousEvaluator valueWeights, ContinuousEvaluator valueScale )
+    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousDomain valueSource, ContinuousDomain valueWeights,
+        ContinuousDomain valueScale )
     {
         super( name, valueDomain );
         this.values = valueSource;
@@ -54,7 +54,9 @@ public class DotProductEvaluator
     }
 
 
-    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousEvaluator valueSource, ContinuousEvaluator valueWeights )
+    public DotProductEvaluator( String name, ContinuousDomain valueDomain, ContinuousDomain valueSource, ContinuousDomain valueWeights 
+
+)
     {
         this( name, valueDomain, valueSource, valueWeights, null );
     }
@@ -65,8 +67,8 @@ public class DotProductEvaluator
     {
         // TODO Currently assumes that values is scalar.
 
-        double[] tWeights = weights.evaluate( context ).values;
-        double[] tValues = values.evaluate( context ).values;
+        double[] tWeights = context.get( weights ).values;
+        double[] tValues = context.get( values ).values;
 
         if( scales == null )
         {
@@ -74,7 +76,7 @@ public class DotProductEvaluator
         }
         else
         {
-            double[] tScales = scales.evaluate( context ).values;
+            double[] tScales = context.get( scales ).values;
             return valueDomain.makeValue( dotProduct( tWeights, tValues, tScales ) );
         }
     }

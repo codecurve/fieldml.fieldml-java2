@@ -81,6 +81,9 @@ public class ContinuousPiecewiseEvaluator
         if( templateMap != null )
         {
             ContinuousDomainValue templateValue = templateMap.evaluator.evaluate( context );
+            
+            assert templateValue != null : getName() + " got no value from " + templateMap.evaluator;
+            
             return new ContinuousDomainValue( valueDomain, templateValue.values );
         }
 
