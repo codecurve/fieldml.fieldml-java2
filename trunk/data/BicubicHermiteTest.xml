@@ -106,7 +106,7 @@
     <FunctionEvaluator function="BicubicHermite" inputDomain="test_mesh.domain.xi" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
     
 
-    <ContinuousParameters name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.parameters">
+    <ContinuousParameters name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.scaling">
       <table>
         <SimpleMapEntry>
           <key>1  </key>
@@ -120,7 +120,19 @@
     </ContinuousParameters>
     
 
-    <DotProductEvaluator values="test_mesh.bicubic_hermite.element_parameters" weights="test_mesh.bicubic_hermite" scales="test_mesh.cubic_hermite_scaling" name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d" />
+    <DotProductEvaluator values="library.bicubic_hermite.parameters" weights="library.weighting.list" scales="library.bicubic_hermite.scaling" name="test_mesh.element.bicubic_hermite_evaluator" valueDomain="library.coordinates.rc.1d" />
+    
+
+    <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
+          <ImportOperation evaluator="test_mesh.bicubic_hermite" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.cubic_hermite_scaling" domain="library.bicubic_hermite.scaling" />
+          <ImportOperation evaluator="test_mesh.element.bicubic_hermite_evaluator" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.H3" valueDomain="library.coordinates.rc.1d">

@@ -154,8 +154,9 @@ public class BicubicHermiteTest
         hermiteNodeParameterNumber.setValues( 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 );
 
         ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
+        ContinuousDomain bicubicHermiteScalingDomain = library.getContinuousDomain( "library.bicubic_hermite.scaling" );
 
-        ContinuousParameters hermiteScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling", bicubicHermiteParametersDomain,
+        ContinuousParameters hermiteScaling = new ContinuousParameters( "test_mesh.cubic_hermite_scaling", bicubicHermiteScalingDomain,
             meshDomain.getElementDomain() );
         hermiteScaling.setValue( 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 );
         hermiteScaling.setValue( 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2, 1, 2 );
@@ -169,11 +170,19 @@ public class BicubicHermiteTest
         elementHermiteParameter.importField( bicubicHermiteParameters );
 
         ContinuousCompositeEvaluator elementHermiteParameters = new ContinuousCompositeEvaluator(
-            "test_mesh.bicubic_hermite.element_parameters", bicubicHermiteParametersDomain );
+            "test_mesh.element.bicubic_hermite_parameters", bicubicHermiteParametersDomain );
         elementHermiteParameters.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
 
-        ContinuousEvaluator elementBicubicHermite = new DotProductEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain,
-            elementHermiteParameters, meshBicubicHermite, hermiteScaling );
+        ContinuousEvaluator elementBicubicHermiteEvaluator = new DotProductEvaluator( "test_mesh.element.bicubic_hermite_evaluator", mesh1DDomain,
+            bicubicHermiteParametersDomain, weightingDomain, bicubicHermiteScalingDomain );
+        testRegion.addEvaluator( elementBicubicHermiteEvaluator );
+        
+        ContinuousCompositeEvaluator elementBicubicHermite = new ContinuousCompositeEvaluator(
+            "test_mesh.element.bicubic_hermite", mesh1DDomain );
+        elementBicubicHermite.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
+        elementBicubicHermite.importField( meshBicubicHermite );
+        elementBicubicHermite.importField( hermiteScaling, bicubicHermiteScalingDomain );
+        elementBicubicHermite.importField( elementBicubicHermiteEvaluator );
         testRegion.addEvaluator( elementBicubicHermite );
 
         ContinuousPiecewiseEvaluator meshCoordinatesH3 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.H3", mesh1DDomain,
