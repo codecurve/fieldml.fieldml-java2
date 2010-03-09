@@ -16,7 +16,7 @@ public class TensorBasisTest
         assertEquals( expected.length, actual.length );
         for( int i = 0; i < expected.length; i++ )
         {
-            assertEquals( "Mismatch at entry " + i, expected[i], actual[i], 0.000001 );
+            assertEquals( "Mismatch at entry " + i, expected[i], actual[i], tolerance );
         }
     }
     
