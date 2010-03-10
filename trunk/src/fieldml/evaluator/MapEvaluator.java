@@ -2,6 +2,7 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
+import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 
@@ -9,16 +10,16 @@ public class MapEvaluator
     extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final EnsembleEvaluator valueIndexes;
+    public final EnsembleDomain valueIndexes;
 
     @SerializationAsString
-    public final ContinuousEvaluator valueWeights;
+    public final ContinuousDomain valueWeights;
 
     @SerializationAsString
     public final ContinuousEvaluator valueSource;
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleEvaluator valueIndexes, ContinuousEvaluator valueWeights,
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleDomain valueIndexes, ContinuousDomain valueWeights,
         ContinuousEvaluator valueSource )
     {
         super( name, valueDomain );
@@ -32,13 +33,13 @@ public class MapEvaluator
     @Override
     public ContinuousDomainValue evaluate( DomainValues context )
     {
-        double[] weights = valueWeights.evaluate( context ).values;
-        int[] indexes = valueIndexes.evaluate( context ).values;
+        double[] weights = context.get( valueWeights ).values;
+        int[] indexes = context.get( valueIndexes ).values;
         double[] values = new double[indexes.length];
 
         for( int i = 0; i < indexes.length; i++ )
         {
-            context.set( valueIndexes.getValueDomain().baseDomain, indexes[i] );
+            context.set( valueIndexes.baseDomain, indexes[i] );
             values[i] = valueSource.evaluate( context ).values[0];
         }
 

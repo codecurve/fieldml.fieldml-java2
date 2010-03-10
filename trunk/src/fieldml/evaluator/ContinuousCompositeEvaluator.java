@@ -27,6 +27,12 @@ public class ContinuousCompositeEvaluator
         composer.importValue( value );
     }
 
+
+    public void aliasValue( ContinuousDomain sourceDomain, ContinuousDomain destinationDomain )
+    {
+        composer.aliasValue( sourceDomain, destinationDomain );
+    }
+
     
     public <D extends Domain> void importField( AbstractEvaluator<D, ? extends DomainValue<D>> evaluator, D domain )
     {

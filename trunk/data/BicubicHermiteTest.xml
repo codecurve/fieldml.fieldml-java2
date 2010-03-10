@@ -89,10 +89,19 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
+    <MapEvaluator valueIndexes="test_mesh.nodes" valueWeights="library.weighting.list" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange_map" valueDomain="library.coordinates.rc.1d" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
+    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.nodes" />
+          <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.L2" valueDomain="library.coordinates.rc.1d">
@@ -101,9 +110,6 @@
         <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
       </elementMaps>
     </ContinuousPiecewiseEvaluator>
-    
-
-    <FunctionEvaluator function="BicubicHermite" inputDomain="test_mesh.domain.xi" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
     
 
     <ContinuousParameters name="test_mesh.cubic_hermite_scaling" valueDomain="library.bicubic_hermite.scaling">
@@ -126,8 +132,9 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
-          <ImportOperation evaluator="test_mesh.bicubic_hermite" domain="library.weighting.list" />
+          <ImportOperation evaluator="library.function.bicubic_hermite" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.cubic_hermite_scaling" domain="library.bicubic_hermite.scaling" />
           <ImportOperation evaluator="test_mesh.element.bicubic_hermite_evaluator" domain="library.coordinates.rc.1d" />
         </operations>

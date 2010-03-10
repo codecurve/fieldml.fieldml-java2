@@ -162,8 +162,14 @@ public class HierarchicalExample
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "hierarchical_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        MapEvaluator elementLocalDofs = new MapEvaluator( "hierarchical_mesh.element.local_dofs", rc1CoordinatesDomain, elementDofIndexes,
-            elementDofWeights, dofs );
+        MapEvaluator elementLocalDofsMap = new MapEvaluator( "hierarchical_mesh.element.local_dofs_map", rc1CoordinatesDomain, globalDofsDomain,
+            weighting, dofs );
+        testRegion.addEvaluator( elementLocalDofsMap );
+        
+        ContinuousCompositeEvaluator elementLocalDofs = new ContinuousCompositeEvaluator( "hierarchical_mesh.element.local_dofs", rc1CoordinatesDomain );
+        elementLocalDofs.importField( elementDofIndexes );
+        elementLocalDofs.importField( elementDofWeights );
+        elementLocalDofs.importField( elementLocalDofsMap );
         testRegion.addEvaluator( elementLocalDofs );
         
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );

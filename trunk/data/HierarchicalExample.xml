@@ -88,7 +88,18 @@
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="hierarchical_mesh.dofs" valueWeights="library.weighting.list" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs_map" valueDomain="library.coordinates.rc.1d" />
+    
+
+    <ContinuousCompositeEvaluator name="hierarchical_mesh.element.local_dofs" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <ImportOperation evaluator="hierarchical_mesh.element_dof_indexes" domain="hierarchical_mesh.dofs" />
+          <ImportOperation evaluator="hierarchical_mesh.element_dof_weights" domain="library.weighting.list" />
+          <ImportOperation evaluator="hierarchical_mesh.element.local_dofs_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.coordinates" valueDomain="library.coordinates.rc.1d">

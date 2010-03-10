@@ -9,7 +9,6 @@ import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.function.ContinuousFunction;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
 import fieldml.util.SimpleMap;
@@ -27,8 +26,6 @@ public abstract class Region
 
     private final SimpleMap<String, EnsembleEvaluator> ensembleEvaluators;
 
-    private final SimpleMap<String, ContinuousFunction> functions;
-
     private final Map<String, Region> subregions;
 
     private final String name;
@@ -43,7 +40,6 @@ public abstract class Region
         ensembleDomains = new SimpleMap<String, EnsembleDomain>();
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
-        functions = new SimpleMap<String, ContinuousFunction>();
         subregions = new HashMap<String, Region>();
     }
 
@@ -75,16 +71,6 @@ public abstract class Region
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
 
         return domain;
-    }
-
-
-    public ContinuousFunction getContinuousFunction( String name )
-    {
-        ContinuousFunction function = functions.get( name );
-
-        assert function != null : "Function " + name + " does not exist in region " + this.name;
-
-        return function;
     }
 
 
@@ -123,12 +109,6 @@ public abstract class Region
     public void addDomain( EnsembleDomain domain )
     {
         ensembleDomains.put( domain.name, domain );
-    }
-
-
-    public void addFunction( String name, ContinuousFunction function )
-    {
-        functions.put( name, function );
     }
 
 

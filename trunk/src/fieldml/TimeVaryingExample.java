@@ -7,13 +7,13 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
+import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.function.QuadraticBSpline;
@@ -145,15 +145,20 @@ public class TimeVaryingExample
 
         tvRegion.addEvaluator( elementDofIndexes );
 
-        FunctionEvaluator quadraticLagrange = new FunctionEvaluator( "test_mesh.quadratic_lagrange", weightingDomain, timeMeshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.quadratic_lagrange" ) );
-        tvRegion.addEvaluator( quadraticLagrange );
+        ContinuousEvaluator quadraticLagrange = library.getContinuousEvaluator( "library.function.quadratic_lagrange" );
 
         ContinuousVariableEvaluator tvMeshDofs = new ContinuousVariableEvaluator( "tv_test.mesh.dofs", rc1CoordinatesDomain, timeDofsDomain );
         tvRegion.addEvaluator( tvMeshDofs );
 
-        MapEvaluator elementQLagrange = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain,
-            elementDofIndexes, quadraticLagrange, tvMeshDofs );
+        MapEvaluator elementQLagrangeMap = new MapEvaluator( "test_mesh.element.quadratic_lagrange_map", rc1CoordinatesDomain,
+            timeDofsListDomain, weightingDomain, tvMeshDofs );
+        tvRegion.addEvaluator( elementQLagrangeMap );
+        
+        ContinuousCompositeEvaluator elementQLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.quadratic_lagrange", rc1CoordinatesDomain );
+        elementQLagrange.aliasValue( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementQLagrange.importField( elementDofIndexes );
+        elementQLagrange.importField( quadraticLagrange );
+        elementQLagrange.importField( elementQLagrangeMap );
         tvRegion.addEvaluator( elementQLagrange );
 
         ContinuousPiecewiseEvaluator meshTimeTemplate = new ContinuousPiecewiseEvaluator( "tv_test.time.template", rc1CoordinatesDomain, timeMeshDomain.getElementDomain() );
@@ -253,6 +258,7 @@ public class TimeVaryingExample
         ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.coordinates.rc.3d" );
         // These are only for visualization. Do not serialize.
 
+        EnsembleDomain globalNodesListDomain = bsplineRegion.getEnsembleDomain( "test_mesh.line_nodes.domain" );
         EnsembleDomain globalNodesDomain = bsplineRegion.getEnsembleDomain( "test_mesh.nodes" );
         EnsembleEvaluator lineNodeList = bsplineRegion.getEnsembleEvaluator( "test_mesh.line_nodes" );
         MeshDomain bsplineDomain = bsplineRegion.getMeshDomain( "test_mesh.domain" );
@@ -265,17 +271,22 @@ public class TimeVaryingExample
         nodalX.setValue( 5, 4.0 );
         nodalX.setValue( 6, 5.0 );
 
-        FunctionEvaluator linearLagrange = new FunctionEvaluator( "test_mesh.linear_lagrange", weightingDomain, bsplineDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.linear_lagrange" ) );
-        testRegion.addEvaluator( linearLagrange );
+        ContinuousEvaluator linearLagrange = library.getContinuousEvaluator( "library.function.linear_lagrange" );
 
         ContinuousVariableEvaluator linearDofs = new ContinuousVariableEvaluator( "test_mesh.linear.dofs", rc1CoordinatesDomain, globalNodesDomain );
         testRegion.addEvaluator( linearDofs );
 
-        MapEvaluator elementLLagrange = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, lineNodeList,
-            linearLagrange, linearDofs );
-        testRegion.addEvaluator( elementLLagrange );
+        MapEvaluator elementLLagrangeMap = new MapEvaluator( "test_mesh.element.linear_lagrange_map", rc1CoordinatesDomain, globalNodesListDomain,
+            weightingDomain, linearDofs );
+        testRegion.addEvaluator( elementLLagrangeMap );
 
+        ContinuousCompositeEvaluator elementLLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.linear_lagrange", rc1CoordinatesDomain );
+        elementLLagrange.aliasValue( bsplineDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementLLagrange.importField( lineNodeList );
+        elementLLagrange.importField( linearLagrange );
+        elementLLagrange.importField( elementLLagrangeMap );
+        testRegion.addEvaluator( elementLLagrange );
+        
         ContinuousPiecewiseEvaluator linearMeshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.linear_coordinates", rc1CoordinatesDomain, bsplineDomain.getElementDomain() );
         linearMeshCoordinates.setEvaluator( 1, elementLLagrange );
         linearMeshCoordinates.setEvaluator( 2, elementLLagrange );

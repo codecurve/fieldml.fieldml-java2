@@ -200,17 +200,15 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <FunctionEvaluator function="BicubicHermite" inputDomain="test_mesh.domain.xi" name="test_mesh.bicubic_hermite" valueDomain="library.weighting.list" />
-    
-
     <DotProductEvaluator values="library.bicubic_hermite.parameters" weights="library.weighting.list" name="test_mesh.element.bicubic_hermite_evaluator" valueDomain="library.coordinates.rc.1d" />
     
 
     <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameters" domain="library.bicubic_hermite.parameters" />
-          <ImportOperation evaluator="test_mesh.bicubic_hermite" domain="library.weighting.list" />
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
+          <ImportOperation evaluator="library.function.bicubic_hermite" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.bicubic_hermite_evaluator" domain="library.coordinates.rc.1d" />
         </operations>
       </CompositionEvaluator>

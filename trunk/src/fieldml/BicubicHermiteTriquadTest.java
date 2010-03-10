@@ -14,7 +14,6 @@ import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.DotProductEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
@@ -67,11 +66,11 @@ public class BicubicHermiteTriquadTest
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 7 );
+        EnsembleDomain globalNodeDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 7 );
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
         
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain,
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodeDomain,
             meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 2, 6, 3, 5, 2 );
@@ -89,19 +88,19 @@ public class BicubicHermiteTriquadTest
 
         ContinuousDomain meshd2dsDomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d2/ds1ds2" );
 
-        ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodesDomain );
+        ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodeDomain );
         testRegion.addEvaluator( nodalUDofs );
 
-        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du/ds", meshddsListDomain, globalNodesDomain );
+        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du/ds", meshddsListDomain, globalNodeDomain );
         testRegion.addEvaluator( nodaldUdSDofs );
 
-        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain, globalNodesDomain );
+        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain, globalNodeDomain );
         testRegion.addEvaluator( nodald2UdS2Dofs );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         ContinuousParameters meshd_ds1Weights = new ContinuousParameters( "test_mesh.node.ds1.weights", weightingDomain,
-            meshDomain.getElementDomain(), globalNodesDomain );
+            meshDomain.getElementDomain(), globalNodeDomain );
         meshd_ds1Weights.setValue( new int[]{ 1, 4 }, 1.0, 0.0 );
         meshd_ds1Weights.setValue( new int[]{ 1, 5 }, 1.0, 1.0 );
         meshd_ds1Weights.setValue( new int[]{ 1, 1 }, 1.0, 0.0 );
@@ -120,7 +119,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addEvaluator( meshd_ds1Weights );
 
         ContinuousParameters meshd_ds2Weights = new ContinuousParameters( "test_mesh.node.ds2.weights", weightingDomain,
-            meshDomain.getElementDomain(), globalNodesDomain );
+            meshDomain.getElementDomain(), globalNodeDomain );
         meshd_ds2Weights.setValue( new int[]{ 1, 4 }, 0.0, 1.0 );
         meshd_ds2Weights.setValue( new int[]{ 1, 5 }, 1.0, 0.0 );
         meshd_ds2Weights.setValue( new int[]{ 1, 1 }, 0.0, 1.0 );
@@ -169,34 +168,29 @@ public class BicubicHermiteTriquadTest
             hermiteParameterDomain );
         hermiteLocalNodeNumber.setValues( 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4 );
 
-        EnsembleParameters hermiteNodeParameterNumber = new EnsembleParameters( "test_mesh.bicubic_hermite.nodal_parameter",
+        EnsembleParameters hermiteNodeDerivativeNumber = new EnsembleParameters( "test_mesh.bicubic_hermite.nodal_parameter",
             hermiteDerivativesDomain, hermiteParameterDomain );
-        hermiteNodeParameterNumber.setValues( 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 );
+        hermiteNodeDerivativeNumber.setValues( 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4 );
 
         ContinuousDomain bicubicHermiteParametersDomain = library.getContinuousDomain( "library.bicubic_hermite.parameters" );
 
         ContinuousCompositeEvaluator elementHermiteParameter = new ContinuousCompositeEvaluator(
             "test_mesh.bicubic_hermite.element_parameter", mesh1DDomain );
         elementHermiteParameter.importField( hermiteLocalNodeNumber );
-        elementHermiteParameter.importField( quadNodeList, globalNodesDomain );
-        elementHermiteParameter.importField( hermiteNodeParameterNumber );
+        elementHermiteParameter.importField( hermiteNodeDerivativeNumber );
+        elementHermiteParameter.importField( quadNodeList );
         elementHermiteParameter.importField( bicubicHermiteParameters );
 
-        FunctionEvaluator meshBicubicHermite = new FunctionEvaluator( "test_mesh.bicubic_hermite", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.bicubic_hermite" ) );
-        testRegion.addEvaluator( meshBicubicHermite );
-
-        ContinuousCompositeEvaluator elementHermiteParameters = new ContinuousCompositeEvaluator(
-            "test_mesh.bicubic_hermite.element_parameters", bicubicHermiteParametersDomain );
-        elementHermiteParameters.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
+        ContinuousEvaluator bicubicHermite = library.getContinuousEvaluator( "library.function.bicubic_hermite" );
 
         ContinuousEvaluator elementBicubicHermiteEvaluator = new DotProductEvaluator( "test_mesh.element.bicubic_hermite_evaluator", mesh1DDomain,
             bicubicHermiteParametersDomain, weightingDomain );
         testRegion.addEvaluator( elementBicubicHermiteEvaluator );
 
         ContinuousCompositeEvaluator elementBicubicHermite = new ContinuousCompositeEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain );
-        elementBicubicHermite.importField( elementHermiteParameters, bicubicHermiteParametersDomain );
-        elementBicubicHermite.importField( meshBicubicHermite, weightingDomain );
+        elementBicubicHermite.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBicubicHermite.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
+        elementBicubicHermite.importField( bicubicHermite, weightingDomain );
         elementBicubicHermite.importField( elementBicubicHermiteEvaluator );
         testRegion.addEvaluator( elementBicubicHermite );
 
@@ -206,13 +200,13 @@ public class BicubicHermiteTriquadTest
         meshCoordinatesH3.setEvaluator( 3, elementBicubicHermite );
         testRegion.addEvaluator( meshCoordinatesH3 );
 
-        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodesDomain );
+        ContinuousParameters meshX = new ContinuousParameters( "test_mesh.node.x", mesh1DDomain, globalNodeDomain );
         testRegion.addEvaluator( meshX );
 
-        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodesDomain );
+        ContinuousParameters meshY = new ContinuousParameters( "test_mesh.node.y", mesh1DDomain, globalNodeDomain );
         testRegion.addEvaluator( meshY );
 
-        ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodesDomain );
+        ContinuousParameters meshZ = new ContinuousParameters( "test_mesh.node.z", mesh1DDomain, globalNodeDomain );
         testRegion.addEvaluator( meshZ );
 
         final double alpha1 = Math.sqrt( 1.0 / 3.0 );
@@ -247,15 +241,15 @@ public class BicubicHermiteTriquadTest
         meshY.setValue( 7, alpha3 );
         meshZ.setValue( 7, 0.0 );
 
-        ContinuousParameters meshdX = new ContinuousParameters( "test_mesh.node.dx/ds", meshddsListDomain, globalNodesDomain );
+        ContinuousParameters meshdX = new ContinuousParameters( "test_mesh.node.dx/ds", meshddsListDomain, globalNodeDomain );
         meshdX.setDefaultValue( 0, 0 );
         testRegion.addEvaluator( meshdX );
 
-        ContinuousParameters meshdY = new ContinuousParameters( "test_mesh.node.dy/ds", meshddsListDomain, globalNodesDomain );
+        ContinuousParameters meshdY = new ContinuousParameters( "test_mesh.node.dy/ds", meshddsListDomain, globalNodeDomain );
         meshdY.setDefaultValue( 0, 0 );
         testRegion.addEvaluator( meshdY );
 
-        ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshddsListDomain, globalNodesDomain );
+        ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshddsListDomain, globalNodeDomain );
         meshdZ.setDefaultValue( 0, 0 );
         testRegion.addEvaluator( meshdZ );
 
@@ -297,15 +291,15 @@ public class BicubicHermiteTriquadTest
         meshdY.setValue( 7, vyNorthEastOuter, vyNorthWestOuter );
         meshdZ.setValue( 7, 0.0, 0.0 );
 
-        ContinuousParameters meshd2X = new ContinuousParameters( "test_mesh.node.d2x/ds1ds2", meshd2dsDomain, globalNodesDomain );
+        ContinuousParameters meshd2X = new ContinuousParameters( "test_mesh.node.d2x/ds1ds2", meshd2dsDomain, globalNodeDomain );
         meshd2X.setDefaultValue( 0.0 );
         testRegion.addEvaluator( meshd2X );
 
-        ContinuousParameters meshd2Y = new ContinuousParameters( "test_mesh.node.d2y/ds1ds2", meshd2dsDomain, globalNodesDomain );
+        ContinuousParameters meshd2Y = new ContinuousParameters( "test_mesh.node.d2y/ds1ds2", meshd2dsDomain, globalNodeDomain );
         meshd2Y.setDefaultValue( 0.0 );
         testRegion.addEvaluator( meshd2Y );
 
-        ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2dsDomain, globalNodesDomain );
+        ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2dsDomain, globalNodeDomain );
         meshd2Z.setDefaultValue( 0.0 );
         testRegion.addEvaluator( meshd2Z );
 
