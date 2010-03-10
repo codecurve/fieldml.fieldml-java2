@@ -3,7 +3,6 @@ package fieldml.region;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.FunctionEvaluator;
 import fieldml.function.BicubicHermite;
 import fieldml.function.BilinearLagrange;
@@ -26,11 +25,11 @@ public class Library
 
     public ContinuousDomain anonymousList;
 
-    private ContinuousVariableEvaluator xi1d;
+    private ContinuousDomain xi1d;
 
-    private ContinuousVariableEvaluator xi2d;
+    private ContinuousDomain xi2d;
 
-    private ContinuousVariableEvaluator xi3d;
+    private ContinuousDomain xi3d;
 
 
     Library( WorldRegion parent )
@@ -45,14 +44,14 @@ public class Library
 
     private void buildLibraryFunctions()
     {
-        addFunction( "library.function.linear_lagrange", new LinearLagrange() );
-        addFunction( "library.function.bilinear_lagrange", new BilinearLagrange() );
-        addFunction( "library.function.quadratic_lagrange", new QuadraticLagrange() );
-        addFunction( "library.function.biquadratic_lagrange", new BiquadraticLagrange() );
-        addFunction( "library.function.cubic_hermite", new CubicHermite() );
-        addFunction( "library.function.bicubic_hermite", new BicubicHermite() );
-        addFunction( "library.function.bilinear_simplex", new BilinearSimplex() );
-        addFunction( "library.function.quadratic_bspline", new QuadraticBSpline() );
+        addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_lagrange", anonymousList, xi2d, new BilinearLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi1d, new QuadraticLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.biquadratic_lagrange", anonymousList, xi2d, new BiquadraticLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.cubic_hermite", anonymousList, xi1d, new CubicHermite() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_simplex", anonymousList, xi2d, new BilinearSimplex() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
     }
 
 
@@ -118,14 +117,11 @@ public class Library
 
         anonymousList = new ContinuousDomain( this, "library.weighting.list", anonymous );
 
-        ContinuousDomain xiRC1Domain = new ContinuousDomain( this, "library.xi.rc.1d", rc1CoordinateDomain );
-        xi1d = new ContinuousVariableEvaluator( "library.xi.rc.1d", xiRC1Domain );
+        xi1d = new ContinuousDomain( this, "library.xi.rc.1d", rc1CoordinateDomain );
 
-        ContinuousDomain xiRC2Domain = new ContinuousDomain( this, "library.xi.rc.2d", rc2CoordinateDomain );
-        xi2d = new ContinuousVariableEvaluator( "library.xi.rc.2d", xiRC2Domain );
+        xi2d = new ContinuousDomain( this, "library.xi.rc.2d", rc2CoordinateDomain );
 
-        ContinuousDomain xiRC3Domain = new ContinuousDomain( this, "library.xi.rc.3d", rc3CoordinateDomain );
-        xi3d = new ContinuousVariableEvaluator( "library.xi.rc.3d", xiRC3Domain );
+        xi3d = new ContinuousDomain( this, "library.xi.rc.3d", rc3CoordinateDomain );
     }
 
 
@@ -151,7 +147,7 @@ public class Library
 
         String basisDescription = name.substring( INTERPOLATION_PREFIX.length() );
         TensorBasis tensorBasis = new TensorBasis( basisDescription );
-        ContinuousEvaluator xiSource;
+        ContinuousDomain xiSource;
         if( tensorBasis.getDimensions() == 1 )
         {
             xiSource = xi1d;
@@ -170,7 +166,7 @@ public class Library
             return null;
         }
 
-        evaluator = new FunctionEvaluator( name, anonymousList, xiSource.getValueDomain(), tensorBasis );
+        evaluator = new FunctionEvaluator( name, anonymousList, xiSource, tensorBasis );
         addEvaluator( evaluator );
         
         return evaluator;

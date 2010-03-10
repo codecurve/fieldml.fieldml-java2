@@ -102,4 +102,11 @@ public class DomainValues
     {
         return continuousVariables.get( name );
     }
+
+
+    public void copy( Domain source, Domain destination )
+    {
+        DomainValue<?> value = values.get( source );
+        values.put( destination, value );
+    }
 }

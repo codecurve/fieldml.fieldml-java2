@@ -47,27 +47,54 @@
     </MeshDomain>
     
 
-    <FunctionEvaluator function="BilinearLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_lagrange" valueDomain="library.weighting.list" />
-    
-
-    <FunctionEvaluator function="BiquadraticLagrange" inputDomain="test_mesh.domain.xi" name="test_mesh.biquadratic_lagrange" valueDomain="library.weighting.list" />
-    
-
-    <FunctionEvaluator function="BilinearSimplex" inputDomain="test_mesh.domain.xi" name="test_mesh.bilinear_simplex" valueDomain="library.weighting.list" />
-    
-
     <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.nodes"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.quad_nodes" valueWeights="test_mesh.bilinear_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d" />
+    <FunctionEvaluator function="BilinearLagrange" inputDomain="library.xi.rc.2d" name="library.function.bilinear_lagrange" valueDomain="library.weighting.list" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.triangle_nodes" valueWeights="test_mesh.bilinear_simplex" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d" />
+    <FunctionEvaluator function="BilinearSimplex" inputDomain="library.xi.rc.2d" name="library.function.bilinear_simplex" valueDomain="library.weighting.list" />
     
 
-    <MapEvaluator valueIndexes="test_mesh.biquad_nodes" valueWeights="test_mesh.biquadratic_lagrange" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d" />
+    <FunctionEvaluator function="BiquadraticLagrange" inputDomain="library.xi.rc.2d" name="library.function.biquadratic_lagrange" valueDomain="library.weighting.list" />
+    
+
+    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
+    
+
+    <ContinuousCompositeEvaluator name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ImportOperation evaluator="test_mesh.biquad_nodes" domain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.function.biquadratic_lagrange" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.element.biquadratic_lagrange_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
+    
+
+    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ImportOperation evaluator="test_mesh.triangle_nodes" domain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.function.bilinear_simplex" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.element.bilinear_simplex_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">

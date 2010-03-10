@@ -16,8 +16,8 @@ public class ValueOperation
 
 
     @Override
-    public void perform( DomainValues values )
+    public void perform( DomainValues context )
     {
-        values.set( value );
+        context.set( value );
     }
 }

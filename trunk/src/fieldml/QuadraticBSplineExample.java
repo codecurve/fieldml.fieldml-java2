@@ -8,12 +8,12 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
+import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.function.QuadraticBSpline;
@@ -161,16 +161,20 @@ public class QuadraticBSplineExample
         testRegion.addEvaluator( elementDofIndexes );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
-
-        FunctionEvaluator quadraticBSpline = new FunctionEvaluator( "test_mesh.quadratic_bspline", weightingDomain, meshDomain.getXiDomain(), library
-            .getContinuousFunction( "library.function.quadratic_bspline" ) );
-        testRegion.addEvaluator( quadraticBSpline );
-
+        
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        MapEvaluator elementBSpline = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, elementDofIndexes,
-            quadraticBSpline, dofs );
+        ContinuousEvaluator quadraticBSpline = library.getContinuousEvaluator( "library.function.quadratic_bspline" );
+        MapEvaluator quadraticBSplineMap = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, dofIndexesDomain,
+            weightingDomain, dofs );
+        testRegion.addEvaluator( quadraticBSplineMap );
+        
+        ContinuousCompositeEvaluator elementBSpline = new ContinuousCompositeEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain );
+        elementBSpline.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementBSpline.importField( elementDofIndexes );
+        elementBSpline.importField( quadraticBSpline );
+        elementBSpline.importField( quadraticBSplineMap );
         testRegion.addEvaluator( elementBSpline );
 
         ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates", rc1CoordinatesDomain, meshDomain.getElementDomain() );

@@ -78,15 +78,21 @@ x____x____x____x____x____x
     </ContinuousParameters>
     
 
-    <FunctionEvaluator function="QuadraticBSpline" inputDomain="test_mesh.domain.xi" name="test_mesh.quadratic_bspline" valueDomain="library.weighting.list" />
-    
-
     <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>"test_mesh.dofs"  </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.element_dof_indexes" valueWeights="test_mesh.quadratic_bspline" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline_map" valueDomain="library.coordinates.rc.1d" />
+    <ContinuousCompositeEvaluator name="test_mesh.element.quadratic_bspline_map" valueDomain="library.coordinates.rc.1d">
+      <CompositionEvaluator>
+        <operations>
+          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.1d" />
+          <ImportOperation evaluator="test_mesh.element_dof_indexes" domain="test_mesh.dof_indexes" />
+          <ImportOperation evaluator="library.function.quadratic_bspline" domain="library.weighting.list" />
+          <ImportOperation evaluator="test_mesh.element.quadratic_bspline_map" domain="library.coordinates.rc.1d" />
+        </operations>
+      </CompositionEvaluator>
+    </ContinuousCompositeEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates" valueDomain="library.coordinates.rc.1d">
