@@ -10,7 +10,6 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
@@ -200,45 +199,39 @@ public class FieldmlTest
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
 
-        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
-
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain, globalNodesDomain );
         testRegion.addEvaluator( dofs );
 
-        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
-        MapEvaluator bilinearLagrangeMap = new MapEvaluator( "test_mesh.element.bilinear_lagrange_map", rc1Domain, globalNodesListDomain,
-            weightingDomain, dofs );
-        testRegion.addEvaluator( bilinearLagrange );
+        ContinuousDomain parameterList = library.getContinuousDomain( "library.parameter.list" );
 
-        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator("test_mesh.element.bilinear_lagrange", rc1Domain );
+        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.fem.bilinear_lagrange" );
+        
+        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange", rc1Domain );
         elementBilinearLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBilinearLagrange.importField( quadNodeList );
+        elementBilinearLagrange.importField( dofs, parameterList, globalNodesListDomain );
         elementBilinearLagrange.importField( bilinearLagrange );
-        elementBilinearLagrange.importField( bilinearLagrangeMap );
+        elementBilinearLagrange.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBilinearLagrange );
         
-        ContinuousEvaluator biquadraticLagrange = library.getContinuousEvaluator( "library.function.biquadratic_lagrange" );
-        MapEvaluator biquadraticLagrangeMap = new MapEvaluator( "test_mesh.element.biquadratic_lagrange_map", rc1Domain, globalNodesListDomain,
-            weightingDomain, dofs );
-        testRegion.addEvaluator( biquadraticLagrange );
-        
-        ContinuousCompositeEvaluator elementBiquadraticLagrange = new ContinuousCompositeEvaluator("test_mesh.element.biquadratic_lagrange", rc1Domain );
+        ContinuousEvaluator biquadraticLagrange = library.getContinuousEvaluator( "library.fem.biquadratic_lagrange" );
+
+        ContinuousCompositeEvaluator elementBiquadraticLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.biquadratic_lagrange", rc1Domain );
         elementBiquadraticLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBiquadraticLagrange.importField( biquadNodeList );
+        elementBiquadraticLagrange.importField( dofs, parameterList, globalNodesListDomain );
         elementBiquadraticLagrange.importField( biquadraticLagrange );
-        elementBiquadraticLagrange.importField( biquadraticLagrangeMap );
+        elementBiquadraticLagrange.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBiquadraticLagrange );
         
-        ContinuousEvaluator bilinearSimplex = library.getContinuousEvaluator( "library.function.bilinear_simplex" );
-        MapEvaluator bilinearSimplexMap = new MapEvaluator( "test_mesh.element.bilinear_simplex_map", rc1Domain, globalNodesListDomain,
-            weightingDomain, dofs );
-        testRegion.addEvaluator( bilinearSimplex );
+        ContinuousEvaluator bilinearSimplex = library.getContinuousEvaluator( "library.fem.bilinear_simplex" );
 
-        ContinuousCompositeEvaluator elementBilinearSimplex = new ContinuousCompositeEvaluator("test_mesh.element.bilinear_simplex", rc1Domain );
+        ContinuousCompositeEvaluator elementBilinearSimplex = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_simplex", rc1Domain );
         elementBilinearSimplex.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBilinearSimplex.importField( triangleNodeList );
+        elementBilinearSimplex.importField( dofs, parameterList, globalNodesListDomain );
         elementBilinearSimplex.importField( bilinearSimplex );
-        elementBilinearSimplex.importField( bilinearSimplexMap );
+        elementBilinearSimplex.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBilinearSimplex );
         
 

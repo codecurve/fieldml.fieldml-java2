@@ -12,8 +12,6 @@ public class ContinuousDomainValue
 
     public ContinuousDomainValue( ContinuousDomain domain, double... values )
     {
-        super( domain );
-
         this.values = values;
     }
 

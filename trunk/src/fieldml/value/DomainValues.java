@@ -27,9 +27,9 @@ public class DomainValues
     {
         this();
 
-        for( DomainValue<? extends Domain> v : input.values.values() )
+        for( Domain d : input.values.keySet() )
         {
-            values.put( v.domain, v );
+            values.put( d, input.values.get( d ) );
         }
         for( String name : input.continuousVariables.keySet() )
         {
@@ -38,33 +38,34 @@ public class DomainValues
     }
 
 
-    public void set( DomainValue<? extends Domain> value )
+    public void set( Domain domain, DomainValue<? extends Domain> value )
     {
-        values.put( value.domain, value );
-        if( value instanceof MeshDomainValue )// TODO This is ugly
+        values.put( domain, value );
+        if( domain instanceof MeshDomain )// TODO This is ugly
         {
+            MeshDomain d = (MeshDomain)domain;
             MeshDomainValue v = (MeshDomainValue)value;
-            set( v.domain.getElementDomain(), v.indexValue );
-            set( v.domain.getXiDomain(), v.chartValues );
+            set( d.getElementDomain(), v.indexValue );
+            set( d.getXiDomain(), v.chartValues );
         }
     }
 
 
     public void set( ContinuousDomain domain, double... values )
     {
-        set( domain.makeValue( values ) );
+        set( domain, domain.makeValue( values ) );
     }
 
 
     public void set( EnsembleDomain domain, int value )
     {
-        set( domain.makeValue( value ) );
+        set( domain, domain.makeValue( value ) );
     }
 
 
     public void set( MeshDomain domain, int indexValue, double... chartValues )
     {
-        set( domain.makeValue( indexValue, chartValues ) );
+        set( domain, domain.makeValue( indexValue, chartValues ) );
     }
 
 

@@ -2,6 +2,7 @@ package fieldmlx.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
+import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.AbstractEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
@@ -14,28 +15,41 @@ public  class ImportOperation<D extends Domain, V extends DomainValue<D>>
     
     @SerializationAsString
     public final D domain;
+    
+    
+    @SerializationAsString
+    public final EnsembleDomain indexDomain;
 
+
+    public ImportOperation( AbstractEvaluator<D, V> evaluator, D domain, EnsembleDomain indexDomain )
+    {
+        this.evaluator = evaluator;
+        this.domain = domain;
+        this.indexDomain = indexDomain;
+    }
 
     public ImportOperation( AbstractEvaluator<D, V> evaluator, D domain )
     {
         this.evaluator = evaluator;
         this.domain = domain;
+        this.indexDomain = null;
     }
 
     public ImportOperation( AbstractEvaluator<D, V> evaluator )
     {
         this.evaluator = evaluator;
         this.domain = evaluator.valueDomain;
+        this.indexDomain = null;
     }
 
 
     @Override
     public void perform( DomainValues context )
     {
-        V v = evaluator.evaluate( context, domain );
+        V v = evaluator.evaluate( context, domain, indexDomain );
         if( v != null )
         {
-            context.set( v );
+            context.set( domain, v );
         }
     }
 }
