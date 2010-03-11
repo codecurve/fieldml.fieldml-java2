@@ -2,6 +2,7 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
+import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
@@ -39,7 +40,7 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
     }
 
 
-    public abstract V evaluate( DomainValues context, D domain );
+    public abstract V evaluate( DomainValues context, D domain, EnsembleDomain indexDomain );
 
 
     public abstract V evaluate( DomainValues context );
