@@ -58,6 +58,6 @@ public class EnsembleDomain
 
     public EnsembleDomainValue makeValue( int... indexValues )
     {
-        return new EnsembleDomainValue( this, indexValues );
+        return new EnsembleDomainValue( indexValues );
     }
 }

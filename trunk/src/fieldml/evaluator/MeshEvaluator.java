@@ -1,5 +1,6 @@
 package fieldml.evaluator;
 
+import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
@@ -18,7 +19,7 @@ public abstract class MeshEvaluator
 
 
     @Override
-    public MeshDomainValue evaluate( DomainValues context, MeshDomain domain )
+    public MeshDomainValue evaluate( DomainValues context, MeshDomain domain, EnsembleDomain indexDomain )
     {
         if( domain == valueDomain )
         {

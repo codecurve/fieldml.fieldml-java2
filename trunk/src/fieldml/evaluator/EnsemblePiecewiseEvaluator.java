@@ -78,7 +78,7 @@ public class EnsemblePiecewiseEvaluator
 
         if( templateMap != null )
         {
-            return new EnsembleDomainValue( valueDomain, templateMap.evaluator.evaluate( context ).values );
+            return new EnsembleDomainValue( templateMap.evaluator.evaluate( context ).values );
         }
 
         assert false;

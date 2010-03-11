@@ -52,22 +52,14 @@
     </ContinuousVariableEvaluator>
     
 
-    <FunctionEvaluator function="BilinearLagrange" inputDomain="library.xi.rc.2d" name="library.function.bilinear_lagrange" valueDomain="library.weighting.list" />
-    
-
-    <FunctionEvaluator function="BilinearSimplex" inputDomain="library.xi.rc.2d" name="library.function.bilinear_simplex" valueDomain="library.weighting.list" />
-    
-
-    <FunctionEvaluator function="BiquadraticLagrange" inputDomain="library.xi.rc.2d" name="library.function.biquadratic_lagrange" valueDomain="library.weighting.list" />
-    
-
     <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.fem.bilinear_lagrange" domain="library.real.1d" />
+          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
@@ -78,8 +70,9 @@
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.biquad_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="library.function.biquadratic_lagrange" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.biquadratic_lagrange_map" domain="library.coordinates.rc.1d" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.fem.biquadratic_lagrange" domain="library.real.1d" />
+          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
@@ -90,8 +83,9 @@
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.triangle_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="library.function.bilinear_simplex" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.bilinear_simplex_map" domain="library.coordinates.rc.1d" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="library.fem.bilinear_simplex" domain="library.real.1d" />
+          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
