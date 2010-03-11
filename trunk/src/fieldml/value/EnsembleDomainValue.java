@@ -10,10 +10,8 @@ public class EnsembleDomainValue
     public final int values[];
 
 
-    public EnsembleDomainValue( EnsembleDomain domain, int ...indexValues )
+    public EnsembleDomainValue( int ...indexValues )
     {
-        super( domain );
-
         this.values = Arrays.copyOf( indexValues, indexValues.length );
     }
 

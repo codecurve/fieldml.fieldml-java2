@@ -58,7 +58,7 @@ public class MeshDomain
             return null;
         }
 
-        return new MeshDomainValue( this, element, chartValues );
+        return new MeshDomainValue( element, chartValues );
     }
 
 

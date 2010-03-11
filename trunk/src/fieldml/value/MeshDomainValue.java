@@ -12,10 +12,8 @@ public class MeshDomainValue
     public double[] chartValues;
 
 
-    public MeshDomainValue( MeshDomain domain, int indexValue, double[] chartValues )
+    public MeshDomainValue( int indexValue, double[] chartValues )
     {
-        super( domain );
-
         this.indexValue = indexValue;
         this.chartValues = chartValues;
     }

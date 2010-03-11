@@ -1,16 +1,20 @@
 package fieldmlx.evaluator;
 
+import fieldml.domain.Domain;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 
 public class ValueOperation
     implements CompositionOperation
 {
+    public final Domain domain;
+
     public final DomainValue<?> value;
 
 
-    public ValueOperation( DomainValue<?> value )
+    public ValueOperation( Domain domain, DomainValue<?> value )
     {
+        this.domain = domain;
         this.value = value;
     }
 
@@ -18,6 +22,6 @@ public class ValueOperation
     @Override
     public void perform( DomainValues context )
     {
-        context.set( value );
+        context.set( domain, value );
     }
 }
