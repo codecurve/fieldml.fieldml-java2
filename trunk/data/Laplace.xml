@@ -1,0 +1,273 @@
+<fieldml>
+  <!--
+    Produced by OpenCMISS, using the LaplaceExample project with a 4x4x0 mesh computed by 2 nodes. This file
+    represents the first node's output.
+   -->
+   
+  <cm_meta:opencmiss_annotation xmlns:cm_meta="http://www.fieldml.org/metadata/opencmiss_annotation/1.0">
+    <cm_meta:mesh type="quad">
+      <cm_meta:element_ordering>
+        1 2 3 4
+      </cm_meta:element_ordering>
+      <cm_meta:element_indexes domain="mesh.element"/>
+      <cm_meta:node_indexes domain="mesh.node"/>
+      <cm_meta:element_nodes field="element.nodes"/>
+      <cm_meta:field name="mesh.coordinates" nodal_values="node.parameters" interpolation_field="element.interpolation_field" />
+    </cm_meta:mesh>
+  </cm_meta:opencmiss_annotation>
+
+  <discrete_domain id="mesh.element" type="index">
+    <component id="id">
+      3  4  7  8  11  12  15  16
+    </component>
+  </discrete_domain>
+  
+  <discrete_domain id="mesh.node" type="index">
+    <component id="id">
+      3  4  5  8  9  10  14  15  19  20  24  25
+    </component>
+  </discrete_domain>
+  
+  <continuous_domain id="node.parameters">
+    <component id="x" />
+    <component id="y" />
+    <component id="g" />
+    <component id="n" />
+  </continuous_domain>
+  
+  <!--
+    We should just induce a specially-named component index domain for each
+    explicitly defined domain.
+    
+    The type is "name" and not "string" because the values refer to a specific
+    set of names defined elsewhere, rather that a set of arbitrary strings.
+   -->
+  <discrete_domain id="node.parameters.component_name" type="name">
+    <component id="name">
+      x y g n
+    </component>
+  </discrete_domain>
+
+  <discrete_domain id="mesh.element_nodes" type="index">
+    <import_component id="node1" domain="mesh.node" component="id" />
+    <import_component id="node2" domain="mesh.node" component="id" />
+    <import_component id="node3" domain="mesh.node" component="id" />
+    <import_component id="node4" domain="mesh.node" component="id" />
+  </discrete_domain>
+  
+  <!--
+    Elements of a "field" type domain component must all have the same input
+    parameter and value types. 
+   -->
+  <discrete_domain id="interpolation_field" type="field">
+    <component id="interpolator" >
+      library::bilinear_interpolation  library::bicubic_hermite_interpolation
+    </component>
+  </discrete_domain>
+  
+  <discrete_domain id="element_interpolation" type="field">
+    <import_component id="x" domain="interpolation_field" component="interpolator" />
+    <import_component id="y" domain="interpolation_field" component="interpolator" />
+    <import_component id="g" domain="interpolation_field" component="interpolator" />
+    <import_component id="n" domain="interpolation_field" component="interpolator" />
+  </discrete_domain>
+
+  <derived_field id="element.bilinear_parameters" value_domain="library::bilinear_interpolation_parameters">
+    <parameter id="element" domain="mesh.element" />
+    <parameter id="component_name" domain="node.parameters.component_name" />
+    
+    <value id="nodes" field="element.nodes" >
+      <parameter id="element" />
+    </value>
+    
+    <value id="node1_parameters"  field="node.parameters">
+      <parameter id="nodes.node1" />
+    </value>
+    <value id="node2_parameters"  field="node.parameters">
+      <parameter id="nodes.node2" />
+    </value>
+    <value id="node3_parameters"  field="node.parameters">
+      <parameter id="nodes.node3" />
+    </value>
+    <value id="node4_parameters"  field="node.parameters">
+      <parameter id="nodes.node4" />
+    </value>
+    
+    <assign_named_component id="u1" value="node1_parameters" name_value="component_name" name_component="name" />
+    <assign_named_component id="u2" value="node2_parameters" name_value="component_name" name_component="name" />
+    <assign_named_component id="u3" value="node3_parameters" name_value="component_name" name_component="name" />
+    <assign_named_component id="u4" value="node4_parameters" name_value="component_name" name_component="name" />
+  </derived_field>
+  
+  <derived_field id="element.bilinear_interpolator" value_domain="library::infinite_line">
+    <parameter id="element" domain="mesh.element" />
+    <parameter id="xi" domain="library::unit_square" />
+    <parameter id="component_name" domain="node.parameters.component_name" />
+
+    <value id="parameter_values" field="element.bilinear_parameters">
+      <parameter id="element"/>
+      <parameter id="component_name"/>
+    </value>
+     
+    <value id="interpolated_value" field="library::bilinear_interpolation">
+      <parameter id="parameter_values" />
+      <parameter id="xi" />
+    </value>
+    
+    <assign_component id="value" parameter="interpolated_value" component="value"/>
+  </derived_field>
+
+  <derived_field id="mesh.coordinates" value_domain="library::cartesian_2d">
+    <parameter id="element" domain="mesh.element" />
+    <parameter id="xi" domain="library::unit_square" />
+    
+    <value id="interpolation_field" field="element.interpolation_field">
+      <parameter id="element" />
+    </value>
+    
+    <!--
+      This implies that the basis functions need to be re-evaluated for each
+      dof, even though the xi is the same each time. However, we can define
+      a field-domain consisting of various co-ordinate interpolators (or
+      indeed any other kind of interpolator) that does the job in batches,
+      allowing the phi vector to be re-used.  
+     -->
+    <indirect_value id="interpolated_x" value="interpolation_field" value_component="x">
+      <parameter id="element" />
+      <parameter id="xi" />
+      <literal_parameter value="x" />
+    </indirect_value>
+    <indirect_value id="interpolated_y" value="interpolation_field" value_component="y">
+      <parameter id="element" />
+      <parameter id="xi" />
+      <literal_parameter value="y" />
+    </indirect_value>
+
+    <assign_component id="x" parameter="interpolated_x" component="value" />
+
+    <assign_component id="y" parameter="interpolated_y" component="value" />
+  </derived_field>
+  
+  <derived_field id="mesh.g" value_domain="library::infinite_line">
+    <parameter id="element" domain="mesh.element" />
+    <parameter id="xi" domain="library::unit_square" />
+    
+    <value id="interpolation_field" field="element.interpolation_field">
+      <parameter id="element" />
+    </value>
+    
+    <indirect_value id="interpolated_g" value="interpolation_field" value_component="g">
+      <parameter id="element" />
+      <parameter id="xi" />
+      <literal_parameter value="g" />
+    </indirect_value>
+
+    <assign_component id="g" parameter="interpolated_g" component="value" />
+  </derived_field>
+
+  <derived_field id="mesh.n" value_domain="library::infinite_line">
+    <parameter id="element" domain="mesh.element" />
+    <parameter id="xi" domain="library::unit_square" />
+    
+    <value id="interpolation_field" field="element.interpolation_field">
+      <parameter id="element" />
+    </value>
+    
+    <indirect_value id="interpolated_n" value="interpolation_field" value_component="n">
+      <parameter id="element" />
+      <parameter id="xi" />
+      <literal_parameter value="n" />
+    </indirect_value>
+
+    <assign_component id="n" parameter="interpolated_n" component="value" />
+  </derived_field>
+
+  <mapped_field id="node.parameters" value_domain="node.parameters">
+    <mapping domain="mesh.node" component="id" />
+
+    <map value="3">
+      1.0000000000000000E+00   0.0000000000000000E+00   3.1972356254077172E+00  -5.3524942944527254E-07
+    </map>
+    <map value="4">
+      1.5000000000000000E+00   0.0000000000000000E+00   3.6365212588612064E+00  -5.3524942966731714E-07
+    </map>
+    <map value="5">
+      2.0000000000000000E+00   0.0000000000000000E+00   3.8050656639529055E+00   9.1764340634819641E-02
+    </map>
+    <map value="8">
+      1.0000000000000000E+00   2.5000000000000000E-01   3.2333119188635906E+00  -4.6824431862851323E-01
+    </map>
+    <map value="9">
+      1.5000000000000000E+00   2.5000000000000000E-01   3.6624772699266712E+00  -4.6824431862851257E-01
+    </map>
+    <map value="10">
+      2.0000000000000000E+00   2.5000000000000000E-01   3.8587585611294335E+00  -5.7325184862691669E-01
+    </map>
+    <map value="14">
+      1.5000000000000000E+00   5.0000000000000000E-01   3.7541981649838512E+00  -4.6824431862851390E-01
+    </map>
+    <map value="15">
+      2.0000000000000000E+00   5.0000000000000000E-01   4.0337189461891123E+00  -5.7325184862691603E-01
+    </map>
+    <map value="19">
+      1.5000000000000000E+00   7.5000000000000000E-01   3.8640888796308559E+00  -4.6824431862851279E-01
+    </map>
+    <map value="20">
+      2.0000000000000000E+00   7.5000000000000000E-01   4.4352922105181323E+00  -5.7325184862691669E-01
+    </map>
+    <map value="24">
+      1.5000000000000000E+00   1.0000000000000000E+00   3.7494245949541605E+00   1.2590685730495488E-01
+    </map>
+    <map value="25">
+      2.0000000000000000E+00   1.0000000000000000E+00   5.4868641978000836E+00  -1.2488136854377663E-01
+    </map>
+  </mapped_field>
+
+
+  <!--
+    It seems that fields defined over a discrete domain only need to be defined over a single
+    domain, which in turn has a single component. While this prohibits 'nesting' value
+    requirements (i.e. forcing the field to be a single-parameter field), it simplifies the
+    associated API greatly. For a start, it allows the api to infer "domain 1, component 1"
+    for assigning values.   
+   -->
+  <mapped_field id="element.nodes" value_domain="mesh.element_nodes">
+    <!--
+      Perhaps just fold these into the mapped_field tag? 
+     -->
+    <mapping_parameter domain="mesh.element" component="id"/>
+    
+    <map value="3">
+        3  4  8  9
+    </map>
+    <map value="4">
+        4  5  9  10
+    </map>
+    <map value="7">
+        8  9  13  14
+    </map>
+    <map value="8">
+        9  10  14  15
+    </map>
+    <map value="11">
+        13  14  18  19
+    </map>
+    <map value="12">
+        14  15  19  20
+    </map>
+    <map value="15">
+        18  19  23  24
+    </map>
+    <map value="16">
+        19  20  24  25
+    </map>
+  </mapped_field>
+  
+  <mapped_field id="element.interpolation_field" value_domain="element_interpolation">
+    <mapping_parameter domain="mesh.element" component="id"/>
+
+    <default_map>
+      library::bilinear_interpolation library::bilinear_interpolation library::bilinear_interpolation library::bilinear_interpolation
+    </default_map>
+  </mapped_field>
+</fieldml>

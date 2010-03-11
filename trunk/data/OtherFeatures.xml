@@ -1,0 +1,49 @@
+<fieldml>
+  
+
+  <!--
+    Mapped field reading in data from a separate file.
+      
+    NOT YET IMPLEMENTED
+    
+    The parsing application reads in data, starting at the given offset, and
+    skipping the given number of bytes between each record. Each record
+    consists of a single key of the given format, followed by a number
+    of values matching the component count of the mapped_field's value
+    domain. The key format must be an integer format, typically 8, 16 or 32
+    bits. The value format must match the domain value's base type, be it
+    floating point for reals, integer for reals or indexes, or ASCII, unicode
+    or some other format for strings.  
+
+    Little-endian and big-endian formats should be supported.
+   -->
+  <mapped_field id="mapped_field" value_domain="some_domain">
+    <!--
+      Perhaps just fold these into the mapped_field tag? 
+     -->
+    <mapping domain="mesh.element" component="id"/>
+    
+    <read_map file="filename.bin" format="raw" offset="0" padding="0" key_format="le_16bit" value_format="le_32bit"/>
+  </mapped_field>
+  
+  <!--
+    Composite field obtained by combining entire fields.
+    
+    NOT YET IMPLEMENTED
+    
+    Rather than defining itself on a per-component, this field defines itself
+    as a simple combination of other fields. All fields being combined in this
+    way must have the same value domain.
+    
+    composite_field = fieldA - ( fieldB + fieldC )
+   -->
+  <composite_field id="composite_field" value_domain="some_domain">
+    <subtract>
+      <field_operand field="fieldA" />
+      <add>
+        <field_operand field="fieldB" />
+        <field_operand field="fieldC" />
+      </add>
+    </subtract>
+  </composite_field>
+</fieldml>
