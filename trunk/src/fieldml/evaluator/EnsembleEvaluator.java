@@ -17,7 +17,7 @@ public abstract class EnsembleEvaluator
     {
         int[] values = new int[spannedDomain.getValueCount()];
 
-        if( indexDomain != null )
+        if( indexDomain == null )
         {
             for( int i = 1; i <= spannedDomain.getValueCount(); i++ )
             {

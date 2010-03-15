@@ -24,27 +24,27 @@ public class MeshDomain
 
     public String defaultShape;
 
-    public final Map<String, EnsembleEvaluator> pointConnectivity;
+    public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
 
     @SerializationAsString
     public final List<ContinuousEvaluator> fields;
 
 
-    public MeshDomain( Region owner, String name, EnsembleDomain xiEnsemble, int elementCount )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, int elementCount )
     {
-        this( owner, name, xiEnsemble, new ContiguousEnsembleBounds( elementCount ) );
+        this( owner, name, xiBase, elementBase, new ContiguousEnsembleBounds( elementCount ) );
     }
 
 
-    public MeshDomain( Region owner, String name, EnsembleDomain xiEnsemble, EnsembleBounds elementBounds )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, EnsembleBounds elementBounds )
     {
         super( name, null );
 
-        this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiEnsemble );
-        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBounds );
+        this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiBase );
+        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBase, elementBounds );
 
         shapes = new HashMap<Integer, String>();
-        pointConnectivity = new HashMap<String, EnsembleEvaluator>();
+        pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();
         fields = new ArrayList<ContinuousEvaluator>();
         
         owner.addDomain( this );
@@ -74,7 +74,7 @@ public class MeshDomain
     }
 
 
-    public void setPointConnectivity( String arrangement, EnsembleEvaluator evaluator )
+    public void setPointConnectivity( EnsembleDomain arrangement, EnsembleEvaluator evaluator )
     {
         if( pointDomain == null )
         {

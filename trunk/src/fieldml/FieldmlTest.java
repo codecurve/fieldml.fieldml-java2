@@ -37,7 +37,7 @@ public class FieldmlTest
         s.append( "|    |/*3 |    |\n" );
         s.append( "4____5____6_12_13\n" );
 
-        serialize( region, s.toString() ); 
+        serialize( region, s.toString() );
     }
 
 
@@ -119,38 +119,32 @@ public class FieldmlTest
         output = meshXY.evaluate( context );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
-        
-        
-        
-/*
-        //Contexty
-        context.set( meshDomain, 4, 0.5, 0.5 );
-        meshXY.evaluate( context );
-        output = context.get( meshXY.getValueDomain() );
-        
-        // Derivates and maps are difficult/impossible.
 
-        //Pipeliney
-        EnsembleConstantEvaluator element = new EnsembleConstantEvaluator( meshDomain.elementDomain );
-        element.setValue( 3 );
-        
-        ContinuousConstantEvaluator xi = new ContinuousConstantEvaluator( meshDomain.chartDomain );
-        element.setValue( 0.5, 0.5 );
-        
-        context.setVariable( "test_mesh.element_value", element );
-        meshXYPressure.setVariable( "test_mesh.xi_value", xi );
-        
-        foo = meshXY.evaluate(context);
-        
-        
-        bob = pressure.evaluate();
-        
-        element.setValue( 4 );
-        
-        bar = meshXY.evaluate();
-        
-        // Repetitive set value calls. Multiple return types impossible (without structs).
-*/
+        /*
+         * //Contexty context.set( meshDomain, 4, 0.5, 0.5 ); meshXY.evaluate( context ); output = context.get(
+         * meshXY.getValueDomain() );
+         * 
+         * // Derivates and maps are difficult/impossible.
+         * 
+         * //Pipeliney EnsembleConstantEvaluator element = new EnsembleConstantEvaluator( meshDomain.elementDomain );
+         * element.setValue( 3 );
+         * 
+         * ContinuousConstantEvaluator xi = new ContinuousConstantEvaluator( meshDomain.chartDomain ); element.setValue( 0.5,
+         * 0.5 );
+         * 
+         * context.setVariable( "test_mesh.element_value", element ); meshXYPressure.setVariable( "test_mesh.xi_value", xi );
+         * 
+         * foo = meshXY.evaluate(context);
+         * 
+         * 
+         * bob = pressure.evaluate();
+         * 
+         * element.setValue( 4 );
+         * 
+         * bar = meshXY.evaluate();
+         * 
+         * // Repetitive set value calls. Multiple return types impossible (without structs).
+         */
     }
 
 
@@ -159,45 +153,47 @@ public class FieldmlTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region library = testRegion.getLibrary();
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
+        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
+        EnsembleDomain tri1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.1x1" );
+        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 4 );
+        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
+
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
         meshDomain.setShape( 2, "library.shape.triangle" );
         meshDomain.setShape( 3, "library.shape.triangle" );
         meshDomain.setShape( 4, "library.shape.quad" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 13 );
         
-        EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
+        EnsembleDomain globalNodesQ1x1Domain = new EnsembleDomain( testRegion, "test_mesh.nodes_list.q1x1", quad1x1LocalNodeDomain, globalNodesDomain );
+        EnsembleDomain globalNodesQ2x2Domain = new EnsembleDomain( testRegion, "test_mesh.nodes_list.q2x2", quad2x2LocalNodeDomain, globalNodesDomain );
+        EnsembleDomain globalNodesT1x1Domain = new EnsembleDomain( testRegion, "test_mesh.nodes_list.t1x1", tri1x1LocalNodeDomain, globalNodesDomain );
 
-        EnsembleDomain globalNodesListDomain = new EnsembleDomain( testRegion, "test_mesh.nodes_list", anonymous, globalNodesDomain );
-
-        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle_nodes", globalNodesListDomain,
-            meshDomain.getElementDomain() );
+        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle1x1_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), tri1x1LocalNodeDomain );
         triangleNodeList.setValue( 2, 2, 5, 3 );
         triangleNodeList.setValue( 3, 6, 3, 5 );
         testRegion.addEvaluator( triangleNodeList );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesListDomain,
-            meshDomain.getElementDomain() );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad1x1_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad1x1LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 4, 6, 13, 3, 7 );
-
         testRegion.addEvaluator( quadNodeList );
 
-        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.biquad_nodes", globalNodesListDomain,
-            meshDomain.getElementDomain() );
+        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.quad2x2_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad2x2LocalNodeDomain );
         biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
-
         testRegion.addEvaluator( biquadNodeList );
-        
-        meshDomain.setPointConnectivity( "simplex_1x1", triangleNodeList );
-        meshDomain.setPointConnectivity( "quad_1x1", quadNodeList );
-        meshDomain.setPointConnectivity( "quad_2x2", biquadNodeList );
 
-        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        meshDomain.setPointConnectivity( tri1x1LocalNodeDomain, triangleNodeList );
+        meshDomain.setPointConnectivity( quad1x1LocalNodeDomain, quadNodeList );
+        meshDomain.setPointConnectivity( quad2x2LocalNodeDomain, biquadNodeList );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain, globalNodesDomain );
         testRegion.addEvaluator( dofs );
@@ -205,44 +201,48 @@ public class FieldmlTest
         ContinuousDomain parameterList = library.getContinuousDomain( "library.parameter.list" );
 
         ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.fem.bilinear_lagrange" );
-        
-        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange", rc1Domain );
+
+        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange",
+            rc1Domain );
         elementBilinearLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
-        elementBilinearLagrange.importField( quadNodeList );
-        elementBilinearLagrange.importField( dofs, parameterList, globalNodesListDomain );
+        elementBilinearLagrange.importField( quadNodeList, globalNodesQ1x1Domain );
+        elementBilinearLagrange.importField( dofs, parameterList, globalNodesQ1x1Domain );
         elementBilinearLagrange.importField( bilinearLagrange );
         elementBilinearLagrange.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBilinearLagrange );
-        
+
         ContinuousEvaluator biquadraticLagrange = library.getContinuousEvaluator( "library.fem.biquadratic_lagrange" );
 
-        ContinuousCompositeEvaluator elementBiquadraticLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.biquadratic_lagrange", rc1Domain );
+        ContinuousCompositeEvaluator elementBiquadraticLagrange = new ContinuousCompositeEvaluator(
+            "test_mesh.element.biquadratic_lagrange", rc1Domain );
         elementBiquadraticLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
-        elementBiquadraticLagrange.importField( biquadNodeList );
-        elementBiquadraticLagrange.importField( dofs, parameterList, globalNodesListDomain );
+        elementBiquadraticLagrange.importField( biquadNodeList, globalNodesQ2x2Domain );
+        elementBiquadraticLagrange.importField( dofs, parameterList, globalNodesQ2x2Domain );
         elementBiquadraticLagrange.importField( biquadraticLagrange );
         elementBiquadraticLagrange.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBiquadraticLagrange );
-        
+
         ContinuousEvaluator bilinearSimplex = library.getContinuousEvaluator( "library.fem.bilinear_simplex" );
 
-        ContinuousCompositeEvaluator elementBilinearSimplex = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_simplex", rc1Domain );
+        ContinuousCompositeEvaluator elementBilinearSimplex = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_simplex",
+            rc1Domain );
         elementBilinearSimplex.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
-        elementBilinearSimplex.importField( triangleNodeList );
-        elementBilinearSimplex.importField( dofs, parameterList, globalNodesListDomain );
+        elementBilinearSimplex.importField( triangleNodeList, globalNodesT1x1Domain );
+        elementBilinearSimplex.importField( dofs, parameterList, globalNodesT1x1Domain );
         elementBilinearSimplex.importField( bilinearSimplex );
         elementBilinearSimplex.aliasValue( library.getContinuousDomain( "library.real.1d" ), rc1Domain );
         testRegion.addEvaluator( elementBilinearSimplex );
-        
 
-        ContinuousPiecewiseEvaluator meshCoordinatesT1 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template1", rc1Domain, meshDomain.getElementDomain() );
+        ContinuousPiecewiseEvaluator meshCoordinatesT1 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template1", rc1Domain,
+            meshDomain.getElementDomain() );
         meshCoordinatesT1.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT1.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 3, elementBilinearSimplex );
         meshCoordinatesT1.setEvaluator( 4, elementBilinearLagrange );
         testRegion.addEvaluator( meshCoordinatesT1 );
 
-        ContinuousPiecewiseEvaluator meshCoordinatesT2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template2", rc1Domain, meshDomain.getElementDomain() );
+        ContinuousPiecewiseEvaluator meshCoordinatesT2 = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template2", rc1Domain,
+            meshDomain.getElementDomain() );
         meshCoordinatesT2.setEvaluator( 1, elementBilinearLagrange );
         meshCoordinatesT2.setEvaluator( 2, elementBilinearSimplex );
         meshCoordinatesT2.setEvaluator( 3, elementBilinearSimplex );
@@ -291,7 +291,7 @@ public class FieldmlTest
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-        
+
         meshDomain.addField( meshCoordinatesT1 );
         meshDomain.addField( meshCoordinatesT2 );
         meshDomain.addField( meshCoordinates );

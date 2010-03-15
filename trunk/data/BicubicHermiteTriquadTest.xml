@@ -13,7 +13,7 @@
         7        
 -->
   <Region name="BicubicHermiteTriquad_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
     <ContinuousDomain name="test_mesh.coordinates.d/ds" componentDomain="library.anonymous" />
@@ -22,12 +22,12 @@
     <ContinuousDomain name="test_mesh.coordinates.d2/ds1ds2" />
     
 
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="3" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     

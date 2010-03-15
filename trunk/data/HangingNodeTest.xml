@@ -11,30 +11,30 @@
 6______7____8
 -->
   <Region name="HangingNode_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="3" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list" componentDomain="library.anonymous">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list" componentDomain="library.anonymous">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index">
       <ContiguousEnsembleBounds valueCount="8" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list" componentDomain="library.anonymous">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list" componentDomain="library.anonymous">
       <ContiguousEnsembleBounds valueCount="8" />
     </EnsembleDomain>
     
