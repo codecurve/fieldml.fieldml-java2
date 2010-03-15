@@ -4,15 +4,15 @@
 1____2____3____4____5
 -->
   <Region name="Hierarchical_Test">
-    <ContinuousDomain name="hierarchical_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="hierarchical_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
     
 
-    <EnsembleDomain baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.1d" baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="2" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
       <ContiguousEnsembleBounds valueCount="12" />
     </EnsembleDomain>
     

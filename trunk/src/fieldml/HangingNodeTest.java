@@ -105,20 +105,22 @@ public class HangingNodeTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
+        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", 7 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", pointDomain, 7 );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 
         EnsembleDomain globalDofListDomain = new EnsembleDomain( testRegion, "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
 
-        EnsembleDomain localDofsDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index", 8 );
+        EnsembleDomain localDofsDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index", pointDomain, 8 );
 
         EnsembleDomain localDofListDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index_list", anonymous, localDofsDomain );
 
@@ -242,14 +244,16 @@ public class HangingNodeTest
         Region library = world.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, world );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
+        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", 7 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.global_dofs_index", pointDomain, 7 );
 
         EnsembleDomain anonymous = library.getEnsembleDomain( "library.anonymous" );
 

@@ -9,7 +9,7 @@
 3____4____6
 -->
   <Region name="BicubicHermite_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
     <ContinuousDomain name="test_mesh.coordinates.dz/ds" />
@@ -25,12 +25,12 @@
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="2" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentDomain="library.local_nodes.quad.1x1">
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes" componentDomain="library.local_nodes.quad.1x1">
       <ContiguousEnsembleBounds valueCount="16" />
     </EnsembleDomain>
     
@@ -64,6 +64,7 @@
         <operations>
           <ImportOperation evaluator="test_mesh.node.direction.ds1" domain="test_mesh.edge_direction" />
           <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="library.coordinates.rc.1d" />
+          <AliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
@@ -74,6 +75,7 @@
         <operations>
           <ImportOperation evaluator="test_mesh.node.direction.ds2" domain="test_mesh.edge_direction" />
           <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="library.coordinates.rc.1d" />
+          <AliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>

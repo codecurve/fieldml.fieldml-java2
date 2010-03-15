@@ -4,10 +4,10 @@
 x____x____x____x____x____x
 -->
   <Region name="QuadraticBSpline_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
     
 
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.1d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="5" />
     </EnsembleDomain>
     

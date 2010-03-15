@@ -46,6 +46,10 @@ public class Library
 
     private void buildLibraryFunctions()
     {
+        ContinuousDomain real1 = getContinuousDomain( "library.real.1d" );
+        ContinuousDomain parameterList = new ContinuousDomain( this, "library.parameter.list", anonymous );
+        DotProductEvaluator interpolation = new DotProductEvaluator( "library.fem.dot_product", real1, parameterList, anonymousList );
+
         addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
         addEvaluator( new FunctionEvaluator( "library.function.bilinear_lagrange", anonymousList, xi2d, new BilinearLagrange() ) );
         addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi1d, new QuadraticLagrange() ) );
@@ -54,11 +58,6 @@ public class Library
         addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
         addEvaluator( new FunctionEvaluator( "library.function.bilinear_simplex", anonymousList, xi2d, new BilinearSimplex() ) );
         addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
-
-        ContinuousDomain real1 = getContinuousDomain( "library.real.1d" );
-        ContinuousDomain parameterList = new ContinuousDomain( this, "library.parameter.list", anonymous );
-
-        DotProductEvaluator interpolation = new DotProductEvaluator( "library.fem.dot_product", real1, parameterList, anonymousList );
 
         ContinuousCompositeEvaluator linearLagrange = new ContinuousCompositeEvaluator( "library.fem.linear_lagrange", real1 );
         linearLagrange.importField( getContinuousEvaluator( "library.function.linear_lagrange" ) );
@@ -104,37 +103,56 @@ public class Library
 
     private void buildLibraryDomains()
     {
-        anonymous = new EnsembleDomain( this, "library.anonymous" );
+        anonymous = new EnsembleDomain( this, "library.anonymous", null );
 
-        EnsembleDomain line1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.1", 2 );
+        EnsembleDomain topologyDomain = new EnsembleDomain( this, "library.topology.general", null );
 
-        EnsembleDomain line2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.2", 3 );
+        new EnsembleDomain( this, "library.topology.0d", topologyDomain );
 
-        EnsembleDomain triangle1x1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.triangle.1x1", 3 );
+        new EnsembleDomain( this, "library.topology.1d", topologyDomain );
 
-        new EnsembleDomain( this, "library.local_nodes.triangle.2x2", 6 );
+        new EnsembleDomain( this, "library.topology.2d", topologyDomain );
 
-        EnsembleDomain quad1x1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.1x1", 4 );
+        new EnsembleDomain( this, "library.topology.3d", topologyDomain );
 
-        EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.2x2", 9 );
+        EnsembleDomain pointLayout = new EnsembleDomain( this, "library.local_nodes.general", null );
 
-        EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", 16 );
+        EnsembleDomain line1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.1", pointLayout, 2 );
 
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", 1 );
+        EnsembleDomain line2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.2", pointLayout, 3 );
 
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", 2 );
+        EnsembleDomain triangle1x1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.triangle.1x1", pointLayout, 3 );
 
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", 3 );
+        new EnsembleDomain( this, "library.local_nodes.triangle.2x2", pointLayout, 6 );
 
-        new EnsembleDomain( this, "library.edge_direction.quad", 2 );
+        EnsembleDomain quad1x1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.1x1", pointLayout, 4 );
 
-        EnsembleDomain bicubicHermiteParameterDomain = new EnsembleDomain( this, "library.interpolation.hermite.bicubic", 16 );
+        EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.2x2", pointLayout, 9 );
 
-        EnsembleDomain bilinearLagrangeParameterDomain = new EnsembleDomain( this, "library.interpolation.lagrange.bilinear", 4 );
+        EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", pointLayout, 16 );
 
-        EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( this, "library.interpolation.hermite.derivatives", 4 );
+        EnsembleDomain coordinateDomain = new EnsembleDomain( this, "library.coordinates.general", null );
 
-        EnsembleDomain quadraticBSplineParameterDomain = new EnsembleDomain( this, "library.interpolation.bspline.quadratic", 3 );
+        EnsembleDomain rcCoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.general", coordinateDomain );
+
+        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", rcCoordinateDomain, 1 );
+
+        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", rcCoordinateDomain, 2 );
+
+        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", rcCoordinateDomain, 3 );
+
+        EnsembleDomain derivativeDomain = new EnsembleDomain( this, "library.derivative.general", null );
+
+        EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( this, "library.interpolation.hermite.derivatives",
+            derivativeDomain, 4 );
+
+        EnsembleDomain interpolationParameterDomain = new EnsembleDomain( this, "library.interpolation.general", null );
+
+        EnsembleDomain bicubicHermiteParameterDomain = new EnsembleDomain( this, "library.interpolation.hermite.bicubic",
+            interpolationParameterDomain, 16 );
+
+        EnsembleDomain quadraticBSplineParameterDomain = new EnsembleDomain( this, "library.interpolation.bspline.quadratic",
+            interpolationParameterDomain, 3 );
 
         addDomain( new ContinuousDomain( this, "library.weighting" ) );
 
@@ -165,8 +183,6 @@ public class Library
         new ContinuousDomain( this, "library.quadratic_bspline.parameters", quadraticBSplineParameterDomain );
 
         new ContinuousDomain( this, "library.bicubic_hermite.nodal.parameters", cubicHermiteDerivativesDomain );
-
-        new ContinuousDomain( this, "library.fem.parameters.bilinear_lagrange", bilinearLagrangeParameterDomain );
 
         new ContinuousDomain( this, "library.parameter.list", anonymous );
 

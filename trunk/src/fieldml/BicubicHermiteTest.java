@@ -57,19 +57,20 @@ public class BicubicHermiteTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
-
+        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
+        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
-        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", 1, 2 );
+        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", null, 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
 
-        EnsembleDomain xiComponentDomain = library.getEnsembleDomain( "library.coordinates.rc.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", xiComponentDomain, 2 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 2 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 16 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 16 );
 
         EnsembleDomain globalNodesListDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", quad1x1LocalNodeDomain, globalNodesDomain );
 
@@ -110,11 +111,13 @@ public class BicubicHermiteTest
         ContinuousCompositeEvaluator meshdUds1 = new ContinuousCompositeEvaluator( "test_mesh.node.du/ds1", meshdZdomain );
         meshdUds1.importField( meshds1Direction );
         meshdUds1.importField( nodaldUdSDofs );
+        meshdUds1.aliasValue( mesh1DDomain, meshdZdomain );
         testRegion.addEvaluator( meshdUds1 );
 
         ContinuousCompositeEvaluator meshdUds2 = new ContinuousCompositeEvaluator( "test_mesh.node.du/ds2", meshdZdomain );
         meshdUds2.importField( meshds2Direction );
         meshdUds2.importField( nodaldUdSDofs );
+        meshdUds2.aliasValue( mesh1DDomain, meshdZdomain );
         testRegion.addEvaluator( meshdUds2 );
 
         EnsembleDomain hermiteDerivativesDomain = library.getEnsembleDomain( "library.interpolation.hermite.derivatives" );

@@ -9,25 +9,31 @@
 4____5____6_12_13
 -->
   <Region name="Fieldml_Test">
-    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
     
 
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="4" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
-      <ArbitraryEnsembleBounds>
-        <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
-      </ArbitraryEnsembleBounds>
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+      <ContiguousEnsembleBounds valueCount="13" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes_list" componentDomain="library.anonymous">
-      <ArbitraryEnsembleBounds>
-        <values>1  2  3  4  5  6  7  8  9  10  11  12  13  </values>
-      </ArbitraryEnsembleBounds>
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.q1x1" componentDomain="library.local_nodes.quad.1x1">
+      <ContiguousEnsembleBounds valueCount="13" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.q2x2" componentDomain="library.local_nodes.quad.2x2">
+      <ContiguousEnsembleBounds valueCount="13" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.t1x1" componentDomain="library.local_nodes.triangle.1x1">
+      <ContiguousEnsembleBounds valueCount="13" />
     </EnsembleDomain>
     
 
@@ -39,9 +45,9 @@
         <entry key="4" value="library.shape.quad" />
       </shapes>
       <pointConnectivity>
-        <entry key="simplex_1x1" value="test_mesh.triangle_nodes" />
-        <entry key="quad_1x1" value="test_mesh.quad_nodes" />
-        <entry key="quad_2x2" value="test_mesh.biquad_nodes" />
+        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
+        <entry key="library.local_nodes.triangle.1x1" value="test_mesh.triangle1x1_nodes" />
+        <entry key="library.local_nodes.quad.1x1" value="test_mesh.quad1x1_nodes" />
       </pointConnectivity>
       <fields>"test_mesh.coordinates.template1"  "test_mesh.coordinates.template2"  "test_mesh.coordinates.xy"  </fields>
     </MeshDomain>
@@ -56,8 +62,8 @@
       <CompositionEvaluator>
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="test_mesh.quad1x1_nodes" domain="test_mesh.nodes_list.q1x1" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.q1x1" />
           <ImportOperation evaluator="library.fem.bilinear_lagrange" domain="library.real.1d" />
           <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
@@ -69,8 +75,8 @@
       <CompositionEvaluator>
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.biquad_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="test_mesh.quad2x2_nodes" domain="test_mesh.nodes_list.q2x2" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.q2x2" />
           <ImportOperation evaluator="library.fem.biquadratic_lagrange" domain="library.real.1d" />
           <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
@@ -82,8 +88,8 @@
       <CompositionEvaluator>
         <operations>
           <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.triangle_nodes" domain="test_mesh.nodes_list" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list" />
+          <ImportOperation evaluator="test_mesh.triangle1x1_nodes" domain="test_mesh.nodes_list.t1x1" />
+          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.t1x1" />
           <ImportOperation evaluator="library.fem.bilinear_simplex" domain="library.real.1d" />
           <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
         </operations>
@@ -212,39 +218,111 @@
     </ContinuousAggregateEvaluator>
     
 
-    <EnsembleParameters name="test_mesh.triangle_nodes" valueDomain="test_mesh.nodes_list">
+    <EnsembleParameters name="test_mesh.triangle1x1_nodes" valueDomain="test_mesh.nodes">
       <table>
         <SimpleMapEntry>
-          <key>2  </key>
-          <values>2  5  3  </values>
+          <key>2  1  </key>
+          <values>2  </values>
         </SimpleMapEntry>
         <SimpleMapEntry>
-          <key>3  </key>
-          <values>6  3  5  </values>
+          <key>2  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  2  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  3  </key>
+          <values>5  </values>
         </SimpleMapEntry>
       </table>
     </EnsembleParameters>
     
 
-    <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes_list">
+    <EnsembleParameters name="test_mesh.quad1x1_nodes" valueDomain="test_mesh.nodes">
       <table>
         <SimpleMapEntry>
-          <key>1  </key>
-          <values>4  5  1  2  </values>
+          <key>1  1  </key>
+          <values>4  </values>
         </SimpleMapEntry>
         <SimpleMapEntry>
-          <key>4  </key>
-          <values>6  13  3  7  </values>
+          <key>1  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  3  </key>
+          <values>1  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  2  </key>
+          <values>13  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  3  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  4  </key>
+          <values>7  </values>
         </SimpleMapEntry>
       </table>
     </EnsembleParameters>
     
 
-    <EnsembleParameters name="test_mesh.biquad_nodes" valueDomain="test_mesh.nodes_list">
+    <EnsembleParameters name="test_mesh.quad2x2_nodes" valueDomain="test_mesh.nodes">
       <table>
         <SimpleMapEntry>
-          <key>4  </key>
-          <values>6  12  13  8  9  10  3  11  7  </values>
+          <key>4  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  2  </key>
+          <values>12  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  3  </key>
+          <values>13  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  4  </key>
+          <values>8  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  5  </key>
+          <values>9  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  6  </key>
+          <values>10  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  7  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  8  </key>
+          <values>11  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  9  </key>
+          <values>7  </values>
         </SimpleMapEntry>
       </table>
     </EnsembleParameters>
