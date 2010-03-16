@@ -31,7 +31,7 @@ public class MapEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         double[] weights = context.get( valueWeights ).values;
         int[] indexes = context.get( valueIndexes ).values;
@@ -40,7 +40,7 @@ public class MapEvaluator
         for( int i = 0; i < indexes.length; i++ )
         {
             context.set( valueIndexes.baseDomain, indexes[i] );
-            values[i] = valueSource.evaluate( context ).values[0];
+            values[i] = valueSource.getValue( context ).values[0];
         }
 
         double finalValue = DotProductEvaluator.dotProduct( values, weights );

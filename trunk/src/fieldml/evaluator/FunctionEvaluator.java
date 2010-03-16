@@ -27,7 +27,7 @@ public class FunctionEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         return valueDomain.makeValue( function.evaluate( context.get( inputDomain ).values ) );
     }

@@ -56,7 +56,7 @@ public class ContinuousCompositeEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         DomainValues compositionContext = composer.evaluate( context );
         return compositionContext.get( valueDomain );

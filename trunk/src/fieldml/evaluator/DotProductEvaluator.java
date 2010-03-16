@@ -63,7 +63,7 @@ public class DotProductEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         // TODO Currently assumes that values is scalar.
 

@@ -56,67 +56,67 @@ public class FieldmlTest
 
         // Test element 1
         context.set( meshDomain, 1, 0.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 0;
 
         context.set( meshDomain, 1, 0.0, 1.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 0;
 
         context.set( meshDomain, 1, 0.5, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 5;
 
         context.set( meshDomain, 1, 1.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 10;
 
         context.set( meshDomain, 1, 1.0, 1.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 10;
 
         // Test element 2
         context.set( meshDomain, 2, 0.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 10;
 
         context.set( meshDomain, 2, 1.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 10;
 
         context.set( meshDomain, 2, 0.0, 1.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 20;
 
         context.set( meshDomain, 2, 0.5, 0.5 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 15;
 
         // Test element 3
         context.set( meshDomain, 3, 0.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 20;
 
         context.set( meshDomain, 3, 1.0, 0.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 20;
 
         context.set( meshDomain, 3, 0.0, 1.0 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 10;
 
         context.set( meshDomain, 3, 0.5, 0.5 );
-        output = meshX.evaluate( context );
+        output = meshX.getValue( context );
         assert output.values[0] == 15;
 
         context.set( meshDomain, 3, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assert output.values[0] == 15;
         assert output.values[1] == 5;
 
         context.set( meshDomain, 4, 0.5, 0.5 );
-        meshXY.evaluate( context );
-        output = meshXY.evaluate( context );
+        meshXY.getValue( context );
+        output = meshXY.getValue( context );
         assert output.values[0] == 25;
         assert output.values[1] == 5;
 

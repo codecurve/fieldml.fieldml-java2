@@ -2,10 +2,13 @@ package fieldml.domain;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.region.Region;
+import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldml.value.EnsembleValueSource;
 
 public class EnsembleDomain
     extends Domain
+    implements EnsembleValueSource
 {
     public final EnsembleBounds bounds;
 
@@ -14,6 +17,8 @@ public class EnsembleDomain
 
     @SerializationAsString
     public final EnsembleDomain baseDomain;
+
+    private EnsembleDomainValue clientValue;
 
 
     public EnsembleDomain( Region owner, String name, EnsembleDomain componentDomain, EnsembleDomain baseDomain )
@@ -64,5 +69,25 @@ public class EnsembleDomain
     public EnsembleDomainValue makeValue( int... indexValues )
     {
         return new EnsembleDomainValue( indexValues );
+    }
+
+
+    public void setValue( int ... values )
+    {
+        clientValue = makeValue( values );
+    }
+
+
+    @Override
+    public EnsembleDomainValue getValue( DomainValues context )
+    {
+        return clientValue;
+    }
+
+
+    @Override
+    public EnsembleDomain getValueDomain()
+    {
+        return this;
     }
 }

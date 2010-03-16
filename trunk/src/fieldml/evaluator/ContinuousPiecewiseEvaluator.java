@@ -66,7 +66,7 @@ public class ContinuousPiecewiseEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         DomainValues localContext = new DomainValues( context );
         for( SimpleMapEntry<String, ContinuousEvaluator> e : variables )
@@ -80,7 +80,7 @@ public class ContinuousPiecewiseEvaluator
 
         if( templateMap != null )
         {
-            ContinuousDomainValue templateValue = templateMap.evaluator.evaluate( context );
+            ContinuousDomainValue templateValue = templateMap.evaluator.getValue( context );
             
             assert templateValue != null : getName() + " got no value from " + templateMap.evaluator;
             

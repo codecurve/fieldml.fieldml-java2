@@ -64,7 +64,7 @@ public class EnsemblePiecewiseEvaluator
 
 
     @Override
-    public EnsembleDomainValue evaluate( DomainValues context )
+    public EnsembleDomainValue getValue( DomainValues context )
     {
         DomainValues localContext = new DomainValues( context );
         for( SimpleMapEntry<String, ContinuousEvaluator> e : variables )
@@ -78,7 +78,7 @@ public class EnsemblePiecewiseEvaluator
 
         if( templateMap != null )
         {
-            return new EnsembleDomainValue( templateMap.evaluator.evaluate( context ).values );
+            return new EnsembleDomainValue( templateMap.evaluator.getValue( context ).values );
         }
 
         assert false;

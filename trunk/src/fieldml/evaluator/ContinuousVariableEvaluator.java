@@ -23,10 +23,10 @@ public class ContinuousVariableEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         ContinuousEvaluator variable = context.getContinuousVariable( name );
 
-        return variable.evaluate( context );
+        return variable.getValue( context );
     }
 }

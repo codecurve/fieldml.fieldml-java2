@@ -76,7 +76,7 @@ public class HierarchicalExample
 
         xi[0] = 0.1;
         context.set( meshDomain, 1, xi );
-        output = meshZ.evaluate( context );
+        output = meshZ.getValue( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( 0.5 );
 
         params[0] = rawDofs[0];
@@ -88,7 +88,7 @@ public class HierarchicalExample
 
         xi[0] = 0.48;
         context.set( meshDomain, 2, xi );
-        output = meshZ.evaluate( context );
+        output = meshZ.getValue( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( 0.4 );
 
         params[0] = rawDofs[7];

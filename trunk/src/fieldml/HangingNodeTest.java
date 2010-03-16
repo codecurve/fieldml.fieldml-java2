@@ -57,18 +57,18 @@ public class HangingNodeTest
         ContinuousDomainValue output;
 
         context.set( meshDomain, 1, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         
         assertEquals( 10.0, output.values[0] );
         assertEquals( 10.0, output.values[1] );
 
         context.set( meshDomain, 2, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assertEquals( 25.0, output.values[0] );
         assertEquals( 15.0, output.values[1] );
 
         context.set( meshDomain, 3, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assertEquals( 25.0, output.values[0] );
         assertEquals( 5.0, output.values[1] );
 
@@ -80,17 +80,17 @@ public class HangingNodeTest
         context = new DomainValues();
 
         context.set( meshDomain, 1, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assertEquals( 10.0, output.values[0] );
         assertEquals( 10.0, output.values[1] );
 
         context.set( meshDomain, 2, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assertEquals( 25.0, output.values[0] );
         assertEquals( 15.0, output.values[1] );
 
         context.set( meshDomain, 3, 0.5, 0.5 );
-        output = meshXY.evaluate( context );
+        output = meshXY.getValue( context );
         assertEquals( 25.0, output.values[0] );
         assertEquals( 5.0, output.values[1] );
     }

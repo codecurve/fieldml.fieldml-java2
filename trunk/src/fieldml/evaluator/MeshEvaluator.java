@@ -15,16 +15,16 @@ public abstract class MeshEvaluator
 
 
     @Override
-    public abstract MeshDomainValue evaluate( DomainValues context );
+    public abstract MeshDomainValue getValue( DomainValues context );
 
 
     @Override
-    public MeshDomainValue evaluate( DomainValues context, MeshDomain domain, EnsembleDomain indexDomain )
+    public MeshDomainValue getValue( DomainValues context, MeshDomain domain, EnsembleDomain indexDomain )
     {
         if( domain == valueDomain )
         {
             // Desired domain matches native domain.
-            return evaluate( context );
+            return getValue( context );
         }
 
         return null;

@@ -92,7 +92,7 @@ public class TimeVaryingExample
 
         context.set( splineMeshDomain, 1, xi );
         context.set( timeMeshDomain, 1, timeXi );
-        output = meshZ.evaluate( context );
+        output = meshZ.getValue( context );
 
         interpolatorValues = QuadraticLagrange.evaluateDirect( timeXi[0] );
         value = ( interpolatorValues[0] * quadraticParams[0] ) + ( interpolatorValues[1] * quadraticParams[1] )

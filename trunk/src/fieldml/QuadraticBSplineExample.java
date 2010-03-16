@@ -79,7 +79,7 @@ public class QuadraticBSplineExample
         params[1] = rawDofs[1];
         params[2] = rawDofs[2];
         context.set( meshDomain, 1, xi );
-        output = meshZ.evaluate( context );
+        output = meshZ.getValue( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( xi[0] );
 
         expectedValue = ( bsplineValues[0] * params[0] ) + ( bsplineValues[1] * params[1] ) + ( bsplineValues[2] * params[2] );
@@ -91,7 +91,7 @@ public class QuadraticBSplineExample
         params[1] = rawDofs[4];
         params[2] = rawDofs[5];
         context.set( meshDomain, 4, xi );
-        output = meshZ.evaluate( context );
+        output = meshZ.getValue( context );
         bsplineValues = QuadraticBSpline.evaluateDirect( xi[0] );
 
         expectedValue = ( bsplineValues[0] * params[0] ) + ( bsplineValues[1] * params[1] ) + ( bsplineValues[2] * params[2] );

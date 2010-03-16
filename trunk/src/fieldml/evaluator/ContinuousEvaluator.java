@@ -3,11 +3,13 @@ package fieldml.evaluator;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
 public abstract class ContinuousEvaluator
     extends AbstractEvaluator<ContinuousDomain, ContinuousDomainValue>
+    implements ContinuousValueSource
 {
     public ContinuousEvaluator( String name, ContinuousDomain valueDomain )
     {
@@ -16,7 +18,7 @@ public abstract class ContinuousEvaluator
 
 
     @Override
-    public abstract ContinuousDomainValue evaluate( DomainValues context );
+    public abstract ContinuousDomainValue getValue( DomainValues context );
 
 
     protected final double[] evaluateAll( DomainValues context, EnsembleDomain spannedDomain, EnsembleDomain indexDomain )
@@ -29,7 +31,7 @@ public abstract class ContinuousEvaluator
             for( int i = 1; i <= spannedDomain.getValueCount(); i++ )
             {
                 context.set( spannedDomain, i );
-                values[i - 1] = evaluate( context ).values[0];
+                values[i - 1] = getValue( context ).values[0];
             }
         }
         else
@@ -40,7 +42,7 @@ public abstract class ContinuousEvaluator
             for( int i = 1; i <= indexes.length; i++ )
             {
                 context.set( indexDomain.baseDomain, indexes[i - 1] );
-                values[i - 1] = evaluate( context ).values[0];
+                values[i - 1] = getValue( context ).values[0];
             }
         }
 
@@ -49,12 +51,12 @@ public abstract class ContinuousEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context, ContinuousDomain domain, EnsembleDomain indexDomain )
+    public ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain, EnsembleDomain indexDomain )
     {
         if( domain == valueDomain )
         {
             // Desired domain matches native domain.
-            return evaluate( context );
+            return getValue( context );
         }
         else if( ( valueDomain.componentCount == 1 ) && ( domain.componentCount != 1 ) )
         {
@@ -66,7 +68,7 @@ public abstract class ContinuousEvaluator
         else if( ( valueDomain.componentCount != 1 ) && ( domain.componentCount == 1 ) )
         {
             // MUSTDO Check native vs. desired bounds.
-            ContinuousDomainValue value = evaluate( context );
+            ContinuousDomainValue value = getValue( context );
 
             EnsembleDomainValue componentIndex = context.get( valueDomain.componentDomain );
 
