@@ -29,7 +29,7 @@ public class RegularLinearSubdivision
 
 
     @Override
-    public MeshDomainValue evaluate( DomainValues context )
+    public MeshDomainValue getValue( DomainValues context )
     {
         MeshDomainValue sourceValue = context.get( sourceDomain );
 

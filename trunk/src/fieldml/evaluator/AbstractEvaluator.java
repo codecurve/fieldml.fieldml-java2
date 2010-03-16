@@ -40,8 +40,8 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
     }
 
 
-    public abstract V evaluate( DomainValues context, D domain, EnsembleDomain indexDomain );
+    public abstract V getValue( DomainValues context, D domain, EnsembleDomain indexDomain );
 
 
-    public abstract V evaluate( DomainValues context );
+    public abstract V getValue( DomainValues context );
 }

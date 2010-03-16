@@ -38,13 +38,13 @@ public class ContinuousAggregateEvaluator
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues input )
+    public ContinuousDomainValue getValue( DomainValues input )
     {
         double[] value = new double[count];
 
         for( int i = 0; i < count; i++ )
         {
-            value[i] = sourceFields.get( i ).evaluate( input ).values[0];
+            value[i] = sourceFields.get( i ).getValue( input ).values[0];
         }
 
         return valueDomain.makeValue( value );

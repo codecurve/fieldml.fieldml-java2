@@ -22,7 +22,7 @@ public abstract class EnsembleEvaluator
             for( int i = 1; i <= spannedDomain.getValueCount(); i++ )
             {
                 context.set( spannedDomain, i );
-                values[i - 1] = evaluate( context ).values[0];
+                values[i - 1] = getValue( context ).values[0];
             }
         }
         else
@@ -32,7 +32,7 @@ public abstract class EnsembleEvaluator
             for( int i = 0; i < indexes.length; i++ )
             {
                 context.set( spannedDomain, indexes[i] );
-                values[i - 1] = evaluate( context ).values[0];
+                values[i - 1] = getValue( context ).values[0];
             }
         }
 
@@ -41,12 +41,12 @@ public abstract class EnsembleEvaluator
 
 
     @Override
-    public EnsembleDomainValue evaluate( DomainValues context, EnsembleDomain domain, EnsembleDomain indexDomain )
+    public EnsembleDomainValue getValue( DomainValues context, EnsembleDomain domain, EnsembleDomain indexDomain )
     {
         if( domain == valueDomain )
         {
             // Desired domain matches native domain.
-            return evaluate( context );
+            return getValue( context );
         }
         else if( ( valueDomain.componentDomain == null ) && ( domain.componentDomain != null ) )
         {
@@ -58,7 +58,7 @@ public abstract class EnsembleEvaluator
         else if( ( valueDomain.componentDomain != null ) && ( domain.componentDomain == null ) )
         {
             // MUSTDO Check native vs. desired bounds.
-            EnsembleDomainValue v = evaluate( context );
+            EnsembleDomainValue v = getValue( context );
 
             return domain.makeValue( v.values[context.get( valueDomain.componentDomain ).values[0] - 1] );
         }

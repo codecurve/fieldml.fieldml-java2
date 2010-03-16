@@ -43,7 +43,7 @@ public class MinimalColladaExporter
                     final double xi2 = j / (double)discretisation;
 
                     context.set( meshDomain, elementNumber, xi1, xi2 );
-                    v = mesh.evaluate( context );
+                    v = mesh.getValue( context );
                     xyzArray.append( "\n" );
                     xyzArray.append( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
 
@@ -112,7 +112,7 @@ public class MinimalColladaExporter
                         context.set( mesh1Domain, element1Number, xi1 );
                         context.set( mesh2Domain, element2Number, xi2 );
 
-                        v = mesh.evaluate( context );
+                        v = mesh.getValue( context );
                         xyzArray.append( "\n" );
                         xyzArray.append( " " + v.values[0] + " " + v.values[1] + " " + v.values[2] );
 
@@ -173,7 +173,7 @@ public class MinimalColladaExporter
                 final double xi1 = j / (double)discretisation;
 
                 context.set( meshDomain, elementNumber, xi1 );
-                v = mesh.evaluate( context );
+                v = mesh.getValue( context );
                 xyzArray.append( "\n" );
                 xyzArray.append( " " + x + " " + v.values[0] + " 0.0" );
                 xyzArray.append( " " + x + " " + v.values[0] + " 1.0" );

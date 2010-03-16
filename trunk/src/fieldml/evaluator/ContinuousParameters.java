@@ -52,7 +52,7 @@ public class ContinuousParameters
 
 
     @Override
-    public ContinuousDomainValue evaluate( DomainValues context )
+    public ContinuousDomainValue getValue( DomainValues context )
     {
         return table.evaluate( context );
     }

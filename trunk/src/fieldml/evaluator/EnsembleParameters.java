@@ -65,7 +65,7 @@ public class EnsembleParameters
 
 
     @Override
-    public EnsembleDomainValue evaluate( DomainValues context )
+    public EnsembleDomainValue getValue( DomainValues context )
     {
         return table.evaluate( context );
     }

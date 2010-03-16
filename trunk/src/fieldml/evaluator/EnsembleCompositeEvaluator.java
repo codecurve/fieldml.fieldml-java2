@@ -28,7 +28,7 @@ public class EnsembleCompositeEvaluator
 
 
     @Override
-    public EnsembleDomainValue evaluate( DomainValues context )
+    public EnsembleDomainValue getValue( DomainValues context )
     {
         return composer.evaluate( context ).get( valueDomain );
     }

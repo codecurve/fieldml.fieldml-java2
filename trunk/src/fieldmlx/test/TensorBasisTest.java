@@ -1,7 +1,6 @@
 package fieldmlx.test;
 
 import junit.framework.TestCase;
-
 import fieldml.function.BilinearLagrange;
 import fieldml.function.BiquadraticLagrange;
 import fieldml.function.ContinuousFunction;
