@@ -206,7 +206,7 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
           <ImportOperation evaluator="library.function.bicubic_hermite" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.bicubic_hermite_evaluator" domain="library.coordinates.rc.1d" />

@@ -51,7 +51,7 @@ public abstract class ContinuousEvaluator
 
 
     @Override
-    public ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain, EnsembleDomain indexDomain )
+    public final ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain, EnsembleDomain indexDomain )
     {
         if( domain == valueDomain )
         {

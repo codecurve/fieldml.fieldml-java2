@@ -64,7 +64,7 @@
         <operations>
           <ImportOperation evaluator="test_mesh.node.direction.ds1" domain="test_mesh.edge_direction" />
           <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="library.coordinates.rc.1d" />
-          <AliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
+          <ContinuousAliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
@@ -75,7 +75,7 @@
         <operations>
           <ImportOperation evaluator="test_mesh.node.direction.ds2" domain="test_mesh.edge_direction" />
           <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="library.coordinates.rc.1d" />
-          <AliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
+          <ContinuousAliasOperation source="library.coordinates.rc.1d" destination="test_mesh.coordinates.dz/ds" />
         </operations>
       </CompositionEvaluator>
     </ContinuousCompositeEvaluator>
@@ -97,7 +97,7 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.nodes" />
           <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />
@@ -134,7 +134,7 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
           <ImportOperation evaluator="library.function.bicubic_hermite" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.cubic_hermite_scaling" domain="library.bicubic_hermite.scaling" />

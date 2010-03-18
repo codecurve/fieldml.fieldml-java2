@@ -48,33 +48,34 @@ public class Library
     {
         ContinuousDomain real1 = getContinuousDomain( "library.real.1d" );
         ContinuousDomain parameterList = new ContinuousDomain( this, "library.parameter.list", anonymous );
+
         DotProductEvaluator interpolation = new DotProductEvaluator( "library.fem.dot_product", real1, parameterList, anonymousList );
 
         addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.bilinear_lagrange", anonymousList, xi2d, new BilinearLagrange() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi1d, new QuadraticLagrange() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.biquadratic_lagrange", anonymousList, xi2d, new BiquadraticLagrange() ) );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi2d, new QuadraticLagrange() ) );
         addEvaluator( new FunctionEvaluator( "library.function.cubic_hermite", anonymousList, xi1d, new CubicHermite() ) );
         addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.bilinear_simplex", anonymousList, xi2d, new BilinearSimplex() ) );
         addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
+
+        EnsembleDomain quad1x1 = getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        ContinuousDomain l_l_lagrangeParameters = new ContinuousDomain( this, "library.parameters.bilinear_lagrange", quad1x1 );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_lagrange", anonymousList, xi2d, new BilinearLagrange() ) );
+        ContinuousCompositeEvaluator bilinearLagrange = new ContinuousCompositeEvaluator( "library.fem.bilinear_lagrange", real1 );
+        bilinearLagrange.alias( l_l_lagrangeParameters, parameterList );
+        bilinearLagrange.importField( getContinuousEvaluator( "library.function.bilinear_lagrange" ) );
+        bilinearLagrange.importField( interpolation );
+        addEvaluator( bilinearLagrange );
 
         ContinuousCompositeEvaluator linearLagrange = new ContinuousCompositeEvaluator( "library.fem.linear_lagrange", real1 );
         linearLagrange.importField( getContinuousEvaluator( "library.function.linear_lagrange" ) );
         linearLagrange.importField( interpolation );
         addEvaluator( linearLagrange );
 
-        ContinuousCompositeEvaluator bilinearLagrange = new ContinuousCompositeEvaluator( "library.fem.bilinear_lagrange", real1 );
-        bilinearLagrange.importField( getContinuousEvaluator( "library.function.bilinear_lagrange" ) );
-        bilinearLagrange.importField( interpolation );
-        addEvaluator( bilinearLagrange );
-
-        ContinuousCompositeEvaluator quadraticLagrange = new ContinuousCompositeEvaluator( "library.fem.quadratic_lagrange", real1 );
-        quadraticLagrange.importField( getContinuousEvaluator( "library.function.quadratic_lagrange" ) );
-        quadraticLagrange.importField( interpolation );
-        addEvaluator( quadraticLagrange );
-
+        EnsembleDomain quad2x2 = getEnsembleDomain( "library.local_nodes.quad.2x2" );
+        ContinuousDomain q_q_lagrangeParameters = new ContinuousDomain( this, "library.parameters.biquadratic_lagrange", quad2x2 );
+        addEvaluator( new FunctionEvaluator( "library.function.biquadratic_lagrange", anonymousList, xi2d, new BiquadraticLagrange() ) );
         ContinuousCompositeEvaluator biquadraticLagrange = new ContinuousCompositeEvaluator( "library.fem.biquadratic_lagrange", real1 );
+        biquadraticLagrange.alias( q_q_lagrangeParameters, parameterList );
         biquadraticLagrange.importField( getContinuousEvaluator( "library.function.biquadratic_lagrange" ) );
         biquadraticLagrange.importField( interpolation );
         addEvaluator( biquadraticLagrange );
@@ -89,7 +90,11 @@ public class Library
         bicubicHermite.importField( interpolation );
         addEvaluator( bicubicHermite );
 
+        EnsembleDomain tri1x1 = getEnsembleDomain( "library.local_nodes.triangle.1x1" );
+        ContinuousDomain l_l_simplexParameters = new ContinuousDomain( this, "library.parameters.bilinear_simplex", tri1x1 );
+        addEvaluator( new FunctionEvaluator( "library.function.bilinear_simplex", anonymousList, xi2d, new BilinearSimplex() ) );
         ContinuousCompositeEvaluator bilinearSimplex = new ContinuousCompositeEvaluator( "library.fem.bilinear_simplex", real1 );
+        bilinearSimplex.alias( l_l_simplexParameters, parameterList );
         bilinearSimplex.importField( getContinuousEvaluator( "library.function.bilinear_simplex" ) );
         bilinearSimplex.importField( interpolation );
         addEvaluator( bilinearSimplex );
@@ -115,7 +120,7 @@ public class Library
 
         new EnsembleDomain( this, "library.topology.3d", topologyDomain );
 
-        EnsembleDomain pointLayout = new EnsembleDomain( this, "library.local_nodes.general", null );
+        EnsembleDomain pointLayout = new EnsembleDomain( this, "library.local_nodes.layout", null );
 
         EnsembleDomain line1LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.1", pointLayout, 2 );
 

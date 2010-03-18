@@ -111,13 +111,13 @@ public class BicubicHermiteTest
         ContinuousCompositeEvaluator meshdUds1 = new ContinuousCompositeEvaluator( "test_mesh.node.du/ds1", meshdZdomain );
         meshdUds1.importField( meshds1Direction );
         meshdUds1.importField( nodaldUdSDofs );
-        meshdUds1.aliasValue( mesh1DDomain, meshdZdomain );
+        meshdUds1.alias( mesh1DDomain, meshdZdomain );
         testRegion.addEvaluator( meshdUds1 );
 
         ContinuousCompositeEvaluator meshdUds2 = new ContinuousCompositeEvaluator( "test_mesh.node.du/ds2", meshdZdomain );
         meshdUds2.importField( meshds2Direction );
         meshdUds2.importField( nodaldUdSDofs );
-        meshdUds2.aliasValue( mesh1DDomain, meshdZdomain );
+        meshdUds2.alias( mesh1DDomain, meshdZdomain );
         testRegion.addEvaluator( meshdUds2 );
 
         EnsembleDomain hermiteDerivativesDomain = library.getEnsembleDomain( "library.interpolation.hermite.derivatives" );
@@ -138,7 +138,7 @@ public class BicubicHermiteTest
 
         ContinuousCompositeEvaluator elementBilinearEvaluator = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange",
             mesh1DDomain );
-        elementBilinearEvaluator.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinearEvaluator.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBilinearEvaluator.importField( quadNodeList );
         elementBilinearEvaluator.importField( bilinearLagrange );
         elementBilinearEvaluator.importField( elementBilinearMap );
@@ -188,7 +188,7 @@ public class BicubicHermiteTest
 
         ContinuousCompositeEvaluator elementBicubicHermite = new ContinuousCompositeEvaluator( "test_mesh.element.bicubic_hermite",
             mesh1DDomain );
-        elementBicubicHermite.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBicubicHermite.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBicubicHermite.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
         elementBicubicHermite.importField( bicubicHermite );
         elementBicubicHermite.importField( hermiteScaling, bicubicHermiteScalingDomain );

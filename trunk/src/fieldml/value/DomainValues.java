@@ -2,6 +2,7 @@ package fieldml.value;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
@@ -13,6 +14,10 @@ public class DomainValues
 {
     private final Map<Domain, DomainValue<? extends Domain>> values;
 
+    private final Map<ContinuousDomain, ContinuousValueSource> continuousSources;
+
+    private final Map<EnsembleDomain, EnsembleValueSource> ensembleSources;
+
     private final Map<String, ContinuousEvaluator> continuousVariables;
 
 
@@ -20,6 +25,8 @@ public class DomainValues
     {
         values = new HashMap<Domain, DomainValue<? extends Domain>>();
         continuousVariables = new HashMap<String, ContinuousEvaluator>();
+        continuousSources = new HashMap<ContinuousDomain, ContinuousValueSource>();
+        ensembleSources = new HashMap<EnsembleDomain, EnsembleValueSource>();
     }
 
 
@@ -27,13 +34,21 @@ public class DomainValues
     {
         this();
 
-        for( Domain d : input.values.keySet() )
+        for( Entry<Domain, DomainValue<? extends Domain>> d : input.values.entrySet() )
         {
-            values.put( d, input.values.get( d ) );
+            values.put( d.getKey(), d.getValue() );
         }
-        for( String name : input.continuousVariables.keySet() )
+        for( Entry<String, ContinuousEvaluator> d : input.continuousVariables.entrySet() )
         {
-            continuousVariables.put( name, input.continuousVariables.get( name ) );
+            continuousVariables.put( d.getKey(), d.getValue() );
+        }
+        for( Entry<ContinuousDomain, ContinuousValueSource> d : input.continuousSources.entrySet() )
+        {
+            continuousSources.put( d.getKey(), d.getValue() );
+        }
+        for( Entry<EnsembleDomain, EnsembleValueSource> d : input.ensembleSources.entrySet() )
+        {
+            ensembleSources.put( d.getKey(), d.getValue() );
         }
     }
 
@@ -49,6 +64,17 @@ public class DomainValues
             set( d.getXiDomain(), v.chartValues );
         }
     }
+    
+    
+    public void alias( ContinuousValueSource source, ContinuousDomain domain )
+    {
+        continuousSources.put( domain, source );
+    }
+    
+    public void alias( EnsembleValueSource source, EnsembleDomain domain )
+    {
+        ensembleSources.put( domain, source );
+    }
 
 
     public void set( ContinuousDomain domain, double... values )
@@ -57,9 +83,9 @@ public class DomainValues
     }
 
 
-    public void set( EnsembleDomain domain, int value )
+    public void set( EnsembleDomain domain, int ... values )
     {
-        set( domain, domain.makeValue( value ) );
+        set( domain, domain.makeValue( values ) );
     }
 
 
@@ -71,13 +97,25 @@ public class DomainValues
 
     public ContinuousDomainValue get( ContinuousDomain domain )
     {
-        return (ContinuousDomainValue)values.get( domain );
+        ContinuousValueSource source = continuousSources.get( domain );
+        if( source == null )
+        {
+            return (ContinuousDomainValue)values.get( domain );
+        }
+        
+        return source.getValue( this );
     }
 
 
     public EnsembleDomainValue get( EnsembleDomain domain )
     {
-        return (EnsembleDomainValue)values.get( domain );
+        EnsembleValueSource source = ensembleSources.get( domain );
+        if( source == null )
+        {
+            return (EnsembleDomainValue)values.get( domain );
+        }
+        
+        return source.getValue( this );
     }
 
 
@@ -102,12 +140,5 @@ public class DomainValues
     public ContinuousEvaluator getContinuousVariable( String name )
     {
         return continuousVariables.get( name );
-    }
-
-
-    public void copy( Domain source, Domain destination )
-    {
-        DomainValue<?> value = values.get( source );
-        values.put( destination, value );
     }
 }

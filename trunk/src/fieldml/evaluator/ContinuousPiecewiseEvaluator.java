@@ -9,6 +9,7 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 
@@ -33,7 +34,7 @@ public class ContinuousPiecewiseEvaluator
     @SerializationAsString
     public final EnsembleDomain indexDomain;
 
-    public final SimpleMap<String, ContinuousEvaluator> variables;
+    public final SimpleMap<ContinuousDomain, ContinuousValueSource> aliases;
 
     public final List<TemplateMap> elementMaps;
 
@@ -45,7 +46,7 @@ public class ContinuousPiecewiseEvaluator
         this.indexDomain = indexDomain;
 
         elementMaps = new ArrayList<TemplateMap>();
-        variables = new SimpleMap<String, ContinuousEvaluator>();
+        aliases = new SimpleMap<ContinuousDomain, ContinuousValueSource>();
         for( int i = 0; i <= indexDomain.getValueCount(); i++ )
         {
             elementMaps.add( null );
@@ -59,9 +60,9 @@ public class ContinuousPiecewiseEvaluator
     }
 
 
-    public void setVariable( String name, ContinuousEvaluator evaluator )
+    public void alias( ContinuousValueSource source, ContinuousDomain destination )
     {
-        variables.put( name, evaluator );
+        aliases.put( destination, source );
     }
 
 
@@ -69,21 +70,21 @@ public class ContinuousPiecewiseEvaluator
     public ContinuousDomainValue getValue( DomainValues context )
     {
         DomainValues localContext = new DomainValues( context );
-        for( SimpleMapEntry<String, ContinuousEvaluator> e : variables )
+        for( SimpleMapEntry<ContinuousDomain, ContinuousValueSource> e : aliases )
         {
-            localContext.setVariable( e.key, e.value );
+            localContext.alias( e.value, e.key );
         }
 
-        EnsembleDomainValue v = context.get( indexDomain );
+        EnsembleDomainValue v = localContext.get( indexDomain );
 
         TemplateMap templateMap = elementMaps.get( v.values[0] );
 
         if( templateMap != null )
         {
-            ContinuousDomainValue templateValue = templateMap.evaluator.getValue( context );
-            
+            ContinuousDomainValue templateValue = templateMap.evaluator.getValue( localContext );
+
             assert templateValue != null : getName() + " got no value from " + templateMap.evaluator;
-            
+
             return new ContinuousDomainValue( valueDomain, templateValue.values );
         }
 

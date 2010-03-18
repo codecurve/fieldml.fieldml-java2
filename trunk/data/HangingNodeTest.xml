@@ -180,7 +180,7 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
+          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
           <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.local_dof_index_list" />
           <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />

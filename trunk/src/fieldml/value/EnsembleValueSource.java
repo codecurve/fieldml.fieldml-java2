@@ -8,4 +8,7 @@ public interface EnsembleValueSource
     
     
     public EnsembleDomainValue getValue( DomainValues context );
+    
+    
+    public EnsembleDomainValue getValue( DomainValues context, EnsembleDomain domain );
 }

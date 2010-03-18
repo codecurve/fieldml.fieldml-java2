@@ -190,7 +190,7 @@ public class BicubicHermiteTriquadTest
         testRegion.addEvaluator( elementBicubicHermiteEvaluator );
 
         ContinuousCompositeEvaluator elementBicubicHermite = new ContinuousCompositeEvaluator( "test_mesh.element.bicubic_hermite", mesh1DDomain );
-        elementBicubicHermite.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBicubicHermite.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBicubicHermite.importField( elementHermiteParameter, bicubicHermiteParametersDomain );
         elementBicubicHermite.importField( bicubicHermite, weightingDomain );
         elementBicubicHermite.importField( elementBicubicHermiteEvaluator );

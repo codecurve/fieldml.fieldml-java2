@@ -7,8 +7,10 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.AbstractEvaluator;
+import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleValueSource;
 
 public class CompositionEvaluator<D extends Domain, V extends DomainValue<D>>
 {
@@ -53,8 +55,14 @@ public class CompositionEvaluator<D extends Domain, V extends DomainValue<D>>
     }
 
 
-    public void aliasValue( ContinuousDomain sourceDomain, ContinuousDomain destinationDomain )
+    public void aliasValue( ContinuousValueSource source, ContinuousDomain destination )
     {
-        operations.add( new AliasOperation( sourceDomain, destinationDomain ) );
+        operations.add( new ContinuousAliasOperation( source, destination ) );
+    }
+
+
+    public void aliasValue( EnsembleValueSource source, EnsembleDomain destination )
+    {
+        operations.add( new EnsembleAliasOperation( source, destination ) );
     }
 }

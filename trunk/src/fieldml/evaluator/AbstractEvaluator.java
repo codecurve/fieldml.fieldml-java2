@@ -44,4 +44,10 @@ public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<
 
 
     public abstract V getValue( DomainValues context );
+
+
+    public final V getValue( DomainValues context, D domain )
+    {
+        return getValue( context, domain, null );
+    }
 }

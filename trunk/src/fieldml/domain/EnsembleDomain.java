@@ -18,8 +18,6 @@ public class EnsembleDomain
     @SerializationAsString
     public final EnsembleDomain baseDomain;
 
-    private EnsembleDomainValue clientValue;
-
 
     public EnsembleDomain( Region owner, String name, EnsembleDomain componentDomain, EnsembleDomain baseDomain )
     {
@@ -72,16 +70,21 @@ public class EnsembleDomain
     }
 
 
-    public void setValue( int ... values )
-    {
-        clientValue = makeValue( values );
-    }
-
-
     @Override
     public EnsembleDomainValue getValue( DomainValues context )
     {
-        return clientValue;
+        return context.get( this );
+    }
+
+
+    public final EnsembleDomainValue getValue( DomainValues context, EnsembleDomain domain )
+    {
+        if( domain != this )
+        {
+            return null;
+        }
+
+        return getValue( context );
     }
 
 
