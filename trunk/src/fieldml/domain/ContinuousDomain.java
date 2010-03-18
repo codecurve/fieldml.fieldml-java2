@@ -13,8 +13,6 @@ public class ContinuousDomain
     @SerializationAsString
     public final ContinuousDomain baseDomain;
 
-    private ContinuousDomainValue clientValue;
-
 
     public ContinuousDomain( Region owner, String name, EnsembleDomain componentDomain )
     {
@@ -57,16 +55,21 @@ public class ContinuousDomain
     }
 
 
-    public void setValue( double... values )
-    {
-        clientValue = makeValue( values );
-    }
-
-
     @Override
     public ContinuousDomainValue getValue( DomainValues context )
     {
-        return clientValue;
+        return context.get( this );
+    }
+
+
+    public final ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain )
+    {
+        if( domain != this )
+        {
+            return null;
+        }
+
+        return getValue( context );
     }
 
 

@@ -156,7 +156,7 @@ public class TimeVaryingExample
         tvRegion.addEvaluator( elementQLagrangeMap );
         
         ContinuousCompositeEvaluator elementQLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.quadratic_lagrange", rc1CoordinatesDomain );
-        elementQLagrange.aliasValue( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementQLagrange.alias( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
         elementQLagrange.importField( elementDofIndexes );
         elementQLagrange.importField( quadraticLagrange );
         elementQLagrange.importField( elementQLagrangeMap );
@@ -282,7 +282,7 @@ public class TimeVaryingExample
         testRegion.addEvaluator( elementLLagrangeMap );
 
         ContinuousCompositeEvaluator elementLLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.linear_lagrange", rc1CoordinatesDomain );
-        elementLLagrange.aliasValue( bsplineDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementLLagrange.alias( bsplineDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
         elementLLagrange.importField( lineNodeList );
         elementLLagrange.importField( linearLagrange );
         elementLLagrange.importField( elementLLagrangeMap );

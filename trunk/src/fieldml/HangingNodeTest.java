@@ -202,7 +202,7 @@ public class HangingNodeTest
 
         ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange",
             mesh1DDomain );
-        elementBilinearLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBilinearLagrange.importField( quadNodeList );
         elementBilinearLagrange.importField( bilinearLagrange );
         elementBilinearLagrange.importField( bilinearLagrangeMap );
@@ -347,7 +347,7 @@ public class HangingNodeTest
         testRegion.addEvaluator( bilinearLagrangeMap );
 
         ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator("test_mesh.element.bilinear_lagrange", mesh1DDomain );
-        elementBilinearLagrange.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         elementBilinearLagrange.importField( elementLocalDofIndexes );
         elementBilinearLagrange.importField( bilinearLagrange );
         elementBilinearLagrange.importField( bilinearLagrangeMap );

@@ -22,21 +22,6 @@
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.q1x1" componentDomain="library.local_nodes.quad.1x1">
-      <ContiguousEnsembleBounds valueCount="13" />
-    </EnsembleDomain>
-    
-
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.q2x2" componentDomain="library.local_nodes.quad.2x2">
-      <ContiguousEnsembleBounds valueCount="13" />
-    </EnsembleDomain>
-    
-
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes_list.t1x1" componentDomain="library.local_nodes.triangle.1x1">
-      <ContiguousEnsembleBounds valueCount="13" />
-    </EnsembleDomain>
-    
-
     <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad" />
@@ -54,65 +39,47 @@
     
 
     <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+      <parameterDomains />
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.quad1x1_nodes" domain="test_mesh.nodes_list.q1x1" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.q1x1" />
-          <ImportOperation evaluator="library.fem.bilinear_lagrange" domain="library.real.1d" />
-          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad1x1_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange" valueDomain="library.parameters.bilinear_lagrange" />
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.element.biquadratic_lagrange" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.quad2x2_nodes" domain="test_mesh.nodes_list.q2x2" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.q2x2" />
-          <ImportOperation evaluator="library.fem.biquadratic_lagrange" domain="library.real.1d" />
-          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad2x2_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.parameters.biquadratic_lagrange" />
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.triangle1x1_nodes" domain="test_mesh.nodes_list.t1x1" />
-          <ImportOperation evaluator="test_mesh.mesh.dofs" domain="library.parameter.list" indexDomain="test_mesh.nodes_list.t1x1" />
-          <ImportOperation evaluator="library.fem.bilinear_simplex" domain="library.real.1d" />
-          <AliasOperation source="library.real.1d" destination="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.triangle1x1_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.parameters.bilinear_simplex" />
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
+      <aliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test_mesh.element.bilinear_lagrange" />
+        <SimpleMapEntry key="library.parameters.biquadratic_lagrange" value="test_mesh.element.biquadratic_lagrange" />
+        <SimpleMapEntry key="library.parameters.bilinear_simplex" value="test_mesh.element.bilinear_simplex" />
+      </aliases>
       <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
-        <TemplateMap index="3" evaluator="test_mesh.element.bilinear_simplex" />
-        <TemplateMap index="4" evaluator="test_mesh.element.bilinear_lagrange" />
+        <TemplateMap index="1" evaluator="library.fem.bilinear_lagrange" />
+        <TemplateMap index="2" evaluator="library.fem.bilinear_simplex" />
+        <TemplateMap index="3" evaluator="library.fem.bilinear_simplex" />
+        <TemplateMap index="4" evaluator="library.fem.bilinear_lagrange" />
       </elementMaps>
     </ContinuousPiecewiseEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
+      <aliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test_mesh.element.bilinear_lagrange" />
+        <SimpleMapEntry key="library.parameters.biquadratic_lagrange" value="test_mesh.element.biquadratic_lagrange" />
+        <SimpleMapEntry key="library.parameters.bilinear_simplex" value="test_mesh.element.bilinear_simplex" />
+      </aliases>
       <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.element.bilinear_simplex" />
-        <TemplateMap index="3" evaluator="test_mesh.element.bilinear_simplex" />
-        <TemplateMap index="4" evaluator="test_mesh.element.biquadratic_lagrange" />
+        <TemplateMap index="1" evaluator="library.fem.bilinear_lagrange" />
+        <TemplateMap index="2" evaluator="library.fem.bilinear_simplex" />
+        <TemplateMap index="3" evaluator="library.fem.bilinear_simplex" />
+        <TemplateMap index="4" evaluator="library.fem.biquadratic_lagrange" />
       </elementMaps>
     </ContinuousPiecewiseEvaluator>
     

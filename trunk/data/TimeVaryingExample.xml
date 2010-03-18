@@ -73,7 +73,7 @@
     <ContinuousCompositeEvaluator name="test_mesh.element.quadratic_lagrange" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="tv_test.time.mesh.xi" destination="library.xi.rc.1d" />
+          <ContinuousAliasOperation source="tv_test.time.mesh.xi" destination="library.xi.rc.1d" />
           <ImportOperation evaluator="tv_test.time.element_dof_indexes" domain="tv_test.time.dofs.list.domain" />
           <ImportOperation evaluator="library.function.quadratic_lagrange" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.quadratic_lagrange_map" domain="library.coordinates.rc.1d" />

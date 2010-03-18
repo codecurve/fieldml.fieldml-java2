@@ -3,9 +3,11 @@ package fieldml.evaluator;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldml.value.EnsembleValueSource;
 
 public abstract class EnsembleEvaluator
     extends AbstractEvaluator<EnsembleDomain, EnsembleDomainValue>
+    implements EnsembleValueSource
 {
     public EnsembleEvaluator( String name, EnsembleDomain valueDomain )
     {

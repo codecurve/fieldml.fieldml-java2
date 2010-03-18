@@ -86,7 +86,7 @@ x____x____x____x____x____x
     <ContinuousCompositeEvaluator name="test_mesh.element.quadratic_bspline_map" valueDomain="library.coordinates.rc.1d">
       <CompositionEvaluator>
         <operations>
-          <AliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.1d" />
+          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.1d" />
           <ImportOperation evaluator="test_mesh.element_dof_indexes" domain="test_mesh.dof_indexes" />
           <ImportOperation evaluator="library.function.quadratic_bspline" domain="library.weighting.list" />
           <ImportOperation evaluator="test_mesh.element.quadratic_bspline_map" domain="library.coordinates.rc.1d" />

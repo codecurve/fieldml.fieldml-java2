@@ -172,7 +172,7 @@ public class QuadraticBSplineExample
         testRegion.addEvaluator( quadraticBSplineMap );
         
         ContinuousCompositeEvaluator elementBSpline = new ContinuousCompositeEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain );
-        elementBSpline.aliasValue( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementBSpline.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
         elementBSpline.importField( elementDofIndexes );
         elementBSpline.importField( quadraticBSpline );
         elementBSpline.importField( quadraticBSplineMap );

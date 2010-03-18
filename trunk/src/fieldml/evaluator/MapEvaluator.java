@@ -2,25 +2,26 @@ package fieldml.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
+import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
+import fieldml.value.EnsembleValueSource;
 
 public class MapEvaluator
     extends ContinuousEvaluator
 {
     @SerializationAsString
-    public final EnsembleDomain valueIndexes;
+    public final EnsembleValueSource valueIndexes;
 
     @SerializationAsString
-    public final ContinuousDomain valueWeights;
+    public final ContinuousValueSource valueWeights;
 
     @SerializationAsString
-    public final ContinuousEvaluator valueSource;
+    public final ContinuousValueSource valueSource;
 
 
-    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleDomain valueIndexes, ContinuousDomain valueWeights,
-        ContinuousEvaluator valueSource )
+    public MapEvaluator( String name, ContinuousDomain valueDomain, EnsembleValueSource valueIndexes, ContinuousValueSource valueWeights,
+        ContinuousValueSource valueSource )
     {
         super( name, valueDomain );
 
@@ -33,13 +34,13 @@ public class MapEvaluator
     @Override
     public ContinuousDomainValue getValue( DomainValues context )
     {
-        double[] weights = context.get( valueWeights ).values;
-        int[] indexes = context.get( valueIndexes ).values;
+        double[] weights = valueWeights.getValue( context ).values;
+        int[] indexes = valueIndexes.getValue( context ).values;
         double[] values = new double[indexes.length];
 
         for( int i = 0; i < indexes.length; i++ )
         {
-            context.set( valueIndexes.baseDomain, indexes[i] );
+            context.set( valueIndexes.getValueDomain().baseDomain, indexes[i] );
             values[i] = valueSource.getValue( context ).values[0];
         }
 
