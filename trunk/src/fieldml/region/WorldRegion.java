@@ -1,5 +1,7 @@
 package fieldml.region;
 
+import fieldmlx.region.Library;
+
 public class WorldRegion
     extends Region
 {

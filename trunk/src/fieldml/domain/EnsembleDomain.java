@@ -79,11 +79,6 @@ public class EnsembleDomain
 
     public final EnsembleDomainValue getValue( DomainValues context, EnsembleDomain domain )
     {
-        if( domain != this )
-        {
-            return null;
-        }
-
         return getValue( context );
     }
 

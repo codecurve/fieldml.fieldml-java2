@@ -83,25 +83,24 @@ x____x____x____x____x____x
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.element.quadratic_bspline_map" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.1d" />
-          <ImportOperation evaluator="test_mesh.element_dof_indexes" domain="test_mesh.dof_indexes" />
-          <ImportOperation evaluator="library.function.quadratic_bspline" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.quadratic_bspline_map" domain="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.element_dof_indexes" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline.params" valueDomain="library.parameters.quadratic_bspline" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.quadratic_bspline" name="test_mesh.quadratic_bspline" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.1d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.quadratic_bspline" value="test_mesh.element.quadratic_bspline.params" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates" valueDomain="library.coordinates.rc.1d">
       <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.element.quadratic_bspline_map" />
-        <TemplateMap index="2" evaluator="test_mesh.element.quadratic_bspline_map" />
-        <TemplateMap index="3" evaluator="test_mesh.element.quadratic_bspline_map" />
-        <TemplateMap index="4" evaluator="test_mesh.element.quadratic_bspline_map" />
-        <TemplateMap index="5" evaluator="test_mesh.element.quadratic_bspline_map" />
+        <TemplateMap index="1" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="2" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="3" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="4" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="5" evaluator="test_mesh.quadratic_bspline" />
       </elementMaps>
     </ContinuousPiecewiseEvaluator>
     

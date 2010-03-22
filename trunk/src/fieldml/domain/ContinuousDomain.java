@@ -64,11 +64,6 @@ public class ContinuousDomain
 
     public final ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain )
     {
-        if( domain != this )
-        {
-            return null;
-        }
-
         return getValue( context );
     }
 

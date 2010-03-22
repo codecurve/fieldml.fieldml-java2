@@ -10,7 +10,7 @@ import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.ImportedContinuous;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
@@ -198,11 +198,11 @@ public class FieldmlTest
         // Bilinear Lagrange
         ContinuousDomain libraryBilinearLagrangeParams = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
 
-        ContinuousDereferenceEvaluator meshBilinearLagrangeParams = new ContinuousDereferenceEvaluator( "test_mesh.element.bilinear_lagrange",
+        ContinuousDereferenceEvaluator meshBilinearLagrangeParams = new ContinuousDereferenceEvaluator( "test_mesh.element.bilinear_lagrange.params",
             libraryBilinearLagrangeParams, quadNodeList, dofs );
         testRegion.addEvaluator( meshBilinearLagrangeParams );
 
-        ImportedContinuous bilinearLagrange = new ImportedContinuous( "test_mesh.bilinear_lagrange", library, "library.fem.bilinear_lagrange" );
+        ImportedContinuousEvaluator bilinearLagrange = library.importContinuousEvaluator( "test_mesh.bilinear_lagrange", "library.fem.bilinear_lagrange" );
         bilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         bilinearLagrange.alias( meshBilinearLagrangeParams, libraryBilinearLagrangeParams );
         testRegion.addEvaluator( bilinearLagrange );
@@ -214,7 +214,7 @@ public class FieldmlTest
             libraryBiquadraticLagrangeParams, biquadNodeList, dofs );
         testRegion.addEvaluator( meshBiquadraticLagrangeParams );
 
-        ImportedContinuous biquadraticLagrange = new ImportedContinuous( "test_mesh.biquadratic_lagrange", library, "library.fem.biquadratic_lagrange" );
+        ImportedContinuousEvaluator biquadraticLagrange = library.importContinuousEvaluator( "test_mesh.biquadratic_lagrange", "library.fem.biquadratic_lagrange" );
         biquadraticLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         biquadraticLagrange.alias( meshBiquadraticLagrangeParams, libraryBiquadraticLagrangeParams );
         testRegion.addEvaluator( biquadraticLagrange );
@@ -226,7 +226,7 @@ public class FieldmlTest
             libraryBilinearSimplexParams, triangleNodeList, dofs );
         testRegion.addEvaluator( meshBilinearSimplexParams );
 
-        ImportedContinuous bilinearSimplex = new ImportedContinuous( "test_mesh.bilinear_simplex", library, "library.fem.bilinear_simplex" );
+        ImportedContinuousEvaluator bilinearSimplex = library.importContinuousEvaluator( "test_mesh.bilinear_simplex", "library.fem.bilinear_simplex" );
         bilinearSimplex.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
         bilinearSimplex.alias( meshBilinearSimplexParams, libraryBilinearSimplexParams );
         testRegion.addEvaluator( bilinearSimplex );

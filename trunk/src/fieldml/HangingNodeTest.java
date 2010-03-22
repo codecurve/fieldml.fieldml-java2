@@ -4,12 +4,13 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousCompositeEvaluator;
+import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.region.Region;
@@ -108,6 +109,7 @@ public class HangingNodeTest
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
         EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
         EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
+        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -121,8 +123,6 @@ public class HangingNodeTest
         EnsembleDomain globalDofListDomain = new EnsembleDomain( testRegion, "test_mesh.global_dof_index_list", anonymous, globalDofsDomain );
 
         EnsembleDomain localDofsDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index", pointDomain, 8 );
-
-        EnsembleDomain localDofListDomain = new EnsembleDomain( testRegion, "test_mesh.local_dof_index_list", anonymous, localDofsDomain );
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
@@ -150,7 +150,7 @@ public class HangingNodeTest
         globalToLocalIndexes.setValue( 8, 7 );
         testRegion.addEvaluator( globalToLocalIndexes );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofListDomain, meshDomain.getElementDomain() );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofsDomain, meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
         quadNodeList.setValue( 1, 6, 7, 1, 2 );
         quadNodeList.setValue( 2, 4, 5, 2, 3 );
         quadNodeList.setValue( 3, 7, 8, 4, 5 );
@@ -185,27 +185,19 @@ public class HangingNodeTest
         ContinuousVariableEvaluator globalDofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
         testRegion.addEvaluator( globalDofs );
 
-        MapEvaluator localDofsMap = new MapEvaluator( "test_mesh.local_dofs_map", mesh1DDomain, globalDofListDomain, weightingDomain,
+        MapEvaluator localDofs = new MapEvaluator( "test_mesh.local_dofs_map", mesh1DDomain, globalToLocalIndexes, globalToLocalWeights,
             globalDofs );
-        testRegion.addEvaluator( localDofsMap );
-
-        ContinuousCompositeEvaluator localDofs = new ContinuousCompositeEvaluator( "test_mesh.local_dofs", mesh1DDomain );
-        localDofs.importField( globalToLocalIndexes );
-        localDofs.importField( globalToLocalWeights );
-        localDofs.importField( localDofsMap );
         testRegion.addEvaluator( localDofs );
+        
+        ContinuousDomain bilinearLagrangeParameters = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
+        
+        ContinuousDereferenceEvaluator lagrangeParameters = new ContinuousDereferenceEvaluator( "test_mesh.element.bilinear_lagrange.parameters",
+            bilinearLagrangeParameters, quadNodeList, localDofs );
+        testRegion.addEvaluator( lagrangeParameters );
 
-        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
-        MapEvaluator bilinearLagrangeMap = new MapEvaluator( "test_mesh.element.bilinear_lagrange_map", mesh1DDomain, localDofListDomain,
-            weightingDomain, localDofs );
-        testRegion.addEvaluator( bilinearLagrange );
-
-        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_lagrange",
-            mesh1DDomain );
+        ImportedContinuousEvaluator elementBilinearLagrange = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange", "library.fem.bilinear_lagrange" );
         elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
-        elementBilinearLagrange.importField( quadNodeList );
-        elementBilinearLagrange.importField( bilinearLagrange );
-        elementBilinearLagrange.importField( bilinearLagrangeMap );
+        elementBilinearLagrange.alias( lagrangeParameters, bilinearLagrangeParameters );
         testRegion.addEvaluator( elementBilinearLagrange );
 
         ContinuousPiecewiseEvaluator meshCoordinatesTemplate = new ContinuousPiecewiseEvaluator( "test_mesh.template.bilinear_lagrange",
@@ -263,7 +255,6 @@ public class HangingNodeTest
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
         EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
-        EnsembleDomain quad1x1NodeListDomain = new EnsembleDomain( testRegion, "test_mesh.nodes.1x1", anonymous, quad1x1NodeDomain );
 
         ContinuousParameters elementWeights = new ContinuousParameters( "test_mesh.element.dof_weights", weightingDomain, meshDomain
             .getElementDomain(), quad1x1NodeDomain );
@@ -325,32 +316,18 @@ public class HangingNodeTest
 
         testRegion.addEvaluator( meshPointsY );
 
-        EnsembleParameters elementLocalDofIndexes = new EnsembleParameters( "test_mesh.element.local_dof_indexes", quad1x1NodeListDomain );
-        elementLocalDofIndexes.setDefaultValue( 1, 2, 3, 4 );
-
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", mesh1DDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        MapEvaluator bilinearElementDofsMap = new MapEvaluator( "test_mesh.element.bilinear_dofs_map", mesh1DDomain, globalDofIndexesDomain,
-            weightingDomain, dofs );
-        testRegion.addEvaluator( bilinearElementDofsMap );
-
-        ContinuousCompositeEvaluator bilinearElementDofs = new ContinuousCompositeEvaluator( "test_mesh.element.bilinear_dofs", mesh1DDomain );
-        bilinearElementDofs.importField( elementIndexes );
-        bilinearElementDofs.importField( elementWeights );
-        bilinearElementDofs.importField( bilinearElementDofsMap );
+        MapEvaluator bilinearElementDofs = new MapEvaluator( "test_mesh.element.bilinear_dofs", mesh1DDomain, elementIndexes,
+            elementWeights, dofs );
         testRegion.addEvaluator( bilinearElementDofs );
         
-        ContinuousEvaluator bilinearLagrange = library.getContinuousEvaluator( "library.function.bilinear_lagrange" );
-        MapEvaluator bilinearLagrangeMap = new MapEvaluator( "test_mesh.element.bilinear_lagrange_map", mesh1DDomain, quad1x1NodeListDomain,
-            weightingDomain, bilinearElementDofs );
-        testRegion.addEvaluator( bilinearLagrangeMap );
-
-        ContinuousCompositeEvaluator elementBilinearLagrange = new ContinuousCompositeEvaluator("test_mesh.element.bilinear_lagrange", mesh1DDomain );
+        ContinuousDomain bilinearLagrangeParameters = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
+        
+        ImportedContinuousEvaluator elementBilinearLagrange = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange", "library.fem.bilinear_lagrange" );
         elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
-        elementBilinearLagrange.importField( elementLocalDofIndexes );
-        elementBilinearLagrange.importField( bilinearLagrange );
-        elementBilinearLagrange.importField( bilinearLagrangeMap );
+        elementBilinearLagrange.alias( bilinearElementDofs, bilinearLagrangeParameters );
         testRegion.addEvaluator( elementBilinearLagrange );
         
         ContinuousPiecewiseEvaluator meshCoordinatesTemplate = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates.template",

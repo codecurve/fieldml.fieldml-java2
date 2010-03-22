@@ -34,11 +34,6 @@
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index_list" componentDomain="library.anonymous">
-      <ContiguousEnsembleBounds valueCount="8" />
-    </EnsembleDomain>
-    
-
     <MeshDomain name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad.00_10_01_11" />
@@ -160,33 +155,18 @@
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="test_mesh.global_dof_index_list" valueWeights="library.weighting.list" valueSource="test_mesh.dofs" name="test_mesh.local_dofs_map" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs_map" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.local_dofs" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <ImportOperation evaluator="test_mesh.global_to_local.indexes" domain="test_mesh.global_dof_index_list" />
-          <ImportOperation evaluator="test_mesh.global_to_local.weights" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.local_dofs_map" domain="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad_nodes" valueSource="test_mesh.local_dofs_map" name="test_mesh.element.bilinear_lagrange.parameters" valueDomain="library.parameters.bilinear_lagrange" />
     
 
-    <FunctionEvaluator function="BilinearLagrange" inputDomain="library.xi.rc.2d" name="library.function.bilinear_lagrange" valueDomain="library.weighting.list" />
-    
-
-    <ContinuousCompositeEvaluator name="test_mesh.element.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.quad_nodes" domain="test_mesh.local_dof_index_list" />
-          <ImportOperation evaluator="library.function.bilinear_lagrange" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.bilinear_lagrange_map" domain="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ImportedContinuousEvaluator evaluator="library.fem.bilinear_lagrange" name="test_mesh.element.bilinear_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test_mesh.element.bilinear_lagrange.parameters" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
@@ -241,19 +221,55 @@
     </EnsembleParameters>
     
 
-    <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index_list">
+    <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index">
       <table>
         <SimpleMapEntry>
-          <key>1  </key>
-          <values>6  7  1  2  </values>
+          <key>1  1  </key>
+          <values>6  </values>
         </SimpleMapEntry>
         <SimpleMapEntry>
-          <key>2  </key>
-          <values>4  5  2  3  </values>
+          <key>1  2  </key>
+          <values>7  </values>
         </SimpleMapEntry>
         <SimpleMapEntry>
-          <key>3  </key>
-          <values>7  8  4  5  </values>
+          <key>1  3  </key>
+          <values>1  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  1  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  4  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  1  </key>
+          <values>7  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  2  </key>
+          <values>8  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  3  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  4  </key>
+          <values>5  </values>
         </SimpleMapEntry>
       </table>
     </EnsembleParameters>

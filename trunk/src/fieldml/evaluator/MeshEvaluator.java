@@ -4,9 +4,11 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
+import fieldml.value.MeshValueSource;
 
 public abstract class MeshEvaluator
     extends AbstractEvaluator<MeshDomain, MeshDomainValue>
+    implements MeshValueSource
 {
     public MeshEvaluator( String name, MeshDomain valueDomain )
     {

@@ -53,7 +53,8 @@ public abstract class ContinuousEvaluator
     @Override
     public final ContinuousDomainValue getValue( DomainValues context, ContinuousDomain domain, EnsembleDomain indexDomain )
     {
-        if( domain == valueDomain )
+        //TODO HACK domain.componentCount == 0 is a magic number that means 'anonymous list'.
+        if( ( domain.componentDomain == valueDomain.componentDomain ) || ( domain.componentCount == 0 ) )
         {
             // Desired domain matches native domain.
             return getValue( context );
