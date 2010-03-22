@@ -165,29 +165,20 @@
     </ContinuousParameters>
     
 
-    <DotProductEvaluator values="test_mesh.coordinates.d/ds" weights="library.weighting.list" name="test_mesh.node.du/ds" valueDomain="test_mesh.coordinates.d/ds" />
+    <ImportedContinuousEvaluator evaluator="library.dot_product" name="test_mesh.node.du/ds1" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.weighting.list" value="test_mesh.node.ds1.weights" />
+        <SimpleMapEntry key="library.parameter.list" value="test_mesh.node.dofs.du/ds" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.node.du/ds1" valueDomain="test_mesh.coordinates.d/ds">
-      <CompositionEvaluator>
-        <operations>
-          <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="test_mesh.coordinates.d/ds" />
-          <ImportOperation evaluator="test_mesh.node.ds1.weights" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.node.du/ds" domain="test_mesh.coordinates.d/ds" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
-    
-
-    <ContinuousCompositeEvaluator name="test_mesh.node.du/ds2" valueDomain="test_mesh.coordinates.d/ds">
-      <CompositionEvaluator>
-        <operations>
-          <ImportOperation evaluator="test_mesh.node.dofs.du/ds" domain="test_mesh.coordinates.d/ds" />
-          <ImportOperation evaluator="test_mesh.node.ds2.weights" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.node.du/ds" domain="test_mesh.coordinates.d/ds" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ImportedContinuousEvaluator evaluator="library.dot_product" name="test_mesh.node.du/ds2" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.weighting.list" value="test_mesh.node.ds2.weights" />
+        <SimpleMapEntry key="library.parameter.list" value="test_mesh.node.dofs.du/ds" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="library.interpolation.hermite.derivatives" name="test_mesh.bicubic_hermite_parameters" valueDomain="library.coordinates.rc.1d">
@@ -200,19 +191,21 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <DotProductEvaluator values="library.bicubic_hermite.parameters" weights="library.weighting.list" name="test_mesh.element.bicubic_hermite_evaluator" valueDomain="library.coordinates.rc.1d" />
+    <ImportedContinuousEvaluator evaluator="test_mesh.bicubic_hermite_parameters" name="test_mesh.bicubic_hermite.element_parameter" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="library.local_nodes.quad.1x1" value="test_mesh.bicubic_hermite.local_node" />
+        <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.quad_nodes" />
+        <SimpleMapEntry key="library.interpolation.hermite.derivatives" value="test_mesh.bicubic_hermite.nodal_parameter" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
-    <ContinuousCompositeEvaluator name="test_mesh.element.bicubic_hermite" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <ContinuousAliasOperation source="test_mesh.domain.xi" destination="library.xi.rc.2d" />
-          <ImportOperation evaluator="test_mesh.bicubic_hermite.element_parameter" domain="library.bicubic_hermite.parameters" />
-          <ImportOperation evaluator="library.function.bicubic_hermite" domain="library.weighting.list" />
-          <ImportOperation evaluator="test_mesh.element.bicubic_hermite_evaluator" domain="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ImportedContinuousEvaluator evaluator="library.fem.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.bicubic_hermite.parameters" value="test_mesh.bicubic_hermite.element_parameter" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.h3" valueDomain="library.coordinates.rc.1d">

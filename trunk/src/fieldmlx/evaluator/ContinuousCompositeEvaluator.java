@@ -1,14 +1,15 @@
-package fieldml.evaluator;
+package fieldmlx.evaluator;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.AbstractEvaluator;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleValueSource;
-import fieldmlx.evaluator.CompositionEvaluator;
 
 public class ContinuousCompositeEvaluator
     extends ContinuousEvaluator

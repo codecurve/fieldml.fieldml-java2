@@ -88,18 +88,14 @@
     </ContinuousVariableEvaluator>
     
 
-    <MapEvaluator valueIndexes="hierarchical_mesh.dofs" valueWeights="library.weighting.list" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs_map" valueDomain="library.coordinates.rc.1d" />
+    <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.coordinates.rc.1d" />
     
 
-    <ContinuousCompositeEvaluator name="hierarchical_mesh.element.local_dofs" valueDomain="library.coordinates.rc.1d">
-      <CompositionEvaluator>
-        <operations>
-          <ImportOperation evaluator="hierarchical_mesh.element_dof_indexes" domain="hierarchical_mesh.dofs" />
-          <ImportOperation evaluator="hierarchical_mesh.element_dof_weights" domain="library.weighting.list" />
-          <ImportOperation evaluator="hierarchical_mesh.element.local_dofs_map" domain="library.coordinates.rc.1d" />
-        </operations>
-      </CompositionEvaluator>
-    </ContinuousCompositeEvaluator>
+    <ImportedContinuousEvaluator evaluator="hierarchical_mesh.delegated" name="hierarchical_mesh.submesh_evaluator" valueDomain="library.coordinates.rc.1d">
+      <meshAliases>
+        <SimpleMapEntry key="test_mesh.domain" value="hierarchical_mesh.submesh_atlas" />
+      </meshAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.coordinates" valueDomain="library.coordinates.rc.1d">
@@ -108,6 +104,13 @@
         <TemplateMap index="2" evaluator="hierarchical_mesh.submesh_evaluator" />
       </elementMaps>
     </ContinuousPiecewiseEvaluator>
+    
+
+    <PiecewiseField template="test_mesh.coordinates" name="hierarchical_mesh.delegated" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.dofs" value="hierarchical_mesh.element.local_dofs" />
+      </variables>
+    </PiecewiseField>
     
 
     <PiecewiseField template="hierarchical_mesh.coordinates" name="hierarchical_mesh.coordinates.z" valueDomain="library.coordinates.rc.1d">

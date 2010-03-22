@@ -45,7 +45,8 @@ public abstract class EnsembleEvaluator
     @Override
     public EnsembleDomainValue getValue( DomainValues context, EnsembleDomain domain, EnsembleDomain indexDomain )
     {
-        if( domain == valueDomain )
+        //TODO HACK domain.componentCount == 0 is a magic number that means 'anonymous list'.
+        if( ( domain.componentDomain == valueDomain.componentDomain ) || ( domain.componentCount == 0 ) )
         {
             // Desired domain matches native domain.
             return getValue( context );

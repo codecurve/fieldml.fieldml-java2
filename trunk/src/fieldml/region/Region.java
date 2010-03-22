@@ -8,6 +8,8 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
+import fieldml.evaluator.ImportedContinuousEvaluator;
+import fieldml.evaluator.ImportedEnsembleEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.io.ReflectiveHandler;
 import fieldml.io.ReflectiveWalker;
@@ -71,6 +73,26 @@ public abstract class Region
         assert domain != null : "Domain " + name + " does not exist in region " + this.name;
 
         return domain;
+    }
+
+
+    public ImportedContinuousEvaluator importContinuousEvaluator( String localName, String remoteName )
+    {
+        ContinuousEvaluator evaluator = continuousEvaluators.get( remoteName );
+
+        assert evaluator != null : "Evaluator " + remoteName + " does not exist in region " + name;
+
+        return new ImportedContinuousEvaluator( localName, evaluator );
+    }
+
+
+    public ImportedEnsembleEvaluator importEnsembleEvaluator( String localName, String remoteName )
+    {
+        EnsembleEvaluator evaluator = ensembleEvaluators.get( remoteName );
+
+        assert evaluator != null : "Evaluator " + remoteName + " does not exist in region " + name;
+
+        return new ImportedEnsembleEvaluator( localName, evaluator );
     }
 
 
@@ -178,7 +200,7 @@ public abstract class Region
     {
         return name;
     }
-    
-    
+
+
     public abstract Region getLibrary();
 }

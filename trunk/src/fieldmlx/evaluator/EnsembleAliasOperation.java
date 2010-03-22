@@ -3,7 +3,6 @@ package fieldmlx.evaluator;
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
-import fieldml.value.EnsembleDomainValue;
 import fieldml.value.EnsembleValueSource;
 
 public class EnsembleAliasOperation
@@ -26,7 +25,6 @@ public class EnsembleAliasOperation
     @Override
     public void perform( DomainValues context )
     {
-        EnsembleDomainValue v = source.getValue( context, destination );
-        context.set( destination, v.values );
+        context.alias( source, destination );
     }
 }

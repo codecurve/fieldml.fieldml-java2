@@ -2,7 +2,6 @@ package fieldmlx.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 
@@ -26,7 +25,6 @@ public class ContinuousAliasOperation
     @Override
     public void perform( DomainValues context )
     {
-        ContinuousDomainValue v = source.getValue( context );
-        context.set( destination, v.values );
+        context.alias( source, destination );
     }
 }

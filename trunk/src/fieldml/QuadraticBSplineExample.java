@@ -8,13 +8,13 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousCompositeEvaluator;
+import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
-import fieldml.evaluator.MapEvaluator;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.field.PiecewiseField;
 import fieldml.function.QuadraticBSpline;
 import fieldml.io.DOTReflectiveHandler;
@@ -36,8 +36,8 @@ public class QuadraticBSplineExample
         StringBuilder s = new StringBuilder();
         s.append( "\n" );
         s.append( "x____x____x____x____x____x\n" );
-        
-        serialize( region, s.toString() ); 
+
+        serialize( region, s.toString() );
 
         try
         {
@@ -152,8 +152,8 @@ public class QuadraticBSplineExample
 
         EnsembleDomain dofIndexesDomain = new EnsembleDomain( testRegion, "test_mesh.dof_indexes", bsplineDofsDomain, globalDofsDomain );
 
-        EnsembleParameters elementDofIndexes = new EnsembleParameters( "test_mesh.element_dof_indexes", dofIndexesDomain,
-            meshDomain.getElementDomain() );
+        EnsembleParameters elementDofIndexes = new EnsembleParameters( "test_mesh.element_dof_indexes", dofIndexesDomain, meshDomain
+            .getElementDomain() );
         elementDofIndexes.setValue( 1, 1, 2, 3 );
         elementDofIndexes.setValue( 2, 2, 3, 4 );
         elementDofIndexes.setValue( 3, 3, 4, 5 );
@@ -161,24 +161,23 @@ public class QuadraticBSplineExample
         elementDofIndexes.setValue( 5, 5, 6, 7 );
         testRegion.addEvaluator( elementDofIndexes );
 
-        ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
-        
+        ContinuousDomain libraryQuadraticBsplineParams = library.getContinuousDomain( "library.parameters.quadratic_bspline" );
+
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        ContinuousEvaluator quadraticBSpline = library.getContinuousEvaluator( "library.function.quadratic_bspline" );
-        MapEvaluator quadraticBSplineMap = new MapEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain, dofIndexesDomain,
-            weightingDomain, dofs );
-        testRegion.addEvaluator( quadraticBSplineMap );
-        
-        ContinuousCompositeEvaluator elementBSpline = new ContinuousCompositeEvaluator( "test_mesh.element.quadratic_bspline_map", rc1CoordinatesDomain );
+        ContinuousDereferenceEvaluator meshQuadraticBsplineParams = new ContinuousDereferenceEvaluator(
+            "test_mesh.element.quadratic_bspline.params", libraryQuadraticBsplineParams, elementDofIndexes, dofs );
+        testRegion.addEvaluator( meshQuadraticBsplineParams );
+
+        ImportedContinuousEvaluator elementBSpline = library.importContinuousEvaluator( "test_mesh.quadratic_bspline",
+            "library.fem.quadratic_bspline" );
         elementBSpline.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
-        elementBSpline.importField( elementDofIndexes );
-        elementBSpline.importField( quadraticBSpline );
-        elementBSpline.importField( quadraticBSplineMap );
+        elementBSpline.alias( meshQuadraticBsplineParams, libraryQuadraticBsplineParams );
         testRegion.addEvaluator( elementBSpline );
 
-        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates", rc1CoordinatesDomain, meshDomain.getElementDomain() );
+        ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "test_mesh.coordinates", rc1CoordinatesDomain,
+            meshDomain.getElementDomain() );
         meshCoordinates.setEvaluator( 1, elementBSpline );
         meshCoordinates.setEvaluator( 2, elementBSpline );
         meshCoordinates.setEvaluator( 3, elementBSpline );

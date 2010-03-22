@@ -8,12 +8,12 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.evaluator.MapEvaluator;
 import fieldml.evaluator.hardcoded.RegularLinearSubdivision;
 import fieldml.field.PiecewiseField;
@@ -164,14 +164,8 @@ public class HierarchicalExample
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "hierarchical_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        MapEvaluator elementLocalDofsMap = new MapEvaluator( "hierarchical_mesh.element.local_dofs_map", rc1CoordinatesDomain, globalDofsDomain,
-            weighting, dofs );
-        testRegion.addEvaluator( elementLocalDofsMap );
-        
-        ContinuousCompositeEvaluator elementLocalDofs = new ContinuousCompositeEvaluator( "hierarchical_mesh.element.local_dofs", rc1CoordinatesDomain );
-        elementLocalDofs.importField( elementDofIndexes );
-        elementLocalDofs.importField( elementDofWeights );
-        elementLocalDofs.importField( elementLocalDofsMap );
+        MapEvaluator elementLocalDofs = new MapEvaluator( "hierarchical_mesh.element.local_dofs", rc1CoordinatesDomain, elementDofIndexes,
+            elementDofWeights, dofs );
         testRegion.addEvaluator( elementLocalDofs );
         
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );
@@ -179,12 +173,13 @@ public class HierarchicalExample
         
         PiecewiseField delegatedEvaluator = new PiecewiseField( "hierarchical_mesh.delegated", rc1CoordinatesDomain, submeshTemplate );
         delegatedEvaluator.setVariable( "test_mesh.dofs", elementLocalDofs );
+        testRegion.addEvaluator( delegatedEvaluator );
         
         RegularLinearSubdivision submeshAtlas = new RegularLinearSubdivision( "hierarchical_mesh.submesh_atlas", submeshDomain, meshDomain );
         
-        ContinuousCompositeEvaluator submeshEvaluator = new ContinuousCompositeEvaluator( "hierarchical_mesh.submesh_evaluator", rc1CoordinatesDomain );
-        submeshEvaluator.importField( submeshAtlas );
-        submeshEvaluator.importField( delegatedEvaluator );
+        ImportedContinuousEvaluator submeshEvaluator = testRegion.importContinuousEvaluator( "hierarchical_mesh.submesh_evaluator", "hierarchical_mesh.delegated" );
+        submeshEvaluator.alias( submeshAtlas, submeshDomain );
+        testRegion.addEvaluator( submeshEvaluator );
 
         ContinuousPiecewiseEvaluator meshCoordinates = new ContinuousPiecewiseEvaluator( "hierarchical_mesh.coordinates", rc1CoordinatesDomain, meshDomain.getElementDomain() );
         meshCoordinates.setEvaluator( 1, submeshEvaluator );

@@ -1,11 +1,11 @@
-package fieldml.region;
+package fieldmlx.region;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousCompositeEvaluator;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.DotProductEvaluator;
 import fieldml.evaluator.FunctionEvaluator;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.function.BicubicHermite;
 import fieldml.function.BilinearLagrange;
 import fieldml.function.BilinearSimplex;
@@ -15,6 +15,9 @@ import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
 import fieldml.function.QuadraticLagrange;
 import fieldml.function.TensorBasis;
+import fieldml.region.Region;
+import fieldml.region.WorldRegion;
+import fieldmlx.evaluator.ContinuousCompositeEvaluator;
 
 public class Library
     extends Region
@@ -34,7 +37,7 @@ public class Library
     private ContinuousDomain xi3d;
 
 
-    Library( WorldRegion parent )
+    public Library( WorldRegion parent )
     {
         super( LIBRARY_NAME );
 
@@ -48,14 +51,16 @@ public class Library
     {
         ContinuousDomain real1 = getContinuousDomain( "library.real.1d" );
         ContinuousDomain parameterList = new ContinuousDomain( this, "library.parameter.list", anonymous );
+        ContinuousDomain scaleList = new ContinuousDomain( this, "library.scale.list", anonymous );
 
-        DotProductEvaluator interpolation = new DotProductEvaluator( "library.fem.dot_product", real1, parameterList, anonymousList );
+        DotProductEvaluator dotProduct = new DotProductEvaluator( "library.dot_product", real1, parameterList, anonymousList );
+        addEvaluator( dotProduct );
+        
+        DotProductEvaluator scaledDotProduct = new DotProductEvaluator( "library.scaled_dot_product", real1, parameterList, anonymousList, scaleList );
+        addEvaluator( scaledDotProduct );
 
-        addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
         addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi2d, new QuadraticLagrange() ) );
         addEvaluator( new FunctionEvaluator( "library.function.cubic_hermite", anonymousList, xi1d, new CubicHermite() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
-        addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
 
         EnsembleDomain quad1x1 = getEnsembleDomain( "library.local_nodes.quad.1x1" );
         ContinuousDomain l_l_lagrangeParameters = new ContinuousDomain( this, "library.parameters.bilinear_lagrange", quad1x1 );
@@ -63,12 +68,16 @@ public class Library
         ContinuousCompositeEvaluator bilinearLagrange = new ContinuousCompositeEvaluator( "library.fem.bilinear_lagrange", real1 );
         bilinearLagrange.alias( l_l_lagrangeParameters, parameterList );
         bilinearLagrange.importField( getContinuousEvaluator( "library.function.bilinear_lagrange" ) );
-        bilinearLagrange.importField( interpolation );
+        bilinearLagrange.importField( dotProduct );
         addEvaluator( bilinearLagrange );
 
+        EnsembleDomain line1 = getEnsembleDomain( "library.local_nodes.line.1" );
+        ContinuousDomain l_lagrangeParameters = new ContinuousDomain( this, "library.parameters.linear_lagrange", line1 );
+        addEvaluator( new FunctionEvaluator( "library.function.linear_lagrange", anonymousList, xi1d, new LinearLagrange() ) );
         ContinuousCompositeEvaluator linearLagrange = new ContinuousCompositeEvaluator( "library.fem.linear_lagrange", real1 );
+        linearLagrange.alias( l_lagrangeParameters, parameterList );
         linearLagrange.importField( getContinuousEvaluator( "library.function.linear_lagrange" ) );
-        linearLagrange.importField( interpolation );
+        linearLagrange.importField( dotProduct );
         addEvaluator( linearLagrange );
 
         EnsembleDomain quad2x2 = getEnsembleDomain( "library.local_nodes.quad.2x2" );
@@ -77,17 +86,36 @@ public class Library
         ContinuousCompositeEvaluator biquadraticLagrange = new ContinuousCompositeEvaluator( "library.fem.biquadratic_lagrange", real1 );
         biquadraticLagrange.alias( q_q_lagrangeParameters, parameterList );
         biquadraticLagrange.importField( getContinuousEvaluator( "library.function.biquadratic_lagrange" ) );
-        biquadraticLagrange.importField( interpolation );
+        biquadraticLagrange.importField( dotProduct );
         addEvaluator( biquadraticLagrange );
+
+        EnsembleDomain line2 = getEnsembleDomain( "library.local_nodes.line.2" );
+        ContinuousDomain q_lagrangeParameters = new ContinuousDomain( this, "library.parameters.quadratic_lagrange", line2 );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi1d, new QuadraticLagrange() ) );
+        ContinuousCompositeEvaluator quadraticLagrange = new ContinuousCompositeEvaluator( "library.fem.quadratic_lagrange", real1 );
+        quadraticLagrange.alias( q_lagrangeParameters, parameterList );
+        quadraticLagrange.importField( getContinuousEvaluator( "library.function.quadratic_lagrange" ) );
+        quadraticLagrange.importField( dotProduct );
+        addEvaluator( quadraticLagrange );
 
         ContinuousCompositeEvaluator cubicHermite = new ContinuousCompositeEvaluator( "library.fem.cubic_hermite", real1 );
         cubicHermite.importField( getContinuousEvaluator( "library.function.cubic_hermite" ) );
-        cubicHermite.importField( interpolation );
+        cubicHermite.importField( dotProduct );
         addEvaluator( cubicHermite );
 
+        ContinuousDomain c_c_HermiteParameters = getContinuousDomain( "library.bicubic_hermite.parameters" );
+        addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
+        
+        ContinuousCompositeEvaluator scaledBicubicHermite = new ContinuousCompositeEvaluator( "library.fem.scaled_bicubic_hermite", real1 );
+        scaledBicubicHermite.alias( c_c_HermiteParameters, parameterList );
+        scaledBicubicHermite.importField( getContinuousEvaluator( "library.function.bicubic_hermite" ) );
+        scaledBicubicHermite.importField( scaledDotProduct );
+        addEvaluator( scaledBicubicHermite );
+
         ContinuousCompositeEvaluator bicubicHermite = new ContinuousCompositeEvaluator( "library.fem.bicubic_hermite", real1 );
+        bicubicHermite.alias( c_c_HermiteParameters, parameterList );
         bicubicHermite.importField( getContinuousEvaluator( "library.function.bicubic_hermite" ) );
-        bicubicHermite.importField( interpolation );
+        bicubicHermite.importField( dotProduct );
         addEvaluator( bicubicHermite );
 
         EnsembleDomain tri1x1 = getEnsembleDomain( "library.local_nodes.triangle.1x1" );
@@ -96,13 +124,16 @@ public class Library
         ContinuousCompositeEvaluator bilinearSimplex = new ContinuousCompositeEvaluator( "library.fem.bilinear_simplex", real1 );
         bilinearSimplex.alias( l_l_simplexParameters, parameterList );
         bilinearSimplex.importField( getContinuousEvaluator( "library.function.bilinear_simplex" ) );
-        bilinearSimplex.importField( interpolation );
+        bilinearSimplex.importField( dotProduct );
         addEvaluator( bilinearSimplex );
 
-        ContinuousCompositeEvaluator quadraticBSpline = new ContinuousCompositeEvaluator( "library.fem.quadratic_bspline", real1 );
-        quadraticBSpline.importField( getContinuousEvaluator( "library.function.quadratic_bspline" ) );
-        quadraticBSpline.importField( interpolation );
-        addEvaluator( quadraticBSpline );
+        ContinuousDomain q_bsplineParameters = getContinuousDomain( "library.parameters.quadratic_bspline" );
+        addEvaluator( new FunctionEvaluator( "library.function.quadratic_bspline", anonymousList, xi1d, new QuadraticBSpline() ) );
+        ContinuousCompositeEvaluator quadraticBspline = new ContinuousCompositeEvaluator( "library.fem.quadratic_bspline", real1 );
+        quadraticBspline.alias( q_bsplineParameters, parameterList );
+        quadraticBspline.importField( getContinuousEvaluator( "library.function.quadratic_bspline" ) );
+        quadraticBspline.importField( dotProduct );
+        addEvaluator( quadraticBspline );
     }
 
 
@@ -185,7 +216,7 @@ public class Library
 
         new ContinuousDomain( this, "library.bicubic_hermite.scaling", bicubicHermiteParameterDomain );
 
-        new ContinuousDomain( this, "library.quadratic_bspline.parameters", quadraticBSplineParameterDomain );
+        new ContinuousDomain( this, "library.parameters.quadratic_bspline", quadraticBSplineParameterDomain );
 
         new ContinuousDomain( this, "library.bicubic_hermite.nodal.parameters", cubicHermiteDerivativesDomain );
 
@@ -209,19 +240,19 @@ public class Library
 
 
     @Override
-    public ContinuousEvaluator getContinuousEvaluator( String name )
+    public ImportedContinuousEvaluator importContinuousEvaluator( String localName, String remoteName )
     {
-        ContinuousEvaluator evaluator = super.getContinuousEvaluator( name );
+        ImportedContinuousEvaluator evaluator = super.importContinuousEvaluator( localName, remoteName );
         if( evaluator != null )
         {
             return evaluator;
         }
-        if( !name.startsWith( INTERPOLATION_PREFIX ) )
+        if( !remoteName.startsWith( INTERPOLATION_PREFIX ) )
         {
             return null;
         }
 
-        String basisDescription = name.substring( INTERPOLATION_PREFIX.length() );
+        String basisDescription = remoteName.substring( INTERPOLATION_PREFIX.length() );
         TensorBasis tensorBasis = new TensorBasis( basisDescription );
         ContinuousDomain xiSource;
         if( tensorBasis.getDimensions() == 1 )
@@ -242,9 +273,9 @@ public class Library
             return null;
         }
 
-        evaluator = new FunctionEvaluator( name, anonymousList, xiSource, tensorBasis );
-        addEvaluator( evaluator );
-
-        return evaluator;
+        ContinuousEvaluator functionEvaluator = new FunctionEvaluator( remoteName, anonymousList, xiSource, tensorBasis );
+        addEvaluator( functionEvaluator );
+        
+        return new ImportedContinuousEvaluator( localName, functionEvaluator );
     }
 }

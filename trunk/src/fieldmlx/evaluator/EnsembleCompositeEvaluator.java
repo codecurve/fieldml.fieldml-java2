@@ -1,11 +1,11 @@
-package fieldml.evaluator;
+package fieldmlx.evaluator;
 
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
-import fieldmlx.evaluator.CompositionEvaluator;
 
 public class EnsembleCompositeEvaluator
     extends EnsembleEvaluator

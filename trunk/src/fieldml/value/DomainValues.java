@@ -18,6 +18,8 @@ public class DomainValues
 
     private final Map<EnsembleDomain, EnsembleValueSource> ensembleSources;
 
+    private final Map<MeshDomain, MeshValueSource> meshSources;
+
     private final Map<String, ContinuousEvaluator> continuousVariables;
 
 
@@ -27,6 +29,7 @@ public class DomainValues
         continuousVariables = new HashMap<String, ContinuousEvaluator>();
         continuousSources = new HashMap<ContinuousDomain, ContinuousValueSource>();
         ensembleSources = new HashMap<EnsembleDomain, EnsembleValueSource>();
+        meshSources = new HashMap<MeshDomain, MeshValueSource>();
     }
 
 
@@ -50,6 +53,10 @@ public class DomainValues
         {
             ensembleSources.put( d.getKey(), d.getValue() );
         }
+        for( Entry<MeshDomain, MeshValueSource> d : input.meshSources.entrySet() )
+        {
+            meshSources.put( d.getKey(), d.getValue() );
+        }
     }
 
 
@@ -64,16 +71,23 @@ public class DomainValues
             set( d.getXiDomain(), v.chartValues );
         }
     }
-    
-    
+
+
     public void alias( ContinuousValueSource source, ContinuousDomain domain )
     {
         continuousSources.put( domain, source );
     }
-    
+
+
     public void alias( EnsembleValueSource source, EnsembleDomain domain )
     {
         ensembleSources.put( domain, source );
+    }
+
+
+    public void alias( MeshValueSource source, MeshDomain domain )
+    {
+        meshSources.put( domain, source );
     }
 
 
@@ -83,7 +97,7 @@ public class DomainValues
     }
 
 
-    public void set( EnsembleDomain domain, int ... values )
+    public void set( EnsembleDomain domain, int... values )
     {
         set( domain, domain.makeValue( values ) );
     }
@@ -102,8 +116,8 @@ public class DomainValues
         {
             return (ContinuousDomainValue)values.get( domain );
         }
-        
-        return source.getValue( this );
+
+        return source.getValue( this, domain );
     }
 
 
@@ -114,14 +128,20 @@ public class DomainValues
         {
             return (EnsembleDomainValue)values.get( domain );
         }
-        
-        return source.getValue( this );
+
+        return source.getValue( this, domain );
     }
 
 
     public MeshDomainValue get( MeshDomain domain )
     {
-        return (MeshDomainValue)values.get( domain );
+        MeshValueSource source = meshSources.get( domain );
+        if( source == null )
+        {
+            return (MeshDomainValue)values.get( domain );
+        }
+
+        return source.getValue( this, domain );
     }
 
 
