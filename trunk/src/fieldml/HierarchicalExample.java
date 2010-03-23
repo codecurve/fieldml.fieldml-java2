@@ -8,7 +8,6 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -65,7 +64,7 @@ public class HierarchicalExample
 
         MeshDomain meshDomain = region.getMeshDomain( "hierarchical_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "hierarchical_mesh.element.parameters" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "hierarchical_mesh.coordinates.z" );
+        ImportedContinuousEvaluator meshZ = region.importContinuousEvaluator( "z", "hierarchical_mesh.coordinates.z" );
         DomainValues context = new DomainValues();
         ContinuousDomainValue output;
 
@@ -169,7 +168,7 @@ public class HierarchicalExample
         testRegion.addEvaluator( elementLocalDofs );
         
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator submeshTemplate = subRegion.getContinuousEvaluator( "test_mesh.coordinates" );
+        ImportedContinuousEvaluator submeshTemplate = subRegion.importContinuousEvaluator( "test_mesh.coordinates", "test_mesh.coordinates" );
         
         PiecewiseField delegatedEvaluator = new PiecewiseField( "hierarchical_mesh.delegated", rc1CoordinatesDomain, submeshTemplate );
         delegatedEvaluator.setVariable( "test_mesh.dofs", elementLocalDofs );

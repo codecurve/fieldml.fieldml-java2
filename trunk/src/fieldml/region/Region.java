@@ -96,7 +96,7 @@ public abstract class Region
     }
 
 
-    public ContinuousEvaluator getContinuousEvaluator( String name )
+    protected ContinuousEvaluator getContinuousEvaluator( String name )
     {
         ContinuousEvaluator evaluator = continuousEvaluators.get( name );
 
@@ -106,7 +106,7 @@ public abstract class Region
     }
 
 
-    public EnsembleEvaluator getEnsembleEvaluator( String name )
+    protected EnsembleEvaluator getEnsembleEvaluator( String name )
     {
         EnsembleEvaluator evaluator = ensembleEvaluators.get( name );
 

@@ -9,7 +9,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousDereferenceEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -65,7 +64,7 @@ public class QuadraticBSplineExample
 
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
+        ImportedContinuousEvaluator meshZ = region.importContinuousEvaluator( "z", "test_mesh.coordinates.z" );
         DomainValues context = new DomainValues();
         ContinuousDomainValue output;
 
