@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousEvaluator;
+import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
@@ -24,7 +24,7 @@ public class MinimalColladaExporter
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
+        ImportedContinuousEvaluator mesh = region.importContinuousEvaluator( "mesh_geometry", fieldName );
         final int elementCount = meshDomain.getElementDomain().getValueCount();
         DomainValues context = new DomainValues();
 
@@ -86,7 +86,7 @@ public class MinimalColladaExporter
     {
         MeshDomain mesh1Domain = region.getMeshDomain( mesh1Name );
         MeshDomain mesh2Domain = region.getMeshDomain( mesh2Name );
-        ContinuousEvaluator mesh = region.getContinuousEvaluator( "test_mesh.coordinates" );
+        ImportedContinuousEvaluator mesh = region.importContinuousEvaluator( "mesh_geometry", fieldName );
         final int element1Count = mesh1Domain.getElementDomain().getValueCount();
         final int element2Count = mesh2Domain.getElementDomain().getValueCount();
 
@@ -156,7 +156,7 @@ public class MinimalColladaExporter
         throws FileNotFoundException, IOException
     {
         MeshDomain meshDomain = region.getMeshDomain( meshName );
-        ContinuousEvaluator mesh = region.getContinuousEvaluator( fieldName );
+        ImportedContinuousEvaluator mesh = region.importContinuousEvaluator( "mesh_geometry", fieldName );
         int elementCount = meshDomain.getElementDomain().getValueCount();
         double deltaX = 1.0 / discretisation;
         double x = deltaX;

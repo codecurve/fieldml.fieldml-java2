@@ -6,25 +6,29 @@ import java.util.List;
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
+import fieldml.domain.MeshDomain;
 import fieldml.util.SimpleMap;
 import fieldml.util.SimpleMapEntry;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldml.value.EnsembleValueSource;
+import fieldml.value.MeshValueSource;
 
 public class ContinuousPiecewiseEvaluator
     extends ContinuousEvaluator
+    implements DelegatingEvaluator
 {
     public static class TemplateMap
     {
         public final int index;
 
         @SerializationAsString
-        public final ContinuousEvaluator evaluator;
+        public final ContinuousValueSource evaluator;
 
 
-        public TemplateMap( int index, ContinuousEvaluator evaluator )
+        public TemplateMap( int index, ContinuousValueSource evaluator )
         {
             this.index = index;
             this.evaluator = evaluator;
@@ -34,7 +38,11 @@ public class ContinuousPiecewiseEvaluator
     @SerializationAsString
     public final EnsembleDomain indexDomain;
 
-    public final SimpleMap<ContinuousDomain, ContinuousValueSource> aliases;
+    public final SimpleMap<ContinuousDomain, ContinuousValueSource> continuousAliases;
+
+    public final SimpleMap<EnsembleDomain, EnsembleValueSource> ensembleAliases;
+
+    public final SimpleMap<MeshDomain, MeshValueSource> meshAliases;
 
     public final List<TemplateMap> elementMaps;
 
@@ -45,8 +53,10 @@ public class ContinuousPiecewiseEvaluator
 
         this.indexDomain = indexDomain;
 
+        continuousAliases = new SimpleMap<ContinuousDomain, ContinuousValueSource>();
+        ensembleAliases = new SimpleMap<EnsembleDomain, EnsembleValueSource>();
+        meshAliases = new SimpleMap<MeshDomain, MeshValueSource>();
         elementMaps = new ArrayList<TemplateMap>();
-        aliases = new SimpleMap<ContinuousDomain, ContinuousValueSource>();
         for( int i = 0; i <= indexDomain.getValueCount(); i++ )
         {
             elementMaps.add( null );
@@ -54,15 +64,27 @@ public class ContinuousPiecewiseEvaluator
     }
 
 
-    public void setEvaluator( int index, ContinuousEvaluator evaluator )
+    public void setEvaluator( int index, ContinuousValueSource evaluator )
     {
         elementMaps.set( index, new TemplateMap( index, evaluator ) );
     }
 
 
-    public void alias( ContinuousValueSource source, ContinuousDomain destination )
+    public void alias( ContinuousValueSource local, ContinuousDomain remote )
     {
-        aliases.put( destination, source );
+        continuousAliases.put( remote, local );
+    }
+
+
+    public void alias( EnsembleValueSource local, EnsembleDomain remote )
+    {
+        ensembleAliases.put( remote, local );
+    }
+
+
+    public void alias( MeshValueSource local, MeshDomain remote )
+    {
+        meshAliases.put( remote, local );
     }
 
 
@@ -70,7 +92,15 @@ public class ContinuousPiecewiseEvaluator
     public ContinuousDomainValue getValue( DomainValues context )
     {
         DomainValues localContext = new DomainValues( context );
-        for( SimpleMapEntry<ContinuousDomain, ContinuousValueSource> e : aliases )
+        for( SimpleMapEntry<ContinuousDomain, ContinuousValueSource> e : continuousAliases )
+        {
+            localContext.alias( e.value, e.key );
+        }
+        for( SimpleMapEntry<EnsembleDomain, EnsembleValueSource> e : ensembleAliases )
+        {
+            localContext.alias( e.value, e.key );
+        }
+        for( SimpleMapEntry<MeshDomain, MeshValueSource> e : meshAliases )
         {
             localContext.alias( e.value, e.key );
         }

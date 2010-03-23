@@ -5,7 +5,6 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousDereferenceEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -48,8 +47,8 @@ public class FieldmlTest
         Region region = buildRegion( world );
 
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
-        ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
+        ImportedContinuousEvaluator meshX = region.importContinuousEvaluator( "x", "test_mesh.coordinates.x" );
+        ImportedContinuousEvaluator meshXY = region.importContinuousEvaluator( "xy", "test_mesh.coordinates.xy" );
 
         DomainValues context = new DomainValues();
 

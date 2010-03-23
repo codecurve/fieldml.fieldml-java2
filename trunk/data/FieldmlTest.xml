@@ -30,9 +30,9 @@
         <entry key="4" value="library.shape.quad" />
       </shapes>
       <pointConnectivity>
-        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
-        <entry key="library.local_nodes.triangle.1x1" value="test_mesh.triangle1x1_nodes" />
         <entry key="library.local_nodes.quad.1x1" value="test_mesh.quad1x1_nodes" />
+        <entry key="library.local_nodes.triangle.1x1" value="test_mesh.triangle1x1_nodes" />
+        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
       </pointConnectivity>
       <fields>"test_mesh.coordinates.template1"  "test_mesh.coordinates.template2"  "test_mesh.coordinates.xy"  </fields>
     </MeshDomain>
