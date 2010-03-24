@@ -3,7 +3,6 @@ package fieldml.evaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
@@ -13,6 +12,7 @@ import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.EnsembleValueSource;
 import fieldml.value.MeshValueSource;
+import fieldmlx.annotations.SerializationAsString;
 import fieldmlx.util.SimpleMap;
 import fieldmlx.util.SimpleMapEntry;
 
