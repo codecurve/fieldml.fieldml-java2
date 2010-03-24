@@ -2,10 +2,8 @@ package fieldmlx.region;
 
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.DotProductEvaluator;
 import fieldml.evaluator.FunctionEvaluator;
-import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.function.BicubicHermite;
 import fieldml.function.BilinearLagrange;
 import fieldml.function.BilinearSimplex;
@@ -14,16 +12,12 @@ import fieldml.function.CubicHermite;
 import fieldml.function.LinearLagrange;
 import fieldml.function.QuadraticBSpline;
 import fieldml.function.QuadraticLagrange;
-import fieldml.function.TensorBasis;
 import fieldml.region.Region;
-import fieldml.region.WorldRegion;
 import fieldml.region.SubRegion;
 import fieldmlx.evaluator.ContinuousCompositeEvaluator;
 
 public class Library {
     private static final String LIBRARY_NAME = "library";
-
-    private static final String INTERPOLATION_PREFIX = LIBRARY_NAME + ".interpolation.";
 
     private static void buildLibraryFunctions(Region library) {
         EnsembleDomain anonymous = library.getEnsembleDomain("library.anonymous");
@@ -216,7 +210,7 @@ public class Library {
     public static Region getLibrarySingleton( Region worldRegion ) {
         // TODO: Not thread safe.
         if (librarySingleton == null ) {
-            librarySingleton = new SubRegion("library", worldRegion );
+            librarySingleton = new SubRegion(LIBRARY_NAME, worldRegion );
             buildLibraryDomains(librarySingleton);
             buildLibraryFunctions(librarySingleton);
         }
@@ -238,40 +232,4 @@ public class Library {
         // of this class is just to house the factory method.
     }
 
-    /*
-    public ImportedContinuousEvaluator importContinuousEvaluator(String localName, String remoteName) {
-        Region library = Library.getLibrarySingleton();
-        
-        ImportedContinuousEvaluator evaluator = library.importContinuousEvaluator(localName, remoteName);
-        if (evaluator != null) {
-            return evaluator;
-        }
-        if (!remoteName.startsWith(INTERPOLATION_PREFIX)) {
-            return null;
-        }
-
-        String basisDescription = remoteName.substring(INTERPOLATION_PREFIX.length());
-        TensorBasis tensorBasis = new TensorBasis(basisDescription);
-        ContinuousDomain xiSource;
-        if (tensorBasis.getDimensions() == 1) {
-            ContinuousDomain xi1d = library.getContinuousDomain("library.xi.rc.1d");
-            xiSource = xi1d;
-        } else if (tensorBasis.getDimensions() == 2) {
-            ContinuousDomain xi2d = library.getContinuousDomain("library.xi.rc.2d");
-            xiSource = xi2d;
-        } else if (tensorBasis.getDimensions() == 3) {
-            ContinuousDomain xi3d = library.getContinuousDomain("library.xi.rc.3d");
-            xiSource = xi3d;
-        } else {
-            // Too many dimensions for now.
-            return null;
-        }
-
-        ContinuousDomain anonymousList = library.getContinuousDomain("library.weighting.list");
-        ContinuousEvaluator functionEvaluator = new FunctionEvaluator(remoteName, anonymousList, xiSource, tensorBasis);
-        library.addEvaluator(functionEvaluator);
-
-        return new ImportedContinuousEvaluator(localName, functionEvaluator);
-    }
-    */
 }
