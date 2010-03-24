@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1_______2_______3
+\       |       /
+ \      |      / 
+  \     5     /  
+   \   / \   /   
+    \ /   \ /    
+     4     6     
+      \   /      
+       \ /       
+        7        
+-->
+  <Region name="BicubicHermiteTriquad_Test">
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    
+
+    <ContinuousDomain name="test_mesh.coordinates.d/ds" componentDomain="library.anonymous" />
+    
+
+    <ContinuousDomain name="test_mesh.coordinates.d2/ds1ds2" />
+    
+
+    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="3" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+      <ContiguousEnsembleBounds valueCount="7" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.quad.00_10_01_11" />
+        <entry key="3" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+      <pointConnectivity />
+    </MeshDomain>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.u" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.du/ds" valueDomain="test_mesh.coordinates.d/ds">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.node.dofs.d2u/ds2" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousParameters name="test_mesh.node.ds1.weights" valueDomain="library.weighting.list">
+      <table>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  5  </key>
+          <values>1.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  1  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  2  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  6  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  5  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  2  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  6  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  5  </key>
+          <values>0.0  -1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  7  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  4  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.ds2.weights" valueDomain="library.weighting.list">
+      <table>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  5  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  1  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  2  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  6  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  5  </key>
+          <values>0.0  -1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  2  </key>
+          <values>0.0  -1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  6  </key>
+          <values>-1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  5  </key>
+          <values>-1.0  -1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  7  </key>
+          <values>-1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  4  </key>
+          <values>-1.0  0.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ImportedContinuousEvaluator evaluator="library.dot_product" name="test_mesh.node.du/ds1" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.weighting.list" value="test_mesh.node.ds1.weights" />
+        <SimpleMapEntry key="library.parameter.list" value="test_mesh.node.dofs.du/ds" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="library.dot_product" name="test_mesh.node.du/ds2" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.weighting.list" value="test_mesh.node.ds2.weights" />
+        <SimpleMapEntry key="library.parameter.list" value="test_mesh.node.dofs.du/ds" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="library.interpolation.hermite.derivatives" name="test_mesh.bicubic_hermite_parameters" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.node.dofs.u" />
+        <TemplateMap index="2" evaluator="test_mesh.node.du/ds1" />
+        <TemplateMap index="3" evaluator="test_mesh.node.du/ds2" />
+        <TemplateMap index="4" evaluator="test_mesh.node.dofs.d2u/ds2" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="test_mesh.bicubic_hermite_parameters" name="test_mesh.bicubic_hermite.element_parameter" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="library.local_nodes.quad.1x1" value="test_mesh.bicubic_hermite.local_node" />
+        <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.quad_nodes" />
+        <SimpleMapEntry key="library.interpolation.hermite.derivatives" value="test_mesh.bicubic_hermite.nodal_parameter" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.bicubic_hermite.parameters" value="test_mesh.bicubic_hermite.element_parameter" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.h3" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.element.bicubic_hermite" />
+        <TemplateMap index="2" evaluator="test_mesh.element.bicubic_hermite" />
+        <TemplateMap index="3" evaluator="test_mesh.element.bicubic_hermite" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>-1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>-0.5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>0.5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.5773502691896257  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>0.5773502691896257  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>0.5773502691896257  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>-0.28867513459481287  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>-0.28867513459481287  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>-1.1547005383792515  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.z" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.dx/ds" valueDomain="test_mesh.coordinates.d/ds">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>0.0  -1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>0.8660254037844387  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  0.8660254037844387  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>0.0  -0.8660254037844387  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.5000000000000001  -0.4999999999999998  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.dy/ds" valueDomain="test_mesh.coordinates.d/ds">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>0.49999999999999994  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>1.0  -0.49999999999999994  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>1.0  0.49999999999999994  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.8660254037844386  0.8660254037844387  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.dz/ds" valueDomain="test_mesh.coordinates.d/ds">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>0.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>0.0  1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>1.0  0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.0  0.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.node.d2x/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
+    
+
+    <ContinuousParameters name="test_mesh.node.d2y/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
+    
+
+    <ContinuousParameters name="test_mesh.node.d2z/ds1ds2" valueDomain="test_mesh.coordinates.d2/ds1ds2" />
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.coordinates.rc.3d">
+      <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  "test_mesh.coordinates.z"  </sourceFields>
+    </ContinuousAggregateEvaluator>
+    
+
+    <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.nodes">
+      <table>
+        <SimpleMapEntry>
+          <key>1  1  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  3  </key>
+          <values>1  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  2  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  4  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  3  </key>
+          <values>7  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  4  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+      </table>
+    </EnsembleParameters>
+    
+
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.x" />
+        <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dx/ds" />
+        <SimpleMapEntry key="test_mesh.node.dofs.d2u/ds2" value="test_mesh.node.d2x/ds1ds2" />
+      </variables>
+    </PiecewiseField>
+    
+
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.y" />
+        <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dy/ds" />
+        <SimpleMapEntry key="test_mesh.node.dofs.d2u/ds2" value="test_mesh.node.d2y/ds1ds2" />
+      </variables>
+    </PiecewiseField>
+    
+
+    <PiecewiseField template="test_mesh.coordinates.h3" name="test_mesh.coordinates.z" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.node.dofs.u" value="test_mesh.node.z" />
+        <SimpleMapEntry key="test_mesh.node.dofs.du/ds" value="test_mesh.node.dz/ds" />
+        <SimpleMapEntry key="test_mesh.node.dofs.d2u/ds2" value="test_mesh.node.d2z/ds1ds2" />
+      </variables>
+    </PiecewiseField>
+    
+
+  </Region>
+</fieldml>
+

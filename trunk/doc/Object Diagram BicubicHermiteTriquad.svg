@@ -1,0 +1,1321 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="297mm"
+   height="210mm"
+   id="svg3196"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="Object Diagram BicubicHermiteTriquad.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+  <defs
+     id="defs3198">
+    <marker
+       inkscape:stockid="EmptyTriangleInL"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="EmptyTriangleInL"
+       style="overflow:visible">
+      <path
+         id="path3964"
+         d="M 5.77,0.0 L -2.88,5.0 L -2.88,-5.0 L 5.77,0.0 z "
+         style="fill-rule:evenodd;fill:#FFFFFF;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(-0.8) translate(-6,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lstart"
+       style="overflow:visible">
+      <path
+         id="path3830"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3833"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;">
+      <path
+         id="path3821"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible">
+      <path
+         id="path3812"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 372.04724 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1052.3622 : 372.04724 : 1"
+       inkscape:persp3d-origin="526.18109 : 248.03149 : 1"
+       id="perspective3205" />
+  </defs>
+  <sodipodi:namedview
+     inkscape:document-units="mm"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.84571644"
+     inkscape:cx="518.22571"
+     inkscape:cy="395.55837"
+     inkscape:current-layer="g3769"
+     id="namedview3200"
+     showgrid="false"
+     inkscape:window-width="1280"
+     inkscape:window-height="934"
+     inkscape:window-x="-4"
+     inkscape:window-y="-4" />
+  <metadata
+     id="metadata3202">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g3189"
+       transform="translate(97.025584,-83.191127)">
+      <g
+         id="g3213"
+         transform="translate(202.97484,-75.076557)">
+        <g
+           id="g3769">
+          <path
+             id="path15077"
+             d="M 234.24999,396.11817 L 591.92089,231.94098"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path15073"
+             d="M 518.03007,396.79119 L 393.65997,230.01835"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g3779"
+             transform="translate(165,0)">
+            <rect
+               style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+               id="rect3157"
+               width="198"
+               height="53"
+               x="100.99957"
+               y="178.36217"
+               ry="0" />
+            <path
+               style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               d="M 100.42349,195.94286 L 299.57561,195.94286"
+               id="path3167" />
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="99.947182"
+               y="199.89728"
+               id="text3173"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan3175"
+                 x="99.947182"
+                 y="199.89728"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Ensemble Domain</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="99.947182"
+               y="218.09521"
+               id="text3220"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan3222"
+                 x="99.947182"
+                 y="218.09521"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.elements</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="100.88371"
+               y="231.09373"
+               id="text3224"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan3226"
+                 x="100.88371"
+                 y="231.09373"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: 1, 2, 3</tspan></text>
+          </g>
+          <g
+             id="g6789"
+             transform="translate(190,20.000014)">
+            <rect
+               style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+               id="rect3791"
+               width="198"
+               height="53"
+               x="350.99957"
+               y="268.36215"
+               ry="0" />
+            <g
+               id="g6780">
+              <path
+                 id="path3793"
+                 d="M 350.42349,285.94286 L 549.57561,285.94286"
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text3795"
+                 y="293.48666"
+                 x="340.35904"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="293.48666"
+                   x="340.35904"
+                   id="tspan3797"
+                   sodipodi:role="line">Mesh Domain</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text3799"
+                 y="311.6846"
+                 x="340.35904"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="311.6846"
+                   x="340.35904"
+                   id="tspan3801"
+                   sodipodi:role="line">Name: test_mesh.domain</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text3803"
+                 y="324.68314"
+                 x="340.35904"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="324.68314"
+                   x="340.35904"
+                   id="tspan3805"
+                   sodipodi:role="line">Dimensions: 2</tspan></text>
+            </g>
+          </g>
+          <path
+             id="path3807"
+             d="M 563.9394,286.44179 L 441.16252,231.08251"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g6765"
+             transform="translate(325,135)">
+            <g
+               transform="translate(100,195)"
+               id="g6681">
+              <g
+                 id="g17333">
+                <rect
+                   ry="0"
+                   y="178.36217"
+                   x="100.99957"
+                   height="53"
+                   width="207.99998"
+                   id="rect6683"
+                   style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+                <path
+                   id="path6685"
+                   d="M 100.44468,195.94286 L 309.55445,195.94286"
+                   style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text6687"
+                   y="199.89728"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="199.89728"
+                     x="99.947182"
+                     id="tspan6689"
+                     sodipodi:role="line">Ensemble Parameters</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text6691"
+                   y="218.09521"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="218.09521"
+                     x="99.947182"
+                     id="tspan6693"
+                     sodipodi:role="line">Name: test_mesh.quad_nodes</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text6695"
+                   y="231.09373"
+                   x="100.88371"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="231.09373"
+                     x="100.88371"
+                     id="tspan6697"
+                     sodipodi:role="line">Values: 4, 1, ... 7</tspan></text>
+              </g>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot6735"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion6737"><rect
+                     id="rect6739"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara6741" /></flowRoot>            </g>
+          </g>
+          <g
+             transform="translate(179.05289,400.40631)"
+             id="g6800">
+            <g
+               id="g6818"
+               transform="translate(-4.0528968,29.593689)">
+              <g
+                 id="g6830">
+                <g
+                   id="g6844">
+                  <g
+                     id="g17351"
+                     transform="translate(0,110)">
+                    <rect
+                       style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                       id="rect6802"
+                       width="258"
+                       height="62.999996"
+                       x="100.99958"
+                       y="178.36217"
+                       ry="0" />
+                    <path
+                       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.99999988;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                       d="M 100.51989,196.86217 L 359.47979,196.86217"
+                       id="path6804" />
+                    <text
+                       xml:space="preserve"
+                       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                       x="99.947182"
+                       y="199.89728"
+                       id="text6806"
+                       sodipodi:linespacing="125%"
+                       transform="scale(1.0398822,0.9616474)"><tspan
+                         sodipodi:role="line"
+                         id="tspan6808"
+                         x="99.947182"
+                         y="199.89728"
+                         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Evaluator</tspan></text>
+                    <text
+                       xml:space="preserve"
+                       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                       x="99.947182"
+                       y="218.09521"
+                       id="text6810"
+                       sodipodi:linespacing="125%"
+                       transform="scale(1.0398822,0.9616474)"><tspan
+                         sodipodi:role="line"
+                         id="tspan6812"
+                         x="99.947182"
+                         y="218.09521"
+                         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: bicubic_hermite_quad_z</tspan></text>
+                    <text
+                       xml:space="preserve"
+                       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                       x="99.947174"
+                       y="231.09373"
+                       id="text6814"
+                       sodipodi:linespacing="125%"
+                       transform="scale(1.0398822,0.9616474)"><tspan
+                         sodipodi:role="line"
+                         id="tspan6816"
+                         x="99.947174"
+                         y="231.09373"
+                         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Params: test_mesh.bicubic_params.z</tspan></text>
+                    <text
+                       xml:space="preserve"
+                       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                       x="99.947174"
+                       y="243.0126"
+                       id="text6840"
+                       sodipodi:linespacing="125%"
+                       transform="scale(1.0398822,0.9616474)"><tspan
+                         sodipodi:role="line"
+                         id="tspan6842"
+                         x="99.947174"
+                         y="243.0126"
+                         style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">ParamIndexes: test_mesh.quad_nodes</tspan></text>
+                  </g>
+                </g>
+              </g>
+            </g>
+          </g>
+          <g
+             id="g6856"
+             transform="translate(-485,-85.000001)">
+            <g
+               transform="translate(100,195)"
+               id="g6858">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect6860"
+                 width="198"
+                 height="53"
+                 x="100.99957"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.42349,195.94286 L 299.57561,195.94286"
+                 id="path6862" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text6864"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6866"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Continuous Parameters</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text6868"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6870"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.node.z</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text6872"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6874"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: 0.0, ... 0.0</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot6876"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion6878"><rect
+                     id="rect6880"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara6882" /></flowRoot>            </g>
+          </g>
+          <g
+             id="g6884"
+             transform="translate(-175,135)">
+            <g
+               transform="translate(100,195)"
+               id="g6886">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect6888"
+                 width="228.00002"
+                 height="53"
+                 x="100.99958"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.48532,195.94286 L 329.59859,195.94286"
+                 id="path6890" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text6892"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6894"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Composite Field</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text6896"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6898"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.co-ords.dz/ds1</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text6900"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan6902"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: &lt;imported&gt;</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot6904"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion6906"><rect
+                     id="rect6908"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara6910" /></flowRoot>            </g>
+          </g>
+          <g
+             transform="translate(-54.999996,-9.3652352e-7)"
+             id="g6912">
+            <rect
+               style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+               id="rect6914"
+               width="198"
+               height="53"
+               x="100.99957"
+               y="178.36217"
+               ry="0" />
+            <path
+               style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+               d="M 100.42349,195.94286 L 299.57561,195.94286"
+               id="path6916" />
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="99.947182"
+               y="199.89728"
+               id="text6918"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan6920"
+                 x="99.947182"
+                 y="199.89728"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Ensemble Domain</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="99.947182"
+               y="218.09521"
+               id="text6922"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan6924"
+                 x="99.947182"
+                 y="218.09521"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.nodes</tspan></text>
+            <text
+               xml:space="preserve"
+               style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+               x="100.88371"
+               y="231.09373"
+               id="text6926"
+               sodipodi:linespacing="125%"
+               transform="scale(1.0398822,0.9616474)"><tspan
+                 sodipodi:role="line"
+                 id="tspan6928"
+                 x="100.88371"
+                 y="231.09373"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: 1, 2, 3, 4, 5, 6, 7</tspan></text>
+          </g>
+          <flowRoot
+             xml:space="preserve"
+             id="flowRoot6930"
+             style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Bitstream Vera Sans;font-style:normal;font-weight:normal;font-size:40px"><flowRegion
+               id="flowRegion6932"><rect
+                 id="rect6934"
+                 width="299.15463"
+                 height="111.14837"
+                 x="65.033615"
+                 y="266.39301" /></flowRegion><flowPara
+               id="flowPara6936" /></flowRoot>          <path
+             id="path6938"
+             d="M -197.0812,286.4511 L 98.216801,232.15207"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50000036;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g14877"
+             transform="translate(-350,24.999999)">
+            <g
+               transform="translate(100,195)"
+               id="g14879">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect14881"
+                 width="198"
+                 height="53"
+                 x="100.99957"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.42349,195.94286 L 299.57561,195.94286"
+                 id="path14883" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text14885"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan14887"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Continuous Parameters</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text14889"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan14891"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.node.dz/ds</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text14893"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan14895"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: 1.0, -1.0, ... 1.0</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot14897"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion14899"><rect
+                     id="rect14901"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara14903" /></flowRoot>            </g>
+          </g>
+          <g
+             transform="translate(-300,-9.3652352e-7)"
+             id="g14905">
+            <g
+               id="g14923">
+              <rect
+                 ry="0"
+                 y="178.36217"
+                 x="100.99957"
+                 height="53"
+                 width="223"
+                 id="rect14907"
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+              <path
+                 id="path14909"
+                 d="M 100.47648,195.94286 L 324.52265,195.94286"
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text14911"
+                 y="199.89728"
+                 x="99.947182"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="199.89728"
+                   x="99.947182"
+                   id="tspan14913"
+                   sodipodi:role="line">Ensemble Domain</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text14915"
+                 y="218.09521"
+                 x="99.947182"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="218.09521"
+                   x="99.947182"
+                   id="tspan14917"
+                   sodipodi:role="line">Name: test_mesh.edge_direction</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text14919"
+                 y="231.09373"
+                 x="100.88371"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="231.09373"
+                   x="100.88371"
+                   id="tspan14921"
+                   sodipodi:role="line">Values: 1, 2, 3</tspan></text>
+            </g>
+          </g>
+          <g
+             id="g14937"
+             transform="translate(-275,-85.000001)">
+            <g
+               transform="translate(100,195)"
+               id="g14939">
+              <g
+                 id="g14967">
+                <rect
+                   ry="0"
+                   y="178.36217"
+                   x="100.99957"
+                   height="53"
+                   width="238"
+                   id="rect14941"
+                   style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+                <path
+                   id="path14943"
+                   d="M 100.50459,195.94286 L 339.57932,195.94286"
+                   style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14945"
+                   y="199.89728"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="199.89728"
+                     x="99.947182"
+                     id="tspan14947"
+                     sodipodi:role="line">Continuous Parameters</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14949"
+                   y="218.09521"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="218.09521"
+                     x="99.947182"
+                     id="tspan14951"
+                     sodipodi:role="line">Name: test_mesh.node.d2z/ds1ds2</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14953"
+                   y="231.09373"
+                   x="100.88371"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="231.09373"
+                     x="100.88371"
+                     id="tspan14955"
+                     sodipodi:role="line">Values: 0.0, ... 0.0</tspan></text>
+              </g>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot14957"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion14959"><rect
+                     id="rect14961"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara14963" /></flowRoot>            </g>
+          </g>
+          <path
+             id="path14965"
+             d="M -17.929161,287.73902 L 183.03549,231.36134"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50000012;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g14977"
+             transform="translate(-281.04795,24.999999)">
+            <g
+               transform="translate(100,195)"
+               id="g14979">
+              <g
+                 id="g15033"
+                 transform="translate(151.04795,0)">
+                <rect
+                   ry="0"
+                   y="178.36217"
+                   x="100.99957"
+                   height="53"
+                   width="248"
+                   id="rect14981"
+                   style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+                <path
+                   id="path14983"
+                   d="M 100.52387,195.94286 L 349.56005,195.94286"
+                   style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14985"
+                   y="199.89728"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="199.89728"
+                     x="99.947182"
+                     id="tspan14987"
+                     sodipodi:role="line">Ensemble Parameters</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14989"
+                   y="218.09521"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="218.09521"
+                     x="99.947182"
+                     id="tspan14991"
+                     sodipodi:role="line">Name: test_mesh.node.direction.ds1</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text14993"
+                   y="231.09373"
+                   x="100.88371"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="231.09373"
+                     x="100.88371"
+                     id="tspan14995"
+                     sodipodi:role="line">Values: 1, 2, 1, 3, ... 1</tspan></text>
+              </g>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot14997"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion14999"><rect
+                     id="rect15001"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara15003" /></flowRoot>            </g>
+          </g>
+          <g
+             id="g15005"
+             transform="translate(385,-9.3652352e-7)">
+            <g
+               id="g15023">
+              <rect
+                 ry="0"
+                 y="178.36217"
+                 x="100.99958"
+                 height="53"
+                 width="238"
+                 id="rect15007"
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+              <path
+                 id="path15009"
+                 d="M 100.50737,195.94286 L 340.49197,195.94286"
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text15011"
+                 y="199.89728"
+                 x="99.947182"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="199.89728"
+                   x="99.947182"
+                   id="tspan15013"
+                   sodipodi:role="line">Ensemble Domain</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text15015"
+                 y="218.09521"
+                 x="99.947182"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="218.09521"
+                   x="99.947182"
+                   id="tspan15017"
+                   sodipodi:role="line">Name: library.local_nodes.quad1x1</tspan></text>
+              <text
+                 transform="scale(1.0398822,0.9616474)"
+                 sodipodi:linespacing="125%"
+                 id="text15019"
+                 y="231.09373"
+                 x="100.88371"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 xml:space="preserve"><tspan
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   y="231.09373"
+                   x="100.88371"
+                   id="tspan15021"
+                   sodipodi:role="line">Values: 1, 2, 3, 4</tspan></text>
+            </g>
+          </g>
+          <g
+             id="g15043"
+             transform="translate(-11.047947,24.999999)">
+            <g
+               transform="translate(100,195)"
+               id="g15045">
+              <g
+                 id="g15047"
+                 transform="translate(151.04795,0)">
+                <rect
+                   ry="0"
+                   y="178.36217"
+                   x="100.99957"
+                   height="53"
+                   width="248"
+                   id="rect15049"
+                   style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1" />
+                <path
+                   id="path15051"
+                   d="M 100.52387,195.94286 L 349.56005,195.94286"
+                   style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text15053"
+                   y="199.89728"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="199.89728"
+                     x="99.947182"
+                     id="tspan15055"
+                     sodipodi:role="line">Ensemble Parameters</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text15057"
+                   y="218.09521"
+                   x="99.947182"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="218.09521"
+                     x="99.947182"
+                     id="tspan15059"
+                     sodipodi:role="line">Name: test_mesh.node.direction.ds2</tspan></text>
+                <text
+                   transform="scale(1.0398822,0.9616474)"
+                   sodipodi:linespacing="125%"
+                   id="text15061"
+                   y="231.09373"
+                   x="100.88371"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                   xml:space="preserve"><tspan
+                     style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                     y="231.09373"
+                     x="100.88371"
+                     id="tspan15063"
+                     sodipodi:role="line">Values: 2, 2, 2, 1, ... 2.</tspan></text>
+              </g>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot15065"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion15067"><rect
+                     id="rect15069"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara15071" /></flowRoot>            </g>
+          </g>
+          <path
+             id="path15079"
+             d="M 189.45932,396.35656 L 355.43497,230.75852"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path15081"
+             d="M -28.055389,231.9794 L 362.24703,397.2125"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:1.49999997, 1.49999997;stroke-dashoffset:0;stroke-opacity:1" />
+          <path
+             id="path15083"
+             d="M -82.823612,234.2376 L 111.69994,398.59387"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:1.49999996, 1.49999996;stroke-dashoffset:0;stroke-opacity:1" />
+          <g
+             id="g15085"
+             transform="translate(74.999996,135)">
+            <g
+               transform="translate(100,195)"
+               id="g15087">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect15089"
+                 width="228.00002"
+                 height="53"
+                 x="100.99958"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.48532,195.94286 L 329.59859,195.94286"
+                 id="path15091" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text15093"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan15095"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Composite Field</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text15097"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan15099"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.co-ords.dz/ds2</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text15101"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan15103"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: &lt;imported&gt;</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot15105"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion15107"><rect
+                     id="rect15109"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara15111" /></flowRoot>            </g>
+          </g>
+          <path
+             id="path15113"
+             d="M 120.03893,507.52967 L -12.895885,451.89377"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path16197"
+             d="M 179.71464,506.87035 L 259.96436,451.23446"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17291"
+             d="M 367.23762,506.87039 L 28.525779,451.23449"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17293"
+             d="M 453.28485,506.87038 L 533.53457,451.23449"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g17295"
+             transform="translate(-300,245)">
+            <g
+               transform="translate(100,195)"
+               id="g17297">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect17299"
+                 width="238"
+                 height="53"
+                 x="100.99958"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.50828,195.94286 L 339.49088,195.94286"
+                 id="path17301" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text17303"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17305"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Aggregate Field</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text17307"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17309"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.bicubic_params.z</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text17311"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17313"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: &lt;aggregated&gt;</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot17315"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion17317"><rect
+                     id="rect17319"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara17321" /></flowRoot>            </g>
+          </g>
+          <path
+             id="path17323"
+             d="M 113.59937,616.86325 L 404.22078,561.20045"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17325"
+             d="M 61.95111,617.30133 L 148.01218,561.43263"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999964;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17331"
+             d="M -62.736718,617.66407 L -197.75032,342.80566"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999964;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17327"
+             d="M -4.4529729,617.54154 L -40.858951,342.68313"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999976;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path14933"
+             d="M -90.491262,396.56166 L -140.03406,231.40295"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50000012;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path14935"
+             d="M -7.7924532,397.61606 L 220.2894,232.58538"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path15075"
+             d="M 570.96969,396.20215 L 625.14322,229.68735"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50000012;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17345"
+             d="M 719.06366,505.77873 L 653.79439,231.20078"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17343"
+             d="M 637.47709,504.81372 L 411.39635,231.20077"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49999988;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17349"
+             d="M 228.16746,231.34938 L 559.51307,506.47753"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.50000012;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:1.5, 1.5;stroke-dashoffset:0;stroke-opacity:1" />
+          <path
+             id="path17363"
+             d="M 230.3869,817.68466 L 667.76539,342.70669"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.5;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#Arrow2Lstart);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path17365"
+             d="M 463.88021,715.92152 L 611.00879,561.45508"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.4988189;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <g
+             id="g17367"
+             transform="translate(-100,445)">
+            <g
+               transform="translate(100,195)"
+               id="g17369">
+              <rect
+                 style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:0;stroke-dasharray:none;stroke-opacity:1"
+                 id="rect17371"
+                 width="238"
+                 height="53"
+                 x="100.99958"
+                 y="178.36217"
+                 ry="0" />
+              <path
+                 style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.84783643;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                 d="M 100.50828,195.94286 L 339.49088,195.94286"
+                 id="path17373" />
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="199.89728"
+                 id="text17375"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17377"
+                   x="99.947182"
+                   y="199.89728"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Piecewise Field</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="99.947182"
+                 y="218.09521"
+                 id="text17379"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17381"
+                   x="99.947182"
+                   y="218.09521"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Name: test_mesh.co-ordinates.z</tspan></text>
+              <text
+                 xml:space="preserve"
+                 style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS"
+                 x="100.88371"
+                 y="231.09373"
+                 id="text17383"
+                 sodipodi:linespacing="125%"
+                 transform="scale(1.0398822,0.9616474)"><tspan
+                   sodipodi:role="line"
+                   id="tspan17385"
+                   x="100.88371"
+                   y="231.09373"
+                   style="font-size:14px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;font-family:Trebuchet MS;-inkscape-font-specification:Trebuchet MS">Values: bicubic_hermite_quad_z</tspan></text>
+              <flowRoot
+                 xml:space="preserve"
+                 id="flowRoot17387"
+                 style="font-size:40px;font-style:normal;font-weight:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"><flowRegion
+                   id="flowRegion17389"><rect
+                     id="rect17391"
+                     width="273.1412"
+                     height="121.79023"
+                     x="170.26984"
+                     y="248.65656" /></flowRegion><flowPara
+                   id="flowPara17393" /></flowRoot>            </g>
+          </g>
+          <path
+             id="path3976"
+             d="M 354.49542,718.44775 L 112.05506,671.41312"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49881887;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+          <path
+             id="path3978"
+             d="M 268.49445,820.18795 L 339.94753,781.37903"
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.49881864;stroke-linecap:butt;stroke-linejoin:miter;marker-start:url(#EmptyTriangleInL);marker-end:none;stroke-miterlimit:12.10000038;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
