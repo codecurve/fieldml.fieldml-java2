@@ -193,7 +193,7 @@
 
     <ImportedContinuousEvaluator evaluator="test_mesh.bicubic_hermite_parameters" name="test_mesh.bicubic_hermite.element_parameter" valueDomain="library.coordinates.rc.1d">
       <ensembleAliases>
-        <SimpleMapEntry key="library.local_nodes.quad.1x1" value="test_mesh.bicubic_hermite.local_node" />
+        <SimpleMapEntry key="library.local_nodes.quad.2x2" value="test_mesh.bicubic_hermite.local_node" />
         <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.quad_nodes" />
         <SimpleMapEntry key="library.interpolation.hermite.derivatives" value="test_mesh.bicubic_hermite.nodal_parameter" />
       </ensembleAliases>

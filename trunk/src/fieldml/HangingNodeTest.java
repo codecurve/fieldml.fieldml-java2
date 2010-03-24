@@ -108,7 +108,7 @@ public class HangingNodeTest
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
         EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
         EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
-        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -149,7 +149,7 @@ public class HangingNodeTest
         globalToLocalIndexes.setValue( 8, 7 );
         testRegion.addEvaluator( globalToLocalIndexes );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofsDomain, meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", localDofsDomain, meshDomain.getElementDomain(), quad2x2LocalNodeDomain );
         quadNodeList.setValue( 1, 6, 7, 1, 2 );
         quadNodeList.setValue( 2, 4, 5, 2, 3 );
         quadNodeList.setValue( 3, 7, 8, 4, 5 );
@@ -253,12 +253,12 @@ public class HangingNodeTest
 
         ContinuousDomain weightingDomain = library.getContinuousDomain( "library.weighting.list" );
 
-        EnsembleDomain quad1x1NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain quad2x2NodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
 
         ContinuousParameters elementWeights = new ContinuousParameters( "test_mesh.element.dof_weights", weightingDomain, meshDomain
-            .getElementDomain(), quad1x1NodeDomain );
+            .getElementDomain(), quad2x2NodeDomain );
         EnsembleParameters elementIndexes = new EnsembleParameters( "test_mesh.element.dof_indexes", globalDofIndexesDomain, meshDomain
-            .getElementDomain(), quad1x1NodeDomain );
+            .getElementDomain(), quad2x2NodeDomain );
 
         elementWeights.setValue( new int[]{ 1, 1 }, 1.0 );
         elementWeights.setValue( new int[]{ 1, 2 }, 1.0 );

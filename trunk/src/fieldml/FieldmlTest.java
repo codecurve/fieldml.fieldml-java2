@@ -130,9 +130,9 @@ public class FieldmlTest
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
         EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
-        EnsembleDomain tri1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.1x1" );
-        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain tri2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.2x2" );
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
+        EnsembleDomain quad3x3LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.3x3" );
 
         EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
 
@@ -144,26 +144,26 @@ public class FieldmlTest
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 13 );
 
-        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle1x1_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), tri1x1LocalNodeDomain );
+        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle2x2_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), tri2x2LocalNodeDomain );
         triangleNodeList.setValue( 2, 2, 5, 3 );
         triangleNodeList.setValue( 3, 6, 3, 5 );
         testRegion.addEvaluator( triangleNodeList );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad1x1_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), quad1x1LocalNodeDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad2x2_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad2x2LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 4, 6, 13, 3, 7 );
         testRegion.addEvaluator( quadNodeList );
 
-        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.quad2x2_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), quad2x2LocalNodeDomain );
+        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.quad3x3_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad3x3LocalNodeDomain );
         biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
         testRegion.addEvaluator( biquadNodeList );
 
-        meshDomain.setPointConnectivity( tri1x1LocalNodeDomain, triangleNodeList );
-        meshDomain.setPointConnectivity( quad1x1LocalNodeDomain, quadNodeList );
-        meshDomain.setPointConnectivity( quad2x2LocalNodeDomain, biquadNodeList );
+        meshDomain.setPointConnectivity( tri2x2LocalNodeDomain, triangleNodeList );
+        meshDomain.setPointConnectivity( quad2x2LocalNodeDomain, quadNodeList );
+        meshDomain.setPointConnectivity( quad3x3LocalNodeDomain, biquadNodeList );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain );
         testRegion.addEvaluator( dofs );
