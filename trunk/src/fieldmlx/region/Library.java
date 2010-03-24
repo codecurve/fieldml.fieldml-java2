@@ -3,21 +3,21 @@ package fieldmlx.region;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.evaluator.DotProductEvaluator;
-import fieldml.evaluator.FunctionEvaluator;
 import fieldml.evaluator.ImportedContinuousEvaluator;
-import fieldml.function.BicubicHermite;
-import fieldml.function.BilinearLagrange;
-import fieldml.function.BilinearSimplex;
-import fieldml.function.BiquadraticLagrange;
-import fieldml.function.CubicHermite;
-import fieldml.function.LinearLagrange;
-import fieldml.function.QuadraticBSpline;
-import fieldml.function.QuadraticLagrange;
-import fieldml.function.TensorBasis;
 import fieldml.region.Region;
 import fieldml.region.WorldRegion;
 import fieldmlx.evaluator.ContinuousCompositeEvaluator;
+import fieldmlx.evaluator.DotProductEvaluator;
+import fieldmlx.evaluator.FunctionEvaluator;
+import fieldmlx.function.BicubicHermite;
+import fieldmlx.function.BilinearLagrange;
+import fieldmlx.function.BilinearSimplex;
+import fieldmlx.function.BiquadraticLagrange;
+import fieldmlx.function.CubicHermite;
+import fieldmlx.function.LinearLagrange;
+import fieldmlx.function.QuadraticBSpline;
+import fieldmlx.function.QuadraticLagrange;
+import fieldmlx.function.TensorBasis;
 
 public class Library
     extends Region

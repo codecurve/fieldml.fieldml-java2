@@ -77,18 +77,18 @@ public class BicubicHermiteTest
         ContinuousDomain mesh1DDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain mesh3DDomain = library.getContinuousDomain( "library.coordinates.rc.3d" );
 
-        ContinuousDomain meshdZdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.dz/ds" );
+        ContinuousDomain meshdZdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.dz_ds" );
 
-        ContinuousDomain meshd2Zdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d2z/ds1ds2" );
+        ContinuousDomain meshd2Zdomain = new ContinuousDomain( testRegion, "test_mesh.coordinates.d2z_ds1ds2" );
 
         ContinuousVariableEvaluator nodalUDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.u", mesh1DDomain, globalNodesDomain );
         testRegion.addEvaluator( nodalUDofs );
 
-        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du/ds", meshdZdomain,
+        ContinuousVariableEvaluator nodaldUdSDofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.du_ds", meshdZdomain,
             globalNodesDomain );
         testRegion.addEvaluator( nodaldUdSDofs );
 
-        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u/ds2", mesh1DDomain,
+        ContinuousVariableEvaluator nodald2UdS2Dofs = new ContinuousVariableEvaluator( "test_mesh.node.dofs.d2u_ds2", mesh1DDomain,
             globalNodesDomain );
         testRegion.addEvaluator( nodald2UdS2Dofs );
 
@@ -102,11 +102,11 @@ public class BicubicHermiteTest
         meshds2Direction.setDefaultValue( 2 );
         testRegion.addEvaluator( meshds2Direction );
 
-        ImportedContinuousEvaluator meshdUds1 = testRegion.importContinuousEvaluator( "test_mesh.node.du/ds1", "test_mesh.node.dofs.du/ds" );
+        ImportedContinuousEvaluator meshdUds1 = testRegion.importContinuousEvaluator( "test_mesh.node.du_ds1", "test_mesh.node.dofs.du_ds" );
         meshdUds1.alias( meshds1Direction, edgeDirectionDomain );
         testRegion.addEvaluator( meshdUds1 );
 
-        ImportedContinuousEvaluator meshdUds2 = testRegion.importContinuousEvaluator( "test_mesh.node.du/ds2", "test_mesh.node.dofs.du/ds" );
+        ImportedContinuousEvaluator meshdUds2 = testRegion.importContinuousEvaluator( "test_mesh.node.du_ds2", "test_mesh.node.dofs.du_ds" );
         meshdUds2.alias( meshds2Direction, edgeDirectionDomain );
         testRegion.addEvaluator( meshdUds2 );
 
@@ -206,7 +206,7 @@ public class BicubicHermiteTest
         meshZ.setValue( 6, 0.0 );
         testRegion.addEvaluator( meshZ );
 
-        ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz/ds", meshdZdomain, globalNodesDomain,
+        ContinuousParameters meshdZ = new ContinuousParameters( "test_mesh.node.dz_ds", meshdZdomain, globalNodesDomain,
             edgeDirectionDomain );
         meshdZ.setValue( new int[]
         { 1, 1 }, -1.0 );
@@ -234,7 +234,7 @@ public class BicubicHermiteTest
         { 6, 2 }, -1.0 );
         testRegion.addEvaluator( meshdZ );
 
-        ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z/ds1ds2", meshd2Zdomain, globalNodesDomain );
+        ContinuousParameters meshd2Z = new ContinuousParameters( "test_mesh.node.d2z_ds1ds2", meshd2Zdomain, globalNodesDomain );
         meshd2Z.setValue( 1, 0.0 );
         meshd2Z.setValue( 2, 0.0 );
         meshd2Z.setValue( 3, 0.0 );
@@ -253,8 +253,8 @@ public class BicubicHermiteTest
 
         PiecewiseField meshCoordinatesZ = new PiecewiseField( "test_mesh.coordinates.z", mesh1DDomain, meshCoordinatesH3 );
         meshCoordinatesZ.setVariable( "test_mesh.node.dofs.u", meshZ );
-        meshCoordinatesZ.setVariable( "test_mesh.node.dofs.du/ds", meshdZ );
-        meshCoordinatesZ.setVariable( "test_mesh.node.dofs.d2u/ds2", meshd2Z );
+        meshCoordinatesZ.setVariable( "test_mesh.node.dofs.du_ds", meshdZ );
+        meshCoordinatesZ.setVariable( "test_mesh.node.dofs.d2u_ds2", meshd2Z );
         meshCoordinatesZ.setVariable( "test_mesh.element.bicubic_hermite_scaling", hermiteScaling );
         testRegion.addEvaluator( meshCoordinatesZ );
 

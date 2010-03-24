@@ -4,13 +4,13 @@ import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.util.SimpleMap;
-import fieldml.util.SimpleMapEntry;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.EnsembleValueSource;
 import fieldml.value.MeshValueSource;
+import fieldmlx.util.SimpleMap;
+import fieldmlx.util.SimpleMapEntry;
 
 public class ImportedEnsembleEvaluator
     extends EnsembleEvaluator

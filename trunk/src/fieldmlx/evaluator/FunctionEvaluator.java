@@ -1,10 +1,11 @@
-package fieldml.evaluator;
+package fieldmlx.evaluator;
 
 import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
-import fieldml.function.ContinuousFunction;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.function.ContinuousFunction;
 
 public class FunctionEvaluator
     extends ContinuousEvaluator

@@ -1,10 +1,10 @@
 package fieldmlx.test;
 
 import junit.framework.TestCase;
-import fieldml.function.BilinearLagrange;
-import fieldml.function.BiquadraticLagrange;
-import fieldml.function.ContinuousFunction;
-import fieldml.function.TensorBasis;
+import fieldmlx.function.BilinearLagrange;
+import fieldmlx.function.BiquadraticLagrange;
+import fieldmlx.function.ContinuousFunction;
+import fieldmlx.function.TensorBasis;
 
 public class TensorBasisTest
     extends TestCase
