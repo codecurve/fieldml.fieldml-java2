@@ -15,13 +15,13 @@ import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.evaluator.ImportedEnsembleEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.function.QuadraticBSpline;
-import fieldml.function.QuadraticLagrange;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.function.QuadraticBSpline;
+import fieldmlx.function.QuadraticLagrange;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class TimeVaryingExample

@@ -1,4 +1,4 @@
-package fieldml.function;
+package fieldmlx.function;
 
 public class CubicHermite
     extends ContinuousFunction
