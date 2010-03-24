@@ -132,7 +132,7 @@ public class TimeVaryingExample
         timeDofs.setValue( 7, 10.0 );// Deliberately non-linear. C1 continuous for my own amusement.
         tvRegion.addEvaluator( timeDofs );
 
-        EnsembleDomain quadraticParamsDomain = library.getEnsembleDomain( "library.local_nodes.line.2" );
+        EnsembleDomain quadraticParamsDomain = library.getEnsembleDomain( "library.local_nodes.line.3" );
         
         EnsembleParameters elementDofIndexes = new EnsembleParameters( "tv_test.time.element_dof_indexes", timeDofsDomain,
             timeMeshDomain.getElementDomain(), quadraticParamsDomain );

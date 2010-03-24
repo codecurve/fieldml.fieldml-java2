@@ -120,9 +120,9 @@ public class QuadraticBSplineExample
 
         EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", null, 6 );
 
-        EnsembleDomain line1Domain = library.getEnsembleDomain( "library.local_nodes.line.1" );
+        EnsembleDomain line2Domain = library.getEnsembleDomain( "library.local_nodes.line.2" );
 
-        EnsembleDomain lineNodesDomain = new EnsembleDomain( testRegion, "test_mesh.line_nodes.domain", line1Domain, globalNodesDomain );
+        EnsembleDomain lineNodesDomain = new EnsembleDomain( testRegion, "test_mesh.line_nodes.domain", line2Domain, globalNodesDomain );
 
         EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, meshDomain.getElementDomain() );
 
