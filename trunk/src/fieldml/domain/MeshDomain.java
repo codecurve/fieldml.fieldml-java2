@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.region.Region;
 import fieldml.value.MeshDomainValue;
+import fieldmlx.annotations.SerializationAsString;
 
 public class MeshDomain
     extends Domain

@@ -1,6 +1,6 @@
 package fieldmlx.util;
 
-import fieldml.annotations.SerializationAsString;
+import fieldmlx.annotations.SerializationAsString;
 
 public class SimpleMapEntry<K, V>
 {

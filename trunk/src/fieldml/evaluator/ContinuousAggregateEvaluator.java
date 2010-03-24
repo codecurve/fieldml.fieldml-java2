@@ -3,10 +3,10 @@ package fieldml.evaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousAggregateEvaluator
     extends ContinuousEvaluator

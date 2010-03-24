@@ -1,9 +1,9 @@
 package fieldmlx.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousAliasOperation
     implements CompositionOperation

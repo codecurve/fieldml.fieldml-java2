@@ -1,10 +1,10 @@
 package fieldmlx.evaluator.hardcoded;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.MeshEvaluator;
 import fieldml.value.DomainValues;
 import fieldml.value.MeshDomainValue;
+import fieldmlx.annotations.SerializationAsString;
 
 public class RegularLinearSubdivision
     extends MeshEvaluator

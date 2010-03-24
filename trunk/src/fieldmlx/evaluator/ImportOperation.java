@@ -1,11 +1,11 @@
 package fieldmlx.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.evaluator.AbstractEvaluator;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public  class ImportOperation<D extends Domain, V extends DomainValue<D>>
     implements CompositionOperation

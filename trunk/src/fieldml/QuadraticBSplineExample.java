@@ -15,13 +15,13 @@ import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.io.DOTReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
 import fieldmlx.function.QuadraticBSpline;
+import fieldmlx.io.DOTReflectiveHandler;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class QuadraticBSplineExample

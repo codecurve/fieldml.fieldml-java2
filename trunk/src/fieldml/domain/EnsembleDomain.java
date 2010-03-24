@@ -1,10 +1,10 @@
 package fieldml.domain;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.region.Region;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.EnsembleValueSource;
+import fieldmlx.annotations.SerializationAsString;
 
 public class EnsembleDomain
     extends Domain

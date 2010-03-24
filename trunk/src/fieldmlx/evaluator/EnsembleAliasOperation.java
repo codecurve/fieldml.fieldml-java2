@@ -1,9 +1,9 @@
 package fieldmlx.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleValueSource;
+import fieldmlx.annotations.SerializationAsString;
 
 public class EnsembleAliasOperation
     implements CompositionOperation

@@ -1,10 +1,10 @@
 package fieldml.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.Domain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public abstract class AbstractEvaluator<D extends Domain, V extends DomainValue<D>>
 {
