@@ -7,19 +7,19 @@ public class WorldRegion
 {
     private static final String WORLD_NAME = "world";
     
-    private final Library library;
+    private final Region library;
 
 
     public WorldRegion()
     {
         super( WORLD_NAME );
 
-        library = new Library( this );
+        library = Library.getLibrarySingleton(this);
     }
 
 
     @Override
-    public Library getLibrary()
+    public Region getLibrary()
     {
         return library;
     }
