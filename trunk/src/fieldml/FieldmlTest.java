@@ -235,6 +235,7 @@ public class FieldmlTest
         testRegion.addEvaluator( meshX );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1Domain, meshCoordinatesT1 );
+        meshCoordinatesX.set( "field", "true" );
         meshCoordinatesX.setVariable( "test_mesh.mesh.dofs", meshX );
         testRegion.addEvaluator( meshCoordinatesX );
 
@@ -256,18 +257,16 @@ public class FieldmlTest
         testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", rc1Domain, meshCoordinatesT2 );
+        meshCoordinatesY.set( "field", "true" );
         meshCoordinatesY.setVariable( "test_mesh.mesh.dofs", meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
         ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", rc2Domain );
+        meshCoordinates.set( "field", "true" );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        meshDomain.addField( meshCoordinatesT1 );
-        meshDomain.addField( meshCoordinatesT2 );
-        meshDomain.addField( meshCoordinates );
 
         return testRegion;
     }
