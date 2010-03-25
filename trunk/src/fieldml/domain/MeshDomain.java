@@ -1,15 +1,11 @@
 package fieldml.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.region.Region;
 import fieldml.value.MeshDomainValue;
-import fieldmlx.annotations.SerializationAsString;
 
 public class MeshDomain
     extends Domain
@@ -25,9 +21,6 @@ public class MeshDomain
     public String defaultShape;
 
     public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
-
-    @SerializationAsString
-    public final List<ContinuousEvaluator> fields;
 
 
     public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, int elementCount )
@@ -45,7 +38,6 @@ public class MeshDomain
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();
-        fields = new ArrayList<ContinuousEvaluator>();
         
         owner.addDomain( this );
     }
@@ -98,11 +90,5 @@ public class MeshDomain
     public EnsembleDomain getElementDomain()
     {
         return elementDomain;
-    }
-
-
-    public void addField( ContinuousEvaluator field )
-    {
-        fields.add( field );
     }
 }
