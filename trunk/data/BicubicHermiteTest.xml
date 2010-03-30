@@ -25,12 +25,12 @@
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="2" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ContiguousEnsembleBounds valueCount="16" />
     </EnsembleDomain>
     

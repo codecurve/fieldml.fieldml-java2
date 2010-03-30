@@ -13,9 +13,6 @@ public class EnsembleDomain
     public final EnsembleBounds bounds;
 
     @SerializationAsString
-    public final EnsembleDomain superDomain;
-
-    @SerializationAsString
     public final EnsembleDomain baseDomain;
 
 
@@ -26,34 +23,32 @@ public class EnsembleDomain
         assert baseDomain.componentCount == 1;
 
         this.bounds = baseDomain.bounds;
-        this.superDomain = baseDomain.superDomain;
         this.baseDomain = baseDomain;
 
         owner.addDomain( this );
     }
 
 
-    public EnsembleDomain( Region owner, String name, EnsembleDomain superDomain, EnsembleBounds bounds )
+    public EnsembleDomain( Region owner, String name, EnsembleBounds bounds )
     {
         super( name, null );
 
         this.bounds = bounds;
-        this.superDomain = superDomain;
         this.baseDomain = this;
 
         owner.addDomain( this );
     }
 
 
-    public EnsembleDomain( Region owner, String name, EnsembleDomain superDomain, int... values )
+    public EnsembleDomain( Region owner, String name, int... values )
     {
-        this( owner, name, superDomain, new ArbitraryEnsembleBounds( values ) );
+        this( owner, name, new ArbitraryEnsembleBounds( values ) );
     }
 
 
-    public EnsembleDomain( Region owner, String name, EnsembleDomain superDomain, int valueCount )
+    public EnsembleDomain( Region owner, String name, int valueCount )
     {
-        this( owner, name, superDomain, new ContiguousEnsembleBounds( valueCount ) );
+        this( owner, name, new ContiguousEnsembleBounds( valueCount ) );
     }
 
 

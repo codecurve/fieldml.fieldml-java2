@@ -55,18 +55,16 @@ public class BicubicHermiteTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
 
-        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", null, 1, 2 );
+        EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 2 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 2 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 16 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 16 );
 
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodesDomain, meshDomain.getElementDomain(),
             quad2x2LocalNodeDomain );

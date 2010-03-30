@@ -129,20 +129,17 @@ public class FieldmlTest
 
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
         EnsembleDomain tri2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.2x2" );
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
         EnsembleDomain quad3x3LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.3x3" );
 
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
-
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 4 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
         meshDomain.setShape( 2, "library.shape.triangle" );
         meshDomain.setShape( 3, "library.shape.triangle" );
         meshDomain.setShape( 4, "library.shape.quad" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 13 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 13 );
 
         EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle2x2_nodes", globalNodesDomain, meshDomain
             .getElementDomain(), tri2x2LocalNodeDomain );

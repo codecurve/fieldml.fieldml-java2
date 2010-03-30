@@ -23,18 +23,18 @@ public class MeshDomain
     public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
 
 
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, int elementCount )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, int elementCount )
     {
-        this( owner, name, xiBase, elementBase, new ContiguousEnsembleBounds( elementCount ) );
+        this( owner, name, xiBase, new ContiguousEnsembleBounds( elementCount ) );
     }
 
 
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, EnsembleBounds elementBounds )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleBounds elementBounds )
     {
         super( name, null );
 
         this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiBase );
-        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBase, elementBounds );
+        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBounds );
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();

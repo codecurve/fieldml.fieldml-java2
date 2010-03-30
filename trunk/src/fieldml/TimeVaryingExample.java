@@ -114,13 +114,10 @@ public class TimeVaryingExample
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.1d" );
-
-        MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", rc1CoordinatesDomain, baseElementDomain, 3 );
+        MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", rc1CoordinatesDomain, 3 );
         timeMeshDomain.setDefaultShape( "line_0_1" );
 
-        EnsembleDomain timeDofsDomain = new EnsembleDomain( tvRegion, "tv_test.time.dofs.domain", pointDomain, 7 );
+        EnsembleDomain timeDofsDomain = new EnsembleDomain( tvRegion, "tv_test.time.dofs.domain", 7 );
         
         ContinuousParameters timeDofs = new ContinuousParameters( "tv_test.time.dofs.values", rc1CoordinatesDomain, timeDofsDomain );
         timeDofs.setValue( 1, 0 );

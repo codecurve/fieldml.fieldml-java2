@@ -107,18 +107,17 @@ public class QuadraticBSplineExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc1Domain, baseElementDomain, 5 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc1Domain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         meshDomain.setShape( 3, "library.shape.line.0_1" );
         meshDomain.setShape( 4, "library.shape.line.0_1" );
         meshDomain.setShape( 5, "library.shape.line.0_1" );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.dofs", null, 7 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.dofs", 7 );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", null, 6 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 6 );
 
         EnsembleDomain line2Domain = library.getEnsembleDomain( "library.local_nodes.line.2" );
 
