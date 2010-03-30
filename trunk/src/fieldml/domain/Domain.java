@@ -1,7 +1,7 @@
 package fieldml.domain;
 
-import fieldml.annotations.SerializationAsString;
-import fieldml.annotations.SerializationBlocked;
+import fieldmlx.annotations.SerializationAsString;
+import fieldmlx.annotations.SerializationBlocked;
 
 public abstract class Domain
 {

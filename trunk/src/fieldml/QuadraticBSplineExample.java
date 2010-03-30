@@ -9,20 +9,19 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousDereferenceEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.function.QuadraticBSpline;
-import fieldml.io.DOTReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.function.QuadraticBSpline;
+import fieldmlx.io.DOTReflectiveHandler;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class QuadraticBSplineExample
@@ -65,7 +64,7 @@ public class QuadraticBSplineExample
 
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "test_mesh.element.parameters" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "test_mesh.coordinates.z" );
+        ImportedContinuousEvaluator meshZ = region.importContinuousEvaluator( "z", "test_mesh.coordinates.z" );
         DomainValues context = new DomainValues();
         ContinuousDomainValue output;
 
@@ -108,22 +107,21 @@ public class QuadraticBSplineExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc1Domain, baseElementDomain, 5 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc1Domain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
         meshDomain.setShape( 3, "library.shape.line.0_1" );
         meshDomain.setShape( 4, "library.shape.line.0_1" );
         meshDomain.setShape( 5, "library.shape.line.0_1" );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.dofs", null, 7 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "test_mesh.dofs", 7 );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", null, 6 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 6 );
 
-        EnsembleDomain line1Domain = library.getEnsembleDomain( "library.local_nodes.line.1" );
+        EnsembleDomain line2Domain = library.getEnsembleDomain( "library.local_nodes.line.2" );
 
-        EnsembleDomain lineNodesDomain = new EnsembleDomain( testRegion, "test_mesh.line_nodes.domain", line1Domain, globalNodesDomain );
+        EnsembleDomain lineNodesDomain = new EnsembleDomain( testRegion, "test_mesh.line_nodes.domain", line2Domain, globalNodesDomain );
 
         EnsembleParameters lineNodeList = new EnsembleParameters( "test_mesh.line_nodes", lineNodesDomain, meshDomain.getElementDomain() );
 

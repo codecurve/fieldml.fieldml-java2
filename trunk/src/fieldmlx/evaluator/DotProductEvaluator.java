@@ -1,9 +1,10 @@
-package fieldml.evaluator;
+package fieldmlx.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
+import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public class DotProductEvaluator
     extends ContinuousEvaluator

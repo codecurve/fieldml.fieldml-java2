@@ -3,12 +3,12 @@ package fieldml.evaluator;
 import java.util.ArrayList;
 import java.util.List;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.EnsembleDomain;
-import fieldml.util.SimpleMap;
-import fieldml.util.SimpleMapEntry;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldmlx.annotations.SerializationAsString;
+import fieldmlx.util.SimpleMap;
+import fieldmlx.util.SimpleMapEntry;
 
 public class EnsemblePiecewiseEvaluator
     extends EnsembleEvaluator

@@ -11,13 +11,20 @@ import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.evaluator.ImportedEnsembleEvaluator;
 import fieldml.field.PiecewiseField;
-import fieldml.io.ReflectiveHandler;
-import fieldml.io.ReflectiveWalker;
-import fieldml.util.SimpleMap;
-import fieldml.util.SimpleMapEntry;
+import fieldmlx.io.ReflectiveHandler;
+import fieldmlx.io.ReflectiveWalker;
+import fieldmlx.util.SimpleMap;
+import fieldmlx.util.SimpleMapEntry;
 
 public abstract class Region
 {
+    private static final Map<String, Region> regions;
+
+    static
+    {
+        regions = new HashMap<String, Region>();
+    }
+
     private final SimpleMap<String, MeshDomain> meshDomains;
 
     private final SimpleMap<String, ContinuousDomain> continuousDomains;
@@ -43,6 +50,8 @@ public abstract class Region
         continuousEvaluators = new SimpleMap<String, ContinuousEvaluator>();
         ensembleEvaluators = new SimpleMap<String, EnsembleEvaluator>();
         subregions = new HashMap<String, Region>();
+
+        regions.put( name, this );
     }
 
 
@@ -78,7 +87,7 @@ public abstract class Region
 
     public ImportedContinuousEvaluator importContinuousEvaluator( String localName, String remoteName )
     {
-        ContinuousEvaluator evaluator = continuousEvaluators.get( remoteName );
+        ContinuousEvaluator evaluator = getContinuousEvaluator( remoteName );
 
         assert evaluator != null : "Evaluator " + remoteName + " does not exist in region " + name;
 
@@ -88,7 +97,7 @@ public abstract class Region
 
     public ImportedEnsembleEvaluator importEnsembleEvaluator( String localName, String remoteName )
     {
-        EnsembleEvaluator evaluator = ensembleEvaluators.get( remoteName );
+        EnsembleEvaluator evaluator = getEnsembleEvaluator( remoteName );
 
         assert evaluator != null : "Evaluator " + remoteName + " does not exist in region " + name;
 
@@ -96,6 +105,7 @@ public abstract class Region
     }
 
 
+    //NOTE: This is only public so that Library doesn't gripe.
     public ContinuousEvaluator getContinuousEvaluator( String name )
     {
         ContinuousEvaluator evaluator = continuousEvaluators.get( name );
@@ -106,6 +116,7 @@ public abstract class Region
     }
 
 
+    //NOTE: This is only public so that Library doesn't gripe.
     public EnsembleEvaluator getEnsembleEvaluator( String name )
     {
         EnsembleEvaluator evaluator = ensembleEvaluators.get( name );

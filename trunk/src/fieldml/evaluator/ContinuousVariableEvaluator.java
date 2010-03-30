@@ -1,10 +1,10 @@
 package fieldml.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.Domain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousVariableEvaluator
     extends ContinuousEvaluator

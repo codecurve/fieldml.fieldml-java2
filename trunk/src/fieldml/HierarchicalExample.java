@@ -8,22 +8,21 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
 import fieldml.evaluator.EnsembleParameters;
 import fieldml.evaluator.ImportedContinuousEvaluator;
 import fieldml.evaluator.MapEvaluator;
-import fieldml.evaluator.hardcoded.RegularLinearSubdivision;
 import fieldml.field.PiecewiseField;
-import fieldml.function.QuadraticBSpline;
-import fieldml.io.DOTReflectiveHandler;
 import fieldml.region.Region;
 import fieldml.region.SubRegion;
 import fieldml.region.WorldRegion;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.evaluator.hardcoded.RegularLinearSubdivision;
+import fieldmlx.function.QuadraticBSpline;
+import fieldmlx.io.DOTReflectiveHandler;
 import fieldmlx.util.MinimalColladaExporter;
 
 public class HierarchicalExample
@@ -65,7 +64,7 @@ public class HierarchicalExample
 
         MeshDomain meshDomain = region.getMeshDomain( "hierarchical_mesh.domain" );
         // ContinuousEvaluator meshParams = region.getContinuousEvaluator( "hierarchical_mesh.element.parameters" );
-        ContinuousEvaluator meshZ = region.getContinuousEvaluator( "hierarchical_mesh.coordinates.z" );
+        ImportedContinuousEvaluator meshZ = region.importContinuousEvaluator( "z", "hierarchical_mesh.coordinates.z" );
         DomainValues context = new DomainValues();
         ContinuousDomainValue output;
 
@@ -109,14 +108,12 @@ public class HierarchicalExample
         Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.1d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", rc1Domain, baseElementDomain, 2 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", rc1Domain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
         meshDomain.setShape( 2, "library.shape.line.0_1" );
 
-        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "hierarchical_mesh.dofs", pointDomain, 12 );
+        EnsembleDomain globalDofsDomain = new EnsembleDomain( testRegion, "hierarchical_mesh.dofs", 12 );
 
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
@@ -169,7 +166,7 @@ public class HierarchicalExample
         testRegion.addEvaluator( elementLocalDofs );
         
         MeshDomain submeshDomain = subRegion.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator submeshTemplate = subRegion.getContinuousEvaluator( "test_mesh.coordinates" );
+        ImportedContinuousEvaluator submeshTemplate = subRegion.importContinuousEvaluator( "test_mesh.coordinates", "test_mesh.coordinates" );
         
         PiecewiseField delegatedEvaluator = new PiecewiseField( "hierarchical_mesh.delegated", rc1CoordinatesDomain, submeshTemplate );
         delegatedEvaluator.setVariable( "test_mesh.dofs", elementLocalDofs );

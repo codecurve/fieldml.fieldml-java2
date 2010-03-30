@@ -1,12 +1,12 @@
 package fieldml.field;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.evaluator.ContinuousEvaluator;
-import fieldml.util.SimpleMap;
-import fieldml.util.SimpleMapEntry;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
+import fieldmlx.util.SimpleMap;
+import fieldmlx.util.SimpleMapEntry;
 
 public class PiecewiseField
     extends ContinuousEvaluator

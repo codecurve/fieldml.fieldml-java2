@@ -1,6 +1,5 @@
 package fieldml.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.value.ContinuousDomainValue;
@@ -8,6 +7,7 @@ import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
 import fieldml.value.EnsembleValueSource;
+import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousDereferenceEvaluator
     extends ContinuousEvaluator
