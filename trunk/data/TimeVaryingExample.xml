@@ -7,12 +7,12 @@
     <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="tv_test.time.mesh.xi" componentDomain="library.coordinates.rc.1d" />
     
 
-    <EnsembleDomain superDomain="library.topology.1d" baseDomain="tv_test.time.mesh.elements" name="tv_test.time.mesh.elements">
+    <EnsembleDomain baseDomain="tv_test.time.mesh.elements" name="tv_test.time.mesh.elements">
       <ContiguousEnsembleBounds valueCount="3" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain">
+    <EnsembleDomain baseDomain="tv_test.time.dofs.domain" name="tv_test.time.dofs.domain">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     

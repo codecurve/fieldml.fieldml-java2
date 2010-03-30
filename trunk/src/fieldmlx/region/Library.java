@@ -55,8 +55,9 @@ public class Library
 
         DotProductEvaluator dotProduct = new DotProductEvaluator( "library.dot_product", real1, parameterList, anonymousList );
         addEvaluator( dotProduct );
-        
-        DotProductEvaluator scaledDotProduct = new DotProductEvaluator( "library.scaled_dot_product", real1, parameterList, anonymousList, scaleList );
+
+        DotProductEvaluator scaledDotProduct = new DotProductEvaluator( "library.scaled_dot_product", real1, parameterList, anonymousList,
+            scaleList );
         addEvaluator( scaledDotProduct );
 
         addEvaluator( new FunctionEvaluator( "library.function.quadratic_lagrange", anonymousList, xi2d, new QuadraticLagrange() ) );
@@ -105,7 +106,7 @@ public class Library
 
         ContinuousDomain c_c_HermiteParameters = getContinuousDomain( "library.bicubic_hermite.parameters" );
         addEvaluator( new FunctionEvaluator( "library.function.bicubic_hermite", anonymousList, xi2d, new BicubicHermite() ) );
-        
+
         ContinuousCompositeEvaluator scaledBicubicHermite = new ContinuousCompositeEvaluator( "library.fem.scaled_bicubic_hermite", real1 );
         scaledBicubicHermite.alias( c_c_HermiteParameters, parameterList );
         scaledBicubicHermite.importField( getContinuousEvaluator( "library.function.bicubic_hermite" ) );
@@ -139,56 +140,33 @@ public class Library
 
     private void buildLibraryDomains()
     {
-        anonymous = new EnsembleDomain( this, "library.anonymous", null );
+        anonymous = new EnsembleDomain( this, "library.anonymous" );
 
-        EnsembleDomain topologyDomain = new EnsembleDomain( this, "library.topology.general", null );
+        EnsembleDomain line2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.2", 2 );
 
-        new EnsembleDomain( this, "library.topology.0d", topologyDomain );
+        EnsembleDomain line3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.3", 3 );
 
-        new EnsembleDomain( this, "library.topology.1d", topologyDomain );
+        EnsembleDomain triangle2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.triangle.2x2", 3 );
 
-        new EnsembleDomain( this, "library.topology.2d", topologyDomain );
+        new EnsembleDomain( this, "library.local_nodes.triangle.3x3", 6 );
 
-        new EnsembleDomain( this, "library.topology.3d", topologyDomain );
+        EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.2x2", 4 );
 
-        EnsembleDomain pointLayout = new EnsembleDomain( this, "library.local_nodes.layout", null );
+        EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", 9 );
 
-        EnsembleDomain line2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.2", pointLayout, 2 );
+        EnsembleDomain quad4x4LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.4x4", 16 );
 
-        EnsembleDomain line3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.line.3", pointLayout, 3 );
+        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", 1 );
 
-        EnsembleDomain triangle2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.triangle.2x2", pointLayout, 3 );
+        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", 2 );
 
-        new EnsembleDomain( this, "library.local_nodes.triangle.3x3", pointLayout, 6 );
+        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", 3 );
 
-        EnsembleDomain quad2x2LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.2x2", pointLayout, 4 );
+        EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( this, "library.interpolation.hermite.derivatives", 4 );
 
-        EnsembleDomain quad3x3LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.3x3", pointLayout, 9 );
+        EnsembleDomain bicubicHermiteParameterDomain = new EnsembleDomain( this, "library.interpolation.hermite.bicubic", 16 );
 
-        EnsembleDomain quad4x4LocalNodeDomain = new EnsembleDomain( this, "library.local_nodes.quad.4x4", pointLayout, 16 );
-
-        EnsembleDomain coordinateDomain = new EnsembleDomain( this, "library.coordinates.general", null );
-
-        EnsembleDomain rcCoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.general", coordinateDomain );
-
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.1d", rcCoordinateDomain, 1 );
-
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.2d", rcCoordinateDomain, 2 );
-
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( this, "library.coordinates.rc.3d", rcCoordinateDomain, 3 );
-
-        EnsembleDomain derivativeDomain = new EnsembleDomain( this, "library.derivative.general", null );
-
-        EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( this, "library.interpolation.hermite.derivatives",
-            derivativeDomain, 4 );
-
-        EnsembleDomain interpolationParameterDomain = new EnsembleDomain( this, "library.interpolation.general", null );
-
-        EnsembleDomain bicubicHermiteParameterDomain = new EnsembleDomain( this, "library.interpolation.hermite.bicubic",
-            interpolationParameterDomain, 16 );
-
-        EnsembleDomain quadraticBSplineParameterDomain = new EnsembleDomain( this, "library.interpolation.bspline.quadratic",
-            interpolationParameterDomain, 3 );
+        EnsembleDomain quadraticBSplineParameterDomain = new EnsembleDomain( this, "library.interpolation.bspline.quadratic", 3 );
 
         addDomain( new ContinuousDomain( this, "library.weighting" ) );
 
@@ -275,7 +253,7 @@ public class Library
 
         ContinuousEvaluator functionEvaluator = new FunctionEvaluator( remoteName, anonymousList, xiSource, tensorBasis );
         addEvaluator( functionEvaluator );
-        
+
         return new ImportedContinuousEvaluator( localName, functionEvaluator );
     }
 }

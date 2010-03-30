@@ -7,12 +7,12 @@
     <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="hierarchical_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
     
 
-    <EnsembleDomain superDomain="library.topology.1d" baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
+    <EnsembleDomain baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="2" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
+    <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
       <ContiguousEnsembleBounds valueCount="12" />
     </EnsembleDomain>
     

@@ -22,12 +22,12 @@
     <ContinuousDomain name="test_mesh.coordinates.d2/ds1ds2" />
     
 
-    <EnsembleDomain superDomain="library.topology.2d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="3" />
     </EnsembleDomain>
     
 
-    <EnsembleDomain superDomain="library.topology.0d" baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
       <ContiguousEnsembleBounds valueCount="7" />
     </EnsembleDomain>
     
