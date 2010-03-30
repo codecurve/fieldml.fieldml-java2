@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import fieldml.domain.EnsembleDomain;
-import fieldml.util.SimpleMapEntry;
 import fieldml.value.DomainValue;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleDomainValue;
+import fieldmlx.util.SimpleMapEntry;
 
 public class ParameterTable<V extends DomainValue<?>>
     implements Iterable<SimpleMapEntry<int[], V>>

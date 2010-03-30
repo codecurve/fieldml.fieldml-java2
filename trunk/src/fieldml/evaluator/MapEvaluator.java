@@ -1,11 +1,12 @@
 package fieldml.evaluator;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.domain.ContinuousDomain;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
 import fieldml.value.EnsembleValueSource;
+import fieldmlx.annotations.SerializationAsString;
+import fieldmlx.evaluator.DotProductEvaluator;
 
 public class MapEvaluator
     extends ContinuousEvaluator

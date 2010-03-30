@@ -1,10 +1,10 @@
-package fieldml.annotations;
+package fieldmlx.annotations;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention( RetentionPolicy.RUNTIME )
-public @interface SerializationBlocked
+public @interface SerializationAsString
 {
 
 }

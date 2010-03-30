@@ -1,12 +1,8 @@
 package fieldml.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import fieldml.annotations.SerializationAsString;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.region.Region;
 import fieldml.value.MeshDomainValue;
@@ -26,26 +22,22 @@ public class MeshDomain
 
     public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
 
-    @SerializationAsString
-    public final List<ContinuousEvaluator> fields;
 
-
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, int elementCount )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, int elementCount )
     {
-        this( owner, name, xiBase, elementBase, new ContiguousEnsembleBounds( elementCount ) );
+        this( owner, name, xiBase, new ContiguousEnsembleBounds( elementCount ) );
     }
 
 
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleDomain elementBase, EnsembleBounds elementBounds )
+    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleBounds elementBounds )
     {
         super( name, null );
 
         this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiBase );
-        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBase, elementBounds );
+        this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBounds );
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();
-        fields = new ArrayList<ContinuousEvaluator>();
         
         owner.addDomain( this );
     }
@@ -98,11 +90,5 @@ public class MeshDomain
     public EnsembleDomain getElementDomain()
     {
         return elementDomain;
-    }
-
-
-    public void addField( ContinuousEvaluator field )
-    {
-        fields.add( field );
     }
 }

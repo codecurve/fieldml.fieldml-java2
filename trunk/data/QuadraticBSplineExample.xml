@@ -7,7 +7,7 @@ x____x____x____x____x____x
     <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
     
 
-    <EnsembleDomain superDomain="library.topology.1d" baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
       <ContiguousEnsembleBounds valueCount="5" />
     </EnsembleDomain>
     
@@ -22,7 +22,7 @@ x____x____x____x____x____x
     </EnsembleDomain>
     
 
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" componentDomain="library.local_nodes.line.1">
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" componentDomain="library.local_nodes.line.2">
       <ContiguousEnsembleBounds valueCount="6" />
     </EnsembleDomain>
     

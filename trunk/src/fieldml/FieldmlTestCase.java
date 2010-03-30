@@ -12,8 +12,8 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.jdom.output.Format.TextMode;
 
-import fieldml.io.JdomReflectiveHandler;
 import fieldml.region.Region;
+import fieldmlx.io.JdomReflectiveHandler;
 
 public abstract class FieldmlTestCase
     extends TestCase

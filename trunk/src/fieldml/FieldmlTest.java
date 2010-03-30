@@ -5,7 +5,6 @@ import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
 import fieldml.evaluator.ContinuousDereferenceEvaluator;
-import fieldml.evaluator.ContinuousEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -48,8 +47,8 @@ public class FieldmlTest
         Region region = buildRegion( world );
 
         MeshDomain meshDomain = region.getMeshDomain( "test_mesh.domain" );
-        ContinuousEvaluator meshX = region.getContinuousEvaluator( "test_mesh.coordinates.x" );
-        ContinuousEvaluator meshXY = region.getContinuousEvaluator( "test_mesh.coordinates.xy" );
+        ImportedContinuousEvaluator meshX = region.importContinuousEvaluator( "x", "test_mesh.coordinates.x" );
+        ImportedContinuousEvaluator meshXY = region.importContinuousEvaluator( "xy", "test_mesh.coordinates.xy" );
 
         DomainValues context = new DomainValues();
 
@@ -120,32 +119,6 @@ public class FieldmlTest
         output = meshXY.getValue( context );
         assertEquals( 25.0, output.values[0] );
         assertEquals( 5.0, output.values[1] );
-
-        /*
-         * //Contexty context.set( meshDomain, 4, 0.5, 0.5 ); meshXY.evaluate( context ); output = context.get(
-         * meshXY.getValueDomain() );
-         * 
-         * // Derivates and maps are difficult/impossible.
-         * 
-         * //Pipeliney EnsembleConstantEvaluator element = new EnsembleConstantEvaluator( meshDomain.elementDomain );
-         * element.setValue( 3 );
-         * 
-         * ContinuousConstantEvaluator xi = new ContinuousConstantEvaluator( meshDomain.chartDomain ); element.setValue( 0.5,
-         * 0.5 );
-         * 
-         * context.setVariable( "test_mesh.element_value", element ); meshXYPressure.setVariable( "test_mesh.xi_value", xi );
-         * 
-         * foo = meshXY.evaluate(context);
-         * 
-         * 
-         * bob = pressure.evaluate();
-         * 
-         * element.setValue( 4 );
-         * 
-         * bar = meshXY.evaluate();
-         * 
-         * // Repetitive set value calls. Multiple return types impossible (without structs).
-         */
     }
 
 
@@ -156,41 +129,38 @@ public class FieldmlTest
 
         ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
-        EnsembleDomain tri1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.1x1" );
-        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain tri2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.triangle.2x2" );
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
+        EnsembleDomain quad3x3LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.3x3" );
 
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
-
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 4 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 4 );
         meshDomain.setShape( 1, "library.shape.quad" );
         meshDomain.setShape( 2, "library.shape.triangle" );
         meshDomain.setShape( 3, "library.shape.triangle" );
         meshDomain.setShape( 4, "library.shape.quad" );
 
-        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 13 );
+        EnsembleDomain globalNodesDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 13 );
 
-        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle1x1_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), tri1x1LocalNodeDomain );
+        EnsembleParameters triangleNodeList = new EnsembleParameters( "test_mesh.triangle2x2_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), tri2x2LocalNodeDomain );
         triangleNodeList.setValue( 2, 2, 5, 3 );
         triangleNodeList.setValue( 3, 6, 3, 5 );
         testRegion.addEvaluator( triangleNodeList );
 
-        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad1x1_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), quad1x1LocalNodeDomain );
+        EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad2x2_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad2x2LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 4, 6, 13, 3, 7 );
         testRegion.addEvaluator( quadNodeList );
 
-        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.quad2x2_nodes", globalNodesDomain, meshDomain
-            .getElementDomain(), quad2x2LocalNodeDomain );
+        EnsembleParameters biquadNodeList = new EnsembleParameters( "test_mesh.quad3x3_nodes", globalNodesDomain, meshDomain
+            .getElementDomain(), quad3x3LocalNodeDomain );
         biquadNodeList.setValue( 4, 6, 12, 13, 8, 9, 10, 3, 11, 7 );
         testRegion.addEvaluator( biquadNodeList );
 
-        meshDomain.setPointConnectivity( tri1x1LocalNodeDomain, triangleNodeList );
-        meshDomain.setPointConnectivity( quad1x1LocalNodeDomain, quadNodeList );
-        meshDomain.setPointConnectivity( quad2x2LocalNodeDomain, biquadNodeList );
+        meshDomain.setPointConnectivity( tri2x2LocalNodeDomain, triangleNodeList );
+        meshDomain.setPointConnectivity( quad2x2LocalNodeDomain, quadNodeList );
+        meshDomain.setPointConnectivity( quad3x3LocalNodeDomain, biquadNodeList );
 
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.mesh.dofs", rc1Domain );
         testRegion.addEvaluator( dofs );
@@ -262,6 +232,7 @@ public class FieldmlTest
         testRegion.addEvaluator( meshX );
 
         PiecewiseField meshCoordinatesX = new PiecewiseField( "test_mesh.coordinates.x", rc1Domain, meshCoordinatesT1 );
+        meshCoordinatesX.set( "field", "true" );
         meshCoordinatesX.setVariable( "test_mesh.mesh.dofs", meshX );
         testRegion.addEvaluator( meshCoordinatesX );
 
@@ -283,18 +254,16 @@ public class FieldmlTest
         testRegion.addEvaluator( meshY );
 
         PiecewiseField meshCoordinatesY = new PiecewiseField( "test_mesh.coordinates.y", rc1Domain, meshCoordinatesT2 );
+        meshCoordinatesY.set( "field", "true" );
         meshCoordinatesY.setVariable( "test_mesh.mesh.dofs", meshY );
         testRegion.addEvaluator( meshCoordinatesY );
 
         ContinuousAggregateEvaluator meshCoordinates = new ContinuousAggregateEvaluator( "test_mesh.coordinates.xy", rc2Domain );
+        meshCoordinates.set( "field", "true" );
         meshCoordinates.setSourceField( 1, meshCoordinatesX );
         meshCoordinates.setSourceField( 2, meshCoordinatesY );
 
         testRegion.addEvaluator( meshCoordinates );
-
-        meshDomain.addField( meshCoordinatesT1 );
-        meshDomain.addField( meshCoordinatesT2 );
-        meshDomain.addField( meshCoordinates );
 
         return testRegion;
     }

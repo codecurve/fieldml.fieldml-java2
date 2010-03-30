@@ -58,20 +58,18 @@ public class BicubicHermiteTriquadTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
-        EnsembleDomain pointDomain = library.getEnsembleDomain( "library.topology.0d" );
-        EnsembleDomain baseElementDomain = library.getEnsembleDomain( "library.topology.2d" );
 
-        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, baseElementDomain, 3 );
+        MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 2, "library.shape.quad.00_10_01_11" );
         meshDomain.setShape( 3, "library.shape.quad.00_10_01_11" );
 
-        EnsembleDomain globalNodeDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", pointDomain, 7 );
+        EnsembleDomain globalNodeDomain = new EnsembleDomain( testRegion, "test_mesh.nodes", 7 );
 
-        EnsembleDomain quad1x1LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.1x1" );
+        EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
         
         EnsembleParameters quadNodeList = new EnsembleParameters( "test_mesh.quad_nodes", globalNodeDomain,
-            meshDomain.getElementDomain(), quad1x1LocalNodeDomain );
+            meshDomain.getElementDomain(), quad2x2LocalNodeDomain );
         quadNodeList.setValue( 1, 4, 5, 1, 2 );
         quadNodeList.setValue( 2, 6, 3, 5, 2 );
         quadNodeList.setValue( 3, 6, 5, 7, 4 );
@@ -158,7 +156,7 @@ public class BicubicHermiteTriquadTest
 
         EnsembleDomain hermiteParameterDomain = library.getEnsembleDomain( "library.interpolation.hermite.bicubic" );
 
-        EnsembleParameters hermiteLocalNodeNumber = new EnsembleParameters( "test_mesh.bicubic_hermite.local_node", quad1x1LocalNodeDomain,
+        EnsembleParameters hermiteLocalNodeNumber = new EnsembleParameters( "test_mesh.bicubic_hermite.local_node", quad2x2LocalNodeDomain,
             hermiteParameterDomain );
         hermiteLocalNodeNumber.setValues( 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4 );
 
@@ -170,7 +168,7 @@ public class BicubicHermiteTriquadTest
 
         ImportedContinuousEvaluator elementHermiteParameter = testRegion.importContinuousEvaluator(
             "test_mesh.bicubic_hermite.element_parameter", "test_mesh.bicubic_hermite_parameters" );
-        elementHermiteParameter.alias( hermiteLocalNodeNumber, quad1x1LocalNodeDomain );
+        elementHermiteParameter.alias( hermiteLocalNodeNumber, quad2x2LocalNodeDomain );
         elementHermiteParameter.alias( quadNodeList, globalNodeDomain );
         elementHermiteParameter.alias( hermiteParameterDerivativeNumber, hermiteDerivativesDomain );
         testRegion.addEvaluator( elementHermiteParameter );

@@ -1,10 +1,10 @@
 package fieldml.domain;
 
-import fieldml.annotations.SerializationAsString;
 import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
+import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousDomain
     extends Domain

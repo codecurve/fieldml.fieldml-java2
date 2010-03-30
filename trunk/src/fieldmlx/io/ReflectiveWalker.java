@@ -1,14 +1,14 @@
-package fieldml.io;
+package fieldmlx.io;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fieldml.annotations.SerializationAsString;
-import fieldml.annotations.SerializationBlocked;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.EnsembleDomainValue;
+import fieldmlx.annotations.SerializationAsString;
+import fieldmlx.annotations.SerializationBlocked;
 
 /**
  * Uses reflection to walk an object's instantiation graph.
