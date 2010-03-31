@@ -1,0 +1,36 @@
+LIBXML = "C:\Program Files\libxml\libxml2-2.7.6.win32"
+ICONV = "C:\Program Files\iconv\iconv-1.9.2.win32"
+
+INCLUDE_PATH = /I $(LIBXML)/include /I $(ICONV)/include
+LIB_PATH = /LIBPATH:$(LIBXML)/lib /LIBPATH:$(ICONV)/lib /LIBPATH:"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib" /LIBPATH:"C:\Program Files\iconv\iconv-1.9.2.win32\lib" /LIBPATH:"C:\Program Files\zlib\zlib-1.2.3.win32\lib"
+
+CFLAGS = /O2 /Oi /GL /D "WIN32" /MD /Gy /W3 /c /nologo
+CC = cl.exe
+
+LFLAGS = /OUT:ctest.exe /INCREMENTAL:NO /MANIFEST /MANIFESTFILE:ctest.exe.intermediate.manifest /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /MACHINE:X86 /nologo
+LN = link.exe
+
+OBJS = fieldml_sax.obj string_table.obj fieldml_parse.obj
+
+LIBS = libxml2_a.lib WSock32.Lib iconv_a.lib zlib.lib
+
+%.obj : %.c
+	@$(CC) $< $(CFLAGS) $(INCLUDE_PATH)
+
+
+default: ctest.exe
+
+
+ctest.exe: $(OBJS)
+	@link.exe $(LFLAGS) $(LIB_PATH) $(LIBS) $(OBJS)
+	@mt.exe /outputresource:ctest.exe;#1 /manifest ctest.exe.intermediate.manifest /nologo
+
+
+test: clean ctest.exe
+	@ctest FieldmlTest.xml
+
+
+clean:
+	@del /q *.obj
+	@del /q *.exe
+	@del /q *.manifest

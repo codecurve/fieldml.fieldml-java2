@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1____2____3_11_7
+|    |   /|    |
+|    |*2/ | *4 |
+| *1 | /  8  9 10
+|    |/*3 |    |
+4____5____6_12_13
+-->
+  <Region name="Fieldml_Test">
+    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="4" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+      <ContiguousEnsembleBounds valueCount="13" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad" />
+        <entry key="2" value="library.shape.triangle" />
+        <entry key="3" value="library.shape.triangle" />
+        <entry key="4" value="library.shape.quad" />
+      </shapes>
+      <pointConnectivity>
+        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
+        <entry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
+        <entry key="library.local_nodes.quad.3x3" value="test_mesh.quad3x3_nodes" />
+      </pointConnectivity>
+    </MeshDomain>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.mesh.dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains />
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad2x2_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange.params" valueDomain="library.parameters.bilinear_lagrange" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.bilinear_lagrange" name="test_mesh.bilinear_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test_mesh.element.bilinear_lagrange.params" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad3x3_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.parameters.biquadratic_lagrange" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.biquadratic_lagrange" name="test_mesh.biquadratic_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.biquadratic_lagrange" value="test_mesh.element.biquadratic_lagrange" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.triangle2x2_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.parameters.bilinear_simplex" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.bilinear_simplex" name="test_mesh.bilinear_simplex" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_simplex" value="test_mesh.element.bilinear_simplex" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.bilinear_lagrange" />
+        <TemplateMap index="2" evaluator="test_mesh.bilinear_simplex" />
+        <TemplateMap index="3" evaluator="test_mesh.bilinear_simplex" />
+        <TemplateMap index="4" evaluator="test_mesh.bilinear_lagrange" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.bilinear_lagrange" />
+        <TemplateMap index="2" evaluator="test_mesh.bilinear_simplex" />
+        <TemplateMap index="3" evaluator="test_mesh.bilinear_simplex" />
+        <TemplateMap index="4" evaluator="test_mesh.biquadratic_lagrange" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
+        <SemiDenseData>
+            <sparseIndices>
+                "test_mesh.nodes"
+            </sparseIndices>
+            <data>
+                1 0.0
+                2 10.0
+                3 20.0
+                4 0.0
+                5 10.0
+                6 20.0
+                7 30.0
+                13 30.0
+            </data>
+        </SemiDenseData>
+    </ContinuousParameters>
+
+    <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
+        <SemiDenseData>
+            <sparseIndices>
+                "test_mesh.nodes"
+            </sparseIndices>
+            <data>
+                1 10.0
+                2 10.0
+                3 10.0
+                4 0.0
+                5 0.0
+                6 0.0
+                7 10.0
+                8 5.0
+                9 5.0
+                10 5.0
+                11 10.0
+                12 0.0
+                13 0.0
+            </data>
+        </SemiDenseData>
+    </ContinuousParameters>
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
+      <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </ContinuousAggregateEvaluator>
+    
+
+    <EnsembleParameters name="test_mesh.triangle2x2_nodes" valueDomain="test_mesh.nodes">
+      <SemiDenseData>
+          <sparseIndices>
+              "test_mesh.domain.elements"
+          </sparseIndices>
+          <denseIndices>
+              "library.local_nodes.triangle.2x2"
+          </denseIndices>
+          <data>
+              2 2 5 3
+              3 6 3 5
+          </data>
+      </SemiDenseData>
+    </EnsembleParameters>
+    
+
+    <EnsembleParameters name="test_mesh.quad2x2_nodes" valueDomain="test_mesh.nodes">
+        <SemiDenseData>
+            <sparseIndices>
+                "test_mesh.domain.elements"
+            </sparseIndices>
+            <denseIndices>
+                "library.local_nodes.quad.2x2"
+            </denseIndices>
+            <data>
+                1 4 5 1 4
+                4 6 13 3 7
+            </data>
+        </SemiDenseData>
+    </EnsembleParameters>
+    
+
+    <EnsembleParameters name="test_mesh.quad3x3_nodes" valueDomain="test_mesh.nodes">
+        <SemiDenseData>
+            <sparseIndices>
+                "test_mesh.domain.elements"
+            </sparseIndices>
+            <denseIndices>
+                "library.local_nodes.quad.3x3"
+            </denseIndices>
+            <data>
+                4 6 12 13 8 9 10 3 11 7
+            </data>
+        </SemiDenseData>
+    </EnsembleParameters>
+    
+
+    <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
+      </variables>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </PiecewiseField>
+    
+
+    <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
+      </variables>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </PiecewiseField>
+    
+
+  </Region>
+</fieldml>
+
