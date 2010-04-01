@@ -10,7 +10,7 @@ CC = cl.exe
 LFLAGS = /OUT:ctest.exe /INCREMENTAL:NO /MANIFEST /MANIFESTFILE:ctest.exe.intermediate.manifest /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /MACHINE:X86 /nologo
 LN = link.exe
 
-OBJS = fieldml_sax.obj string_table.obj fieldml_parse.obj
+OBJS = fieldml_sax.obj string_table.obj fieldml_parse.obj simple_list.obj int_stack.obj
 
 LIBS = libxml2_a.lib WSock32.Lib iconv_a.lib zlib.lib
 

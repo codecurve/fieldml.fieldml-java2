@@ -97,9 +97,9 @@
 
     <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
         <SemiDenseData>
-            <sparseIndices>
-                "test_mesh.nodes"
-            </sparseIndices>
+            <sparseIndexes>
+                <entry value="test_mesh.nodes"/>
+            </sparseIndexes>
             <data>
                 1 0.0
                 2 10.0
@@ -115,9 +115,9 @@
 
     <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
         <SemiDenseData>
-            <sparseIndices>
-                "test_mesh.nodes"
-            </sparseIndices>
+            <sparseIndexes>
+                <entry value="test_mesh.nodes"/>
+            </sparseIndexes>
             <data>
                 1 10.0
                 2 10.0
@@ -147,12 +147,12 @@
 
     <EnsembleParameters name="test_mesh.triangle2x2_nodes" valueDomain="test_mesh.nodes">
       <SemiDenseData>
-          <sparseIndices>
-              "test_mesh.domain.elements"
-          </sparseIndices>
-          <denseIndices>
-              "library.local_nodes.triangle.2x2"
-          </denseIndices>
+          <sparseIndexes>
+              <entry value="test_mesh.domain.elements"/>
+          </sparseIndexes>
+          <denseIndexes>
+              <entry value="library.local_nodes.triangle.2x2"/>
+          </denseIndexes>
           <data>
               2 2 5 3
               3 6 3 5
@@ -163,12 +163,12 @@
 
     <EnsembleParameters name="test_mesh.quad2x2_nodes" valueDomain="test_mesh.nodes">
         <SemiDenseData>
-            <sparseIndices>
-                "test_mesh.domain.elements"
-            </sparseIndices>
-            <denseIndices>
-                "library.local_nodes.quad.2x2"
-            </denseIndices>
+            <sparseIndexes>
+                <entry value="test_mesh.domain.elements"/>
+            </sparseIndexes>
+            <denseIndexes>
+                <entry value="library.local_nodes.quad.2x2"/>
+            </denseIndexes>
             <data>
                 1 4 5 1 4
                 4 6 13 3 7
@@ -179,12 +179,12 @@
 
     <EnsembleParameters name="test_mesh.quad3x3_nodes" valueDomain="test_mesh.nodes">
         <SemiDenseData>
-            <sparseIndices>
-                "test_mesh.domain.elements"
-            </sparseIndices>
-            <denseIndices>
-                "library.local_nodes.quad.3x3"
-            </denseIndices>
+            <sparseIndexes>
+                <entry value="test_mesh.domain.elements"/>
+            </sparseIndexes>
+            <denseIndexes>
+                <entry value="library.local_nodes.quad.3x3"/>
+            </denseIndexes>
             <data>
                 4 6 12 13 8 9 10 3 11 7
             </data>

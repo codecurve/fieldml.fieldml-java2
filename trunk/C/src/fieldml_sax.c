@@ -102,21 +102,18 @@ char * getAttribute( SaxAttributes *saxAttributes, char *attribute )
 
 static int isStandalone( void *context )
 {
-    fprintf( stdout, "SAX.isStandalone( )\n" );
     return 0;
 }
 
 
 static int hasInternalSubset( void *context )
 {
-    fprintf( stdout, "SAX.hasInternalSubset( )\n" );
     return 0;
 }
 
 
 static int hasExternalSubset( void *context )
 {
-    fprintf( stdout, "SAX.hasExternalSubset( )\n" );
     return 0;
 }
 
@@ -131,182 +128,112 @@ static void externalSubset( void *context, const xmlChar *name, const xmlChar *e
 
 static xmlParserInputPtr resolveEntity( void *context, const xmlChar *publicId, const xmlChar *systemId )
 {
-    /* xmlParserCtxtPtr ctxt = ( xmlParserCtxtPtr ) ctx; */
-
-
-    fprintf( stdout, "SAX.resolveEntity( " );
-    if ( publicId != NULL )
-    fprintf( stdout, "%s", ( char * )publicId );
-    else
-    fprintf( stdout, " " );
-    if ( systemId != NULL )
-    fprintf( stdout, ", %s )\n", ( char * )systemId );
-    else
-    fprintf( stdout, ", )\n" );
     return NULL;
 }
 
 
 static xmlEntityPtr getEntity( void *context, const xmlChar *name )
 {
-    fprintf( stdout, "SAX.getEntity( %s )\n", name );
     return NULL;
 }
 
 
 static xmlEntityPtr getParameterEntity( void *context, const xmlChar *name )
 {
-    fprintf( stdout, "SAX.getParameterEntity( %s )\n", name );
     return NULL;
 }
 
 
-static void entityDecl( void *context, const xmlChar *name, int type, const xmlChar *publicId,
+static void onEntityDecl( void *context, const xmlChar *name, int type, const xmlChar *publicId,
                        const xmlChar *systemId, xmlChar *content )
 {
-    const xmlChar *nullstr = (xmlChar*)"null";
-    if ( publicId == NULL )
-        publicId = nullstr;
-    if ( systemId == NULL )
-        systemId = nullstr;
-    if ( content == NULL )
-        content = ( xmlChar * )nullstr;
-    fprintf( stdout, "SAX.entityDecl( %s, %d, %s, %s, %s )\n",
-            name, type, publicId, systemId, content );
 }
 
 
-static void attributeDecl( void *context, const xmlChar * elem, const xmlChar * name, int type, int def,
+static void onAttributeDecl( void *context, const xmlChar * elem, const xmlChar * name, int type, int def,
                    const xmlChar * defaultValue, xmlEnumerationPtr tree )
 {
-    if ( defaultValue == NULL )
-        fprintf( stdout, "SAX.attributeDecl( %s, %s, %d, %d, NULL, ... )\n",
-                elem, name, type, def );
-    else
-        fprintf( stdout, "SAX.attributeDecl( %s, %s, %d, %d, %s, ... )\n",
-                elem, name, type, def, defaultValue );
     xmlFreeEnumeration( tree );
 }
 
 
-static void elementDecl( void *context, const xmlChar *name, int type,
+static void onElementDecl( void *context, const xmlChar *name, int type,
         xmlElementContentPtr content )
 {
-    fprintf( stdout, "SAX.elementDecl( %s, %d, ... )\n",
-            name, type );
 }
 
 
-static void notationDecl( void *context, const xmlChar *name,
+static void onNotationDecl( void *context, const xmlChar *name,
          const xmlChar *publicId, const xmlChar *systemId )
 {
-    fprintf( stdout, "SAX.notationDecl( %s, %s, %s )\n",
-            ( char * ) name, ( char * ) publicId, ( char * ) systemId );
 }
 
 
-static void unparsedEntityDecl( void *context, const xmlChar *name, const xmlChar *publicId,
+static void onUnparsedEntityDecl( void *context, const xmlChar *name, const xmlChar *publicId,
                                const xmlChar *systemId, const xmlChar *notationName )
 {
-    const xmlChar *nullstr = (xmlChar*)"null";
-
-    if ( publicId == NULL )
-        publicId = nullstr;
-    if ( systemId == NULL )
-        systemId = nullstr;
-    if ( notationName == NULL )
-        notationName = nullstr;
-    fprintf( stdout, "SAX.unparsedEntityDecl( %s, %s, %s, %s )\n",
-            ( char * ) name, ( char * ) publicId, ( char * ) systemId,
-        ( char * ) notationName );
 }
 
 
 static void setDocumentLocator( void *context, xmlSAXLocatorPtr loc )
 {
+    /*
+    At the moment (libxml 2.7.2), this is worse than useless.
+    The locator only wraps functions which require the library's internal
+    parsing context, which is only passed into this function if you pass
+    in 'NULL' as the user-data which initiating the SAX parse...
+    which is exactly what we don't want to do.
+    */
+}
+
+
+static void onStartDocument( void *context )
+{
+}
+
+
+static void onEndDocument( void *context )
+{
+}
+
+
+static void onCharacters( void *context, const xmlChar *ch, int len )
+{
     SaxContext *saxContext = (SaxContext*)context;
 
-    saxContext->locator = loc;
-    fprintf( stdout, "SAX.setDocumentLocator( )\n" );
-}
-
-
-static void startDocument( void *context )
-{
-    fprintf( stdout, "SAX.startDocument( )\n" );
-}
-
-
-static void endDocument( void *context )
-{
-    fprintf( stdout, "SAX.endDocument( )\n" );
-}
-
-
-static void characters( void *context, const xmlChar *ch, int len )
-{
-    char output[40];
-    int i, allWhite;
-    
-    allWhite = 1;
-    for ( i = 0;( i<len ) && ( i < 30 );i++ )
+    switch( peekInt( saxContext->state ) )
     {
-        output[i] = ch[i];
-        if( ch[i] > ' ' )
-        {
-            allWhite = 0;
-        }
+    case FML_SEMIDENSE_DATA:
+        semidenseData( saxContext, ch, len );
+        break;
+    default:
+        break;
     }
-    output[i] = 0;
-    
-    if( allWhite )
-    {
-        return;
-    }
-
-    fprintf( stdout, "SAX.characters( %s, %d )\n", output, len );
 }
 
 
-static void reference( void *context, const xmlChar *name )
+static void onReference( void *context, const xmlChar *name )
 {
-    fprintf( stdout, "SAX.reference( %s )\n", name );
 }
 
 
-static void ignorableWhitespace( void *context, const xmlChar *ch, int len )
+static void onIgnorableWhitespace( void *context, const xmlChar *ch, int len )
 {
-    char output[40];
-    int i;
-
-    for ( i = 0;( i<len ) && ( i < 30 );i++ )
-    output[i] = ch[i];
-    output[i] = 0;
-    fprintf( stdout, "SAX.ignorableWhitespace( %s, %d )\n", output, len );
 }
 
 
-static void processingInstruction( void *context, const xmlChar *target, const xmlChar *data )
+static void onProcessingInstruction( void *context, const xmlChar *target, const xmlChar *data )
 {
-    if ( data != NULL )
-    fprintf( stdout, "SAX.processingInstruction( %s, %s )\n",
-        ( char * ) target, ( char * ) data );
-    else
-    fprintf( stdout, "SAX.processingInstruction( %s, NULL )\n",
-        ( char * ) target );
 }
 
 
-static void cdataBlock( void *context, const xmlChar *value, int len )
+static void onCdataBlock( void *context, const xmlChar *value, int len )
 {
-    fprintf( stdout, "SAX.pcdata( %.20s, %d )\n",
-        ( char * ) value, len );
 }
 
 
 static void comment( void *context, const xmlChar *value )
 {
-    //We don't care about comments.
 }
 
 
@@ -343,7 +270,7 @@ static void XMLCDECL fatalError( void *context, const char *msg, ... )
 }
 
 
-static void startElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI,
+static void onStartElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI,
             int nb_namespaces, const xmlChar **namespaces,
             int nb_attributes, int nb_defaulted, const xmlChar **attributes )
 {
@@ -352,51 +279,80 @@ static void startElementNs( void *context, const xmlChar *name, const xmlChar *p
     SaxAttributes *saxAttributes = createAttributes( nb_attributes, attributes );
     SaxContext *saxContext = (SaxContext*)context;
 
-    switch( saxContext->state )
+    switch( peekInt( saxContext->state ) )
     {
     case FML_ROOT:
         if( strcmp( name, FIELDML_TAG ) == 0 )
         {
-            saxContext->state = FML_FIELDML;
+            pushInt( saxContext->state, FML_FIELDML );
         }
         break;
     case FML_FIELDML:
         if( strcmp( name, REGION_TAG ) == 0 )
         {
-            saxContext->state = FML_REGION;
+            pushInt( saxContext->state, FML_REGION );
         }
         break;
     case FML_ENSEMBLE_DOMAIN:
         if( strcmp( name, CONTIGUOUS_ENSEMBLE_BOUNDS_TAG ) == 0 )
         {
             startContiguousBounds( saxContext, saxAttributes );
-            saxContext->state = FML_ENSEMBLE_DOMAIN_BOUNDS;
+            pushInt( saxContext->state, FML_ENSEMBLE_DOMAIN_BOUNDS );
         }
         break;
     case FML_CONTINUOUS_IMPORT:
         if( strcmp( name, CONTINUOUS_ALIAS_TAG ) == 0 )
         {
-            saxContext->state = FML_CONTINUOUS_IMPORT_C_ALIASES;
+            pushInt( saxContext->state, FML_CONTINUOUS_ALIASES );
         }
         else if( strcmp( name, ENSEMBLE_ALIAS_TAG ) == 0 )
         {
-            saxContext->state = FML_CONTINUOUS_IMPORT_E_ALIASES;
+            pushInt( saxContext->state, FML_ENSEMBLE_ALIASES );
         }
         break;
     case FML_ENSEMBLE_PARAMETERS:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            saxContext->state = FML_SEMI_DENSE_ENSEMBLE;
+            startSemidenseData( saxContext, saxAttributes, 1 );
+            pushInt( saxContext->state, FML_SEMI_DENSE_ENSEMBLE );
         }
         break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            saxContext->state = FML_SEMI_DENSE_CONTINUOUS;
+            startSemidenseData( saxContext, saxAttributes, 0 );
+            pushInt( saxContext->state, FML_SEMI_DENSE_CONTINUOUS );
         }
         break;
-    case FML_CONTINUOUS_IMPORT_C_ALIASES:
-    case FML_CONTINUOUS_IMPORT_E_ALIASES:
+    case FML_SEMI_DENSE_CONTINUOUS:
+    case FML_SEMI_DENSE_ENSEMBLE:
+        if( strcmp( name, DENSE_INDEXES_TAG ) == 0 )
+        {
+            pushInt( saxContext->state, FML_DENSE_INDEXES );
+        }
+        if( strcmp( name, SPARSE_INDEXES_TAG ) == 0 )
+        {
+            pushInt( saxContext->state, FML_SPARSE_INDEXES );
+        }
+        if( strcmp( name, DATA_TAG ) == 0 )
+        {
+            pushInt( saxContext->state, FML_SEMIDENSE_DATA );
+        }
+        break;
+    case FML_DENSE_INDEXES:
+        if( strcmp( name, ENTRY_TAG ) == 0 )
+        {
+            semidenseIndex( saxContext, saxAttributes, 0 );
+        }
+        break;
+    case FML_SPARSE_INDEXES:
+        if( strcmp( name, ENTRY_TAG ) == 0 )
+        {
+            semidenseIndex( saxContext, saxAttributes, 1 );
+        }
+        break;
+    case FML_CONTINUOUS_ALIASES:
+    case FML_ENSEMBLE_ALIASES:
         if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
         {
             continuousImportAlias( saxContext, saxAttributes );
@@ -406,31 +362,43 @@ static void startElementNs( void *context, const xmlChar *name, const xmlChar *p
         if( strcmp( name, ENSEMBLE_DOMAIN_TAG ) == 0 )
         {
             startEnsembleDomain( saxContext, saxAttributes );
-            saxContext->state = FML_ENSEMBLE_DOMAIN;
+            pushInt( saxContext->state, FML_ENSEMBLE_DOMAIN );
             break;
         }
         if( strcmp( name, CONTINUOUS_DOMAIN_TAG ) == 0 )
         {
             startContinuousDomain( saxContext, saxAttributes );
-            saxContext->state = FML_CONTINUOUS_DOMAIN;
+            pushInt( saxContext->state, FML_CONTINUOUS_DOMAIN );
             break;
         }
         if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
         {
             startContinuousImport( saxContext, saxAttributes );
-            saxContext->state = FML_CONTINUOUS_IMPORT;
+            pushInt( saxContext->state, FML_CONTINUOUS_IMPORT );
             break;
         }
         if( strcmp( name, ENSEMBLE_PARAMETERS_TAG ) == 0 )
         {
             startEnsembleParameters( saxContext, saxAttributes );
-            saxContext->state = FML_ENSEMBLE_PARAMETERS;
+            pushInt( saxContext->state, FML_ENSEMBLE_PARAMETERS );
             break;
         }
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {
             startContinuousParameters( saxContext, saxAttributes );
-            saxContext->state = FML_CONTINUOUS_PARAMETERS;
+            pushInt( saxContext->state, FML_CONTINUOUS_PARAMETERS );
+            break;
+        }
+        if( strcmp( name, CONTINUOUS_VARIABLE_TAG ) == 0 )
+        {
+            startVariable( saxContext, saxAttributes );
+            pushInt( saxContext->state, FML_CONTINUOUS_VARIABLE );
+            break;
+        }
+        if( strcmp( name, ENSEMBLE_VARIABLE_TAG ) == 0 )
+        {
+            startVariable( saxContext, saxAttributes );
+            pushInt( saxContext->state, FML_ENSEMBLE_VARIABLE );
             break;
         }
         //FALLTHROUGH
@@ -475,87 +443,121 @@ static void startElementNs( void *context, const xmlChar *name, const xmlChar *p
 }
 
 
-static void endElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI )
+static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI )
 {
     SaxContext *saxContext = (SaxContext*)context;
 
-    switch( saxContext->state )
+    switch( peekInt( saxContext->state ) )
     {
     case FML_FIELDML:
         if( strcmp( name, FIELDML_TAG ) == 0 )
         {
-            saxContext->state = FML_ROOT;
+            popInt( saxContext->state );
         }
         break;
     case FML_ENSEMBLE_DOMAIN_BOUNDS:
         if( strcmp( name, CONTIGUOUS_ENSEMBLE_BOUNDS_TAG ) == 0 )
         {
-            saxContext->state = FML_ENSEMBLE_DOMAIN;
+            popInt( saxContext->state );
         }
         break;
     case FML_ENSEMBLE_DOMAIN:
         if( strcmp( name, ENSEMBLE_DOMAIN_TAG ) == 0 )
         {
             endEnsembleDomain( saxContext );
-            saxContext->state = FML_REGION;
+            popInt( saxContext->state );
         }
         break;
     case FML_CONTINUOUS_DOMAIN:
         if( strcmp( name, CONTINUOUS_DOMAIN_TAG ) == 0 )
         {
             endContinuousDomain( saxContext );
-            saxContext->state = FML_REGION;
+            popInt( saxContext->state );
         }
         break;
-    case FML_CONTINUOUS_IMPORT_C_ALIASES:
+    case FML_CONTINUOUS_ALIASES:
         if( strcmp( name, CONTINUOUS_ALIAS_TAG ) == 0 )
         {
-            saxContext->state = FML_CONTINUOUS_IMPORT;
+            popInt( saxContext->state );
         }
         break;
-    case FML_CONTINUOUS_IMPORT_E_ALIASES:
+    case FML_ENSEMBLE_ALIASES:
         if( strcmp( name, ENSEMBLE_ALIAS_TAG ) == 0 )
         {
-            saxContext->state = FML_CONTINUOUS_IMPORT;
+            popInt( saxContext->state );
         }
         break;
     case FML_CONTINUOUS_IMPORT:
         if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
         {
             endContinuousImport( saxContext );
-            saxContext->state = FML_REGION;
+            popInt( saxContext->state );
         }
         break;
     case FML_ENSEMBLE_PARAMETERS:
         if( strcmp( name, ENSEMBLE_PARAMETERS_TAG ) == 0 )
         {
             endEnsembleParameters( saxContext );
-            saxContext->state = FML_REGION;
-        }
-        break;
-    case FML_SEMI_DENSE_ENSEMBLE:
-        if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
-        {
-            saxContext->state = FML_ENSEMBLE_PARAMETERS;
+            popInt( saxContext->state );
         }
         break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {
             endContinuousParameters( saxContext );
-            saxContext->state = FML_REGION;
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_SEMI_DENSE_ENSEMBLE:
+        if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
+        {
+            endSemidenseData( saxContext, 1 );
+            popInt( saxContext->state );
         }
         break;
     case FML_SEMI_DENSE_CONTINUOUS:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            saxContext->state = FML_CONTINUOUS_PARAMETERS;
+            endSemidenseData( saxContext, 0 );
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_SPARSE_INDEXES:
+        if( strcmp( name, SPARSE_INDEXES_TAG ) == 0 )
+        {
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_DENSE_INDEXES:
+        if( strcmp( name, DENSE_INDEXES_TAG ) == 0 )
+        {
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_SEMIDENSE_DATA:
+        if( strcmp( name, DATA_TAG ) == 0 )
+        {
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_CONTINUOUS_VARIABLE:
+        if( strcmp( name, CONTINUOUS_VARIABLE_TAG ) == 0 )
+        {
+            endVariable( saxContext );
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_ENSEMBLE_VARIABLE:
+        if( strcmp( name, ENSEMBLE_VARIABLE_TAG ) == 0 )
+        {
+            endVariable( saxContext );
+            popInt( saxContext->state );
         }
         break;
     case FML_REGION:
         if( strcmp( name, REGION_TAG ) == 0 )
         {
-            saxContext->state = FML_FIELDML;
+            popInt( saxContext->state );
         }
         //FALLTHROUGH
     default:
@@ -581,31 +583,31 @@ static xmlSAXHandler SAX2HandlerStruct =
     hasExternalSubset,
     resolveEntity,
     getEntity,
-    entityDecl,
-    notationDecl,
-    attributeDecl,
-    elementDecl,
-    unparsedEntityDecl,
+    onEntityDecl,
+    onNotationDecl,
+    onAttributeDecl,
+    onElementDecl,
+    onUnparsedEntityDecl,
     setDocumentLocator,
-    startDocument,
-    endDocument,
+    onStartDocument,
+    onEndDocument,
     NULL,
     NULL,
-    reference,
-    characters,
-    ignorableWhitespace,
-    processingInstruction,
+    onReference,
+    onCharacters,
+    onIgnorableWhitespace,
+    onProcessingInstruction,
     comment,
     warning,
     error,
     fatalError,
     getParameterEntity,
-    cdataBlock,
+    onCdataBlock,
     externalSubset,
     XML_SAX2_MAGIC,
     NULL,
-    startElementNs,
-    endElementNs,
+    onStartElementNs,
+    onEndElementNs,
     NULL
 };
 
@@ -622,13 +624,25 @@ static void parseAndPrintFile( char *filename )
     int res;
     SaxContext context;
 
-    context.state = FML_ROOT;
+    context.state = createIntStack();
     context.parse = createFieldmlParse();
 
+    pushInt( context.state, FML_ROOT );
+
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
-    if ( res != 0 )
+    if( res != 0 ) 
     {
         fprintf( stdout, "xmlSAXUserParseFile returned error %d\n", res );
+    }
+    if( peekInt( context.state ) != -1 )
+    {
+        int s;
+        fprintf( stdout, "Parser state not empty:\n");
+        while( peekInt( context.state ) != -1 )
+        {
+            s = popInt( context.state );
+            fprintf( stdout, "    %d\n", s );
+        }
     }
 
     dumpFieldmlParse( context.parse );

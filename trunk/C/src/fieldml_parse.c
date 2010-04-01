@@ -5,6 +5,7 @@
 
 #include "fieldml_parse.h"
 #include "string_table.h"
+#include "simple_list.h"
 #include "fieldml_sax.h"
 
 struct _FieldmlParse
@@ -15,6 +16,8 @@ struct _FieldmlParse
     StringTable *continuousImports;
     StringTable *ensembleParameters;
     StringTable *continuousParameters;
+    StringTable *semidenseData;
+    StringTable *variables;
 };
 
 typedef enum _EnsembleBoundsType
@@ -91,6 +94,64 @@ typedef struct _ContinuousParameters
 }
 ContinuousParameters;
 
+
+typedef enum _DataLocation
+{
+    LOC_UNKNOWN,
+    LOC_STRING,
+    LOC_FILE,
+}
+DataLocation;
+
+
+typedef struct _StringDataSource
+{
+    char *string;
+    int length;
+}
+StringDataSource;
+
+
+typedef struct _FileDataSource
+{
+    char *filename;
+    int offset;
+    int length;
+}
+FileDataSource;
+
+
+typedef struct _DataSource
+{
+    DataLocation location;
+    union TaggedDataSource
+    {
+        StringDataSource stringData;
+        FileDataSource fileData;
+    }
+    data;
+}
+DataSource;
+
+
+typedef struct _SemidenseData
+{
+    SimpleList *sparseIndexes;
+    SimpleList *denseIndexes;
+
+    DataSource dataSource;
+}
+SemidenseData;
+
+
+typedef struct _Variable
+{
+    char *name;
+    char *valueDomain;
+    SimpleList *parameters;
+}
+Variable;
+
 //========================================================================
 //
 // Creators
@@ -109,6 +170,8 @@ FieldmlParse *createFieldmlParse()
     parse->continuousImports = createStringTable();
     parse->ensembleParameters = createStringTable();
     parse->continuousParameters = createStringTable();
+    parse->semidenseData = createStringTable();
+    parse->variables = createStringTable();
 
     return parse;
 }
@@ -127,6 +190,94 @@ EnsembleDomain *createEnsembleDomain( char *name, char *baseDomain, char *compon
     return domain;
 }
 
+
+ContiguousBounds *createContiguousBounds( char *countString )
+{
+    ContiguousBounds *bounds;
+
+    bounds = calloc( 1, sizeof( ContiguousBounds ) );
+    bounds->count = atoi( countString );
+
+    return bounds;
+}
+
+
+ContinuousDomain *createContinuousDomain( char *name, char *baseDomain, char *componentEnsemble )
+{
+    ContinuousDomain *domain;
+
+    domain = calloc( 1, sizeof( ContinuousDomain ) );
+    domain->name = _strdup( name );
+    domain->baseName = _strdup( baseDomain );
+    domain->componentEnsemble = _strdup( componentEnsemble );
+
+    return domain;
+}
+
+
+ContinuousImport *createContinuousImport( char *name, char *remoteName, char *valueDomain )
+{
+    ContinuousImport *import;
+
+    import = calloc( 1, sizeof( ContinuousImport ) );
+    import->name = _strdup( name );
+    import->remoteName = _strdup( remoteName );
+    import->valueDomain = _strdup( valueDomain );
+    import->aliases = createStringTable();
+
+    return import;
+}
+
+
+EnsembleParameters *createEnsembleParameters( char *name, char *valueDomain )
+{
+    EnsembleParameters *parameters;
+
+    parameters = calloc( 1, sizeof( EnsembleParameters ) );
+    parameters->name = _strdup( name );
+    parameters->valueDomain = _strdup( valueDomain );
+    parameters->storageType = STORAGE_UNKNOWN;
+
+    return parameters;
+}
+
+
+ContinuousParameters *createContinuousParameters( char *name, char *valueDomain )
+{
+    ContinuousParameters *parameters;
+
+    parameters = calloc( 1, sizeof( ContinuousParameters ) );
+    parameters->name = _strdup( name );
+    parameters->valueDomain = _strdup( valueDomain );
+    parameters->storageType = STORAGE_UNKNOWN;
+
+    return parameters;
+}
+
+
+SemidenseData *createSemidenseData()
+{
+    SemidenseData *data;
+    data = calloc( 1, sizeof( SemidenseData ) );
+    data->denseIndexes = createSimpleList();
+    data->sparseIndexes = createSimpleList();
+    data->dataSource.location = LOC_STRING;  // At the moment, we only support string-based data.
+
+    return data;
+}
+
+
+Variable *createVariable( char *name, char *valueDomain )
+{
+    Variable *variable;
+
+    variable = calloc( 1, sizeof( Variable ) );
+    variable->name = _strdup( name );
+    variable->valueDomain = _strdup( valueDomain );
+    variable->parameters = createSimpleList();
+
+    return variable;
+}
 
 //========================================================================
 //
@@ -162,16 +313,6 @@ void destroyContinuousImport( ContinuousImport *import )
 }
 
 
-void destroyFieldmlParse( FieldmlParse *parse )
-{
-    destroyStringTable( parse->ensembleDomains, destroyEnsembleDomain );
-    destroyStringTable( parse->contiguousBounds, free );
-    destroyStringTable( parse->continuousDomains, destroyContinuousDomain );
-
-    free( parse );
-}
-
-
 void destroyEnsembleParameters( EnsembleParameters *parameters )
 {
     free( parameters->name );
@@ -187,6 +328,57 @@ void destroyEnsembleParameters( EnsembleParameters *parameters )
 
     free( parameters );
 }
+
+
+void destroyContinuousParameters( ContinuousParameters *parameters )
+{
+    free( parameters->name );
+    free( parameters->valueDomain );
+
+    switch( parameters->storageType )
+    {
+    case STORAGE_SEMIDENSE:
+        break;
+    default:
+        break;
+    }
+
+    free( parameters );
+}
+
+
+void destroySemidenseData( SemidenseData *data )
+{
+    destroySimpleList( data->sparseIndexes, free );
+    destroySimpleList( data->denseIndexes, free );
+    free( data );
+}
+
+
+void destroyVariable( Variable *variable )
+{
+    free( variable->name );
+    free( variable->valueDomain );
+    destroySimpleList( variable->parameters, free );
+
+    free( variable );
+}
+
+
+void destroyFieldmlParse( FieldmlParse *parse )
+{
+    destroyStringTable( parse->ensembleDomains, destroyEnsembleDomain );
+    destroyStringTable( parse->contiguousBounds, free );
+    destroyStringTable( parse->continuousDomains, destroyContinuousDomain );
+    destroyStringTable( parse->continuousImports, destroyContinuousImport );
+    destroyStringTable( parse->continuousParameters, destroyContinuousParameters );
+    destroyStringTable( parse->ensembleParameters, destroyEnsembleParameters );
+    destroyStringTable( parse->semidenseData, destroySemidenseData );
+    destroyStringTable( parse->variables, destroyVariable );
+
+    free( parse );
+}
+
 
 //========================================================================
 //
@@ -226,6 +418,7 @@ void startEnsembleDomain( SaxContext *context, SaxAttributes *saxAttributes )
 void endEnsembleDomain( SaxContext *context )
 {
     EnsembleDomain *domain = (EnsembleDomain*)context->currentObject;
+    context->currentObject = NULL;
 
     if( domain->boundsType == BOUNDS_UNKNOWN )
     {
@@ -261,10 +454,7 @@ void startContinuousDomain( SaxContext *context, SaxAttributes *saxAttributes )
 
     componentEnsemble = getAttribute( saxAttributes, "componentDomain" );
 
-    domain = calloc( 1, sizeof( ContinuousDomain ) );
-    domain->name = _strdup( name );
-    domain->baseName = _strdup( baseDomain );
-    domain->componentEnsemble = _strdup( componentEnsemble );
+    domain = createContinuousDomain( name, baseDomain, componentEnsemble );
 
     context->currentObject = domain;
 }
@@ -273,6 +463,7 @@ void startContinuousDomain( SaxContext *context, SaxAttributes *saxAttributes )
 void endContinuousDomain( SaxContext *context )
 {
     ContinuousDomain *domain = (ContinuousDomain*)context->currentObject;
+    context->currentObject = NULL;
 
     setEntry( context->parse->continuousDomains, domain->name, domain, destroyContinuousDomain );
 }
@@ -295,8 +486,7 @@ void startContiguousBounds( SaxContext *context, SaxAttributes *saxAttributes )
 
     domain->boundsType = BOUNDS_CONTIGUOUS;
 
-    bounds = calloc( 1, sizeof( ContiguousBounds ) );
-    bounds->count = atoi( count );
+    bounds = createContiguousBounds( count );
 
     setEntry( context->parse->contiguousBounds, domain->name, bounds, free );
 }
@@ -337,6 +527,40 @@ void dumpFieldmlParse( FieldmlParse *parse )
             fprintf( stdout, "        %s -> %s\n", getName( import->aliases, j ), getData( import->aliases, j ) );
         }
     }
+
+    count = getCount( parse->continuousParameters );
+    fprintf( stdout, "Continuous Parameters:\n" );
+    for( i = 0; i < count; i++ )
+    {
+        ContinuousParameters *params;
+        SemidenseData *data;
+
+        params = (ContinuousParameters*)getData( parse->continuousParameters, i );
+        data = (SemidenseData*)getEntry( parse->semidenseData, params->name );
+
+        fprintf( stdout, "%    s\n", params->name );
+
+        fprintf( stdout, "    *******************************\n");
+        fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
+        fprintf( stdout, "    *******************************\n");
+    }
+
+    count = getCount( parse->ensembleParameters );
+    fprintf( stdout, "Ensemble Parameters:\n" );
+    for( i = 0; i < count; i++ )
+    {
+        EnsembleParameters *params;
+        SemidenseData *data;
+
+        params = (EnsembleParameters*)getData( parse->ensembleParameters, i );
+        data = (SemidenseData*)getEntry( parse->semidenseData, params->name );
+
+        fprintf( stdout, "%    s\n", params->name );
+
+        fprintf( stdout, "    *******************************\n");
+        fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
+        fprintf( stdout, "    *******************************\n");
+    }
 }
 
 
@@ -368,11 +592,7 @@ void startContinuousImport( SaxContext *context, SaxAttributes *saxAttributes )
         return;
     }
 
-    import = calloc( 1, sizeof( ContinuousImport ) );
-    import->name = _strdup( name );
-    import->remoteName = _strdup( remoteName );
-    import->valueDomain = _strdup( valueDomain );
-    import->aliases = createStringTable();
+    import = createContinuousImport( name, remoteName, valueDomain );
 
     context->currentObject = import;
 }
@@ -398,6 +618,7 @@ void continuousImportAlias( SaxContext *context, SaxAttributes *saxAttributes )
 void endContinuousImport( SaxContext *context )
 {
     ContinuousImport *import = (ContinuousImport*)context->currentObject;
+    context->currentObject = NULL;
 
     setEntry( context->parse->continuousImports, import->name, import, destroyContinuousImport );
 }
@@ -422,11 +643,7 @@ void startEnsembleParameters( SaxContext *context, SaxAttributes *saxAttributes 
         return;
     }
 
-    parameters = calloc( 1, sizeof( EnsembleParameters ) );
-
-    parameters->name = _strdup( name );
-    parameters->valueDomain = _strdup( valueDomain );
-    parameters->storageType = STORAGE_UNKNOWN;
+    parameters = createEnsembleParameters( name, valueDomain );
 
     context->currentObject = parameters;
 }
@@ -434,8 +651,8 @@ void startEnsembleParameters( SaxContext *context, SaxAttributes *saxAttributes 
 
 void endEnsembleParameters( SaxContext *context )
 {
-
     EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
+    context->currentObject = NULL;
 
     if( parameters->storageType == STORAGE_UNKNOWN )
     {
@@ -450,9 +667,149 @@ void endEnsembleParameters( SaxContext *context )
 
 void startContinuousParameters( SaxContext *context, SaxAttributes *saxAttributes )
 {
+    ContinuousParameters *parameters;
+
+    char *name = getAttribute( saxAttributes, "name" );
+    char *valueDomain = getAttribute( saxAttributes, "valueDomain" );
+
+    if( name == NULL )
+    {
+        fprintf( stderr, "ContinuousParameters has no name\n" );
+        return;
+    }
+
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "ContinuousParameters %s has no value domain\n", name );
+        return;
+    }
+
+    parameters = createContinuousParameters( name, valueDomain );
+
+    context->currentObject = parameters;
 }
 
 
 void endContinuousParameters( SaxContext *context )
 {
+    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
+    context->currentObject = NULL;
+
+    if( parameters->storageType == STORAGE_UNKNOWN )
+    {
+        fprintf( stderr, "ContinuousParameters %s has no data\n", parameters->name );
+        destroyContinuousParameters( parameters );
+        return;
+    }
+
+    setEntry( context->parse->continuousParameters, parameters->name, parameters, destroyContinuousParameters );
+}
+
+
+void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int isEnsemble )
+{
+    SemidenseData *data = createSemidenseData();
+
+    context->currentObject2 = data;
+}
+
+
+void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSparse )
+{
+    SemidenseData *data = (SemidenseData*)context->currentObject2;
+
+    char *index = getAttribute( saxAttributes, "value" );
+    if( index == NULL )
+    {
+        fprintf( stderr, "Invalid index in semi dense data\n" );
+        return;
+    }
+
+    if( isSparse )
+    {
+        addListEntry( data->sparseIndexes, _strdup( index ) );
+    }
+    else
+    {
+        addListEntry( data->denseIndexes, _strdup( index ) );
+    }
+}
+
+
+void semidenseData( SaxContext *context, const char *const characters, const int length )
+{
+    StringDataSource *source;
+    char *newString;
+    SemidenseData *data = (SemidenseData*)context->currentObject2;
+
+    if( data->dataSource.location != LOC_STRING )
+    {
+        //This shouldn't happen.
+        return;
+    }
+
+    source = &(data->dataSource.data.stringData);
+
+    newString = malloc( source->length + length + 1 );
+    memcpy( newString, source->string, source->length );
+    memcpy( newString + source->length, characters, length );
+    source->length += length;
+    newString[ source->length ] = 0;
+    free( source->string );
+    source->string = newString;
+}
+
+
+void endSemidenseData( SaxContext *context, int isEnsemble )
+{
+    SemidenseData *data = (SemidenseData*)context->currentObject2;
+    context->currentObject2 = NULL;
+
+    if( isEnsemble )
+    {
+        EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
+        
+        parameters->storageType = STORAGE_SEMIDENSE;
+        setEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
+    }
+    else
+    {
+        ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
+        
+        parameters->storageType = STORAGE_SEMIDENSE;
+        setEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
+    }
+}
+
+
+void startVariable( SaxContext *context, SaxAttributes *saxAttributes )
+{
+    Variable *variable;
+
+    char *name = getAttribute( saxAttributes, "name" );
+    char *valueDomain = getAttribute( saxAttributes, "valueDomain" );
+
+    if( name == NULL )
+    {
+        fprintf( stderr, "Variable has no name\n" );
+        return;
+    }
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "Variable %s has no value domain\n", name );
+        return;
+    }
+
+    variable = createVariable( name, valueDomain );
+
+    context->currentObject = variable;
+}
+
+
+void endVariable( SaxContext *context )
+{
+    Variable *variable = (Variable*)context->currentObject;
+    context->currentObject = NULL;
+
+    setEntry( context->parse->variables, variable->name, variable, destroyVariable );
 }

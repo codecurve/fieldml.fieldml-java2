@@ -6,7 +6,7 @@
 
 #include "string_table.h"
 
-#define CAPACITY_INCREMENT 32
+static const int CAPACITY_INCREMENT = 32;
 
 struct _StringTable
 {
@@ -45,7 +45,7 @@ static int getIndex( StringTable *table, char *name )
 }
 
 
-void setEntry( StringTable *table, char *name, void *data, DATA_DISCARD discard )
+void setEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard )
 {
     int index;
     void *oldData;
@@ -107,7 +107,7 @@ void *getEntry( StringTable *table, char *name )
 }
 
 
-void destroyStringTable( StringTable *table, DATA_DISCARD discard )
+void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard )
 {
     int i;
     for( i = 0; i < table->entries; i++ )
