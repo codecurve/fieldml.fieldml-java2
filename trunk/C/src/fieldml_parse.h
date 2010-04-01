@@ -44,4 +44,18 @@ void startContinuousParameters( SaxContext *context, SaxAttributes *saxAttribute
 void endContinuousParameters( SaxContext *context );
 
 
+void startVariable( SaxContext *context, SaxAttributes *saxAttributes );
+
+void endVariable( SaxContext *context );
+
+
+void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int isEnsemble );
+
+void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSparse );
+
+void semidenseData( SaxContext *context, const char *const characters, const int length );
+
+void endSemidenseData( SaxContext *context, int isEnsemble );
+
+
 #endif // H_FIELDML_PARSE

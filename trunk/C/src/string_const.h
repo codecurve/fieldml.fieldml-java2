@@ -15,11 +15,21 @@ const char* const IMPORTED_CONTINUOUS_TAG           = "ImportedContinuousEvaluat
 const char* const ENSEMBLE_ALIAS_TAG                = "ensembleAliases";
 const char* const CONTINUOUS_ALIAS_TAG              = "continuousAliases";
 
+const char* const CONTINUOUS_VARIABLE_TAG           = "ContinuousVariableEvaluator";
+
+const char* const ENSEMBLE_VARIABLE_TAG             = "EnsembleVariableEvaluator";
+
 const char* const ENSEMBLE_PARAMETERS_TAG           = "EnsembleParameters";
 
 const char* const CONTINUOUS_PARAMETERS_TAG         = "ContinuousParameters";
+const char* const SEMI_DENSE_DATA_TAG               = "SemiDenseData";
+const char* const SPARSE_INDEXES_TAG                = "sparseIndexes";
+const char* const DENSE_INDEXES_TAG                 = "denseIndexes";
 
 const char* const SIMPLE_MAP_ENTRY_TAG              = "SimpleMapEntry";
-const char* const SEMI_DENSE_DATA_TAG               = "SemiDenseData";
+
+const char* const ENTRY_TAG                         = "entry";
+
+const char* const DATA_TAG                          = "data";
 
 #endif // H_STRING_CONST

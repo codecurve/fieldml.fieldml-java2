@@ -1,6 +1,8 @@
 #ifndef H_FIELDMLSAX
 #define H_FIELDMLSAX
 
+#include "int_stack.h"
+
 typedef struct _SaxAttribute
 {
     char *attribute;
@@ -23,8 +25,8 @@ char * getAttribute( SaxAttributes *saxAttributes, char *attribute );
 typedef enum _SaxState
 {
     FML_ROOT,
-    FML_REGION,
     FML_FIELDML,
+    FML_REGION,
 
     FML_ENSEMBLE_DOMAIN,
     FML_ENSEMBLE_DOMAIN_BOUNDS,
@@ -32,24 +34,33 @@ typedef enum _SaxState
     FML_CONTINUOUS_DOMAIN,
 
     FML_CONTINUOUS_IMPORT,
-    FML_CONTINUOUS_IMPORT_C_ALIASES,
-    FML_CONTINUOUS_IMPORT_E_ALIASES,
+    FML_CONTINUOUS_ALIASES,
+    FML_ENSEMBLE_ALIASES,
 
     FML_ENSEMBLE_PARAMETERS,
-    FML_SEMI_DENSE_ENSEMBLE,
-
     FML_CONTINUOUS_PARAMETERS,
+
+    FML_CONTINUOUS_VARIABLE,
+
+    FML_ENSEMBLE_VARIABLE,
+
     FML_SEMI_DENSE_CONTINUOUS,
+    FML_SEMI_DENSE_ENSEMBLE,
+    FML_DENSE_INDEXES,
+    FML_SPARSE_INDEXES,
+    FML_SEMIDENSE_DATA,
 }
 SaxState;
 
 
 typedef struct _SaxContext
 {
-    SaxState state;
+    IntStack *state;
     xmlSAXLocator *locator;
 
+    //We should really have a proper object stack, but so far it only gets two-deep.
     void *currentObject;
+    void *currentObject2;
 
     FieldmlParse *parse;
 }

@@ -22,7 +22,7 @@ typedef struct _StringTable StringTable;
     Function-pointer type declaration for cleanup functions.
     NOTE: Intentionally compatible with stdlib:free.
 */
-typedef void(*DATA_DISCARD)( void * );
+typedef void(*TABLE_DATA_DISCARD)( void * );
 
 /*
     Create a new String Table.
@@ -36,7 +36,7 @@ StringTable *createStringTable();
 
     NOTE: Both name and data can be NULL.
 */
-void setEntry( StringTable *table, char *name, void *data, DATA_DISCARD discard );
+void setEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard );
 
 /*
     Returns the entry with the given name, or NULL if there is no such entry.
@@ -62,13 +62,13 @@ char *getName( StringTable *table, int index );
 /*
     Get the data of the entry with the given index.
 
-    NOTE: NULL if index is invalid. May be NULL otherwise.
+    NOTE: NULL if index is invalid. May also be NULL otherwise.
 */
 void *getData( StringTable *table, int index );
 
 /*
     Deallocate the table's data. Each entry's data is passed to the discard function.
 */
-void destroyStringTable( StringTable *table, DATA_DISCARD discard );
+void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard );
 
 #endif // H_STRING_TABLE
