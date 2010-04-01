@@ -43,17 +43,23 @@
     
 
     <ContinuousVariableEvaluator name="test_mesh.node.dofs.u" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+      <parameterDomains>
+        <entry value="test_mesh.nodes" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
     <ContinuousVariableEvaluator name="test_mesh.node.dofs.du/ds" valueDomain="test_mesh.coordinates.d/ds">
-      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+      <parameterDomains>
+        <entry value="test_mesh.nodes" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
     <ContinuousVariableEvaluator name="test_mesh.node.dofs.d2u/ds2" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"test_mesh.nodes"  </parameterDomains>
+      <parameterDomains>
+        <entry value="test_mesh.nodes" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
@@ -431,7 +437,11 @@
     
 
     <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.coordinates.rc.3d">
-      <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  "test_mesh.coordinates.z"  </sourceFields>
+      <sourceFields>
+        <entry value="test_mesh.coordinates.x" />
+        <entry value="test_mesh.coordinates.y" />
+        <entry value="test_mesh.coordinates.z" />
+      </sourceFields>
     </ContinuousAggregateEvaluator>
     
 

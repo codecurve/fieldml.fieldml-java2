@@ -58,7 +58,9 @@
     
 
     <ContinuousVariableEvaluator name="tv_test.mesh.dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"tv_test.time.dofs.domain"  </parameterDomains>
+      <parameterDomains>
+        <entry value="tv_test.time.dofs.domain" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
