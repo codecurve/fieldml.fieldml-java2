@@ -98,8 +98,9 @@ public class JdomReflectiveHandler
     @Override
     public void onListElementAsString( Object o )
     {
-        Text t = new Text( "\"" + o.toString() + "\"  " );
-        currentElement.addContent( t );
+        Element e = new Element( "entry" );
+        e.setAttribute( "value", o.toString() );
+        currentElement.addContent( e );
     }
 
 

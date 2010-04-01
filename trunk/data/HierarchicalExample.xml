@@ -84,7 +84,9 @@
     
 
     <ContinuousVariableEvaluator name="hierarchical_mesh.dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"hierarchical_mesh.dofs"  </parameterDomains>
+      <parameterDomains>
+        <entry value="hierarchical_mesh.dofs" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 

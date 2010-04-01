@@ -79,7 +79,9 @@ x____x____x____x____x____x
     
 
     <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"test_mesh.dofs"  </parameterDomains>
+      <parameterDomains>
+        <entry value="test_mesh.dofs" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 

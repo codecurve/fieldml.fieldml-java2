@@ -151,7 +151,9 @@
     
 
     <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>"test_mesh.global_dofs_index"  </parameterDomains>
+      <parameterDomains>
+        <entry value="test_mesh.global_dofs_index" />
+      </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
@@ -179,7 +181,10 @@
     
 
     <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
-      <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
+      <sourceFields>
+        <entry value="test_mesh.coordinates.x" />
+        <entry value="test_mesh.coordinates.y" />
+      </sourceFields>
     </ContinuousAggregateEvaluator>
     
 
