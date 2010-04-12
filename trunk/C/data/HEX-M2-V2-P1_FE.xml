@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <Region name="HEX-M2-V2-P1_FE">
+
+    <EnsembleDomain name="test_mesh.trilinear_nodes">
+      <markup>
+        <SimpleMapEntry key="geometric" value="point" />
+      </markup>
+      <ContiguousEnsembleBounds valueCount="27" />
+    </EnsembleDomain>
+
+    
+    <EnsembleDomain name="test_mesh.triquadratic_nodes">
+      <markup>
+        <SimpleMapEntry key="geometric" value="point" />
+      </markup>
+      <ContiguousEnsembleBounds valueCount="125" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.cube" />
+        <entry key="2" value="library.shape.cube" />
+        <entry key="3" value="library.shape.cube" />
+        <entry key="4" value="library.shape.cube" />
+        <entry key="5" value="library.shape.cube" />
+        <entry key="6" value="library.shape.cube" />
+        <entry key="7" value="library.shape.cube" />
+        <entry key="8" value="library.shape.cube" />
+      </shapes>
+      <pointConnectivity>
+        <entry key="library.local_nodes.cube.2x2x2" value="test_mesh.cube2x2x2_nodes" />
+        <entry key="library.local_nodes.cube.3x3x3" value="test_mesh.cube3x3x3_nodes" />
+      </pointConnectivity>
+    </MeshDomain>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.triquadratic_dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>
+        <entry value="test_mesh.triquadratic_nodes" />
+      </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube3x3x3_nodes" valueSource="test_mesh.triquadratic_dofs" name="test_mesh.element_params.triquadratic_lagrange" valueDomain="library.parameters.triquadratic_lagrange" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.triquadratic_lagrange" name="test_mesh.triquadratic_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.3d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.triquadratic_lagrange" value="test_mesh.element_params.triquadratic_lagrange" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+
+
+    <ContinuousVariableEvaluator name="test_mesh.trilinear_dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>
+        <entry value="test_mesh.trilinear_nodes" />
+      </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube1x1_nodes" valueSource="test_mesh.trilinear_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.trilinear_lagrange" name="test_mesh.trilinear_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.rc.3d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.trilinear_lagrange" value="test_mesh.element_params.trilinear_lagrange" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.trilinear" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="2" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="3" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="4" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="5" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="6" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="7" evaluator="test_mesh.trilinear_lagrange" />
+        <TemplateMap index="8" evaluator="test_mesh.trilinear_lagrange" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.triquadratic" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="2" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="3" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="4" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="5" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="6" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="7" evaluator="test_mesh.triquadratic_lagrange" />
+        <TemplateMap index="8" evaluator="test_mesh.triquadratic_lagrange" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousParameters name="test_mesh.node.coordinates" valueDomain="library.coordinates.rc.1d">
+        <SemiDenseData>
+            <denseIndexes>
+                <entry value="library.ensemble.rc.3d"/>
+                <entry value="test_mesh.triquadratic_nodes"/>
+            </denseIndexes>
+            <file_data file="HEX-M2-V2-P1_FE.C" type="text" offset="1" />
+        </SemiDenseData>
+    </ContinuousParameters>
+    
+
+    <EnsembleParameters name="test_mesh.cube3x3x3_nodes" valueDomain="test_mesh.triquadratic_nodes">
+        <SemiDenseData>
+            <denseIndexes>
+                <entry value="library.local_nodes.cube.3x3x3"/>
+                <entry value="test_mesh.domain.elements"/>
+            </denseIndexes>
+            <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="1" />
+        </SemiDenseData>
+    </EnsembleParameters>
+    
+
+    <EnsembleParameters name="test_mesh.cube2x2x2_nodes" valueDomain="test_mesh.trilinear_nodes">
+        <SemiDenseData>
+            <denseIndexes>
+                <entry value="library.local_nodes.cube.2x2x2"/>
+                <entry value="test_mesh.domain.elements"/>
+            </denseIndexes>
+            <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="17" />
+        </SemiDenseData>
+    </EnsembleParameters>
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.coordinates.rc.3d">
+      <continuousAliases>
+        <SimpleMapEntry key="test_mesh.triquadratic_dofs" value="test_mesh.node.coordinates" />
+      </continuousAliases>
+      <sourceFields>
+        <SimpleMapEntry key="1" value="test_mesh.template.triquadratic"/>
+        <SimpleMapEntry key="2" value="test_mesh.template.triquadratic"/>
+        <SimpleMapEntry key="3" value="test_mesh.template.triquadratic"/>
+      </sourceFields>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </ContinuousAggregateEvaluator>
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.velocity" valueDomain="library.velocity.rc.3d">
+      <sourceFields>
+        <SimpleMapEntry key="1" value="test_mesh.template.triquadratic"/>
+        <SimpleMapEntry key="2" value="test_mesh.template.triquadratic"/>
+        <SimpleMapEntry key="3" value="test_mesh.template.triquadratic"/>
+      </sourceFields>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </ContinuousAggregateEvaluator>
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.pressure" valueDomain="library.pressure">
+      <sourceFields>
+        <entry value="test_mesh.pressure"/>
+      </sourceFields>
+      <markup>
+        <SimpleMapEntry key="field" value="true" />
+      </markup>
+    </ContinuousAggregateEvaluator>
+    
+
+  </Region>
+</fieldml>
+
