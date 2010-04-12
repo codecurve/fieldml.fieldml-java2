@@ -53,7 +53,11 @@ void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int 
 
 void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSparse );
 
-void semidenseData( SaxContext *context, const char *const characters, const int length );
+void semidenseStartInlineData( SaxContext *context, SaxAttributes *saxAttributes );
+
+void semidenseInlineData( SaxContext *context, const char *const characters, const int length );
+
+void semidenseFileData( SaxContext *context, SaxAttributes *saxAttributes );
 
 void endSemidenseData( SaxContext *context, int isEnsemble );
 
