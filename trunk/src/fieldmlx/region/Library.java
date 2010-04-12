@@ -134,11 +134,11 @@ public class Library
 
         EnsembleDomain quad4x4LocalNodeDomain = new EnsembleDomain( library, "library.local_nodes.quad.4x4", 16 );
 
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( library, "library.coordinates.rc.1d", 1 );
+        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.1d", 1 );
 
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( library, "library.coordinates.rc.2d", 2 );
+        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.2d", 2 );
 
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( library, "library.coordinates.rc.3d", 3 );
+        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.3d", 3 );
 
         EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( library, "library.interpolation.hermite.derivatives", 4 );
 
