@@ -9,15 +9,7 @@
 4____5____6_12_13
 -->
   <Region name="Fieldml_Test">
-    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
-    
-
-    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
-      <ContiguousEnsembleBounds valueCount="4" />
-    </EnsembleDomain>
-    
-
-    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+    <EnsembleDomain name="test_mesh.nodes">
       <ContiguousEnsembleBounds valueCount="13" />
     </EnsembleDomain>
     
@@ -100,7 +92,7 @@
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-            <data>
+            <inline_data>
                 1 0.0
                 2 10.0
                 3 20.0
@@ -109,7 +101,7 @@
                 6 20.0
                 7 30.0
                 13 30.0
-            </data>
+            </inline_data>
         </SemiDenseData>
     </ContinuousParameters>
 
@@ -118,7 +110,7 @@
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-            <data>
+            <inline_data>
                 1 10.0
                 2 10.0
                 3 10.0
@@ -132,13 +124,16 @@
                 11 10.0
                 12 0.0
                 13 0.0
-            </data>
+            </inline_data>
         </SemiDenseData>
     </ContinuousParameters>
     
 
     <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
-      <sourceFields>"test_mesh.coordinates.x"  "test_mesh.coordinates.y"  </sourceFields>
+      <sourceFields>
+        <entry value="test_mesh.coordinates.x"/>
+        <entry value="test_mesh.coordinates.y"/>
+      </sourceFields>
       <markup>
         <SimpleMapEntry key="field" value="true" />
       </markup>
@@ -153,10 +148,10 @@
           <denseIndexes>
               <entry value="library.local_nodes.triangle.2x2"/>
           </denseIndexes>
-          <data>
+          <inline_data>
               2 2 5 3
               3 6 3 5
-          </data>
+          </inline_data>
       </SemiDenseData>
     </EnsembleParameters>
     
@@ -169,10 +164,10 @@
             <denseIndexes>
                 <entry value="library.local_nodes.quad.2x2"/>
             </denseIndexes>
-            <data>
+            <inline_data>
                 1 4 5 1 4
                 4 6 13 3 7
-            </data>
+            </inline_data>
         </SemiDenseData>
     </EnsembleParameters>
     
@@ -185,9 +180,9 @@
             <denseIndexes>
                 <entry value="library.local_nodes.quad.3x3"/>
             </denseIndexes>
-            <data>
+            <inline_data>
                 4 6 12 13 8 9 10 3 11 7
-            </data>
+            </inline_data>
         </SemiDenseData>
     </EnsembleParameters>
     

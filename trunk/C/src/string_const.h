@@ -30,6 +30,7 @@ const char* const SIMPLE_MAP_ENTRY_TAG              = "SimpleMapEntry";
 
 const char* const ENTRY_TAG                         = "entry";
 
-const char* const DATA_TAG                          = "data";
+const char* const INLINE_DATA_TAG                   = "inline_data";
+const char* const FILE_DATA_TAG                     = "file_data";
 
 #endif // H_STRING_CONST

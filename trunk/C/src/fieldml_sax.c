@@ -203,8 +203,8 @@ static void onCharacters( void *context, const xmlChar *ch, int len )
 
     switch( peekInt( saxContext->state ) )
     {
-    case FML_SEMIDENSE_DATA:
-        semidenseData( saxContext, ch, len );
+    case FML_SEMIDENSE_INLINE_DATA:
+        semidenseInlineData( saxContext, ch, len );
         break;
     default:
         break;
@@ -334,9 +334,14 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         {
             pushInt( saxContext->state, FML_SPARSE_INDEXES );
         }
-        if( strcmp( name, DATA_TAG ) == 0 )
+        if( strcmp( name, INLINE_DATA_TAG ) == 0 )
         {
-            pushInt( saxContext->state, FML_SEMIDENSE_DATA );
+            semidenseStartInlineData( saxContext, saxAttributes );
+            pushInt( saxContext->state, FML_SEMIDENSE_INLINE_DATA );
+        }
+        if( strcmp( name, FILE_DATA_TAG ) == 0 )
+        {
+            semidenseFileData( saxContext, saxAttributes );
         }
         break;
     case FML_DENSE_INDEXES:
@@ -534,8 +539,14 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             popInt( saxContext->state );
         }
         break;
-    case FML_SEMIDENSE_DATA:
-        if( strcmp( name, DATA_TAG ) == 0 )
+    case FML_SEMIDENSE_INLINE_DATA:
+        if( strcmp( name, INLINE_DATA_TAG ) == 0 )
+        {
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_SEMIDENSE_FILE_DATA:
+        if( strcmp( name, FILE_DATA_TAG ) == 0 )
         {
             popInt( saxContext->state );
         }

@@ -40,7 +40,6 @@ ParameterStorageType;
 typedef struct _EnsembleDomain
 {
     char *name;
-    char *baseName;
     char *componentEnsemble;
 
     EnsembleBoundsType boundsType;
@@ -98,7 +97,7 @@ ContinuousParameters;
 typedef enum _DataLocation
 {
     LOC_UNKNOWN,
-    LOC_STRING,
+    LOC_INLINE,
     LOC_FILE,
 }
 DataLocation;
@@ -116,7 +115,7 @@ typedef struct _FileDataSource
 {
     char *filename;
     int offset;
-    int length;
+    int isText;
 }
 FileDataSource;
 
@@ -177,13 +176,12 @@ FieldmlParse *createFieldmlParse()
 }
 
 
-EnsembleDomain *createEnsembleDomain( char *name, char *baseDomain, char *componentEnsemble )
+EnsembleDomain *createEnsembleDomain( char *name, char *componentEnsemble )
 {
     EnsembleDomain *domain;
 
     domain = calloc( 1, sizeof( EnsembleDomain ) );
     domain->name = _strdup( name );
-    domain->baseName = _strdup( baseDomain );
     domain->componentEnsemble = _strdup( componentEnsemble );
     domain->boundsType = BOUNDS_UNKNOWN;
 
@@ -261,7 +259,7 @@ SemidenseData *createSemidenseData()
     data = calloc( 1, sizeof( SemidenseData ) );
     data->denseIndexes = createSimpleList();
     data->sparseIndexes = createSimpleList();
-    data->dataSource.location = LOC_STRING;  // At the moment, we only support string-based data.
+    data->dataSource.location = LOC_UNKNOWN;
 
     return data;
 }
@@ -288,7 +286,6 @@ Variable *createVariable( char *name, char *valueDomain )
 void destroyEnsembleDomain( EnsembleDomain *domain )
 {
     free( domain->name );
-    free( domain->baseName );
     free( domain->componentEnsemble );
     free( domain );
 }
@@ -351,6 +348,16 @@ void destroySemidenseData( SemidenseData *data )
 {
     destroySimpleList( data->sparseIndexes, free );
     destroySimpleList( data->denseIndexes, free );
+    
+    if( data->dataSource.location == LOC_INLINE )
+    {
+    	free( data->dataSource.data.stringData.string );
+    }
+    else if( data->dataSource.location == LOC_FILE )
+    {
+    	free( data->dataSource.data.fileData.filename );
+    }
+    
     free( data );
 }
 
@@ -389,7 +396,6 @@ void destroyFieldmlParse( FieldmlParse *parse )
 void startEnsembleDomain( SaxContext *context, SaxAttributes *saxAttributes )
 {
     char *name;
-    char *baseDomain;
     char *componentEnsemble;
     EnsembleDomain *domain;
         
@@ -400,16 +406,9 @@ void startEnsembleDomain( SaxContext *context, SaxAttributes *saxAttributes )
         return;
     }
     
-    baseDomain = getAttribute( saxAttributes, "baseDomain" );
-    if( baseDomain == NULL )
-    {
-        fprintf( stderr, "EnsembleDomain %s has no base domain\n", name );
-        return;
-    }
-
     componentEnsemble = getAttribute( saxAttributes, "componentDomain" );
 
-    domain = createEnsembleDomain( name, baseDomain, componentEnsemble );
+    domain = createEnsembleDomain( name, componentEnsemble );
 
     context->currentObject = domain;
 }
@@ -539,10 +538,17 @@ void dumpFieldmlParse( FieldmlParse *parse )
         data = (SemidenseData*)getEntry( parse->semidenseData, params->name );
 
         fprintf( stdout, "%    s\n", params->name );
-
-        fprintf( stdout, "    *******************************\n");
-        fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
-        fprintf( stdout, "    *******************************\n");
+        
+        if( data->dataSource.location == LOC_INLINE )
+        {
+			fprintf( stdout, "    *******************************\n");
+			fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
+			fprintf( stdout, "    *******************************\n");
+        }
+        else if( data->dataSource.location == LOC_FILE )
+        {
+        	fprintf( stdout, "    file = %s, offset = %d\n", data->dataSource.data.fileData.filename, data->dataSource.data.fileData.offset );
+        }
     }
 
     count = getCount( parse->ensembleParameters );
@@ -557,9 +563,16 @@ void dumpFieldmlParse( FieldmlParse *parse )
 
         fprintf( stdout, "%    s\n", params->name );
 
-        fprintf( stdout, "    *******************************\n");
-        fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
-        fprintf( stdout, "    *******************************\n");
+        if( data->dataSource.location == LOC_INLINE )
+        {
+			fprintf( stdout, "    *******************************\n");
+			fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
+			fprintf( stdout, "    *******************************\n");
+        }
+        else if( data->dataSource.location == LOC_FILE )
+        {
+        	fprintf( stdout, "    file = %s, offset = %d\n", data->dataSource.data.fileData.filename, data->dataSource.data.fileData.offset );
+        }
     }
 }
 
@@ -736,15 +749,73 @@ void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSp
 }
 
 
-void semidenseData( SaxContext *context, const char *const characters, const int length )
+void semidenseStartInlineData( SaxContext *context, SaxAttributes *saxAttributes )
+{
+    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
+    SemidenseData *data = (SemidenseData*)context->currentObject2;
+    
+    if( data->dataSource.location != LOC_UNKNOWN )
+    {
+        fprintf( stderr, "Semidense data for %s already has data\n", parameters->name );
+        return;
+    }
+    
+    data->dataSource.location = LOC_INLINE;
+}
+
+
+void semidenseFileData( SaxContext *context, SaxAttributes *saxAttributes )
+{
+    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
+    SemidenseData *data = (SemidenseData*)context->currentObject2;
+    char *file = getAttribute( saxAttributes, "file" );
+    char *type = getAttribute( saxAttributes, "type" );
+    char *offset = getAttribute( saxAttributes, "offset" );
+    FileDataSource *source;
+    
+    if( data->dataSource.location != LOC_UNKNOWN )
+    {
+        fprintf( stderr, "Semidense data for %s already has data\n", parameters->name );
+        return;
+    }
+    
+    if( file == NULL )
+    {
+        fprintf( stderr, "Semidense file data for %s must have a file name\n", parameters->name );
+        return;
+    }
+    if( type == NULL )
+    {
+        fprintf( stderr, "Semidense file data for %s must have a file type\n", parameters->name );
+        return;
+    }
+    
+    data->dataSource.location = LOC_FILE;
+
+    source = &(data->dataSource.data.fileData);
+    source->filename = _strdup( file );
+    source->isText = ( strcmp( type, "text" ) != 0 );
+    if( offset == NULL )
+    {
+    	source->offset = 0;
+    }
+    else
+    {
+    	source->offset = atoi( offset );
+    }
+}
+
+
+void semidenseInlineData( SaxContext *context, const char *const characters, const int length )
 {
     StringDataSource *source;
     char *newString;
+    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     SemidenseData *data = (SemidenseData*)context->currentObject2;
 
-    if( data->dataSource.location != LOC_STRING )
+    if( data->dataSource.location != LOC_INLINE )
     {
-        //This shouldn't happen.
+        fprintf( stderr, "Semidense data for %s already has non-inline data\n", parameters->name );
         return;
     }
 
