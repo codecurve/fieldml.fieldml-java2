@@ -41,10 +41,13 @@ public class ContinuousAggregateEvaluator
     public ContinuousDomainValue getValue( DomainValues input )
     {
         double[] value = new double[count];
+        
+        DomainValues localContext = new DomainValues( input );
 
         for( int i = 0; i < count; i++ )
         {
-            value[i] = sourceFields.get( i ).getValue( input ).values[0];
+            localContext.set( valueDomain.componentDomain, i );
+            value[i] = sourceFields.get( i ).getValue( localContext ).values[0];
         }
 
         return valueDomain.makeValue( value );
