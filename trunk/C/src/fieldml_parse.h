@@ -44,6 +44,13 @@ void startContinuousParameters( SaxContext *context, SaxAttributes *saxAttribute
 void endContinuousParameters( SaxContext *context );
 
 
+void startContinuousPiecewise( SaxContext *context, SaxAttributes *saxAttributes );
+
+void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *saxAttributes );
+
+void endContinuousPiecewise( SaxContext *context );
+
+
 void startVariable( SaxContext *context, SaxAttributes *saxAttributes );
 
 void endVariable( SaxContext *context );

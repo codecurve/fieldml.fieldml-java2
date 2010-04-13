@@ -2,40 +2,38 @@
 #include <stdlib.h>
 #include <crtdbg.h>
 
-#include <string.h>
-
-#include "string_table.h"
+#include "int_table.h"
 
 static const int CAPACITY_INCREMENT = 32;
 
-struct _StringTable
+struct _IntTable
 {
     int entries;
     int capacity;
 
-    char **names;
-    char **data;
+    int *names;
+    void **data;
 };
 
 
-StringTable *createStringTable()
+IntTable *createIntTable()
 {
-    StringTable *table = calloc( 1, sizeof( StringTable ) );
+	IntTable *table = calloc( 1, sizeof( IntTable ) );
     table->entries = 0;
     table->capacity = CAPACITY_INCREMENT;
-    table->names = calloc( CAPACITY_INCREMENT, sizeof( char * ) );
+    table->names = calloc( CAPACITY_INCREMENT, sizeof( int ) );
     table->data = calloc( CAPACITY_INCREMENT, sizeof( void * ) );
 
     return table;
 }
 
 
-static int getStringTableEntryIndex( StringTable *table, char *name )
+static int getIntTableEntryIndex( IntTable *table, int name )
 {
     int i;
     for( i = 0; i < table->entries; i++ )
     {
-        if( strcmp( table->names[i], name ) == 0 )
+        if( table->names[i] == name )
         {
             return i;
         }
@@ -45,12 +43,12 @@ static int getStringTableEntryIndex( StringTable *table, char *name )
 }
 
 
-void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard )
+void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD discard )
 {
     int index;
     void *oldData;
 
-    index = getStringTableEntryIndex( table, name );
+    index = getIntTableEntryIndex( table, name );
     if( index >= 0 )
     {
         if( data == table->data[index] )
@@ -71,13 +69,13 @@ void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA
 
     if( table->entries == table->capacity )
     {
-        char **newNames = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( char * ) );
-        char **newData = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( void * ) );
+        int *newNames = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( int ) );
+        void **newData = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( void * ) );
 
-        char **oldNames = table->names;
-        char **oldData = table->data;
+        int *oldNames = table->names;
+        void **oldData = table->data;
 
-        memcpy( newNames, oldNames, table->capacity * sizeof( char * ) );
+        memcpy( newNames, oldNames, table->capacity * sizeof( int ) );
         memcpy( newData, oldData, table->capacity * sizeof( void * ) );
 
         table->capacity += CAPACITY_INCREMENT;
@@ -88,15 +86,15 @@ void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA
         free( oldData );
     }
 
-    table->names[table->entries] = _strdup( name );
+    table->names[table->entries] = name;
     table->data[table->entries] = data;
     table->entries++;
 }
 
 
-void *getStringTableEntry( StringTable *table, char *name )
+void *getIntTableEntry( IntTable *table, int name )
 {
-    int index = getStringTableEntryIndex( table, name );
+    int index = getIntTableEntryIndex( table, name );
 
     if( index < 0 )
     {
@@ -107,15 +105,11 @@ void *getStringTableEntry( StringTable *table, char *name )
 }
 
 
-void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard )
+void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard )
 {
     int i;
     for( i = 0; i < table->entries; i++ )
     {
-        if( table->names[i] != NULL )
-        {
-            free( table->names[i] );
-        }
         if( table->data[i] != NULL )
         {
             discard( table->data[i] );
@@ -127,23 +121,23 @@ void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard )
 }
 
 
-int getStringTableCount( StringTable *table )
+int getIntTableCount( IntTable *table )
 {
     return table->entries;
 }
 
 
-char *getStringTableEntryName( StringTable *table, int index )
+int getIntTableEntryName( IntTable *table, int index )
 {
     if( ( index < 0 ) || ( index >= table->entries ) )
     {
-        return NULL;
+        return -1;
     }
     return table->names[index];
 }
 
 
-void *getStringTableEntryData( StringTable *table, int index )
+void *getIntTableEntryData( IntTable *table, int index )
 {
     if( ( index < 0 ) || ( index >= table->entries ) )
     {

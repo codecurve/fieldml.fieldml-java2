@@ -26,6 +26,9 @@ const char* const SEMI_DENSE_DATA_TAG               = "SemiDenseData";
 const char* const SPARSE_INDEXES_TAG                = "sparseIndexes";
 const char* const DENSE_INDEXES_TAG                 = "denseIndexes";
 
+const char* const CONTINUOUS_PIECEWISE_TAG			= "ContinuousPiecewiseEvaluator";
+const char* const ELEMENT_EVALUATORS_TAG			= "elementEvaluators";
+
 const char* const SIMPLE_MAP_ENTRY_TAG              = "SimpleMapEntry";
 
 const char* const ENTRY_TAG                         = "entry";

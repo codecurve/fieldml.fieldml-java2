@@ -324,6 +324,18 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             pushInt( saxContext->state, FML_SEMI_DENSE_CONTINUOUS );
         }
         break;
+    case FML_CONTINUOUS_PIECEWISE:
+    	if( strcmp( name, ELEMENT_EVALUATORS_TAG ) == 0 )
+    	{
+    		pushInt( saxContext->state, FML_ELEMENT_EVALUATORS );
+    	}
+    	break;
+    case FML_ELEMENT_EVALUATORS:
+    	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+    	{
+    		onContinuousPiecewiseEntry( saxContext, saxAttributes );
+    	}
+    	break;
     case FML_SEMI_DENSE_CONTINUOUS:
     case FML_SEMI_DENSE_ENSEMBLE:
         if( strcmp( name, DENSE_INDEXES_TAG ) == 0 )
@@ -393,6 +405,12 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             startContinuousParameters( saxContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_PARAMETERS );
             break;
+        }
+        if( strcmp( name, CONTINUOUS_PIECEWISE_TAG ) == 0 )
+        {
+        	startContinuousPiecewise( saxContext, saxAttributes );
+        	pushInt( saxContext->state, FML_CONTINUOUS_PIECEWISE );
+        	break;
         }
         if( strcmp( name, CONTINUOUS_VARIABLE_TAG ) == 0 )
         {
@@ -506,6 +524,13 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             popInt( saxContext->state );
         }
         break;
+    case FML_CONTINUOUS_PIECEWISE:
+        if( strcmp( name, CONTINUOUS_PIECEWISE_TAG ) == 0 )
+        {
+            endContinuousPiecewise( saxContext );
+            popInt( saxContext->state );
+        }
+        break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {
@@ -527,6 +552,12 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             popInt( saxContext->state );
         }
         break;
+    case FML_ELEMENT_EVALUATORS:
+    	if( strcmp( name, ELEMENT_EVALUATORS_TAG ) == 0 )
+    	{
+    		popInt( saxContext->state );
+    	}
+    	break;
     case FML_SPARSE_INDEXES:
         if( strcmp( name, SPARSE_INDEXES_TAG ) == 0 )
         {

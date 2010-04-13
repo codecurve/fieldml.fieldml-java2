@@ -1,10 +1,10 @@
-#ifndef H_STRING_TABLE
-#define H_STRING_TABLE
+#ifndef H_INT_TABLE
+#define H_INT_TABLE
 
 /*
-    String Table
+    Int Table
 
-    String Table is a very simple string-to-data map.
+    Int Table is a very simple int-to-data map.
 
     NOTE: The discard function is called on all removed entries. Duplicate
     entries will therefore result in duplicate discard calls. As the discard
@@ -16,7 +16,7 @@
 /*
     ADT declaration
 */
-typedef struct _StringTable StringTable;
+typedef struct _IntTable IntTable;
 
 /*
     Function-pointer type declaration for cleanup functions.
@@ -28,9 +28,9 @@ typedef void(*TABLE_DATA_DISCARD)( void * );
 #endif
 
 /*
-    Create a new String Table.
+    Create a new Int Table.
 */
-StringTable *createStringTable();
+IntTable *createIntTable();
 
 /*
     Sets an entry in the given table. If an entry with the same name already exists,
@@ -39,39 +39,39 @@ StringTable *createStringTable();
 
     NOTE: Both name and data can be NULL.
 */
-void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard );
+void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD discard );
 
 /*
     Returns the entry with the given name, or NULL if there is no such entry.
 
     NOTE: NULL may also be returned if the data is actually NULL.
 */
-void *getStringTableEntry( StringTable *table, char *name );
+void *getIntTableEntry( IntTable *table, int name );
 
 /*
     Get the number of entries in the table.
 
     NOTE: NULL entries are counted.
 */
-int getStringTableCount( StringTable *table );
+int getIntTableCount( IntTable *table );
 
 /*
     Get the name of the entry with the given index.
 
     NOTE: NULL if index is invalid. May be NULL otherwise.
 */
-char *getStringTableEntryName( StringTable *table, int index );
+int getIntTableEntryName( IntTable *table, int index );
 
 /*
     Get the data of the entry with the given index.
 
     NOTE: NULL if index is invalid. May also be NULL otherwise.
 */
-void *getStringTableEntryData( StringTable *table, int index );
+void *getIntTableEntryData( IntTable *table, int index );
 
 /*
     Deallocate the table's data. Each entry's data is passed to the discard function.
 */
-void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard );
+void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard );
 
-#endif // H_STRING_TABLE
+#endif // H_INT_TABLE
