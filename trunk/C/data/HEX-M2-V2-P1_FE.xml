@@ -73,30 +73,30 @@
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.trilinear" valueDomain="library.coordinates.rc.1d">
-      <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="3" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="4" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="5" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="6" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="7" evaluator="test_mesh.trilinear_lagrange" />
-        <TemplateMap index="8" evaluator="test_mesh.trilinear_lagrange" />
-      </elementMaps>
+      <elementEvaluators>
+        <SimpleMapEntry key="1" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="2" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="3" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="4" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="5" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="6" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="7" value="test_mesh.trilinear_lagrange" />
+        <SimpleMapEntry key="8" value="test_mesh.trilinear_lagrange" />
+      </elementEvaluators>
     </ContinuousPiecewiseEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.triquadratic" valueDomain="library.coordinates.rc.1d">
-      <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="3" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="4" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="5" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="6" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="7" evaluator="test_mesh.triquadratic_lagrange" />
-        <TemplateMap index="8" evaluator="test_mesh.triquadratic_lagrange" />
-      </elementMaps>
+      <elementEvaluators>
+        <SimpleMapEntry key="1" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="2" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="3" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="4" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="5" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="6" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="7" value="test_mesh.triquadratic_lagrange" />
+        <SimpleMapEntry key="8" value="test_mesh.triquadratic_lagrange" />
+      </elementEvaluators>
     </ContinuousPiecewiseEvaluator>
     
 
@@ -162,7 +162,7 @@
 
     <ContinuousAggregateEvaluator name="test_mesh.pressure" valueDomain="library.pressure">
       <sourceFields>
-        <entry value="test_mesh.pressure"/>
+        <SimpleMapEntry key="1" value="test_mesh.template.trilinear"/>
       </sourceFields>
       <markup>
         <SimpleMapEntry key="field" value="true" />
