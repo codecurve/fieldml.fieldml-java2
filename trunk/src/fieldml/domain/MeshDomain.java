@@ -21,6 +21,8 @@ public class MeshDomain
     public String defaultShape;
 
     public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
+    
+    public final EnsembleBounds elementBounds; 
 
 
     public MeshDomain( Region owner, String name, ContinuousDomain xiBase, int elementCount )
@@ -38,6 +40,8 @@ public class MeshDomain
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();
+        
+        this.elementBounds = elementBounds;
         
         owner.addDomain( this );
     }

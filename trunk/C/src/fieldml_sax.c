@@ -31,6 +31,10 @@ typedef enum _SaxState
     
     FML_CONTINUOUS_DOMAIN,
 
+    FML_MESH_DOMAIN,
+    FML_MESH_SHAPES,
+    FML_MESH_CONNECTIVITY,
+    
     FML_CONTINUOUS_IMPORT,
     FML_CONTINUOUS_ALIASES,
     FML_ENSEMBLE_ALIASES,
@@ -53,6 +57,8 @@ typedef enum _SaxState
     
     FML_CONTINUOUS_AGGREGATE,
     FML_SOURCE_FIELDS,
+    
+    FML_MARKUP,
 }
 SaxState;
 
@@ -349,6 +355,28 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             pushInt( saxContext->state, FML_ENSEMBLE_DOMAIN_BOUNDS );
         }
         break;
+    case FML_MESH_DOMAIN:
+    	if( strcmp( name, MESH_SHAPES_TAG ) == 0 )
+    	{
+    		pushInt( saxContext->state, FML_MESH_SHAPES );
+    	}
+    	else if( strcmp( name, MESH_CONNECTIVITY_TAG ) == 0 )
+    	{
+    		pushInt( saxContext->state, FML_MESH_CONNECTIVITY );
+    	}
+    	break;
+    case FML_MESH_SHAPES:
+    	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+    	{
+    		onMeshShape( saxContext->fieldmlContext, saxAttributes );
+    	}
+    	break;
+    case FML_MESH_CONNECTIVITY:
+    	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+    	{
+    		onMeshConnectivity( saxContext->fieldmlContext, saxAttributes );
+    	}
+    	break;
     case FML_CONTINUOUS_IMPORT:
         if( strcmp( name, CONTINUOUS_ALIAS_TAG ) == 0 )
         {
@@ -383,6 +411,16 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     	if( strcmp( name, SOURCE_FIELDS_TAG ) == 0 )
     	{
     		pushInt( saxContext->state, FML_SOURCE_FIELDS );
+    	}
+    	else if( strcmp( name, MARKUP_TAG ) == 0 )
+    	{
+    		pushInt( saxContext->state, FML_MARKUP );
+    	}
+    	break;
+    case FML_MARKUP:
+    	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+    	{
+    		onMarkupEntry( saxContext->fieldmlContext, saxAttributes );
     	}
     	break;
     case FML_SOURCE_FIELDS:
@@ -447,6 +485,12 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             startContinuousDomain( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_DOMAIN );
             break;
+        }
+        if( strcmp( name, MESH_DOMAIN_TAG ) == 0 )
+        {
+        	startMeshDomain( saxContext->fieldmlContext, saxAttributes );
+        	pushInt( saxContext->state, FML_MESH_DOMAIN );
+        	break;
         }
         if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
         {
@@ -552,6 +596,25 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             popInt( saxContext->state );
         }
         break;
+    case FML_MESH_DOMAIN:
+    	if( strcmp( name, MESH_DOMAIN_TAG ) == 0 )
+    	{
+    		endMeshDomain( saxContext->fieldmlContext );
+            popInt( saxContext->state );
+    	}
+    	break;
+    case FML_MESH_SHAPES:
+    	if( strcmp( name, MESH_SHAPES_TAG ) == 0 )
+    	{
+            popInt( saxContext->state );
+    	}
+    	break;
+    case FML_MESH_CONNECTIVITY:
+    	if( strcmp( name, MESH_CONNECTIVITY_TAG ) == 0 )
+    	{
+            popInt( saxContext->state );
+    	}
+    	break;
     case FML_ENSEMBLE_DOMAIN:
         if( strcmp( name, ENSEMBLE_DOMAIN_TAG ) == 0 )
         {
@@ -601,6 +664,12 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
         break;
     case FML_SOURCE_FIELDS:
     	if( strcmp( name, SOURCE_FIELDS_TAG ) == 0 )
+    	{
+    		popInt( saxContext->state );
+    	}
+    	break;
+    case FML_MARKUP:
+    	if( strcmp( name, MARKUP_TAG ) == 0 )
     	{
     		popInt( saxContext->state );
     	}

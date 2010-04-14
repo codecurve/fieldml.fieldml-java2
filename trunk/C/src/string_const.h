@@ -11,6 +11,10 @@ const char* const ARBITRARY_ENSEMBLE_BOUNDS_TAG     = "ArbitraryEnsembleBounds";
 
 const char* const CONTINUOUS_DOMAIN_TAG             = "ContinuousDomain";
 
+const char* const MESH_DOMAIN_TAG					= "MeshDomain";
+const char* const MESH_SHAPES_TAG					= "shapes";
+const char* const MESH_CONNECTIVITY_TAG				= "pointConnectivity";
+
 const char* const IMPORTED_CONTINUOUS_TAG           = "ImportedContinuousEvaluator";
 const char* const ENSEMBLE_ALIAS_TAG                = "ensembleAliases";
 const char* const CONTINUOUS_ALIAS_TAG              = "continuousAliases";
