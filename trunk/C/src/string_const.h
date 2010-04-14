@@ -29,6 +29,9 @@ const char* const DENSE_INDEXES_TAG                 = "denseIndexes";
 const char* const CONTINUOUS_PIECEWISE_TAG			= "ContinuousPiecewiseEvaluator";
 const char* const ELEMENT_EVALUATORS_TAG			= "elementEvaluators";
 
+const char* const CONTINUOUS_AGGREGATE_TAG			= "ContinuousAggregateEvaluator";
+const char* const SOURCE_FIELDS_TAG					= "sourceFields";
+
 const char* const SIMPLE_MAP_ENTRY_TAG              = "SimpleMapEntry";
 
 const char* const ENTRY_TAG                         = "entry";

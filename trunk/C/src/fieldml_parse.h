@@ -14,57 +14,64 @@ void destroyFieldmlParse( FieldmlParse *parse );
 void dumpFieldmlParse( FieldmlParse *parse );
 
 
-void startEnsembleDomain( SaxContext *context, SaxAttributes *saxAttributes );
+void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes );
 
 void endEnsembleDomain( SaxContext *context );
 
 
-void startContinuousDomain( SaxContext *context, SaxAttributes *saxAttributes );
+void startContinuousDomain( SaxContext *context, SaxAttributes *attributes );
 
 void endContinuousDomain( SaxContext *context );
 
 
-void startContiguousBounds( SaxContext *context, SaxAttributes *saxAttributes );
+void startContiguousBounds( SaxContext *context, SaxAttributes *attributes );
 
 
-void startContinuousImport( SaxContext *context, SaxAttributes *saxAttributes );
+void startContinuousImport( SaxContext *context, SaxAttributes *attributes );
 
-void continuousImportAlias( SaxContext *context, SaxAttributes *saxAttributes );
+void continuousImportAlias( SaxContext *context, SaxAttributes *attributes );
 
 void endContinuousImport( SaxContext *context );
 
 
-void startEnsembleParameters( SaxContext *context, SaxAttributes *saxAttributes );
+void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes );
 
 void endEnsembleParameters( SaxContext *context );
 
 
-void startContinuousParameters( SaxContext *context, SaxAttributes *saxAttributes );
+void startContinuousParameters( SaxContext *context, SaxAttributes *attributes );
 
 void endContinuousParameters( SaxContext *context );
 
 
-void startContinuousPiecewise( SaxContext *context, SaxAttributes *saxAttributes );
+void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes );
 
-void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *saxAttributes );
+void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes );
 
 void endContinuousPiecewise( SaxContext *context );
 
 
-void startVariable( SaxContext *context, SaxAttributes *saxAttributes );
+void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes );
+
+void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes );
+
+void endContinuousAggregate( SaxContext *context );
+
+
+void startVariable( SaxContext *context, SaxAttributes *attributes );
 
 void endVariable( SaxContext *context );
 
 
-void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int isEnsemble );
+void startSemidenseData( SaxContext *context, SaxAttributes *attributes, int isEnsemble );
 
-void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSparse );
+void semidenseIndex( SaxContext *context, SaxAttributes *attributes, int isSparse );
 
-void semidenseStartInlineData( SaxContext *context, SaxAttributes *saxAttributes );
+void semidenseStartInlineData( SaxContext *context, SaxAttributes *attributes );
 
 void semidenseInlineData( SaxContext *context, const char *const characters, const int length );
 
-void semidenseFileData( SaxContext *context, SaxAttributes *saxAttributes );
+void semidenseFileData( SaxContext *context, SaxAttributes *attributes );
 
 void endSemidenseData( SaxContext *context, int isEnsemble );
 
