@@ -53,6 +53,9 @@ typedef enum _SaxState
     
     FML_CONTINUOUS_PIECEWISE,
     FML_ELEMENT_EVALUATORS,
+    
+    FML_CONTINUOUS_AGGREGATE,
+    FML_SOURCE_FIELDS,
 }
 SaxState;
 

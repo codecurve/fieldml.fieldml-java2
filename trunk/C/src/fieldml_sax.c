@@ -330,6 +330,18 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     		pushInt( saxContext->state, FML_ELEMENT_EVALUATORS );
     	}
     	break;
+    case FML_CONTINUOUS_AGGREGATE:
+    	if( strcmp( name, SOURCE_FIELDS_TAG ) == 0 )
+    	{
+    		pushInt( saxContext->state, FML_SOURCE_FIELDS );
+    	}
+    	break;
+    case FML_SOURCE_FIELDS:
+    	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+    	{
+    		onContinuousAggregateEntry( saxContext, saxAttributes );
+    	}
+    	break;
     case FML_ELEMENT_EVALUATORS:
     	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
     	{
@@ -417,6 +429,12 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             startVariable( saxContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_VARIABLE );
             break;
+        }
+        if( strcmp( name, CONTINUOUS_AGGREGATE_TAG ) == 0 )
+        {
+        	startContinuousAggregate( saxContext, saxAttributes );
+        	pushInt( saxContext->state, FML_CONTINUOUS_AGGREGATE );
+        	break;
         }
         if( strcmp( name, ENSEMBLE_VARIABLE_TAG ) == 0 )
         {
@@ -531,6 +549,19 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             popInt( saxContext->state );
         }
         break;
+    case FML_SOURCE_FIELDS:
+    	if( strcmp( name, SOURCE_FIELDS_TAG ) == 0 )
+    	{
+    		popInt( saxContext->state );
+    	}
+    	break;
+    case FML_CONTINUOUS_AGGREGATE:
+    	if( strcmp( name, CONTINUOUS_AGGREGATE_TAG ) == 0 )
+    	{
+    		endContinuousAggregate( saxContext );
+    		popInt( saxContext->state );
+    	}
+    	break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {

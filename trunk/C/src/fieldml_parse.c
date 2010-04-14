@@ -18,6 +18,7 @@ struct _FieldmlParse
     StringTable *ensembleParameters;
     StringTable *continuousParameters;
     StringTable *continuousPiecewise;
+    StringTable *continuousAggregate;
     StringTable *semidenseData;
     StringTable *variables;
 };
@@ -107,6 +108,15 @@ typedef struct _ContinuousPiecewise
 ContinuousPiecewise;
 
 
+typedef struct _ContinuousAggregate
+{
+	char *name;
+	char *valueDomain;
+	
+	IntTable *evaluators;
+}
+ContinuousAggregate;
+
 typedef enum _DataLocation
 {
     LOC_UNKNOWN,
@@ -183,6 +193,7 @@ FieldmlParse *createFieldmlParse()
     parse->ensembleParameters = createStringTable();
     parse->continuousParameters = createStringTable();
     parse->continuousPiecewise = createStringTable();
+    parse->continuousAggregate = createStringTable();
     parse->semidenseData = createStringTable();
     parse->variables = createStringTable();
 
@@ -279,6 +290,20 @@ ContinuousPiecewise *createContinuousPiecewise( char *name, char *valueDomain, c
 	piecewise->evaluators = createIntTable();
 	
 	return piecewise;
+}
+
+
+ContinuousAggregate *createContinuousAggregate( char *name, char *valueDomain )
+{
+	ContinuousAggregate *aggregate;
+	
+	aggregate = calloc( 1, sizeof( ContinuousAggregate ) );
+	aggregate->name = _strdup( name );
+	aggregate->valueDomain = _strdup( valueDomain );
+	
+	aggregate->evaluators = createIntTable();
+	
+	return aggregate;
 }
 
 
@@ -383,6 +408,15 @@ void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 }
 
 
+void destroyContinuousAggregate( ContinuousAggregate *aggregate )
+{
+	free( aggregate->name );
+	free( aggregate->valueDomain );
+	destroyIntTable( aggregate->evaluators, free );
+	free( aggregate );
+}
+
+
 void destroySemidenseData( SemidenseData *data )
 {
     destroySimpleList( data->sparseIndexes, free );
@@ -419,6 +453,7 @@ void destroyFieldmlParse( FieldmlParse *parse )
     destroyStringTable( parse->continuousImports, destroyContinuousImport );
     destroyStringTable( parse->continuousParameters, destroyContinuousParameters );
     destroyStringTable( parse->continuousPiecewise, destroyContinuousPiecewise );
+    destroyStringTable( parse->continuousAggregate, destroyContinuousAggregate );
     destroyStringTable( parse->ensembleParameters, destroyEnsembleParameters );
     destroyStringTable( parse->semidenseData, destroySemidenseData );
     destroyStringTable( parse->variables, destroyVariable );
@@ -535,6 +570,24 @@ void dumpFieldmlParse( FieldmlParse *parse )
         	fprintf( stdout, "        %d -> %s\n", getIntTableEntryName( piecewise->evaluators, j ), getIntTableEntryData( piecewise->evaluators, j ) );
         }
     }
+
+    count = getStringTableCount( parse->continuousAggregate );
+    fprintf( stdout, "Continuous Aggregate:\n" );
+    for( i = 0; i < count; i++ )
+    {
+        ContinuousAggregate *aggregate;
+        int count2, j;
+
+        aggregate = (ContinuousAggregate*)getStringTableEntryData( parse->continuousAggregate, i );
+
+        fprintf( stdout, "    %s\n", aggregate->name );
+        
+        count2 = getIntTableCount( aggregate->evaluators );
+        for( j = 0; j < count2; j++ )
+        {
+        	fprintf( stdout, "        %d -> %s\n", getIntTableEntryName( aggregate->evaluators, j ), getIntTableEntryData( aggregate->evaluators, j ) );
+        }
+    }
 }
 
 
@@ -544,20 +597,20 @@ void dumpFieldmlParse( FieldmlParse *parse )
 //
 //========================================================================
 
-void startEnsembleDomain( SaxContext *context, SaxAttributes *saxAttributes )
+void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *componentEnsemble;
     EnsembleDomain *domain;
         
-    name = getAttribute( saxAttributes, "name" );
+    name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
         fprintf( stderr, "EnsembleDomain has no name\n" );
         return;
     }
     
-    componentEnsemble = getAttribute( saxAttributes, "componentDomain" );
+    componentEnsemble = getAttribute( attributes, "componentDomain" );
 
     domain = createEnsembleDomain( name, componentEnsemble );
 
@@ -581,28 +634,28 @@ void endEnsembleDomain( SaxContext *context )
 }
 
 
-void startContinuousDomain( SaxContext *context, SaxAttributes *saxAttributes )
+void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *baseDomain;
     char *componentEnsemble;
     ContinuousDomain *domain;
         
-    name = getAttribute( saxAttributes, "name" );
+    name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
         fprintf( stderr, "ContinuousDomain has no name\n" );
         return;
     }
     
-    baseDomain = getAttribute( saxAttributes, "baseDomain" );
+    baseDomain = getAttribute( attributes, "baseDomain" );
     if( baseDomain == NULL )
     {
         fprintf( stderr, "ContinuousDomain %s has no base domain\n", name );
         return;
     }
 
-    componentEnsemble = getAttribute( saxAttributes, "componentDomain" );
+    componentEnsemble = getAttribute( attributes, "componentDomain" );
 
     domain = createContinuousDomain( name, baseDomain, componentEnsemble );
 
@@ -619,7 +672,7 @@ void endContinuousDomain( SaxContext *context )
 }
 
 
-void startContiguousBounds( SaxContext *context, SaxAttributes *saxAttributes )
+void startContiguousBounds( SaxContext *context, SaxAttributes *attributes )
 {
     char * count;
     EnsembleDomain *domain;
@@ -627,7 +680,7 @@ void startContiguousBounds( SaxContext *context, SaxAttributes *saxAttributes )
         
     domain = (EnsembleDomain*)context->currentObject;
 
-    count = getAttribute( saxAttributes, "valueCount" );
+    count = getAttribute( attributes, "valueCount" );
     if( count == NULL )
     {
         fprintf( stderr, "ContiguousEnsembleBounds for %s has no value count\n", domain->name );
@@ -642,28 +695,28 @@ void startContiguousBounds( SaxContext *context, SaxAttributes *saxAttributes )
 }
 
 
-void startContinuousImport( SaxContext *context, SaxAttributes *saxAttributes )
+void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *remoteName;
     char *valueDomain;
     ContinuousImport *import;
         
-    name = getAttribute( saxAttributes, "name" );
+    name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
         fprintf( stderr, "ImportedContinuousEvaluator has no name\n" );
         return;
     }
     
-    remoteName = getAttribute( saxAttributes, "evaluator" );
+    remoteName = getAttribute( attributes, "evaluator" );
     if( remoteName == NULL )
     {
         fprintf( stderr, "ImportedContinuousEvaluator %s has no remote name\n", name );
         return;
     }
     
-    valueDomain = getAttribute( saxAttributes, "valueDomain" );
+    valueDomain = getAttribute( attributes, "valueDomain" );
     if( valueDomain == NULL )
     {
         fprintf( stderr, "ImportedContinuousEvaluator %s has no value domain\n", name );
@@ -675,11 +728,11 @@ void startContinuousImport( SaxContext *context, SaxAttributes *saxAttributes )
     context->currentObject = import;
 }
 
-void continuousImportAlias( SaxContext *context, SaxAttributes *saxAttributes )
+void continuousImportAlias( SaxContext *context, SaxAttributes *attributes )
 {
     ContinuousImport *import;
-    char *remote = getAttribute( saxAttributes, "key" );
-    char *local = getAttribute( saxAttributes, "value" );
+    char *remote = getAttribute( attributes, "key" );
+    char *local = getAttribute( attributes, "value" );
 
     import = (ContinuousImport*)context->currentObject;
 
@@ -702,12 +755,12 @@ void endContinuousImport( SaxContext *context )
 }
 
 
-void startEnsembleParameters( SaxContext *context, SaxAttributes *saxAttributes )
+void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
 {
     EnsembleParameters *parameters;
 
-    char *name = getAttribute( saxAttributes, "name" );
-    char *valueDomain = getAttribute( saxAttributes, "valueDomain" );
+    char *name = getAttribute( attributes, "name" );
+    char *valueDomain = getAttribute( attributes, "valueDomain" );
 
     if( name == NULL )
     {
@@ -743,12 +796,12 @@ void endEnsembleParameters( SaxContext *context )
 }
 
 
-void startContinuousParameters( SaxContext *context, SaxAttributes *saxAttributes )
+void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters;
 
-    char *name = getAttribute( saxAttributes, "name" );
-    char *valueDomain = getAttribute( saxAttributes, "valueDomain" );
+    char *name = getAttribute( attributes, "name" );
+    char *valueDomain = getAttribute( attributes, "valueDomain" );
 
     if( name == NULL )
     {
@@ -819,14 +872,14 @@ void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *saxAttributes )
+void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes )
 {
 	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)context->currentObject;
 	char *key;
 	char *value;
 	
-	key = getAttribute( saxAttributes, "key" );
-	value = getAttribute( saxAttributes, "value" );
+	key = getAttribute( attributes, "key" );
+	value = getAttribute( attributes, "value" );
 	
 	if( ( key == NULL ) || ( value == NULL ) )
 	{
@@ -847,7 +900,62 @@ void endContinuousPiecewise( SaxContext *context )
 }
 
 
-void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int isEnsemble )
+void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
+{
+	ContinuousAggregate *aggregate;
+	char *name;
+	char *valueDomain;
+	
+	name = getAttribute( attributes, "name" );
+	valueDomain = getAttribute( attributes, "valueDomain" );
+	
+	if( name == NULL )
+	{
+        fprintf( stderr, "ContinuousAggregate has no name\n" );
+        return;
+	}
+	
+	if( valueDomain == NULL )
+	{
+		fprintf( stderr, "ContinuousAggregate %s has no value domain\n", name );
+		return;
+	}
+	
+	aggregate = createContinuousAggregate( name, valueDomain );
+	
+	context->currentObject = aggregate;
+}
+
+
+void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes )
+{
+	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
+	char *key;
+	char *value;
+	
+	key = getAttribute( attributes, "key" );
+	value = getAttribute( attributes, "value" );
+	
+	if( ( key == NULL ) || ( value == NULL ) )
+	{
+		fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", aggregate->name );
+		return;
+	}
+	
+	setIntTableEntry( aggregate->evaluators, atoi( key ),  _strdup( value ), free );
+}
+
+
+void endContinuousAggregate( SaxContext *context )
+{
+	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
+    context->currentObject = NULL;
+
+    setStringTableEntry( context->parse->continuousAggregate, aggregate->name, aggregate, destroyContinuousAggregate );
+}
+
+
+void startSemidenseData( SaxContext *context, SaxAttributes *attributes, int isEnsemble )
 {
     SemidenseData *data = createSemidenseData();
 
@@ -855,11 +963,11 @@ void startSemidenseData( SaxContext *context, SaxAttributes *saxAttributes, int 
 }
 
 
-void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSparse )
+void semidenseIndex( SaxContext *context, SaxAttributes *attributes, int isSparse )
 {
     SemidenseData *data = (SemidenseData*)context->currentObject2;
 
-    char *index = getAttribute( saxAttributes, "value" );
+    char *index = getAttribute( attributes, "value" );
     if( index == NULL )
     {
         fprintf( stderr, "Invalid index in semi dense data\n" );
@@ -877,7 +985,7 @@ void semidenseIndex( SaxContext *context, SaxAttributes *saxAttributes, int isSp
 }
 
 
-void semidenseStartInlineData( SaxContext *context, SaxAttributes *saxAttributes )
+void semidenseStartInlineData( SaxContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     SemidenseData *data = (SemidenseData*)context->currentObject2;
@@ -892,13 +1000,13 @@ void semidenseStartInlineData( SaxContext *context, SaxAttributes *saxAttributes
 }
 
 
-void semidenseFileData( SaxContext *context, SaxAttributes *saxAttributes )
+void semidenseFileData( SaxContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     SemidenseData *data = (SemidenseData*)context->currentObject2;
-    char *file = getAttribute( saxAttributes, "file" );
-    char *type = getAttribute( saxAttributes, "type" );
-    char *offset = getAttribute( saxAttributes, "offset" );
+    char *file = getAttribute( attributes, "file" );
+    char *type = getAttribute( attributes, "type" );
+    char *offset = getAttribute( attributes, "offset" );
     FileDataSource *source;
     
     if( data->dataSource.location != LOC_UNKNOWN )
@@ -981,12 +1089,12 @@ void endSemidenseData( SaxContext *context, int isEnsemble )
 }
 
 
-void startVariable( SaxContext *context, SaxAttributes *saxAttributes )
+void startVariable( SaxContext *context, SaxAttributes *attributes )
 {
     Variable *variable;
 
-    char *name = getAttribute( saxAttributes, "name" );
-    char *valueDomain = getAttribute( saxAttributes, "valueDomain" );
+    char *name = getAttribute( attributes, "name" );
+    char *valueDomain = getAttribute( attributes, "valueDomain" );
 
     if( name == NULL )
     {
