@@ -20,6 +20,7 @@ typedef enum _FieldmlParseState
 	FLP_IDLE,
 	FLP_ENSEMBLE_DOMAIN,
 	FLP_CONTINUOUS_DOMAIN,
+	FLP_MESH_DOMAIN,
 	FLP_ENSEMBLE_PARAMETERS,
 	FLP_CONTINUOUS_PARAMETERS,
 	FLP_CONTINUOUS_PIECEWISE,
@@ -43,6 +44,7 @@ struct _FieldmlParse
 {
     StringTable *ensembleDomains;
     StringTable *continuousDomains;
+    StringTable *meshDomains;
     StringTable *contiguousBounds;
     StringTable *continuousImports;
     StringTable *ensembleParameters;
@@ -88,6 +90,15 @@ typedef struct _ContinuousDomain
 }
 ContinuousDomain;
 
+
+typedef struct _MeshDomain
+{
+	char *name;
+	
+	IntTable *shapes;
+	StringTable *connectivity;
+}
+MeshDomain;
 
 typedef struct _ContiguousBounds
 {
@@ -143,6 +154,7 @@ typedef struct _ContinuousAggregate
 	char *name;
 	char *valueDomain;
 	
+	StringTable *markup;
 	IntTable *evaluators;
 }
 ContinuousAggregate;
@@ -229,6 +241,7 @@ FieldmlParse *createFieldmlParse()
     parse = calloc( 1, sizeof( FieldmlParse ) );
     parse->ensembleDomains = createStringTable();
     parse->continuousDomains = createStringTable();
+    parse->meshDomains = createStringTable();
     parse->contiguousBounds = createStringTable();
     parse->continuousImports = createStringTable();
     parse->ensembleParameters = createStringTable();
@@ -278,6 +291,18 @@ ContinuousDomain *createContinuousDomain( char *name, char *baseDomain, char *co
     return domain;
 }
 
+
+MeshDomain *createMeshDomain( char *name )
+{
+	MeshDomain *domain;
+	
+	domain = calloc( 1, sizeof( MeshDomain ) );
+	domain->name = _strdup( name );
+	domain->shapes = createIntTable();
+	domain->connectivity = createStringTable();
+	
+	return domain;
+}
 
 ContinuousImport *createContinuousImport( char *name, char *remoteName, char *valueDomain )
 {
@@ -342,6 +367,7 @@ ContinuousAggregate *createContinuousAggregate( char *name, char *valueDomain )
 	aggregate->name = _strdup( name );
 	aggregate->valueDomain = _strdup( valueDomain );
 	
+	aggregate->markup = createStringTable();
 	aggregate->evaluators = createIntTable();
 	
 	return aggregate;
@@ -398,6 +424,15 @@ void destroyContinuousDomain( ContinuousDomain *domain )
     free( domain->baseName );
     free( domain->componentEnsemble );
     free( domain );
+}
+
+
+void destroyMeshDomain( MeshDomain *domain )
+{
+	free( domain->name );
+	destroyIntTable( domain->shapes, free );
+	destroyStringTable( domain->connectivity, free );
+	free( domain );
 }
 
 
@@ -459,6 +494,7 @@ void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
 	free( aggregate->name );
 	free( aggregate->valueDomain );
+	destroyStringTable( aggregate->markup, free );
 	destroyIntTable( aggregate->evaluators, free );
 	free( aggregate );
 }
@@ -497,6 +533,7 @@ void destroyFieldmlParse( FieldmlParse *parse )
     destroyStringTable( parse->ensembleDomains, destroyEnsembleDomain );
     destroyStringTable( parse->contiguousBounds, free );
     destroyStringTable( parse->continuousDomains, destroyContinuousDomain );
+    destroyStringTable( parse->meshDomains, destroyMeshDomain );
     destroyStringTable( parse->continuousImports, destroyContinuousImport );
     destroyStringTable( parse->continuousParameters, destroyContinuousParameters );
     destroyStringTable( parse->continuousPiecewise, destroyContinuousPiecewise );
@@ -629,6 +666,12 @@ void dumpFieldmlParse( FieldmlParse *parse )
 
         fprintf( stdout, "    %s\n", aggregate->name );
         
+        count2 = getStringTableCount( aggregate->markup );
+        for( j = 0; j < count2; j++ )
+        {
+            fprintf( stdout, "        %s : %s\n", getStringTableEntryName( aggregate->markup, j ), getStringTableEntryData( aggregate->markup, j ) );
+        }
+
         count2 = getIntTableCount( aggregate->evaluators );
         for( j = 0; j < count2; j++ )
         {
@@ -743,6 +786,72 @@ void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
     bounds = createContiguousBounds( count );
 
     setStringTableEntry( context->parse->contiguousBounds, domain->name, bounds, free );
+}
+
+
+void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
+{
+	char *name;
+	MeshDomain *domain;
+	
+	name = getAttribute( attributes, "name" );
+	
+	if( name == NULL )
+	{
+        fprintf( stderr, "MeshDomain has no name\n" );
+        return;
+	}
+	
+	domain = createMeshDomain( name );
+	
+	context->currentObject = domain;
+	context->state = FLP_MESH_DOMAIN;
+}
+
+
+void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
+{
+    MeshDomain *domain;
+    char *element = getAttribute( attributes, "key" );
+    char *shape = getAttribute( attributes, "value" );
+
+    domain = (MeshDomain*)context->currentObject;
+
+    if( ( element == NULL ) || ( shape == NULL ) )
+    {
+        fprintf( stderr, "MeshDomain %s has malformed shape entry\n", domain->name );
+        return;
+    }
+
+    setIntTableEntry( domain->shapes, atoi( element ), _strdup( shape ), free );
+}
+
+
+void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes )
+{
+    MeshDomain *domain;
+    char *type = getAttribute( attributes, "key" );
+    char *field = getAttribute( attributes, "value" );
+
+    domain = (MeshDomain*)context->currentObject;
+
+    if( ( type == NULL ) || ( field == NULL ) )
+    {
+        fprintf( stderr, "MeshDomain %s has malformed connectivity entry\n", domain->name );
+        return;
+    }
+
+    setStringTableEntry( domain->connectivity, type, _strdup( field ), free );
+}
+
+
+void endMeshDomain( FieldmlContext *context )
+{
+	MeshDomain *domain = (MeshDomain*)context->currentObject;
+    context->currentObject = NULL;
+    context->state = FLP_IDLE;
+
+    setStringTableEntry( context->parse->meshDomains, domain->name, domain, destroyMeshDomain );
 }
 
 
@@ -1186,4 +1295,32 @@ void endVariable( FieldmlContext *context )
     context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->variables, variable->name, variable, destroyVariable );
+}
+
+
+void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
+{
+	StringTable *table;
+	char *key;
+	char *value;
+	
+	key = getAttribute( attributes, "key" );
+	value = getAttribute( attributes, "value" );
+	
+	if( ( key == NULL ) || ( value == NULL ) )
+	{
+		fprintf( stderr, "Malformed markup\n" );
+		return;
+	}
+	
+	table = NULL;
+	if( context->state == FLP_CONTINUOUS_AGGREGATE )
+	{
+		table = ((ContinuousAggregate *)context->currentObject)->markup;
+	}
+	
+	if( table != NULL )
+	{
+		setStringTableEntry( table, key, _strdup( value ), free );
+	}
 }

@@ -23,6 +23,8 @@ void dumpFieldmlParse( FieldmlParse *parse );
 
 void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes );
 
+void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
+
 void endEnsembleDomain( FieldmlContext *context );
 
 
@@ -31,7 +33,13 @@ void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
 void endContinuousDomain( FieldmlContext *context );
 
 
-void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
+void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes );
+
+void onMeshShape( FieldmlContext *context, SaxAttributes *attributes );
+
+void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes );
+
+void endMeshDomain( FieldmlContext *context );
 
 
 void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes );
@@ -68,6 +76,9 @@ void endContinuousAggregate( FieldmlContext *context );
 void startVariable( FieldmlContext *context, SaxAttributes *attributes );
 
 void endVariable( FieldmlContext *context );
+
+
+void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes );
 
 
 void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes );

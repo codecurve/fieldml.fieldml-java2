@@ -19,19 +19,20 @@
     
 
     <MeshDomain name="test_mesh.domain">
+      <ContiguousEnsembleBounds valueCount="8" />
       <shapes>
-        <entry key="1" value="library.shape.cube" />
-        <entry key="2" value="library.shape.cube" />
-        <entry key="3" value="library.shape.cube" />
-        <entry key="4" value="library.shape.cube" />
-        <entry key="5" value="library.shape.cube" />
-        <entry key="6" value="library.shape.cube" />
-        <entry key="7" value="library.shape.cube" />
-        <entry key="8" value="library.shape.cube" />
+        <SimpleMapEntry key="1" value="library.shape.cube" />
+        <SimpleMapEntry key="2" value="library.shape.cube" />
+        <SimpleMapEntry key="3" value="library.shape.cube" />
+        <SimpleMapEntry key="4" value="library.shape.cube" />
+        <SimpleMapEntry key="5" value="library.shape.cube" />
+        <SimpleMapEntry key="6" value="library.shape.cube" />
+        <SimpleMapEntry key="7" value="library.shape.cube" />
+        <SimpleMapEntry key="8" value="library.shape.cube" />
       </shapes>
       <pointConnectivity>
-        <entry key="library.local_nodes.cube.2x2x2" value="test_mesh.cube2x2x2_nodes" />
-        <entry key="library.local_nodes.cube.3x3x3" value="test_mesh.cube3x3x3_nodes" />
+        <SimpleMapEntry key="library.local_nodes.cube.2x2x2" value="test_mesh.cube2x2x2_nodes" />
+        <SimpleMapEntry key="library.local_nodes.cube.3x3x3" value="test_mesh.cube3x3x3_nodes" />
       </pointConnectivity>
     </MeshDomain>
     
