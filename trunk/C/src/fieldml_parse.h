@@ -1,11 +1,18 @@
 #ifndef H_FIELDML_PARSE
 #define H_FIELDML_PARSE
 
-typedef struct _SaxContext SaxContext;
-
 typedef struct _SaxAttributes SaxAttributes;
 
+typedef struct _FieldmlContext FieldmlContext;
+
 typedef struct _FieldmlParse FieldmlParse;
+
+FieldmlContext *createFieldmlContext( FieldmlParse *parse );
+
+void destroyFieldmlContext( FieldmlContext *context );
+
+
+void destroyFieldmlParse( FieldmlParse *parse );
 
 FieldmlParse *createFieldmlParse();
 
@@ -14,66 +21,66 @@ void destroyFieldmlParse( FieldmlParse *parse );
 void dumpFieldmlParse( FieldmlParse *parse );
 
 
-void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes );
+void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes );
 
-void endEnsembleDomain( SaxContext *context );
-
-
-void startContinuousDomain( SaxContext *context, SaxAttributes *attributes );
-
-void endContinuousDomain( SaxContext *context );
+void endEnsembleDomain( FieldmlContext *context );
 
 
-void startContiguousBounds( SaxContext *context, SaxAttributes *attributes );
+void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes );
+
+void endContinuousDomain( FieldmlContext *context );
 
 
-void startContinuousImport( SaxContext *context, SaxAttributes *attributes );
-
-void continuousImportAlias( SaxContext *context, SaxAttributes *attributes );
-
-void endContinuousImport( SaxContext *context );
+void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
 
 
-void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes );
+void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes );
 
-void endEnsembleParameters( SaxContext *context );
+void continuousImportAlias( FieldmlContext *context, SaxAttributes *attributes );
 
-
-void startContinuousParameters( SaxContext *context, SaxAttributes *attributes );
-
-void endContinuousParameters( SaxContext *context );
+void endContinuousImport( FieldmlContext *context );
 
 
-void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes );
+void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes );
 
-void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes );
-
-void endContinuousPiecewise( SaxContext *context );
+void endEnsembleParameters( FieldmlContext *context );
 
 
-void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes );
+void startContinuousParameters( FieldmlContext *context, SaxAttributes *attributes );
 
-void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes );
-
-void endContinuousAggregate( SaxContext *context );
+void endContinuousParameters( FieldmlContext *context );
 
 
-void startVariable( SaxContext *context, SaxAttributes *attributes );
+void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attributes );
 
-void endVariable( SaxContext *context );
+void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attributes );
+
+void endContinuousPiecewise( FieldmlContext *context );
 
 
-void startSemidenseData( SaxContext *context, SaxAttributes *attributes, int isEnsemble );
+void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attributes );
 
-void semidenseIndex( SaxContext *context, SaxAttributes *attributes, int isSparse );
+void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attributes );
 
-void semidenseStartInlineData( SaxContext *context, SaxAttributes *attributes );
+void endContinuousAggregate( FieldmlContext *context );
 
-void semidenseInlineData( SaxContext *context, const char *const characters, const int length );
 
-void semidenseFileData( SaxContext *context, SaxAttributes *attributes );
+void startVariable( FieldmlContext *context, SaxAttributes *attributes );
 
-void endSemidenseData( SaxContext *context, int isEnsemble );
+void endVariable( FieldmlContext *context );
+
+
+void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes );
+
+void semidenseIndex( FieldmlContext *context, SaxAttributes *attributes, int isSparse );
+
+void semidenseStartInlineData( FieldmlContext *context, SaxAttributes *attributes );
+
+void semidenseInlineData( FieldmlContext *context, const char *const characters, const int length );
+
+void semidenseFileData( FieldmlContext *context, SaxAttributes *attributes );
+
+void endSemidenseData( FieldmlContext *context );
 
 
 #endif // H_FIELDML_PARSE

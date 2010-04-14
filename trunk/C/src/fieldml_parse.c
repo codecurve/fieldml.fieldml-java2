@@ -9,6 +9,36 @@
 #include "simple_list.h"
 #include "fieldml_sax.h"
 
+//========================================================================
+//
+// Structs
+//
+//========================================================================
+
+typedef enum _FieldmlParseState
+{
+	FLP_IDLE,
+	FLP_ENSEMBLE_DOMAIN,
+	FLP_CONTINUOUS_DOMAIN,
+	FLP_ENSEMBLE_PARAMETERS,
+	FLP_CONTINUOUS_PARAMETERS,
+	FLP_CONTINUOUS_PIECEWISE,
+	FLP_CONTINUOUS_AGGREGATE,
+	FLP_CONTINUOUS_IMPORT,
+	FLP_VARIABLE,
+}
+FieldmlParseState;
+
+struct _FieldmlContext
+{
+	void *currentObject;
+	void *currentObject2;
+	
+	FieldmlParseState state;
+	
+	FieldmlParse *parse;
+};
+
 struct _FieldmlParse
 {
     StringTable *ensembleDomains;
@@ -181,6 +211,17 @@ Variable;
 //========================================================================
 
 
+FieldmlContext *createFieldmlContext( FieldmlParse *parse )
+{
+	FieldmlContext *context = calloc( 1, sizeof( FieldmlContext ) );
+	
+	context->parse = parse;
+	context->state = FLP_IDLE;
+	
+	return context;
+}
+
+
 FieldmlParse *createFieldmlParse()
 {
     FieldmlParse *parse;
@@ -336,6 +377,12 @@ Variable *createVariable( char *name, char *valueDomain )
 // Destroyers
 //
 //========================================================================
+
+void destroyFieldmlContext( FieldmlContext *context )
+{
+	free( context );
+}
+
 
 void destroyEnsembleDomain( EnsembleDomain *domain )
 {
@@ -597,7 +644,7 @@ void dumpFieldmlParse( FieldmlParse *parse )
 //
 //========================================================================
 
-void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
+void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *componentEnsemble;
@@ -615,13 +662,15 @@ void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
     domain = createEnsembleDomain( name, componentEnsemble );
 
     context->currentObject = domain;
+    context->state = FLP_ENSEMBLE_DOMAIN;
 }
 
 
-void endEnsembleDomain( SaxContext *context )
+void endEnsembleDomain( FieldmlContext *context )
 {
     EnsembleDomain *domain = (EnsembleDomain*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     if( domain->boundsType == BOUNDS_UNKNOWN )
     {
@@ -634,7 +683,7 @@ void endEnsembleDomain( SaxContext *context )
 }
 
 
-void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
+void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *baseDomain;
@@ -660,19 +709,21 @@ void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
     domain = createContinuousDomain( name, baseDomain, componentEnsemble );
 
     context->currentObject = domain;
+    context->state = FLP_CONTINUOUS_DOMAIN;
 }
 
 
-void endContinuousDomain( SaxContext *context )
+void endContinuousDomain( FieldmlContext *context )
 {
     ContinuousDomain *domain = (ContinuousDomain*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->continuousDomains, domain->name, domain, destroyContinuousDomain );
 }
 
 
-void startContiguousBounds( SaxContext *context, SaxAttributes *attributes )
+void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
 {
     char * count;
     EnsembleDomain *domain;
@@ -695,7 +746,7 @@ void startContiguousBounds( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
+void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *remoteName;
@@ -726,9 +777,10 @@ void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
     import = createContinuousImport( name, remoteName, valueDomain );
 
     context->currentObject = import;
+    context->state = FLP_CONTINUOUS_IMPORT;
 }
 
-void continuousImportAlias( SaxContext *context, SaxAttributes *attributes )
+void continuousImportAlias( FieldmlContext *context, SaxAttributes *attributes )
 {
     ContinuousImport *import;
     char *remote = getAttribute( attributes, "key" );
@@ -746,16 +798,17 @@ void continuousImportAlias( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-void endContinuousImport( SaxContext *context )
+void endContinuousImport( FieldmlContext *context )
 {
     ContinuousImport *import = (ContinuousImport*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->continuousImports, import->name, import, destroyContinuousImport );
 }
 
 
-void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
+void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes )
 {
     EnsembleParameters *parameters;
 
@@ -777,13 +830,15 @@ void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
     parameters = createEnsembleParameters( name, valueDomain );
 
     context->currentObject = parameters;
+    context->state = FLP_ENSEMBLE_PARAMETERS;
 }
 
 
-void endEnsembleParameters( SaxContext *context )
+void endEnsembleParameters( FieldmlContext *context )
 {
     EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     if( parameters->storageType == STORAGE_UNKNOWN )
     {
@@ -796,7 +851,7 @@ void endEnsembleParameters( SaxContext *context )
 }
 
 
-void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
+void startContinuousParameters( FieldmlContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters;
 
@@ -818,13 +873,15 @@ void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
     parameters = createContinuousParameters( name, valueDomain );
 
     context->currentObject = parameters;
+    context->state = FLP_CONTINUOUS_PARAMETERS;
 }
 
 
-void endContinuousParameters( SaxContext *context )
+void endContinuousParameters( FieldmlContext *context )
 {
     ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     if( parameters->storageType == STORAGE_UNKNOWN )
     {
@@ -837,7 +894,7 @@ void endContinuousParameters( SaxContext *context )
 }
 
 
-void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
+void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attributes )
 {
 	ContinuousPiecewise *piecewise;
 	char *name;
@@ -869,10 +926,11 @@ void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
 	piecewise = createContinuousPiecewise( name, valueDomain, indexDomain );
 	
 	context->currentObject = piecewise;
+    context->state = FLP_CONTINUOUS_PIECEWISE;
 }
 
 
-void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes )
+void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
 	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)context->currentObject;
 	char *key;
@@ -891,16 +949,17 @@ void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes 
 }
 
 
-void endContinuousPiecewise( SaxContext *context )
+void endContinuousPiecewise( FieldmlContext *context )
 {
 	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->continuousPiecewise, piecewise->name, piecewise, destroyContinuousPiecewise );
 }
 
 
-void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
+void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attributes )
 {
 	ContinuousAggregate *aggregate;
 	char *name;
@@ -924,10 +983,11 @@ void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
 	aggregate = createContinuousAggregate( name, valueDomain );
 	
 	context->currentObject = aggregate;
+    context->state = FLP_CONTINUOUS_AGGREGATE;
 }
 
 
-void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes )
+void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
 	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
 	char *key;
@@ -946,16 +1006,17 @@ void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes 
 }
 
 
-void endContinuousAggregate( SaxContext *context )
+void endContinuousAggregate( FieldmlContext *context )
 {
 	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->continuousAggregate, aggregate->name, aggregate, destroyContinuousAggregate );
 }
 
 
-void startSemidenseData( SaxContext *context, SaxAttributes *attributes, int isEnsemble )
+void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
 {
     SemidenseData *data = createSemidenseData();
 
@@ -963,7 +1024,7 @@ void startSemidenseData( SaxContext *context, SaxAttributes *attributes, int isE
 }
 
 
-void semidenseIndex( SaxContext *context, SaxAttributes *attributes, int isSparse )
+void semidenseIndex( FieldmlContext *context, SaxAttributes *attributes, int isSparse )
 {
     SemidenseData *data = (SemidenseData*)context->currentObject2;
 
@@ -985,7 +1046,7 @@ void semidenseIndex( SaxContext *context, SaxAttributes *attributes, int isSpars
 }
 
 
-void semidenseStartInlineData( SaxContext *context, SaxAttributes *attributes )
+void semidenseStartInlineData( FieldmlContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     SemidenseData *data = (SemidenseData*)context->currentObject2;
@@ -1000,7 +1061,7 @@ void semidenseStartInlineData( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-void semidenseFileData( SaxContext *context, SaxAttributes *attributes )
+void semidenseFileData( FieldmlContext *context, SaxAttributes *attributes )
 {
     ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
     SemidenseData *data = (SemidenseData*)context->currentObject2;
@@ -1042,7 +1103,7 @@ void semidenseFileData( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-void semidenseInlineData( SaxContext *context, const char *const characters, const int length )
+void semidenseInlineData( FieldmlContext *context, const char *const characters, const int length )
 {
     StringDataSource *source;
     char *newString;
@@ -1067,29 +1128,33 @@ void semidenseInlineData( SaxContext *context, const char *const characters, con
 }
 
 
-void endSemidenseData( SaxContext *context, int isEnsemble )
+void endSemidenseData( FieldmlContext *context )
 {
     SemidenseData *data = (SemidenseData*)context->currentObject2;
     context->currentObject2 = NULL;
 
-    if( isEnsemble )
+    if( context->state = FLP_ENSEMBLE_PARAMETERS )
     {
         EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
         
         parameters->storageType = STORAGE_SEMIDENSE;
         setStringTableEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
     }
-    else
+    else if( context->state = FLP_CONTINUOUS_PARAMETERS )
     {
         ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
         
         parameters->storageType = STORAGE_SEMIDENSE;
         setStringTableEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
     }
+    else
+    {
+    	// We've fallen off the edge of reality. DON'T PANIC. 
+    }
 }
 
 
-void startVariable( SaxContext *context, SaxAttributes *attributes )
+void startVariable( FieldmlContext *context, SaxAttributes *attributes )
 {
     Variable *variable;
 
@@ -1110,13 +1175,15 @@ void startVariable( SaxContext *context, SaxAttributes *attributes )
     variable = createVariable( name, valueDomain );
 
     context->currentObject = variable;
+    context->state = FLP_VARIABLE;
 }
 
 
-void endVariable( SaxContext *context )
+void endVariable( FieldmlContext *context )
 {
     Variable *variable = (Variable*)context->currentObject;
     context->currentObject = NULL;
+    context->state = FLP_IDLE;
 
     setStringTableEntry( context->parse->variables, variable->name, variable, destroyVariable );
 }

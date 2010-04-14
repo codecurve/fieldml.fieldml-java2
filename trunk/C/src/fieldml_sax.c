@@ -13,9 +13,58 @@
 #include "fieldml_sax.h"
 #include "string_const.h"
 
-static int noent = 0;
 
-char attributeBuffer[1024];
+//========================================================================
+//
+// Structs
+//
+//========================================================================
+
+typedef enum _SaxState
+{
+    FML_ROOT,
+    FML_FIELDML,
+    FML_REGION,
+
+    FML_ENSEMBLE_DOMAIN,
+    FML_ENSEMBLE_DOMAIN_BOUNDS,
+    
+    FML_CONTINUOUS_DOMAIN,
+
+    FML_CONTINUOUS_IMPORT,
+    FML_CONTINUOUS_ALIASES,
+    FML_ENSEMBLE_ALIASES,
+
+    FML_ENSEMBLE_PARAMETERS,
+    FML_CONTINUOUS_PARAMETERS,
+
+    FML_CONTINUOUS_VARIABLE,
+
+    FML_ENSEMBLE_VARIABLE,
+
+    FML_SEMI_DENSE,
+    FML_DENSE_INDEXES,
+    FML_SPARSE_INDEXES,
+    FML_SEMIDENSE_INLINE_DATA,
+    FML_SEMIDENSE_FILE_DATA,
+    
+    FML_CONTINUOUS_PIECEWISE,
+    FML_ELEMENT_EVALUATORS,
+    
+    FML_CONTINUOUS_AGGREGATE,
+    FML_SOURCE_FIELDS,
+}
+SaxState;
+
+
+typedef struct _SaxContext
+{
+    IntStack *state;
+
+    FieldmlContext *fieldmlContext;
+}
+SaxContext;
+
 
 //========================================================================
 //
@@ -204,7 +253,7 @@ static void onCharacters( void *context, const xmlChar *ch, int len )
     switch( peekInt( saxContext->state ) )
     {
     case FML_SEMIDENSE_INLINE_DATA:
-        semidenseInlineData( saxContext, ch, len );
+        semidenseInlineData( saxContext->fieldmlContext, ch, len );
         break;
     default:
         break;
@@ -296,7 +345,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     case FML_ENSEMBLE_DOMAIN:
         if( strcmp( name, CONTIGUOUS_ENSEMBLE_BOUNDS_TAG ) == 0 )
         {
-            startContiguousBounds( saxContext, saxAttributes );
+            startContiguousBounds( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_ENSEMBLE_DOMAIN_BOUNDS );
         }
         break;
@@ -313,15 +362,15 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     case FML_ENSEMBLE_PARAMETERS:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            startSemidenseData( saxContext, saxAttributes, 1 );
-            pushInt( saxContext->state, FML_SEMI_DENSE_ENSEMBLE );
+            startSemidenseData( saxContext->fieldmlContext, saxAttributes );
+            pushInt( saxContext->state, FML_SEMI_DENSE );
         }
         break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            startSemidenseData( saxContext, saxAttributes, 0 );
-            pushInt( saxContext->state, FML_SEMI_DENSE_CONTINUOUS );
+            startSemidenseData( saxContext->fieldmlContext, saxAttributes );
+            pushInt( saxContext->state, FML_SEMI_DENSE );
         }
         break;
     case FML_CONTINUOUS_PIECEWISE:
@@ -339,17 +388,16 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     case FML_SOURCE_FIELDS:
     	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
     	{
-    		onContinuousAggregateEntry( saxContext, saxAttributes );
+    		onContinuousAggregateEntry( saxContext->fieldmlContext, saxAttributes );
     	}
     	break;
     case FML_ELEMENT_EVALUATORS:
     	if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
     	{
-    		onContinuousPiecewiseEntry( saxContext, saxAttributes );
+    		onContinuousPiecewiseEntry( saxContext->fieldmlContext, saxAttributes );
     	}
     	break;
-    case FML_SEMI_DENSE_CONTINUOUS:
-    case FML_SEMI_DENSE_ENSEMBLE:
+    case FML_SEMI_DENSE:
         if( strcmp( name, DENSE_INDEXES_TAG ) == 0 )
         {
             pushInt( saxContext->state, FML_DENSE_INDEXES );
@@ -360,85 +408,85 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         }
         if( strcmp( name, INLINE_DATA_TAG ) == 0 )
         {
-            semidenseStartInlineData( saxContext, saxAttributes );
+            semidenseStartInlineData( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_SEMIDENSE_INLINE_DATA );
         }
         if( strcmp( name, FILE_DATA_TAG ) == 0 )
         {
-            semidenseFileData( saxContext, saxAttributes );
+            semidenseFileData( saxContext->fieldmlContext, saxAttributes );
         }
         break;
     case FML_DENSE_INDEXES:
         if( strcmp( name, ENTRY_TAG ) == 0 )
         {
-            semidenseIndex( saxContext, saxAttributes, 0 );
+            semidenseIndex( saxContext->fieldmlContext, saxAttributes, 0 );
         }
         break;
     case FML_SPARSE_INDEXES:
         if( strcmp( name, ENTRY_TAG ) == 0 )
         {
-            semidenseIndex( saxContext, saxAttributes, 1 );
+            semidenseIndex( saxContext->fieldmlContext, saxAttributes, 1 );
         }
         break;
     case FML_CONTINUOUS_ALIASES:
     case FML_ENSEMBLE_ALIASES:
         if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
         {
-            continuousImportAlias( saxContext, saxAttributes );
+            continuousImportAlias( saxContext->fieldmlContext, saxAttributes );
         }
         break;
     case FML_REGION:
         if( strcmp( name, ENSEMBLE_DOMAIN_TAG ) == 0 )
         {
-            startEnsembleDomain( saxContext, saxAttributes );
+            startEnsembleDomain( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_ENSEMBLE_DOMAIN );
             break;
         }
         if( strcmp( name, CONTINUOUS_DOMAIN_TAG ) == 0 )
         {
-            startContinuousDomain( saxContext, saxAttributes );
+            startContinuousDomain( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_DOMAIN );
             break;
         }
         if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
         {
-            startContinuousImport( saxContext, saxAttributes );
+            startContinuousImport( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_IMPORT );
             break;
         }
         if( strcmp( name, ENSEMBLE_PARAMETERS_TAG ) == 0 )
         {
-            startEnsembleParameters( saxContext, saxAttributes );
+            startEnsembleParameters( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_ENSEMBLE_PARAMETERS );
             break;
         }
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {
-            startContinuousParameters( saxContext, saxAttributes );
+            startContinuousParameters( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_PARAMETERS );
             break;
         }
         if( strcmp( name, CONTINUOUS_PIECEWISE_TAG ) == 0 )
         {
-        	startContinuousPiecewise( saxContext, saxAttributes );
+        	startContinuousPiecewise( saxContext->fieldmlContext, saxAttributes );
         	pushInt( saxContext->state, FML_CONTINUOUS_PIECEWISE );
         	break;
         }
         if( strcmp( name, CONTINUOUS_VARIABLE_TAG ) == 0 )
         {
-            startVariable( saxContext, saxAttributes );
+            startVariable( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_CONTINUOUS_VARIABLE );
             break;
         }
         if( strcmp( name, CONTINUOUS_AGGREGATE_TAG ) == 0 )
         {
-        	startContinuousAggregate( saxContext, saxAttributes );
+        	startContinuousAggregate( saxContext->fieldmlContext, saxAttributes );
         	pushInt( saxContext->state, FML_CONTINUOUS_AGGREGATE );
         	break;
         }
         if( strcmp( name, ENSEMBLE_VARIABLE_TAG ) == 0 )
         {
-            startVariable( saxContext, saxAttributes );
+            startVariable( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_ENSEMBLE_VARIABLE );
             break;
         }
@@ -458,7 +506,9 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         fprintf( stdout, ", %d, %d", nb_attributes, nb_defaulted );
         if ( attributes != NULL )
         {
-            for ( i = 0;i < nb_attributes * 5;i += 5 )
+        	char attributeBuffer[1024];
+
+        	for ( i = 0;i < nb_attributes * 5;i += 5 )
             {
                 if ( attributes[i + 1] != NULL )
                 fprintf( stdout, ", %s:%s='", attributes[i + 1], attributes[i] );
@@ -505,14 +555,14 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_ENSEMBLE_DOMAIN:
         if( strcmp( name, ENSEMBLE_DOMAIN_TAG ) == 0 )
         {
-            endEnsembleDomain( saxContext );
+            endEnsembleDomain( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
     case FML_CONTINUOUS_DOMAIN:
         if( strcmp( name, CONTINUOUS_DOMAIN_TAG ) == 0 )
         {
-            endContinuousDomain( saxContext );
+            endContinuousDomain( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
@@ -531,21 +581,21 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_CONTINUOUS_IMPORT:
         if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
         {
-            endContinuousImport( saxContext );
+            endContinuousImport( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
     case FML_ENSEMBLE_PARAMETERS:
         if( strcmp( name, ENSEMBLE_PARAMETERS_TAG ) == 0 )
         {
-            endEnsembleParameters( saxContext );
+            endEnsembleParameters( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
     case FML_CONTINUOUS_PIECEWISE:
         if( strcmp( name, CONTINUOUS_PIECEWISE_TAG ) == 0 )
         {
-            endContinuousPiecewise( saxContext );
+            endContinuousPiecewise( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
@@ -558,28 +608,21 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_CONTINUOUS_AGGREGATE:
     	if( strcmp( name, CONTINUOUS_AGGREGATE_TAG ) == 0 )
     	{
-    		endContinuousAggregate( saxContext );
+    		endContinuousAggregate( saxContext->fieldmlContext );
     		popInt( saxContext->state );
     	}
     	break;
     case FML_CONTINUOUS_PARAMETERS:
         if( strcmp( name, CONTINUOUS_PARAMETERS_TAG ) == 0 )
         {
-            endContinuousParameters( saxContext );
+            endContinuousParameters( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
-    case FML_SEMI_DENSE_ENSEMBLE:
+    case FML_SEMI_DENSE:
         if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
         {
-            endSemidenseData( saxContext, 1 );
-            popInt( saxContext->state );
-        }
-        break;
-    case FML_SEMI_DENSE_CONTINUOUS:
-        if( strcmp( name, SEMI_DENSE_DATA_TAG ) == 0 )
-        {
-            endSemidenseData( saxContext, 0 );
+            endSemidenseData( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
@@ -616,14 +659,14 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_CONTINUOUS_VARIABLE:
         if( strcmp( name, CONTINUOUS_VARIABLE_TAG ) == 0 )
         {
-            endVariable( saxContext );
+            endVariable( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
     case FML_ENSEMBLE_VARIABLE:
         if( strcmp( name, ENSEMBLE_VARIABLE_TAG ) == 0 )
         {
-            endVariable( saxContext );
+            endVariable( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;
@@ -696,9 +739,11 @@ static void parseAndPrintFile( char *filename )
 {
     int res;
     SaxContext context;
+    
+    FieldmlParse *parse = createFieldmlParse();
 
     context.state = createIntStack();
-    context.parse = createFieldmlParse();
+    context.fieldmlContext = createFieldmlContext( parse );
 
     pushInt( context.state, FML_ROOT );
 
@@ -718,9 +763,9 @@ static void parseAndPrintFile( char *filename )
         }
     }
 
-    dumpFieldmlParse( context.parse );
+    dumpFieldmlParse( parse );
 
-    destroyFieldmlParse( context.parse );
+    destroyFieldmlParse( parse );
 }
 
 
