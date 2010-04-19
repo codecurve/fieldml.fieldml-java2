@@ -112,9 +112,10 @@ public class TimeVaryingExample
 
         tvRegion.addSubregion( bsplineRegion );
 
+        EnsembleDomain rc1Domain = library.getEnsembleDomain( "library.ensemble.xi.1d" );
         ContinuousDomain rc1CoordinatesDomain = library.getContinuousDomain( "library.coordinates.rc.1d" );
 
-        MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", rc1CoordinatesDomain, 3 );
+        MeshDomain timeMeshDomain = new MeshDomain( tvRegion, "tv_test.time.mesh", rc1Domain, 3 );
         timeMeshDomain.setDefaultShape( "line_0_1" );
 
         EnsembleDomain timeDofsDomain = new EnsembleDomain( tvRegion, "tv_test.time.dofs.domain", 7 );
@@ -149,7 +150,7 @@ public class TimeVaryingExample
         tvRegion.addEvaluator( meshQuadraticLagrangeParams );
 
         ImportedContinuousEvaluator elementQLagrange = library.importContinuousEvaluator( "tv_test.mesh.quadratic_lagrange", "library.fem.quadratic_lagrange" );
-        elementQLagrange.alias( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementQLagrange.alias( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.1d" ) );
         elementQLagrange.alias( meshQuadraticLagrangeParams, quadraticLagrangeParams );
         tvRegion.addEvaluator( elementQLagrange );
         
@@ -271,7 +272,7 @@ public class TimeVaryingExample
         testRegion.addEvaluator( meshLinearLagrangeParams );
 
         ImportedContinuousEvaluator elementLLagrange = library.importContinuousEvaluator( "test_mesh.linear_lagrange", "library.fem.linear_lagrange" );
-        elementLLagrange.alias( bsplineDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementLLagrange.alias( bsplineDomain.getXiDomain(), library.getContinuousDomain( "library.xi.1d" ) );
         elementLLagrange.alias( meshLinearLagrangeParams, linearLagrangeParams );
         testRegion.addEvaluator( elementLLagrange );
         

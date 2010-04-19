@@ -7,6 +7,7 @@
 #include "int_table.h"
 #include "string_table.h"
 #include "simple_list.h"
+#include "fieldml_structs.h"
 #include "fieldml_sax.h"
 
 //========================================================================
@@ -15,206 +16,13 @@
 //
 //========================================================================
 
-typedef enum _FieldmlParseState
-{
-	FLP_IDLE,
-	FLP_ENSEMBLE_DOMAIN,
-	FLP_CONTINUOUS_DOMAIN,
-	FLP_MESH_DOMAIN,
-	FLP_ENSEMBLE_PARAMETERS,
-	FLP_CONTINUOUS_PARAMETERS,
-	FLP_CONTINUOUS_PIECEWISE,
-	FLP_CONTINUOUS_AGGREGATE,
-	FLP_CONTINUOUS_IMPORT,
-	FLP_VARIABLE,
-}
-FieldmlParseState;
-
 struct _FieldmlContext
 {
-	void *currentObject;
-	void *currentObject2;
-	
-	FieldmlParseState state;
+	FieldmlObject *currentObject;
 	
 	FieldmlParse *parse;
 };
 
-struct _FieldmlParse
-{
-    StringTable *ensembleDomains;
-    StringTable *continuousDomains;
-    StringTable *meshDomains;
-    StringTable *contiguousBounds;
-    StringTable *continuousImports;
-    StringTable *ensembleParameters;
-    StringTable *continuousParameters;
-    StringTable *continuousPiecewise;
-    StringTable *continuousAggregate;
-    StringTable *semidenseData;
-    StringTable *variables;
-};
-
-typedef enum _EnsembleBoundsType
-{
-    BOUNDS_UNKNOWN,     // EnsembleDomain bounds not yet known.
-    BOUNDS_CONTIGUOUS,  // Contiguous bounds (i.e. 1 ... N)
-    BOUNDS_ARBITRARY,   // Arbitrary bounds (not yet supported)
-}
-EnsembleBoundsType;
-
-
-typedef enum _ParameterStorageType
-{
-    STORAGE_UNKNOWN,
-    STORAGE_SEMIDENSE,
-}
-ParameterStorageType;
-
-
-typedef struct _EnsembleDomain
-{
-    char *name;
-    char *componentEnsemble;
-
-    EnsembleBoundsType boundsType;
-}
-EnsembleDomain;
-
-
-typedef struct _ContinuousDomain
-{
-    char *name;
-    char *baseName;
-    char *componentEnsemble;
-}
-ContinuousDomain;
-
-
-typedef struct _MeshDomain
-{
-	char *name;
-	
-	IntTable *shapes;
-	StringTable *connectivity;
-}
-MeshDomain;
-
-typedef struct _ContiguousBounds
-{
-    int count;
-}
-ContiguousBounds;
-
-
-typedef struct _ContinuousImport
-{
-    char *name;
-    char *remoteName;
-    char *valueDomain;
-
-    StringTable *aliases;
-}
-ContinuousImport;
-
-
-typedef struct _EnsembleParameters
-{
-    char *name;
-    char *valueDomain;
-
-    ParameterStorageType storageType;
-}
-EnsembleParameters;
-
-
-typedef struct _ContinuousParameters
-{
-    char *name;
-    char *valueDomain;
-
-    ParameterStorageType storageType;
-}
-ContinuousParameters;
-
-
-typedef struct _ContinuousPiecewise
-{
-	char *name;
-    char *valueDomain;
-    char *indexDomain;
-    
-    IntTable *evaluators;
-}
-ContinuousPiecewise;
-
-
-typedef struct _ContinuousAggregate
-{
-	char *name;
-	char *valueDomain;
-	
-	StringTable *markup;
-	IntTable *evaluators;
-}
-ContinuousAggregate;
-
-typedef enum _DataLocation
-{
-    LOC_UNKNOWN,
-    LOC_INLINE,
-    LOC_FILE,
-}
-DataLocation;
-
-
-typedef struct _StringDataSource
-{
-    char *string;
-    int length;
-}
-StringDataSource;
-
-
-typedef struct _FileDataSource
-{
-    char *filename;
-    int offset;
-    int isText;
-}
-FileDataSource;
-
-
-typedef struct _DataSource
-{
-    DataLocation location;
-    union TaggedDataSource
-    {
-        StringDataSource stringData;
-        FileDataSource fileData;
-    }
-    data;
-}
-DataSource;
-
-
-typedef struct _SemidenseData
-{
-    SimpleList *sparseIndexes;
-    SimpleList *denseIndexes;
-
-    DataSource dataSource;
-}
-SemidenseData;
-
-
-typedef struct _Variable
-{
-    char *name;
-    char *valueDomain;
-    SimpleList *parameters;
-}
-Variable;
 
 //========================================================================
 //
@@ -228,7 +36,6 @@ FieldmlContext *createFieldmlContext( FieldmlParse *parse )
 	FieldmlContext *context = calloc( 1, sizeof( FieldmlContext ) );
 	
 	context->parse = parse;
-	context->state = FLP_IDLE;
 	
 	return context;
 }
@@ -239,119 +46,77 @@ FieldmlParse *createFieldmlParse()
     FieldmlParse *parse;
 
     parse = calloc( 1, sizeof( FieldmlParse ) );
-    parse->ensembleDomains = createStringTable();
-    parse->continuousDomains = createStringTable();
-    parse->meshDomains = createStringTable();
-    parse->contiguousBounds = createStringTable();
-    parse->continuousImports = createStringTable();
-    parse->ensembleParameters = createStringTable();
-    parse->continuousParameters = createStringTable();
-    parse->continuousPiecewise = createStringTable();
-    parse->continuousAggregate = createStringTable();
-    parse->semidenseData = createStringTable();
-    parse->variables = createStringTable();
 
+    parse->objects = createSimpleList();
+    
     return parse;
 }
 
 
-EnsembleDomain *createEnsembleDomain( char *name, char *componentEnsemble )
+EnsembleDomain *createEnsembleDomain( int componentDomain )
 {
-    EnsembleDomain *domain;
-
-    domain = calloc( 1, sizeof( EnsembleDomain ) );
-    domain->name = _strdup( name );
-    domain->componentEnsemble = _strdup( componentEnsemble );
-    domain->boundsType = BOUNDS_UNKNOWN;
-
-    return domain;
+	EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
+	domain->componentDomain = componentDomain;
+	domain->boundsType = BOUNDS_UNKNOWN;
+	
+	return domain;
 }
 
 
-ContiguousBounds *createContiguousBounds( char *countString )
+ContinuousDomain *createContinuousDomain( int componentDomain )
 {
-    ContiguousBounds *bounds;
-
-    bounds = calloc( 1, sizeof( ContiguousBounds ) );
-    bounds->count = atoi( countString );
-
-    return bounds;
+	ContinuousDomain *domain = calloc( 1, sizeof( ContinuousDomain ) );
+	domain->componentDomain = componentDomain;
+	
+	return domain;
 }
 
 
-ContinuousDomain *createContinuousDomain( char *name, char *baseDomain, char *componentEnsemble )
-{
-    ContinuousDomain *domain;
-
-    domain = calloc( 1, sizeof( ContinuousDomain ) );
-    domain->name = _strdup( name );
-    domain->baseName = _strdup( baseDomain );
-    domain->componentEnsemble = _strdup( componentEnsemble );
-
-    return domain;
-}
-
-
-MeshDomain *createMeshDomain( char *name )
+MeshDomain *createMeshDomain( int xiEnsemble )
 {
 	MeshDomain *domain;
 	
 	domain = calloc( 1, sizeof( MeshDomain ) );
-	domain->name = _strdup( name );
+	domain->xiEnsemble = xiEnsemble;
 	domain->shapes = createIntTable();
 	domain->connectivity = createStringTable();
 	
 	return domain;
 }
 
-ContinuousImport *createContinuousImport( char *name, char *remoteName, char *valueDomain )
+ContinuousImport *createContinuousImport( char *remoteName, int valueDomain )
 {
     ContinuousImport *import;
 
     import = calloc( 1, sizeof( ContinuousImport ) );
-    import->name = _strdup( name );
     import->remoteName = _strdup( remoteName );
-    import->valueDomain = _strdup( valueDomain );
-    import->aliases = createStringTable();
+    import->valueDomain = valueDomain;
+    import->aliases = createIntTable();
 
     return import;
 }
 
 
-EnsembleParameters *createEnsembleParameters( char *name, char *valueDomain )
+Parameters *createParameters( int valueDomain )
 {
-    EnsembleParameters *parameters;
+    Parameters *parameters;
 
-    parameters = calloc( 1, sizeof( EnsembleParameters ) );
-    parameters->name = _strdup( name );
-    parameters->valueDomain = _strdup( valueDomain );
-    parameters->storageType = STORAGE_UNKNOWN;
+    parameters = calloc( 1, sizeof( Parameters ) );
+    parameters->valueDomain = valueDomain;
+    parameters->descriptionType = DESCRIPTION_UNKNOWN;
+    parameters->locationType = LOCATION_UNKNOWN;
 
     return parameters;
 }
 
 
-ContinuousParameters *createContinuousParameters( char *name, char *valueDomain )
-{
-    ContinuousParameters *parameters;
-
-    parameters = calloc( 1, sizeof( ContinuousParameters ) );
-    parameters->name = _strdup( name );
-    parameters->valueDomain = _strdup( valueDomain );
-    parameters->storageType = STORAGE_UNKNOWN;
-
-    return parameters;
-}
-
-
-ContinuousPiecewise *createContinuousPiecewise( char *name, char *valueDomain, char *indexDomain )
+ContinuousPiecewise *createContinuousPiecewise( int valueDomain, int indexDomain )
 {
 	ContinuousPiecewise *piecewise;
 	
 	piecewise = calloc( 1, sizeof( ContinuousPiecewise ) );
-	piecewise->name = _strdup( name );
-	piecewise->valueDomain = _strdup( valueDomain );
-	piecewise->indexDomain = _strdup( indexDomain );
+	piecewise->valueDomain = valueDomain;
+	piecewise->indexDomain = indexDomain;
 	
 	piecewise->evaluators = createIntTable();
 	
@@ -359,18 +124,30 @@ ContinuousPiecewise *createContinuousPiecewise( char *name, char *valueDomain, c
 }
 
 
-ContinuousAggregate *createContinuousAggregate( char *name, char *valueDomain )
+ContinuousAggregate *createContinuousAggregate( int valueDomain )
 {
 	ContinuousAggregate *aggregate;
 	
 	aggregate = calloc( 1, sizeof( ContinuousAggregate ) );
-	aggregate->name = _strdup( name );
-	aggregate->valueDomain = _strdup( valueDomain );
+	aggregate->valueDomain = valueDomain;
 	
 	aggregate->markup = createStringTable();
 	aggregate->evaluators = createIntTable();
 	
 	return aggregate;
+}
+
+
+ContinuousDereference *createContinuousDereference( int valueDomain, int valueIndexes, int valueSource )
+{
+	ContinuousDereference *dereference;
+	
+	dereference = calloc( 1, sizeof( ContinuousDereference ) );
+	dereference->valueDomain = valueDomain;
+	dereference->valueIndexes = valueIndexes;
+	dereference->valueSource = valueSource;
+	
+	return dereference;
 }
 
 
@@ -380,22 +157,32 @@ SemidenseData *createSemidenseData()
     data = calloc( 1, sizeof( SemidenseData ) );
     data->denseIndexes = createSimpleList();
     data->sparseIndexes = createSimpleList();
-    data->dataSource.location = LOC_UNKNOWN;
 
     return data;
 }
 
 
-Variable *createVariable( char *name, char *valueDomain )
+Variable *createVariable( int valueDomain )
 {
     Variable *variable;
 
     variable = calloc( 1, sizeof( Variable ) );
-    variable->name = _strdup( name );
-    variable->valueDomain = _strdup( valueDomain );
+    variable->valueDomain = valueDomain;
     variable->parameters = createSimpleList();
 
     return variable;
+}
+
+
+FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
+{
+	FieldmlObject *object;
+	
+	object = calloc( 1, sizeof( FieldmlObject ) );
+	object->name = _strdup( name );
+	object->type = type;
+	
+	return object;
 }
 
 //========================================================================
@@ -412,24 +199,18 @@ void destroyFieldmlContext( FieldmlContext *context )
 
 void destroyEnsembleDomain( EnsembleDomain *domain )
 {
-    free( domain->name );
-    free( domain->componentEnsemble );
-    free( domain );
+	free( domain );
 }
 
 
 void destroyContinuousDomain( ContinuousDomain *domain )
 {
-    free( domain->name );
-    free( domain->baseName );
-    free( domain->componentEnsemble );
-    free( domain );
+	free( domain );
 }
 
 
 void destroyMeshDomain( MeshDomain *domain )
 {
-	free( domain->name );
 	destroyIntTable( domain->shapes, free );
 	destroyStringTable( domain->connectivity, free );
 	free( domain );
@@ -438,42 +219,41 @@ void destroyMeshDomain( MeshDomain *domain )
 
 void destroyContinuousImport( ContinuousImport *import )
 {
-    free( import->name );
     free( import->remoteName );
-    free( import->valueDomain );
-    destroyStringTable( import->aliases, free );
+    destroyIntTable( import->aliases, free );
     free( import );
 }
 
 
-void destroyEnsembleParameters( EnsembleParameters *parameters )
+void destroySemidenseData( SemidenseData *data )
 {
-    free( parameters->name );
-    free( parameters->valueDomain );
+    destroySimpleList( data->sparseIndexes, NULL );
+    destroySimpleList( data->denseIndexes, NULL );
+    free( data );
+}
 
-    switch( parameters->storageType )
+
+void destroyParameters( Parameters *parameters )
+{
+    switch( parameters->descriptionType )
     {
-    case STORAGE_SEMIDENSE:
+    case DESCRIPTION_SEMIDENSE:
+    	destroySemidenseData( parameters->dataDescription.semidense );
         break;
     default:
         break;
     }
-
-    free( parameters );
-}
-
-
-void destroyContinuousParameters( ContinuousParameters *parameters )
-{
-    free( parameters->name );
-    free( parameters->valueDomain );
-
-    switch( parameters->storageType )
+    
+    switch( parameters->locationType )
     {
-    case STORAGE_SEMIDENSE:
-        break;
+    case LOCATION_FILE:
+    	free( parameters->dataLocation.fileData.filename );
+    	break;
+  	case LOCATION_INLINE:
+    	free( parameters->dataLocation.stringData.string );
+    	break;
     default:
-        break;
+    	break;
     }
 
     free( parameters );
@@ -482,65 +262,77 @@ void destroyContinuousParameters( ContinuousParameters *parameters )
 
 void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 {
-	free( piecewise->name );
-	free( piecewise->valueDomain );
-	free( piecewise->indexDomain );
-	destroyIntTable( piecewise->evaluators, free );
+	destroyIntTable( piecewise->evaluators, NULL );
 	free( piecewise );
 }
 
 
 void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
-	free( aggregate->name );
-	free( aggregate->valueDomain );
 	destroyStringTable( aggregate->markup, free );
 	destroyIntTable( aggregate->evaluators, free );
 	free( aggregate );
 }
 
 
-void destroySemidenseData( SemidenseData *data )
+void destroyContinuousDereference( ContinuousDereference *dereference )
 {
-    destroySimpleList( data->sparseIndexes, free );
-    destroySimpleList( data->denseIndexes, free );
-    
-    if( data->dataSource.location == LOC_INLINE )
-    {
-    	free( data->dataSource.data.stringData.string );
-    }
-    else if( data->dataSource.location == LOC_FILE )
-    {
-    	free( data->dataSource.data.fileData.filename );
-    }
-    
-    free( data );
+	free( dereference );
 }
 
 
 void destroyVariable( Variable *variable )
 {
-    free( variable->name );
-    free( variable->valueDomain );
     destroySimpleList( variable->parameters, free );
 
     free( variable );
 }
 
 
+void destroyFieldmlObject( FieldmlObject *object )
+{
+	switch( object->type )
+	{
+	case FHT_ENSEMBLE_DOMAIN:
+		destroyEnsembleDomain( object->object.ensembleDomain );
+		break;
+	case FHT_CONTINUOUS_DOMAIN:
+		destroyContinuousDomain( object->object.continuousDomain );
+		break;
+	case FHT_MESH_DOMAIN:
+		destroyMeshDomain( object->object.meshDomain );
+		break;
+	case FHT_CONTINUOUS_IMPORT:
+		destroyContinuousImport( object->object.continuousImport );
+		break;
+	case FHT_CONTINUOUS_PARAMETERS:
+	case FHT_ENSEMBLE_PARAMETERS:
+		destroyParameters( object->object.parameters );
+		break;
+	case FHT_CONTINUOUS_PIECEWISE:
+		destroyContinuousPiecewise( object->object.piecewise );
+		break;
+	case FHT_CONTINUOUS_AGGREGATE:
+		destroyContinuousAggregate( object->object.aggregate );
+		break;
+	case FHT_CONTINUOUS_VARIABLE:
+	case FHT_ENSEMBLE_VARIABLE:
+		destroyVariable( object->object.variable );
+		break;
+	case FHT_CONTINUOUS_DEREFERENCE:
+		destroyContinuousDereference( object->object.dereference );
+		break;
+	default:
+		break;
+	}
+    free( object->name );
+    free( object );
+}
+
+
 void destroyFieldmlParse( FieldmlParse *parse )
 {
-    destroyStringTable( parse->ensembleDomains, destroyEnsembleDomain );
-    destroyStringTable( parse->contiguousBounds, free );
-    destroyStringTable( parse->continuousDomains, destroyContinuousDomain );
-    destroyStringTable( parse->meshDomains, destroyMeshDomain );
-    destroyStringTable( parse->continuousImports, destroyContinuousImport );
-    destroyStringTable( parse->continuousParameters, destroyContinuousParameters );
-    destroyStringTable( parse->continuousPiecewise, destroyContinuousPiecewise );
-    destroyStringTable( parse->continuousAggregate, destroyContinuousAggregate );
-    destroyStringTable( parse->ensembleParameters, destroyEnsembleParameters );
-    destroyStringTable( parse->semidenseData, destroySemidenseData );
-    destroyStringTable( parse->variables, destroyVariable );
+    destroySimpleList( parse->objects, NULL );
 
     free( parse );
 }
@@ -553,131 +345,117 @@ void destroyFieldmlParse( FieldmlParse *parse )
 //========================================================================
 
 
-void dumpFieldmlParse( FieldmlParse *parse )
+static int getObjectHandle( FieldmlParse *parse, char *name )
 {
-    int i, count;
+	int i, count;
+	FieldmlObject *object;
+	
+	count = getSimpleListSize( parse->objects );
+	for( i = 0; i < count; i++ )
+	{
+		object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+		if( strcmp( name, object->name ) == 0 )
+		{
+			return i;
+		}
+	}
+	
+	return FML_INVALID_HANDLE;
+}
 
-    count = getStringTableCount( parse->continuousDomains );
-    fprintf( stdout, "ContinuousDomains:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        fprintf( stdout, "    %s\n", ((ContinuousDomain*)getStringTableEntryData( parse->continuousDomains, i ))->name );
-    }
 
-    count = getStringTableCount( parse->ensembleDomains );
-    fprintf( stdout, "EnsembleDomains:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        fprintf( stdout, "    %s\n", ((EnsembleDomain*)getStringTableEntryData( parse->ensembleDomains, i ))->name );
-    }
+static int addObject( FieldmlParse *parse, FieldmlObject *object )
+{
+	FieldmlObject *oldObject;
+	int handle = getObjectHandle( parse, object->name );
+	
+	if( handle == FML_INVALID_HANDLE )
+	{
+		return addSimpleListEntry( parse->objects, object );
+	}
 
-    count = getStringTableCount( parse->continuousImports );
-    fprintf( stdout, "Continuous Imports:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        int j, count2;
-        ContinuousImport *import;
+	oldObject = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+	if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN )
+	{
+		if( object->type == FHT_ENSEMBLE_DOMAIN )
+		{
+			oldObject->type = object->type;
+			oldObject->object = object->object;
+			object->type = FHT_UNKNOWN_ENSEMBLE_DOMAIN;
+			destroyFieldmlObject( object );
+			
+			return handle;
+		}
+	}
+	else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN )
+	{
+		if( object->type == FHT_CONTINUOUS_DOMAIN )
+		{
+			oldObject->type = object->type;
+			oldObject->object = object->object;
+			object->type = FHT_UNKNOWN_CONTINUOUS_DOMAIN;
+			destroyFieldmlObject( object );
+			
+			return handle;
+		}
+	}
+	else if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_SOURCE )
+	{
+		if( ( object->type == FHT_ENSEMBLE_DOMAIN ) ||
+		    ( object->type == FHT_ENSEMBLE_PARAMETERS ) ||
+		    ( object->type == FHT_ENSEMBLE_VARIABLE ) )
+		{
+			oldObject->type = object->type;
+			oldObject->object = object->object;
+			object->type = FHT_UNKNOWN_ENSEMBLE_SOURCE;
+			destroyFieldmlObject( object );
+			
+			return handle;
+		}
+	}
+	else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_SOURCE )
+	{
+		if( ( object->type == FHT_CONTINUOUS_DOMAIN ) ||
+			( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
+			( object->type == FHT_CONTINUOUS_IMPORT ) ||
+			( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
+			( object->type == FHT_CONTINUOUS_DEREFERENCE ) ||
+		    ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
+		    ( object->type == FHT_CONTINUOUS_VARIABLE ) )
+		{
+			oldObject->type = object->type;
+			oldObject->object = object->object;
+			object->type = FHT_UNKNOWN_CONTINUOUS_SOURCE;
+			destroyFieldmlObject( object );
+			
+			return handle;
+		}
+	}
+	
+	fprintf( stderr, "Handle collision: %d:%s cannot replace %d:%s\n",
+			object->type, object->name,
+			oldObject->type, oldObject->name );
+	destroyFieldmlObject( object );
+	
+	return FML_INVALID_HANDLE;
+}
 
-        import = (ContinuousImport*)getStringTableEntryData( parse->continuousImports, i );
 
-        fprintf( stdout, "    %s\n", import->name );
-        
-        count2 = getStringTableCount( import->aliases );
-        for( j = 0; j < count2; j++ )
-        {
-            fprintf( stdout, "        %s -> %s\n", getStringTableEntryName( import->aliases, j ), getStringTableEntryData( import->aliases, j ) );
-        }
-    }
+int getOrCreateObjectHandle( FieldmlParse *parse, char *name, FieldmlHandleType type )
+{
+	int handle = getObjectHandle( parse, name );
 
-    count = getStringTableCount( parse->continuousParameters );
-    fprintf( stdout, "Continuous Parameters:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        ContinuousParameters *params;
-        SemidenseData *data;
+	if( handle == FML_INVALID_HANDLE )
+	{
+		handle = addObject( parse, createFieldmlObject( name, type ) );
+	}
+	
+	return handle;
+}
 
-        params = (ContinuousParameters*)getStringTableEntryData( parse->continuousParameters, i );
-        data = (SemidenseData*)getStringTableEntry( parse->semidenseData, params->name );
 
-        fprintf( stdout, "    %s\n", params->name );
-        
-        if( data->dataSource.location == LOC_INLINE )
-        {
-			fprintf( stdout, "    *******************************\n");
-			fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
-			fprintf( stdout, "    *******************************\n");
-        }
-        else if( data->dataSource.location == LOC_FILE )
-        {
-        	fprintf( stdout, "    file = %s, offset = %d\n", data->dataSource.data.fileData.filename, data->dataSource.data.fileData.offset );
-        }
-    }
-
-    count = getStringTableCount( parse->ensembleParameters );
-    fprintf( stdout, "Ensemble Parameters:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        EnsembleParameters *params;
-        SemidenseData *data;
-
-        params = (EnsembleParameters*)getStringTableEntryData( parse->ensembleParameters, i );
-        data = (SemidenseData*)getStringTableEntry( parse->semidenseData, params->name );
-
-        fprintf( stdout, "    %s\n", params->name );
-
-        if( data->dataSource.location == LOC_INLINE )
-        {
-			fprintf( stdout, "    *******************************\n");
-			fprintf( stdout, "%s\n", data->dataSource.data.stringData.string );
-			fprintf( stdout, "    *******************************\n");
-        }
-        else if( data->dataSource.location == LOC_FILE )
-        {
-        	fprintf( stdout, "    file = %s, offset = %d\n", data->dataSource.data.fileData.filename, data->dataSource.data.fileData.offset );
-        }
-    }
-
-    count = getStringTableCount( parse->continuousPiecewise );
-    fprintf( stdout, "Continuous Piecewise:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        ContinuousPiecewise *piecewise;
-        int count2, j;
-
-        piecewise = (ContinuousPiecewise*)getStringTableEntryData( parse->continuousPiecewise, i );
-
-        fprintf( stdout, "    %s (over %s)\n", piecewise->name, piecewise->indexDomain );
-        
-        count2 = getIntTableCount( piecewise->evaluators );
-        for( j = 0; j < count2; j++ )
-        {
-        	fprintf( stdout, "        %d -> %s\n", getIntTableEntryName( piecewise->evaluators, j ), getIntTableEntryData( piecewise->evaluators, j ) );
-        }
-    }
-
-    count = getStringTableCount( parse->continuousAggregate );
-    fprintf( stdout, "Continuous Aggregate:\n" );
-    for( i = 0; i < count; i++ )
-    {
-        ContinuousAggregate *aggregate;
-        int count2, j;
-
-        aggregate = (ContinuousAggregate*)getStringTableEntryData( parse->continuousAggregate, i );
-
-        fprintf( stdout, "    %s\n", aggregate->name );
-        
-        count2 = getStringTableCount( aggregate->markup );
-        for( j = 0; j < count2; j++ )
-        {
-            fprintf( stdout, "        %s : %s\n", getStringTableEntryName( aggregate->markup, j ), getStringTableEntryData( aggregate->markup, j ) );
-        }
-
-        count2 = getIntTableCount( aggregate->evaluators );
-        for( j = 0; j < count2; j++ )
-        {
-        	fprintf( stdout, "        %d -> %s\n", getIntTableEntryName( aggregate->evaluators, j ), getIntTableEntryData( aggregate->evaluators, j ) );
-        }
-    }
+void finalizeFieldmlParse( FieldmlParse *parse )
+{
 }
 
 
@@ -691,7 +469,8 @@ void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *name;
     char *componentEnsemble;
-    EnsembleDomain *domain;
+    int handle;
+    FieldmlObject *object;
         
     name = getAttribute( attributes, "name" );
     if( name == NULL )
@@ -701,37 +480,70 @@ void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes )
     }
     
     componentEnsemble = getAttribute( attributes, "componentDomain" );
+    if( componentEnsemble != NULL )
+    {
+    	handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    }
+    else
+    {
+    	handle = FML_INVALID_HANDLE;
+    }
 
-    domain = createEnsembleDomain( name, componentEnsemble );
+    object = createFieldmlObject( name, FHT_ENSEMBLE_DOMAIN );
+    object->object.ensembleDomain = createEnsembleDomain( handle );
 
-    context->currentObject = domain;
-    context->state = FLP_ENSEMBLE_DOMAIN;
+    context->currentObject = object;
+}
+
+
+void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
+{
+    char *count;
+    FieldmlObject *object = context->currentObject;
+    EnsembleDomain *domain = object->object.ensembleDomain;
+    
+    if( domain->boundsType != BOUNDS_UNKNOWN )
+    {
+    	fprintf( stderr, "EnsembleDomain %s already has a bounds\n", object->name );
+    	return;
+    }
+
+    count = getAttribute( attributes, "valueCount" );
+    if( count == NULL )
+    {
+        fprintf( stderr, "ContiguousEnsembleBounds for %s has no value count\n", object->name );
+        return;
+    }
+
+    domain->boundsType = BOUNDS_DISCRETE_CONTIGUOUS;
+    domain->bounds.contiguous.count = atoi( count );
 }
 
 
 void endEnsembleDomain( FieldmlContext *context )
 {
-    EnsembleDomain *domain = (EnsembleDomain*)context->currentObject;
-    context->currentObject = NULL;
-    context->state = FLP_IDLE;
+    EnsembleDomain *domain = context->currentObject->object.ensembleDomain;
 
     if( domain->boundsType == BOUNDS_UNKNOWN )
     {
-        fprintf( stderr, "EnsembleDomain %s has no bounds\n", domain->name );
-        destroyEnsembleDomain( domain );
-        return;
+        fprintf( stderr, "EnsembleDomain %s has no bounds\n", context->currentObject->name );
+        destroyFieldmlObject( context->currentObject );
     }
-
-    setStringTableEntry( context->parse->ensembleDomains, domain->name, domain, destroyEnsembleDomain );
+    else
+    {
+        addObject( context->parse, context->currentObject );
+    }
+    
+    context->currentObject = NULL;
 }
 
 
 void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *name;
-    char *baseDomain;
     char *componentEnsemble;
-    ContinuousDomain *domain;
+    int handle;
+    FieldmlObject *object;
         
     name = getAttribute( attributes, "name" );
     if( name == NULL )
@@ -740,61 +552,39 @@ void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
         return;
     }
     
-    baseDomain = getAttribute( attributes, "baseDomain" );
-    if( baseDomain == NULL )
+    componentEnsemble = getAttribute( attributes, "componentDomain" );
+    if( componentEnsemble != NULL )
     {
-        fprintf( stderr, "ContinuousDomain %s has no base domain\n", name );
-        return;
+    	handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    }
+    else
+    {
+    	handle = FML_INVALID_HANDLE;
     }
 
-    componentEnsemble = getAttribute( attributes, "componentDomain" );
+    object = createFieldmlObject( name, FHT_CONTINUOUS_DOMAIN );
+    object->object.continuousDomain = createContinuousDomain( handle );
 
-    domain = createContinuousDomain( name, baseDomain, componentEnsemble );
-
-    context->currentObject = domain;
-    context->state = FLP_CONTINUOUS_DOMAIN;
+    context->currentObject = object;
 }
 
 
 void endContinuousDomain( FieldmlContext *context )
 {
-    ContinuousDomain *domain = (ContinuousDomain*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
-
-    setStringTableEntry( context->parse->continuousDomains, domain->name, domain, destroyContinuousDomain );
-}
-
-
-void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
-{
-    char * count;
-    EnsembleDomain *domain;
-    ContiguousBounds *bounds;
-        
-    domain = (EnsembleDomain*)context->currentObject;
-
-    count = getAttribute( attributes, "valueCount" );
-    if( count == NULL )
-    {
-        fprintf( stderr, "ContiguousEnsembleBounds for %s has no value count\n", domain->name );
-        return;
-    }
-
-    domain->boundsType = BOUNDS_CONTIGUOUS;
-
-    bounds = createContiguousBounds( count );
-
-    setStringTableEntry( context->parse->contiguousBounds, domain->name, bounds, free );
 }
 
 
 void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
 	char *name;
-	MeshDomain *domain;
+	char *xiEnsemble;
+	FieldmlObject *object;
+	int handle;
 	
 	name = getAttribute( attributes, "name" );
+	xiEnsemble = getAttribute( attributes, "xiComponentDomain" );
 	
 	if( name == NULL )
 	{
@@ -802,24 +592,31 @@ void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
         return;
 	}
 	
-	domain = createMeshDomain( name );
-	
-	context->currentObject = domain;
-	context->state = FLP_MESH_DOMAIN;
+	if( xiEnsemble == NULL )
+	{
+        fprintf( stderr, "MeshDomain %s has no xi components\n", name );
+        return;
+	}
+
+	handle = getOrCreateObjectHandle( context->parse, xiEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+	object = createFieldmlObject( name, FHT_MESH_DOMAIN );
+    object->object.meshDomain = createMeshDomain( handle );
+
+    context->currentObject = object;
 }
 
 
 void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
 {
-    MeshDomain *domain;
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    MeshDomain *domain = object->object.meshDomain;
     char *element = getAttribute( attributes, "key" );
     char *shape = getAttribute( attributes, "value" );
 
-    domain = (MeshDomain*)context->currentObject;
-
     if( ( element == NULL ) || ( shape == NULL ) )
     {
-        fprintf( stderr, "MeshDomain %s has malformed shape entry\n", domain->name );
+        fprintf( stderr, "MeshDomain %s has malformed shape entry\n", object->name );
         return;
     }
 
@@ -829,15 +626,14 @@ void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
 
 void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes )
 {
-    MeshDomain *domain;
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    MeshDomain *domain = object->object.meshDomain;
     char *type = getAttribute( attributes, "key" );
     char *field = getAttribute( attributes, "value" );
 
-    domain = (MeshDomain*)context->currentObject;
-
     if( ( type == NULL ) || ( field == NULL ) )
     {
-        fprintf( stderr, "MeshDomain %s has malformed connectivity entry\n", domain->name );
+        fprintf( stderr, "MeshDomain %s has malformed connectivity entry\n", object->name );
         return;
     }
 
@@ -847,11 +643,8 @@ void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes )
 
 void endMeshDomain( FieldmlContext *context )
 {
-	MeshDomain *domain = (MeshDomain*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
-
-    setStringTableEntry( context->parse->meshDomains, domain->name, domain, destroyMeshDomain );
 }
 
 
@@ -860,7 +653,8 @@ void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
     char *name;
     char *remoteName;
     char *valueDomain;
-    ContinuousImport *import;
+    int handle;
+    FieldmlObject *object;
         
     name = getAttribute( attributes, "name" );
     if( name == NULL )
@@ -882,47 +676,121 @@ void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
         fprintf( stderr, "ImportedContinuousEvaluator %s has no value domain\n", name );
         return;
     }
+    
+    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
-    import = createContinuousImport( name, remoteName, valueDomain );
+	object = createFieldmlObject( name, FHT_CONTINUOUS_IMPORT );
+    object->object.continuousImport = createContinuousImport( remoteName, handle );
 
-    context->currentObject = import;
-    context->state = FLP_CONTINUOUS_IMPORT;
+    context->currentObject = object;
 }
 
-void continuousImportAlias( FieldmlContext *context, SaxAttributes *attributes )
+
+void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes )
 {
-    ContinuousImport *import;
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    ContinuousImport *import = object->object.continuousImport;
     char *remote = getAttribute( attributes, "key" );
     char *local = getAttribute( attributes, "value" );
-
-    import = (ContinuousImport*)context->currentObject;
+	int localHandle, remoteHandle;
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator %s has malformed alias\n", import->name );
+        fprintf( stderr, "ImportedContinuousEvaluator %s has malformed alias\n", object->name );
         return;
     }
 
-    setStringTableEntry( import->aliases, remote, _strdup( local ), free );
+    localHandle = getOrCreateObjectHandle( context->parse, local, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+
+    remoteHandle = getOrCreateObjectHandle( context->parse, remote, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+
+    setIntTableEntry( import->aliases, localHandle, (void*)(remoteHandle + 1), NULL );
+}
+
+
+void onEnsembleImportAlias( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    ContinuousImport *import = object->object.continuousImport;
+    char *remote = getAttribute( attributes, "key" );
+    char *local = getAttribute( attributes, "value" );
+	int localHandle, remoteHandle;
+
+    if( ( remote == NULL ) || ( local == NULL ) )
+    {
+        fprintf( stderr, "ImportedContinuousEvaluator %s has malformed alias\n", object->name );
+        return;
+    }
+
+    localHandle = getOrCreateObjectHandle( context->parse, local, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+
+    remoteHandle = getOrCreateObjectHandle( context->parse, remote, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+    setIntTableEntry( import->aliases, localHandle, (void*)(remoteHandle + 1), NULL );
 }
 
 
 void endContinuousImport( FieldmlContext *context )
 {
-    ContinuousImport *import = (ContinuousImport*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
+}
 
-    setStringTableEntry( context->parse->continuousImports, import->name, import, destroyContinuousImport );
+
+void startContinuousDereference( FieldmlContext *context, SaxAttributes *attributes )
+{
+    char *name = getAttribute( attributes, "name" );
+    char *valueDomain = getAttribute( attributes, "valueDomain" );
+    char *valueIndexes = getAttribute( attributes, "valueIndexes" );
+    char *valueSource = getAttribute( attributes, "valueSource" );
+	FieldmlObject *object;
+	int valueHandle, indexHandle, sourceHandle;
+
+    if( name == NULL )
+    {
+        fprintf( stderr, "ContinuousDereference has no name\n" );
+        return;
+    }
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "ContinuousDereference %s has no value domain\n", name );
+        return;
+    }
+    if( valueIndexes == NULL )
+    {
+        fprintf( stderr, "ContinuousDereference %s has no value indexes\n", name );
+        return;
+    }
+    if( valueSource == NULL )
+    {
+        fprintf( stderr, "ContinuousDereference %s has no value source\n", name );
+        return;
+    }
+
+    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    indexHandle = getOrCreateObjectHandle( context->parse, valueIndexes, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    sourceHandle = getOrCreateObjectHandle( context->parse, valueSource, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+
+	object = createFieldmlObject( name, FHT_CONTINUOUS_DEREFERENCE );
+    object->object.dereference = createContinuousDereference( valueHandle, indexHandle, sourceHandle );
+
+    context->currentObject = object;
+}
+
+
+void endContinuousDereference( FieldmlContext *context )
+{
+    addObject( context->parse, context->currentObject );
+    context->currentObject = NULL;
 }
 
 
 void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes )
 {
-    EnsembleParameters *parameters;
-
     char *name = getAttribute( attributes, "name" );
     char *valueDomain = getAttribute( attributes, "valueDomain" );
+    FieldmlObject *object;
+    int handle;
 
     if( name == NULL )
     {
@@ -936,36 +804,39 @@ void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes
         return;
     }
 
-    parameters = createEnsembleParameters( name, valueDomain );
+    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    
+    object = createFieldmlObject( name, FHT_ENSEMBLE_PARAMETERS );
+    object->object.parameters = createParameters( handle );
 
-    context->currentObject = parameters;
-    context->state = FLP_ENSEMBLE_PARAMETERS;
+    context->currentObject = object;
 }
 
 
 void endEnsembleParameters( FieldmlContext *context )
 {
-    EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
-    context->currentObject = NULL;
-    context->state = FLP_IDLE;
+    Parameters *parameters = context->currentObject->object.parameters;
 
-    if( parameters->storageType == STORAGE_UNKNOWN )
+    if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
     {
-        fprintf( stderr, "EnsembleParameters %s has no data\n", parameters->name );
-        destroyEnsembleParameters( parameters );
-        return;
+        fprintf( stderr, "EnsembleParameters %s has no data\n", context->currentObject->name );
+        destroyFieldmlObject( context->currentObject );
     }
-
-    setStringTableEntry( context->parse->ensembleParameters, parameters->name, parameters, destroyEnsembleParameters );
+    else
+    {
+    	addObject( context->parse, context->currentObject );
+    }
+    
+    context->currentObject = NULL;
 }
 
 
 void startContinuousParameters( FieldmlContext *context, SaxAttributes *attributes )
 {
-    ContinuousParameters *parameters;
-
     char *name = getAttribute( attributes, "name" );
     char *valueDomain = getAttribute( attributes, "valueDomain" );
+    FieldmlObject *object;
+    int handle;
 
     if( name == NULL )
     {
@@ -979,36 +850,192 @@ void startContinuousParameters( FieldmlContext *context, SaxAttributes *attribut
         return;
     }
 
-    parameters = createContinuousParameters( name, valueDomain );
+    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    
+    object = createFieldmlObject( name, FHT_CONTINUOUS_PARAMETERS );
+    object->object.parameters = createParameters( handle );
 
-    context->currentObject = parameters;
-    context->state = FLP_CONTINUOUS_PARAMETERS;
+    context->currentObject = object;
 }
 
 
 void endContinuousParameters( FieldmlContext *context )
 {
-    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
-    context->currentObject = NULL;
-    context->state = FLP_IDLE;
+    Parameters *parameters = context->currentObject->object.parameters;
 
-    if( parameters->storageType == STORAGE_UNKNOWN )
+    if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
     {
-        fprintf( stderr, "ContinuousParameters %s has no data\n", parameters->name );
-        destroyContinuousParameters( parameters );
+        fprintf( stderr, "ContinuousParameters %s has no data\n", context->currentObject->name );
+        destroyFieldmlObject( context->currentObject );
+    }
+    else
+    {
+        addObject( context->parse, context->currentObject );
+    }
+    
+    context->currentObject = NULL;
+}
+
+
+void startInlineData( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+    
+    if( parameters->locationType != LOCATION_UNKNOWN )
+    {
+        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        return;
+    }
+    
+    parameters->locationType = LOCATION_INLINE;
+}
+
+
+void onInlineData( FieldmlContext *context, const char *const characters, const int length )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+    StringDataSource *source;
+    char *newString;
+
+    if( parameters->locationType != LOCATION_INLINE )
+    {
+        return;
+    }
+    
+    source = &(parameters->dataLocation.stringData);
+
+    newString = malloc( source->length + length + 1 );
+    memcpy( newString, source->string, source->length );
+    memcpy( newString + source->length, characters, length );
+    source->length += length;
+    newString[ source->length ] = 0;
+    free( source->string );
+    source->string = newString;
+}
+
+
+void onFileData( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+    char *file = getAttribute( attributes, "file" );
+    char *type = getAttribute( attributes, "type" );
+    char *offset = getAttribute( attributes, "offset" );
+    FileDataSource *source;
+    
+    if( parameters->locationType != LOCATION_UNKNOWN )
+    {
+        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        return;
+    }
+    
+    if( file == NULL )
+    {
+        fprintf( stderr, "Parameters file data for %s must have a file name\n", object->name );
+        return;
+    }
+    if( type == NULL )
+    {
+        fprintf( stderr, "Parameters file data for %s must have a file type\n", object->name );
+        return;
+    }
+    
+    parameters->locationType = LOCATION_FILE;
+
+    source = &(parameters->dataLocation.fileData);
+    source->filename = _strdup( file );
+    source->isText = ( strcmp( type, "text" ) != 0 );
+    if( offset == NULL )
+    {
+    	source->offset = 0;
+    }
+    else
+    {
+    	source->offset = atoi( offset );
+    }
+}
+
+
+void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+    
+    if( parameters->descriptionType != DESCRIPTION_UNKNOWN )
+    {
+        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        return;
+    }
+    
+    parameters->descriptionType = DESCRIPTION_SEMIDENSE;
+    parameters->dataDescription.semidense = createSemidenseData();
+}
+
+
+void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+	char *index;
+	int handle;
+	
+    if( parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
         return;
     }
 
-    setStringTableEntry( context->parse->continuousParameters, parameters->name, parameters, destroyContinuousParameters );
+    index = getAttribute( attributes, "value" );
+    if( index == NULL )
+    {
+        fprintf( stderr, "Missing index in semi dense data\n" );
+        return;
+    }
+    
+    handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+	addSimpleListEntry( parameters->dataDescription.semidense->sparseIndexes, (void*)(handle + 1) );//HACK!!
+}
+
+
+void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes )
+{
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	Parameters *parameters = object->object.parameters;
+	char *index;
+	int handle;
+
+    if( parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return;
+    }
+
+    index = getAttribute( attributes, "value" );
+    if( index == NULL )
+    {
+        fprintf( stderr, "Missing index in semi dense data\n" );
+        return;
+    }
+
+    handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+	addSimpleListEntry( parameters->dataDescription.semidense->denseIndexes, (void*)(handle + 1) );//HACK!!
+}
+
+
+void endSemidenseData( FieldmlContext *context )
+{
 }
 
 
 void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attributes )
 {
-	ContinuousPiecewise *piecewise;
+	FieldmlObject *object;
 	char *name;
 	char *valueDomain;
 	char *indexDomain;
+	int valueHandle, indexHandle;
 	
 	name = getAttribute( attributes, "name" );
 	valueDomain = getAttribute( attributes, "valueDomain" );
@@ -1032,47 +1059,52 @@ void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attribute
 		return;
 	}
 	
-	piecewise = createContinuousPiecewise( name, valueDomain, indexDomain );
-	
-	context->currentObject = piecewise;
-    context->state = FLP_CONTINUOUS_PIECEWISE;
+	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+	indexHandle = getOrCreateObjectHandle( context->parse, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+    object = createFieldmlObject( name, FHT_CONTINUOUS_PIECEWISE );
+    object->object.piecewise = createContinuousPiecewise( valueHandle, indexHandle );
+
+    context->currentObject = object;
 }
 
 
 void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
-	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)context->currentObject;
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)object->object.piecewise;
 	char *key;
 	char *value;
+	int handle;
 	
 	key = getAttribute( attributes, "key" );
 	value = getAttribute( attributes, "value" );
 	
 	if( ( key == NULL ) || ( value == NULL ) )
 	{
-		fprintf( stderr, "Malformed element evaluator for ContinuousPiecewise %s\n", piecewise->name );
+		fprintf( stderr, "Malformed element evaluator for ContinuousPiecewise %s\n", object->name );
 		return;
 	}
 	
-	setIntTableEntry( piecewise->evaluators, atoi( key ),  _strdup( value ), free );
+	handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+	
+	setIntTableEntry( piecewise->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
 }
 
 
 void endContinuousPiecewise( FieldmlContext *context )
 {
-	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
-
-    setStringTableEntry( context->parse->continuousPiecewise, piecewise->name, piecewise, destroyContinuousPiecewise );
 }
 
 
 void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attributes )
 {
-	ContinuousAggregate *aggregate;
+	FieldmlObject *object;
 	char *name;
 	char *valueDomain;
+	int valueHandle;
 	
 	name = getAttribute( attributes, "name" );
 	valueDomain = getAttribute( attributes, "valueDomain" );
@@ -1089,217 +1121,109 @@ void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attribute
 		return;
 	}
 	
-	aggregate = createContinuousAggregate( name, valueDomain );
-	
-	context->currentObject = aggregate;
-    context->state = FLP_CONTINUOUS_AGGREGATE;
+	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+
+    object = createFieldmlObject( name, FHT_CONTINUOUS_AGGREGATE );
+    object->object.aggregate = createContinuousAggregate( valueHandle );
+
+    context->currentObject = object;
 }
 
 
 void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
-	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+	ContinuousAggregate *aggregate = (ContinuousAggregate*)object->object.aggregate;
 	char *key;
 	char *value;
+	int handle;
 	
 	key = getAttribute( attributes, "key" );
 	value = getAttribute( attributes, "value" );
 	
 	if( ( key == NULL ) || ( value == NULL ) )
 	{
-		fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", aggregate->name );
+		fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", object->name );
 		return;
 	}
 	
-	setIntTableEntry( aggregate->evaluators, atoi( key ),  _strdup( value ), free );
+	handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+	
+	setIntTableEntry( aggregate->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
 }
 
 
 void endContinuousAggregate( FieldmlContext *context )
 {
-	ContinuousAggregate *aggregate = (ContinuousAggregate*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
-
-    setStringTableEntry( context->parse->continuousAggregate, aggregate->name, aggregate, destroyContinuousAggregate );
 }
 
 
-void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
+void startContinuousVariable( FieldmlContext *context, SaxAttributes *attributes )
 {
-    SemidenseData *data = createSemidenseData();
-
-    context->currentObject2 = data;
-}
-
-
-void semidenseIndex( FieldmlContext *context, SaxAttributes *attributes, int isSparse )
-{
-    SemidenseData *data = (SemidenseData*)context->currentObject2;
-
-    char *index = getAttribute( attributes, "value" );
-    if( index == NULL )
-    {
-        fprintf( stderr, "Invalid index in semi dense data\n" );
-        return;
-    }
-
-    if( isSparse )
-    {
-        addListEntry( data->sparseIndexes, _strdup( index ) );
-    }
-    else
-    {
-        addListEntry( data->denseIndexes, _strdup( index ) );
-    }
-}
-
-
-void semidenseStartInlineData( FieldmlContext *context, SaxAttributes *attributes )
-{
-    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
-    SemidenseData *data = (SemidenseData*)context->currentObject2;
-    
-    if( data->dataSource.location != LOC_UNKNOWN )
-    {
-        fprintf( stderr, "Semidense data for %s already has data\n", parameters->name );
-        return;
-    }
-    
-    data->dataSource.location = LOC_INLINE;
-}
-
-
-void semidenseFileData( FieldmlContext *context, SaxAttributes *attributes )
-{
-    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
-    SemidenseData *data = (SemidenseData*)context->currentObject2;
-    char *file = getAttribute( attributes, "file" );
-    char *type = getAttribute( attributes, "type" );
-    char *offset = getAttribute( attributes, "offset" );
-    FileDataSource *source;
-    
-    if( data->dataSource.location != LOC_UNKNOWN )
-    {
-        fprintf( stderr, "Semidense data for %s already has data\n", parameters->name );
-        return;
-    }
-    
-    if( file == NULL )
-    {
-        fprintf( stderr, "Semidense file data for %s must have a file name\n", parameters->name );
-        return;
-    }
-    if( type == NULL )
-    {
-        fprintf( stderr, "Semidense file data for %s must have a file type\n", parameters->name );
-        return;
-    }
-    
-    data->dataSource.location = LOC_FILE;
-
-    source = &(data->dataSource.data.fileData);
-    source->filename = _strdup( file );
-    source->isText = ( strcmp( type, "text" ) != 0 );
-    if( offset == NULL )
-    {
-    	source->offset = 0;
-    }
-    else
-    {
-    	source->offset = atoi( offset );
-    }
-}
-
-
-void semidenseInlineData( FieldmlContext *context, const char *const characters, const int length )
-{
-    StringDataSource *source;
-    char *newString;
-    ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
-    SemidenseData *data = (SemidenseData*)context->currentObject2;
-
-    if( data->dataSource.location != LOC_INLINE )
-    {
-        fprintf( stderr, "Semidense data for %s already has non-inline data\n", parameters->name );
-        return;
-    }
-
-    source = &(data->dataSource.data.stringData);
-
-    newString = malloc( source->length + length + 1 );
-    memcpy( newString, source->string, source->length );
-    memcpy( newString + source->length, characters, length );
-    source->length += length;
-    newString[ source->length ] = 0;
-    free( source->string );
-    source->string = newString;
-}
-
-
-void endSemidenseData( FieldmlContext *context )
-{
-    SemidenseData *data = (SemidenseData*)context->currentObject2;
-    context->currentObject2 = NULL;
-
-    if( context->state = FLP_ENSEMBLE_PARAMETERS )
-    {
-        EnsembleParameters *parameters = (EnsembleParameters*)context->currentObject;
-        
-        parameters->storageType = STORAGE_SEMIDENSE;
-        setStringTableEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
-    }
-    else if( context->state = FLP_CONTINUOUS_PARAMETERS )
-    {
-        ContinuousParameters *parameters = (ContinuousParameters*)context->currentObject;
-        
-        parameters->storageType = STORAGE_SEMIDENSE;
-        setStringTableEntry( context->parse->semidenseData, parameters->name, data, destroySemidenseData );
-    }
-    else
-    {
-    	// We've fallen off the edge of reality. DON'T PANIC. 
-    }
-}
-
-
-void startVariable( FieldmlContext *context, SaxAttributes *attributes )
-{
-    Variable *variable;
-
+    FieldmlObject *object;
     char *name = getAttribute( attributes, "name" );
     char *valueDomain = getAttribute( attributes, "valueDomain" );
+    int valueHandle;
 
     if( name == NULL )
     {
-        fprintf( stderr, "Variable has no name\n" );
+        fprintf( stderr, "ContinuousVariable has no name\n" );
         return;
     }
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "Variable %s has no value domain\n", name );
+        fprintf( stderr, "ContinuousVariable %s has no value domain\n", name );
         return;
     }
 
-    variable = createVariable( name, valueDomain );
+	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
-    context->currentObject = variable;
-    context->state = FLP_VARIABLE;
+    object = createFieldmlObject( name, FHT_CONTINUOUS_VARIABLE );
+    object->object.variable = createVariable( valueHandle );
+
+    context->currentObject = object;
+}
+
+
+void startEnsembleVariable( FieldmlContext *context, SaxAttributes *attributes )
+{
+    FieldmlObject *object;
+    char *name = getAttribute( attributes, "name" );
+    char *valueDomain = getAttribute( attributes, "valueDomain" );
+    int valueHandle;
+    
+    if( name == NULL )
+    {
+        fprintf( stderr, "EnsembleVariable has no name\n" );
+        return;
+    }
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "EnsembleVariable %s has no value domain\n", name );
+        return;
+    }
+
+	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+
+    object = createFieldmlObject( name, FHT_ENSEMBLE_VARIABLE );
+    object->object.variable = createVariable( valueHandle );
+
+    context->currentObject = object;
 }
 
 
 void endVariable( FieldmlContext *context )
 {
-    Variable *variable = (Variable*)context->currentObject;
+    addObject( context->parse, context->currentObject );
     context->currentObject = NULL;
-    context->state = FLP_IDLE;
-
-    setStringTableEntry( context->parse->variables, variable->name, variable, destroyVariable );
 }
 
 
 void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
+	FieldmlObject *object = (FieldmlObject*)context->currentObject;
 	StringTable *table;
 	char *key;
 	char *value;
@@ -1314,9 +1238,9 @@ void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
 	}
 	
 	table = NULL;
-	if( context->state == FLP_CONTINUOUS_AGGREGATE )
+	if( object->type == FHT_CONTINUOUS_AGGREGATE )
 	{
-		table = ((ContinuousAggregate *)context->currentObject)->markup;
+		table = object->object.aggregate->markup;
 	}
 	
 	if( table != NULL )

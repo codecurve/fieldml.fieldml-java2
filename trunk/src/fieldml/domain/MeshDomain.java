@@ -6,6 +6,7 @@ import java.util.Map;
 import fieldml.evaluator.EnsembleEvaluator;
 import fieldml.region.Region;
 import fieldml.value.MeshDomainValue;
+import fieldmlx.annotations.SerializationAsString;
 
 public class MeshDomain
     extends Domain
@@ -19,29 +20,32 @@ public class MeshDomain
     public final Map<Integer, String> shapes;
 
     public String defaultShape;
+    
+    @SerializationAsString
+    public final EnsembleDomain xiComponents;
 
     public final Map<EnsembleDomain, EnsembleEvaluator> pointConnectivity;
     
     public final EnsembleBounds elementBounds; 
 
 
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, int elementCount )
+    public MeshDomain( Region owner, String name, EnsembleDomain xiComponents, int elementCount )
     {
-        this( owner, name, xiBase, new ContiguousEnsembleBounds( elementCount ) );
+        this( owner, name, xiComponents, new ContiguousEnsembleBounds( elementCount ) );
     }
 
 
-    public MeshDomain( Region owner, String name, ContinuousDomain xiBase, EnsembleBounds elementBounds )
+    public MeshDomain( Region owner, String name, EnsembleDomain xiComponents, EnsembleBounds elementBounds )
     {
         super( name, null );
 
-        this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiBase );
+        this.xiComponents = xiComponents;
+        this.elementBounds = elementBounds;
+        this.xiDomain = new ContinuousDomain( owner, name + ".xi", xiComponents );
         this.elementDomain = new EnsembleDomain( owner, name + ".elements", elementBounds );
 
         shapes = new HashMap<Integer, String>();
         pointConnectivity = new HashMap<EnsembleDomain, EnsembleEvaluator>();
-        
-        this.elementBounds = elementBounds;
         
         owner.addDomain( this );
     }

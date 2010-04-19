@@ -107,7 +107,7 @@ public class HierarchicalExample
         Region testRegion = new SubRegion( REGION_NAME, parent );
         Region subRegion = QuadraticBSplineExample.buildRegion( testRegion );
         
-        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        EnsembleDomain rc1Domain = library.getEnsembleDomain( "library.ensemble.xi.1d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "hierarchical_mesh.domain", rc1Domain, 2 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );

@@ -57,7 +57,7 @@ public class BicubicHermiteTriquadTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain rc2Domain = library.getEnsembleDomain( "library.ensemble.xi.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -175,7 +175,7 @@ public class BicubicHermiteTriquadTest
 
         ImportedContinuousEvaluator elementBicubicHermite = library.importContinuousEvaluator( "test_mesh.element.bicubic_hermite",
             "library.fem.bicubic_hermite" );
-        elementBicubicHermite.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBicubicHermite.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBicubicHermite.alias( elementHermiteParameter, bicubicHermiteParametersDomain );
         testRegion.addEvaluator( elementBicubicHermite );
 

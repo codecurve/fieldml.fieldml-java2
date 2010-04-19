@@ -4,31 +4,14 @@ import fieldml.region.Region;
 import fieldml.value.ContinuousDomainValue;
 import fieldml.value.ContinuousValueSource;
 import fieldml.value.DomainValues;
-import fieldmlx.annotations.SerializationAsString;
 
 public class ContinuousDomain
     extends Domain
     implements ContinuousValueSource
 {
-    @SerializationAsString
-    public final ContinuousDomain baseDomain;
-
-
     public ContinuousDomain( Region owner, String name, EnsembleDomain componentDomain )
     {
         super( name, componentDomain );
-
-        this.baseDomain = null;
-
-        owner.addDomain( this );
-    }
-
-
-    public ContinuousDomain( Region owner, String name, ContinuousDomain baseDomain )
-    {
-        super( name, baseDomain.componentDomain );
-
-        this.baseDomain = baseDomain;
 
         owner.addDomain( this );
     }
@@ -37,8 +20,6 @@ public class ContinuousDomain
     public ContinuousDomain( Region owner, String name )
     {
         super( name, null );
-
-        this.baseDomain = null;
 
         owner.addDomain( this );
     }
