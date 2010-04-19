@@ -24,7 +24,7 @@ SimpleList *createSimpleList()
 }
 
 
-void addListEntry( SimpleList *list, void *entry )
+int addSimpleListEntry( SimpleList *list, void *entry )
 {
     if( list->size >= list->capacity )
     {
@@ -36,10 +36,12 @@ void addListEntry( SimpleList *list, void *entry )
     }
 
     list->data[list->size++] = entry;
+    
+    return list->size - 1;
 }
 
 
-void *getListEntry( SimpleList *list, int index )
+void *getSimpleListEntry( SimpleList *list, int index )
 {
     if( ( index < 0 ) || ( index >= list->size ) )
     {
@@ -50,7 +52,7 @@ void *getListEntry( SimpleList *list, int index )
 }
 
 
-int getListSize( SimpleList *list )
+int getSimpleListSize( SimpleList *list )
 {
     return list->size;
 }

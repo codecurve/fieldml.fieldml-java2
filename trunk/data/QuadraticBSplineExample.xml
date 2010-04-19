@@ -4,7 +4,7 @@
 x____x____x____x____x____x
 -->
   <Region name="QuadraticBSpline_Test">
-    <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.ensemble.xi.1d" />
     
 
     <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
@@ -32,7 +32,7 @@ x____x____x____x____x____x
     </EnsembleDomain>
     
 
-    <MeshDomain name="test_mesh.domain">
+    <MeshDomain xiComponents="library.ensemble.xi.1d" name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.line.0_1" />
         <entry key="2" value="library.shape.line.0_1" />
@@ -41,6 +41,7 @@ x____x____x____x____x____x
         <entry key="5" value="library.shape.line.0_1" />
       </shapes>
       <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="5" />
     </MeshDomain>
     
 
@@ -90,7 +91,7 @@ x____x____x____x____x____x
 
     <ImportedContinuousEvaluator evaluator="library.fem.quadratic_bspline" name="test_mesh.quadratic_bspline" valueDomain="library.real.1d">
       <continuousAliases>
-        <SimpleMapEntry key="library.xi.rc.1d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.xi.1d" value="test_mesh.domain.xi" />
         <SimpleMapEntry key="library.parameters.quadratic_bspline" value="test_mesh.element.quadratic_bspline.params" />
       </continuousAliases>
     </ImportedContinuousEvaluator>

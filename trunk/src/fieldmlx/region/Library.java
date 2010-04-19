@@ -24,8 +24,8 @@ public class Library
     {
         EnsembleDomain anonymous = library.getEnsembleDomain("library.anonymous");
         ContinuousDomain anonymousList = library.getContinuousDomain("library.weighting.list");
-        ContinuousDomain xi1d = library.getContinuousDomain("library.xi.rc.1d");
-        ContinuousDomain xi2d = library.getContinuousDomain("library.xi.rc.2d");
+        ContinuousDomain xi1d = library.getContinuousDomain("library.xi.1d");
+        ContinuousDomain xi2d = library.getContinuousDomain("library.xi.2d");
 
         ContinuousDomain real1 = library.getContinuousDomain( "library.real.1d" );
         ContinuousDomain parameterList = new ContinuousDomain( library, "library.parameter.list", anonymous );
@@ -134,11 +134,17 @@ public class Library
 
         EnsembleDomain quad4x4LocalNodeDomain = new EnsembleDomain( library, "library.local_nodes.quad.4x4", 16 );
 
-        EnsembleDomain rc1CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.1d", 1 );
+        EnsembleDomain rc1EnsembleDomain = new EnsembleDomain( library, "library.ensemble.rc.1d", 1 );
 
-        EnsembleDomain rc2CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.2d", 2 );
+        EnsembleDomain rc2EnsembleDomain = new EnsembleDomain( library, "library.ensemble.rc.2d", 2 );
 
-        EnsembleDomain rc3CoordinateDomain = new EnsembleDomain( library, "library.ensemble.rc.3d", 3 );
+        EnsembleDomain rc3EnsembleDomain = new EnsembleDomain( library, "library.ensemble.rc.3d", 3 );
+
+        EnsembleDomain xi1EnsembleDomain = new EnsembleDomain( library, "library.ensemble.xi.1d", 1 );
+
+        EnsembleDomain xi2EnsembleDomain = new EnsembleDomain( library, "library.ensemble.xi.2d", 2 );
+
+        EnsembleDomain xi3EnsembleDomain = new EnsembleDomain( library, "library.ensemble.xi.3d", 3 );
 
         EnsembleDomain cubicHermiteDerivativesDomain = new EnsembleDomain( library, "library.interpolation.hermite.derivatives", 4 );
 
@@ -150,11 +156,11 @@ public class Library
 
         new ContinuousDomain( library, "library.real.1d" );
 
-        new ContinuousDomain( library, "library.coordinates.rc.1d", rc1CoordinateDomain );
+        new ContinuousDomain( library, "library.coordinates.rc.1d", rc1EnsembleDomain );
 
-        new ContinuousDomain( library, "library.coordinates.rc.2d", rc2CoordinateDomain );
+        new ContinuousDomain( library, "library.coordinates.rc.2d", rc2EnsembleDomain );
 
-        new ContinuousDomain( library, "library.coordinates.rc.3d", rc3CoordinateDomain );
+        new ContinuousDomain( library, "library.coordinates.rc.3d", rc3EnsembleDomain );
 
         new ContinuousDomain( library, "library.linear_lagrange.parameters", line2LocalNodeDomain );
 
@@ -180,11 +186,11 @@ public class Library
 
         new ContinuousDomain( library, "library.weighting.list", anonymous );
 
-        new ContinuousDomain( library, "library.xi.rc.1d", rc1CoordinateDomain );
+        new ContinuousDomain( library, "library.xi.1d", xi1EnsembleDomain );
 
-        new ContinuousDomain( library, "library.xi.rc.2d", rc2CoordinateDomain );
+        new ContinuousDomain( library, "library.xi.2d", xi2EnsembleDomain );
 
-        new ContinuousDomain( library, "library.xi.rc.3d", rc3CoordinateDomain );
+        new ContinuousDomain( library, "library.xi.3d", xi3EnsembleDomain );
     }
 
     private static Region librarySingleton;

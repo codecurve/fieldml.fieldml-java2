@@ -13,7 +13,7 @@
         7        
 -->
   <Region name="BicubicHermiteTriquad_Test">
-    <ContinuousDomain baseDomain="library.coordinates.rc.2d" name="test_mesh.domain.xi" componentDomain="library.coordinates.rc.2d" />
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.ensemble.xi.2d" />
     
 
     <ContinuousDomain name="test_mesh.coordinates.d/ds" componentDomain="library.anonymous" />
@@ -32,13 +32,14 @@
     </EnsembleDomain>
     
 
-    <MeshDomain name="test_mesh.domain">
+    <MeshDomain xiComponents="library.ensemble.xi.2d" name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad.00_10_01_11" />
         <entry key="2" value="library.shape.quad.00_10_01_11" />
         <entry key="3" value="library.shape.quad.00_10_01_11" />
       </shapes>
       <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="3" />
     </MeshDomain>
     
 
@@ -208,7 +209,7 @@
 
     <ImportedContinuousEvaluator evaluator="library.fem.bicubic_hermite" name="test_mesh.element.bicubic_hermite" valueDomain="library.real.1d">
       <continuousAliases>
-        <SimpleMapEntry key="library.xi.rc.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.xi.2d" value="test_mesh.domain.xi" />
         <SimpleMapEntry key="library.bicubic_hermite.parameters" value="test_mesh.bicubic_hermite.element_parameter" />
       </continuousAliases>
     </ImportedContinuousEvaluator>

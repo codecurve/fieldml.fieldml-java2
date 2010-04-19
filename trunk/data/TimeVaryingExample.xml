@@ -4,7 +4,7 @@
 1____2____3____4____5
 -->
   <Region name="TimeVaryingExample_Test">
-    <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="tv_test.time.mesh.xi" componentDomain="library.coordinates.rc.1d" />
+    <ContinuousDomain name="tv_test.time.mesh.xi" componentDomain="library.ensemble.xi.1d" />
     
 
     <EnsembleDomain baseDomain="tv_test.time.mesh.elements" name="tv_test.time.mesh.elements">
@@ -17,9 +17,10 @@
     </EnsembleDomain>
     
 
-    <MeshDomain defaultShape="line_0_1" name="tv_test.time.mesh">
+    <MeshDomain defaultShape="line_0_1" xiComponents="library.ensemble.xi.1d" name="tv_test.time.mesh">
       <shapes />
       <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="3" />
     </MeshDomain>
     
 
@@ -69,7 +70,7 @@
 
     <ImportedContinuousEvaluator evaluator="library.fem.quadratic_lagrange" name="tv_test.mesh.quadratic_lagrange" valueDomain="library.real.1d">
       <continuousAliases>
-        <SimpleMapEntry key="library.xi.rc.1d" value="tv_test.time.mesh.xi" />
+        <SimpleMapEntry key="library.xi.1d" value="tv_test.time.mesh.xi" />
         <SimpleMapEntry key="library.parameters.quadratic_lagrange" value="tv_test.mesh.element.quadratic_lagrange.params" />
       </continuousAliases>
     </ImportedContinuousEvaluator>

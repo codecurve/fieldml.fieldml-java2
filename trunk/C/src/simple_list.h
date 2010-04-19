@@ -35,21 +35,21 @@ SimpleList *createSimpleList();
 
     NOTE: data can be NULL.
 */
-void addListEntry( SimpleList *list, void *data );
+int addSimpleListEntry( SimpleList *list, void *data );
 
 /*
     Get the data with the given index.
 
     NOTE: NULL if index is invalid. May also be NULL otherwise.
 */
-void *getListEntry( SimpleList *list, int index );
+void *getSimpleListEntry( SimpleList *list, int index );
 
 /*
     Get the number of entries in the list.
 
     NOTE: NULL entries are counted.
 */
-int getListSize( SimpleList *list );
+int getSimpleListSize( SimpleList *list );
 
 /*
     Deallocate the list's data. Each data entry is passed to the discard function.

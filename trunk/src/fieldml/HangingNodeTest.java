@@ -105,7 +105,7 @@ public class HangingNodeTest
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain rc2Domain = library.getEnsembleDomain( "library.ensemble.xi.2d" );
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 3 );
@@ -193,7 +193,7 @@ public class HangingNodeTest
         testRegion.addEvaluator( lagrangeParameters );
 
         ImportedContinuousEvaluator elementBilinearLagrange = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange", "library.fem.bilinear_lagrange" );
-        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBilinearLagrange.alias( lagrangeParameters, bilinearLagrangeParameters );
         testRegion.addEvaluator( elementBilinearLagrange );
 
@@ -233,7 +233,7 @@ public class HangingNodeTest
         Region library = world.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, world );
 
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain rc2Domain = library.getEnsembleDomain( "library.ensemble.xi.2d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc2Domain, 3 );
         meshDomain.setShape( 1, "library.shape.quad.00_10_01_11" );
@@ -321,7 +321,7 @@ public class HangingNodeTest
         ContinuousDomain bilinearLagrangeParameters = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
         
         ImportedContinuousEvaluator elementBilinearLagrange = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange", "library.fem.bilinear_lagrange" );
-        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBilinearLagrange.alias( bilinearElementDofs, bilinearLagrangeParameters );
         testRegion.addEvaluator( elementBilinearLagrange );
         

@@ -106,7 +106,7 @@ public class QuadraticBSplineExample
         Region library = parent.getLibrary();
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
-        ContinuousDomain rc1Domain = library.getContinuousDomain( "library.coordinates.rc.1d" );
+        EnsembleDomain rc1Domain = library.getEnsembleDomain( "library.ensemble.xi.1d" );
 
         MeshDomain meshDomain = new MeshDomain( testRegion, "test_mesh.domain", rc1Domain, 5 );
         meshDomain.setShape( 1, "library.shape.line.0_1" );
@@ -170,7 +170,7 @@ public class QuadraticBSplineExample
 
         ImportedContinuousEvaluator elementBSpline = library.importContinuousEvaluator( "test_mesh.quadratic_bspline",
             "library.fem.quadratic_bspline" );
-        elementBSpline.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.1d" ) );
+        elementBSpline.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.1d" ) );
         elementBSpline.alias( meshQuadraticBsplineParams, libraryQuadraticBsplineParams );
         testRegion.addEvaluator( elementBSpline );
 

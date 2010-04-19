@@ -17,8 +17,8 @@
       <ContiguousEnsembleBounds valueCount="125" />
     </EnsembleDomain>
     
-
-    <MeshDomain name="test_mesh.domain">
+    
+    <MeshDomain name="test_mesh.domain" xiComponentDomain="library.ensemble.xi.3d">
       <ContiguousEnsembleBounds valueCount="8" />
       <shapes>
         <SimpleMapEntry key="1" value="library.shape.cube" />
@@ -107,8 +107,8 @@
                 <entry value="library.ensemble.rc.3d"/>
                 <entry value="test_mesh.triquadratic_nodes"/>
             </denseIndexes>
-            <file_data file="HEX-M2-V2-P1_FE.C" type="text" offset="1" />
         </SemiDenseData>
+        <file_data file="HEX-M2-V2-P1_FE.C" type="text" offset="1" />
     </ContinuousParameters>
     
 
@@ -118,8 +118,8 @@
                 <entry value="library.local_nodes.cube.3x3x3"/>
                 <entry value="test_mesh.domain.elements"/>
             </denseIndexes>
-            <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="1" />
         </SemiDenseData>
+        <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="1" />
     </EnsembleParameters>
     
 
@@ -129,8 +129,8 @@
                 <entry value="library.local_nodes.cube.2x2x2"/>
                 <entry value="test_mesh.domain.elements"/>
             </denseIndexes>
-            <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="17" />
         </SemiDenseData>
+        <file_data file="HEX-M2-V2-P1_FE.M" type="text" offset="17" />
     </EnsembleParameters>
     
 

@@ -1,6 +1,8 @@
 #ifndef H_FIELDML_PARSE
 #define H_FIELDML_PARSE
 
+#include "string_table.h"
+
 typedef struct _SaxAttributes SaxAttributes;
 
 typedef struct _FieldmlContext FieldmlContext;
@@ -17,8 +19,6 @@ void destroyFieldmlParse( FieldmlParse *parse );
 FieldmlParse *createFieldmlParse();
 
 void destroyFieldmlParse( FieldmlParse *parse );
-
-void dumpFieldmlParse( FieldmlParse *parse );
 
 
 void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes );
@@ -44,7 +44,9 @@ void endMeshDomain( FieldmlContext *context );
 
 void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes );
 
-void continuousImportAlias( FieldmlContext *context, SaxAttributes *attributes );
+void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes );
+
+void onEnsembleImportAlias( FieldmlContext *context, SaxAttributes *attributes );
 
 void endContinuousImport( FieldmlContext *context );
 
@@ -73,7 +75,14 @@ void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attribu
 void endContinuousAggregate( FieldmlContext *context );
 
 
-void startVariable( FieldmlContext *context, SaxAttributes *attributes );
+void startContinuousDereference( FieldmlContext *context, SaxAttributes *attributes );
+
+void endContinuousDereference( FieldmlContext *context );
+
+
+void startContinuousVariable( FieldmlContext *context, SaxAttributes *attributes );
+
+void startEnsembleVariable( FieldmlContext *context, SaxAttributes *attributes );
 
 void endVariable( FieldmlContext *context );
 
@@ -83,15 +92,19 @@ void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes );
 
 void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes );
 
-void semidenseIndex( FieldmlContext *context, SaxAttributes *attributes, int isSparse );
+void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes );
 
-void semidenseStartInlineData( FieldmlContext *context, SaxAttributes *attributes );
-
-void semidenseInlineData( FieldmlContext *context, const char *const characters, const int length );
-
-void semidenseFileData( FieldmlContext *context, SaxAttributes *attributes );
+void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes );
 
 void endSemidenseData( FieldmlContext *context );
 
+void startInlineData( FieldmlContext *context, SaxAttributes *attributes );
+
+void onInlineData( FieldmlContext *context, const char *const characters, const int length );
+
+void onFileData( FieldmlContext *context, SaxAttributes *attributes );
+
+
+void finalizeFieldmlParse( FieldmlParse *parse );
 
 #endif // H_FIELDML_PARSE

@@ -4,7 +4,7 @@
 1____2____3____4____5
 -->
   <Region name="Hierarchical_Test">
-    <ContinuousDomain baseDomain="library.coordinates.rc.1d" name="hierarchical_mesh.domain.xi" componentDomain="library.coordinates.rc.1d" />
+    <ContinuousDomain name="hierarchical_mesh.domain.xi" componentDomain="library.ensemble.xi.1d" />
     
 
     <EnsembleDomain baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
@@ -17,12 +17,13 @@
     </EnsembleDomain>
     
 
-    <MeshDomain name="hierarchical_mesh.domain">
+    <MeshDomain xiComponents="library.ensemble.xi.1d" name="hierarchical_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.line.0_1" />
         <entry key="2" value="library.shape.line.0_1" />
       </shapes>
       <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="2" />
     </MeshDomain>
     
 

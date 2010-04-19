@@ -14,7 +14,7 @@
     </EnsembleDomain>
     
 
-    <MeshDomain name="test_mesh.domain">
+    <MeshDomain xiComponents="library.ensemble.xi.2d" name="test_mesh.domain">
       <shapes>
         <entry key="1" value="library.shape.quad" />
         <entry key="2" value="library.shape.triangle" />
@@ -92,17 +92,17 @@
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-            <inline_data>
-                1 0.0
-                2 10.0
-                3 20.0
-                4 0.0
-                5 10.0
-                6 20.0
-                7 30.0
-                13 30.0
-            </inline_data>
         </SemiDenseData>
+        <inline_data>
+            1 0.0
+            2 10.0
+            3 20.0
+            4 0.0
+            5 10.0
+            6 20.0
+            7 30.0
+            13 30.0
+        </inline_data>
     </ContinuousParameters>
 
     <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
@@ -110,22 +110,22 @@
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-            <inline_data>
-                1 10.0
-                2 10.0
-                3 10.0
-                4 0.0
-                5 0.0
-                6 0.0
-                7 10.0
-                8 5.0
-                9 5.0
-                10 5.0
-                11 10.0
-                12 0.0
-                13 0.0
-            </inline_data>
         </SemiDenseData>
+        <inline_data>
+            1 10.0
+            2 10.0
+            3 10.0
+            4 0.0
+            5 0.0
+            6 0.0
+            7 10.0
+            8 5.0
+            9 5.0
+            10 5.0
+            11 10.0
+            12 0.0
+            13 0.0
+        </inline_data>
     </ContinuousParameters>
     
 
@@ -180,10 +180,10 @@
             <denseIndexes>
                 <entry value="library.local_nodes.quad.3x3"/>
             </denseIndexes>
-            <inline_data>
-                4 6 12 13 8 9 10 3 11 7
-            </inline_data>
         </SemiDenseData>
+        <inline_data>
+            4 6 12 13 8 9 10 3 11 7
+        </inline_data>
     </EnsembleParameters>
     
 

@@ -55,7 +55,7 @@ public class BicubicHermiteTest
         Region testRegion = new SubRegion( REGION_NAME, parent );
 
         EnsembleDomain quad2x2LocalNodeDomain = library.getEnsembleDomain( "library.local_nodes.quad.2x2" );
-        ContinuousDomain rc2Domain = library.getContinuousDomain( "library.coordinates.rc.2d" );
+        EnsembleDomain rc2Domain = library.getEnsembleDomain( "library.ensemble.xi.2d" );
 
         EnsembleDomain edgeDirectionDomain = new EnsembleDomain( testRegion, "test_mesh.edge_direction", 1, 2 );
         testRegion.addDomain( edgeDirectionDomain );
@@ -126,7 +126,7 @@ public class BicubicHermiteTest
 
         ImportedContinuousEvaluator elementBilinear = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange",
             "library.fem.bilinear_lagrange" );
-        elementBilinear.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBilinear.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBilinear.alias( meshBilinearLagrangeParams, libraryBilinearLagrangeParams );
         testRegion.addEvaluator( elementBilinear );
 
@@ -166,7 +166,7 @@ public class BicubicHermiteTest
 
         ImportedContinuousEvaluator elementBicubic = library.importContinuousEvaluator( "test_mesh.element.bicubic_hermite",
             "library.fem.scaled_bicubic_hermite" );
-        elementBicubic.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.rc.2d" ) );
+        elementBicubic.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBicubic.alias( hermiteScaling, parameterScalingDomain );
         elementBicubic.alias( elementHermiteParameter, bicubicHermiteParametersDomain );
         testRegion.addEvaluator( elementBicubic );
