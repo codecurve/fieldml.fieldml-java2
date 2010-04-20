@@ -49,7 +49,7 @@
 
     <ImportedContinuousEvaluator evaluator="library.fem.triquadratic_lagrange" name="test_mesh.triquadratic_lagrange" valueDomain="library.real.1d">
       <continuousAliases>
-        <SimpleMapEntry key="library.xi.rc.3d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.xi.3d" value="test_mesh.domain.xi" />
         <SimpleMapEntry key="library.parameters.triquadratic_lagrange" value="test_mesh.element_params.triquadratic_lagrange" />
       </continuousAliases>
     </ImportedContinuousEvaluator>
@@ -62,12 +62,12 @@
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube1x1_nodes" valueSource="test_mesh.trilinear_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube2x2x2_nodes" valueSource="test_mesh.trilinear_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.trilinear_lagrange" name="test_mesh.trilinear_lagrange" valueDomain="library.real.1d">
       <continuousAliases>
-        <SimpleMapEntry key="library.xi.rc.3d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.xi.3d" value="test_mesh.domain.xi" />
         <SimpleMapEntry key="library.parameters.trilinear_lagrange" value="test_mesh.element_params.trilinear_lagrange" />
       </continuousAliases>
     </ImportedContinuousEvaluator>

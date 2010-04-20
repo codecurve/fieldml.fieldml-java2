@@ -95,6 +95,23 @@ FmlObjectHandle fmlGetObjectHandle( FmlParseHandle handle, FieldmlHandleType typ
 
 
 /*
+     Returns the number of markup entries (attribute/value pairs) for the given object.
+ */
+int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+/*
+     Returns the attribute string of the nth markup entry for the given object.
+ */
+char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+
+
+/*
+     Returns the value string of the nth markup entry for the given object.
+ */
+char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+
+/*
      Returns the handle of the given domain's component ensemble.
  */
 FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle );

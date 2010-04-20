@@ -331,12 +331,27 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             int nb_namespaces, const xmlChar **namespaces,
             int nb_attributes, int nb_defaulted, const xmlChar **attributes )
 {
-    int i, len;
-    
     SaxAttributes *saxAttributes = createAttributes( nb_attributes, attributes );
     SaxContext *saxContext = (SaxContext*)context;
 
-    switch( peekInt( saxContext->state ) )
+    int i, len, state;
+    
+    
+    state = peekInt( saxContext->state );
+    
+    if( ( state != FML_ROOT ) && ( state != FML_FIELDML ) && ( state != FML_REGION ) )
+    {
+        if( strcmp( name, MARKUP_TAG ) == 0 )
+        {
+            pushInt( saxContext->state, FML_MARKUP );
+
+            destroyAttributes( saxAttributes );
+            
+            return;
+        }
+    }
+
+    switch( state )
     {
     case FML_ROOT:
         if( strcmp( name, FIELDML_TAG ) == 0 )
@@ -421,10 +436,6 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         if( strcmp( name, SOURCE_FIELDS_TAG ) == 0 )
         {
             pushInt( saxContext->state, FML_SOURCE_FIELDS );
-        }
-        else if( strcmp( name, MARKUP_TAG ) == 0 )
-        {
-            pushInt( saxContext->state, FML_MARKUP );
         }
         break;
     case FML_MARKUP:

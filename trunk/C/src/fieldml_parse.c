@@ -132,7 +132,6 @@ ContinuousAggregate *createContinuousAggregate( int valueDomain )
     aggregate = calloc( 1, sizeof( ContinuousAggregate ) );
     aggregate->valueDomain = valueDomain;
     
-    aggregate->markup = createStringTable();
     aggregate->evaluators = createIntTable();
     
     return aggregate;
@@ -182,6 +181,7 @@ FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
     object = calloc( 1, sizeof( FieldmlObject ) );
     object->name = _strdup( name );
     object->type = type;
+    object->markup = createStringTable();
     
     return object;
 }
@@ -270,7 +270,6 @@ void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 
 void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
-    destroyStringTable( aggregate->markup, free );
     destroyIntTable( aggregate->evaluators, free );
     free( aggregate );
 }
@@ -326,6 +325,7 @@ void destroyFieldmlObject( FieldmlObject *object )
     default:
         break;
     }
+    destroyStringTable( object->markup, free );
     free( object->name );
     free( object );
 }
@@ -466,11 +466,11 @@ void finalizeFieldmlParse( FieldmlParse *parse )
     {
         object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
         
-        if( object->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN )
+        if( ( object->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN ) || ( object->type == FHT_UNKNOWN_CONTINUOUS_SOURCE ) )
         {
-            object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
+            object->type = FHT_REMOTE_CONTINUOUS_DOMAIN;
         }
-        else if( object->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN )
+        else if( ( object->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN ) || ( object->type == FHT_UNKNOWN_ENSEMBLE_SOURCE ) )
         {
             object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
         }
@@ -1291,9 +1291,14 @@ void endVariable( FieldmlContext *context )
 void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
     FieldmlObject *object = (FieldmlObject*)context->currentObject;
-    StringTable *table;
     char *key;
     char *value;
+    
+    if( object == NULL )
+    {
+        fprintf( stderr, "Unexpected markup\n" );
+        return;
+    }
     
     key = getAttribute( attributes, "key" );
     value = getAttribute( attributes, "value" );
@@ -1303,15 +1308,6 @@ void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
         fprintf( stderr, "Malformed markup\n" );
         return;
     }
-    
-    table = NULL;
-    if( object->type == FHT_CONTINUOUS_AGGREGATE )
-    {
-        table = object->object.aggregate->markup;
-    }
-    
-    if( table != NULL )
-    {
-        setStringTableEntry( table, key, _strdup( value ), free );
-    }
+
+    setStringTableEntry( object->markup, key, _strdup( value ), free );
 }
