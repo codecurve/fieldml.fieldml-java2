@@ -162,6 +162,48 @@ FieldmlHandleType fmlGetObjectType( FmlParseHandle handle, FmlObjectHandle objec
     return object->type;
 }
 
+int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return -1;
+    }
+    
+    return getStringTableCount( object->markup );
+}
+
+
+char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    return getStringTableEntryName( object->markup, index - 1 );
+}
+
+
+char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    return (char*)getStringTableEntryData( object->markup, index - 1 );
+}
+
+
 
 FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
@@ -830,6 +872,24 @@ int main( int argc, char **argv )
         
         fprintf( stdout, "  %d: %s (%s)\n", i, fmlGetObjectName( handle, oHandle ),
             fmlGetObjectName( handle, fmlGetValueDomain( handle, oHandle ) ) );
+    }
+
+    count = fmlGetObjectCount( handle, FHT_REMOTE_ENSEMBLE_DOMAIN );
+    fprintf( stdout, "External ensemble domain: %d\n", count ); 
+    for( i = 1; i <= count; i++ )
+    {
+        oHandle = fmlGetObjectHandle( handle, FHT_REMOTE_ENSEMBLE_DOMAIN, i );
+        
+        fprintf( stdout, "  %d: %s\n", i, fmlGetObjectName( handle, oHandle ) );
+    }
+
+    count = fmlGetObjectCount( handle, FHT_REMOTE_CONTINUOUS_DOMAIN );
+    fprintf( stdout, "External continuous domain: %d\n", count ); 
+    for( i = 1; i <= count; i++ )
+    {
+        oHandle = fmlGetObjectHandle( handle, FHT_REMOTE_CONTINUOUS_DOMAIN, i );
+        
+        fprintf( stdout, "  %d: %s\n", i, fmlGetObjectName( handle, oHandle ) );
     }
 
     return 0;

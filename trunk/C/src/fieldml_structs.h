@@ -69,8 +69,7 @@ ContinuousPiecewise;
 typedef struct _ContinuousAggregate
 {
     int valueDomain;
-    
-    StringTable *markup;
+
     IntTable *evaluators;
 }
 ContinuousAggregate;
@@ -145,6 +144,7 @@ Parameters;
 typedef struct _FieldmlObject
 {
     FieldmlHandleType type;
+    StringTable *markup;
     char *name;
     union
     {
