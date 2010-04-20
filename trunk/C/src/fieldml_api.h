@@ -144,7 +144,7 @@ int fmlGetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHa
 /*
      Returns the domain of the nth connectivity for the given mesh. 
  */
-FmlObjectHandle fmlGetMeshConnectivityName( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle fmlGetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
