@@ -49,7 +49,7 @@ void *getSimpleListEntry( SimpleList *list, int index );
 
     NOTE: NULL entries are counted.
 */
-int getSimpleListSize( SimpleList *list );
+int getSimpleListCount( SimpleList *list );
 
 /*
     Deallocate the list's data. Each data entry is passed to the discard function.

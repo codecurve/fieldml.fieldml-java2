@@ -52,7 +52,7 @@ void *getSimpleListEntry( SimpleList *list, int index )
 }
 
 
-int getSimpleListSize( SimpleList *list )
+int getSimpleListCount( SimpleList *list )
 {
     return list->size;
 }

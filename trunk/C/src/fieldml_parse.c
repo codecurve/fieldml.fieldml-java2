@@ -18,9 +18,9 @@
 
 struct _FieldmlContext
 {
-	FieldmlObject *currentObject;
-	
-	FieldmlParse *parse;
+    FieldmlObject *currentObject;
+    
+    FieldmlParse *parse;
 };
 
 
@@ -33,11 +33,11 @@ struct _FieldmlContext
 
 FieldmlContext *createFieldmlContext( FieldmlParse *parse )
 {
-	FieldmlContext *context = calloc( 1, sizeof( FieldmlContext ) );
-	
-	context->parse = parse;
-	
-	return context;
+    FieldmlContext *context = calloc( 1, sizeof( FieldmlContext ) );
+    
+    context->parse = parse;
+    
+    return context;
 }
 
 
@@ -55,33 +55,34 @@ FieldmlParse *createFieldmlParse()
 
 EnsembleDomain *createEnsembleDomain( int componentDomain )
 {
-	EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
-	domain->componentDomain = componentDomain;
-	domain->boundsType = BOUNDS_UNKNOWN;
-	
-	return domain;
+    EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
+    domain->componentDomain = componentDomain;
+    domain->boundsType = BOUNDS_UNKNOWN;
+    
+    return domain;
 }
 
 
 ContinuousDomain *createContinuousDomain( int componentDomain )
 {
-	ContinuousDomain *domain = calloc( 1, sizeof( ContinuousDomain ) );
-	domain->componentDomain = componentDomain;
-	
-	return domain;
+    ContinuousDomain *domain = calloc( 1, sizeof( ContinuousDomain ) );
+    domain->componentDomain = componentDomain;
+    
+    return domain;
 }
 
 
-MeshDomain *createMeshDomain( int xiEnsemble )
+MeshDomain *createMeshDomain( int xiDomain, int elementDomain )
 {
-	MeshDomain *domain;
-	
-	domain = calloc( 1, sizeof( MeshDomain ) );
-	domain->xiEnsemble = xiEnsemble;
-	domain->shapes = createIntTable();
-	domain->connectivity = createStringTable();
-	
-	return domain;
+    MeshDomain *domain;
+    
+    domain = calloc( 1, sizeof( MeshDomain ) );
+    domain->xiDomain = xiDomain;
+    domain->elementDomain = elementDomain;
+    domain->shapes = createIntTable();
+    domain->connectivity = createIntTable();
+    
+    return domain;
 }
 
 ContinuousImport *createContinuousImport( char *remoteName, int valueDomain )
@@ -112,42 +113,42 @@ Parameters *createParameters( int valueDomain )
 
 ContinuousPiecewise *createContinuousPiecewise( int valueDomain, int indexDomain )
 {
-	ContinuousPiecewise *piecewise;
-	
-	piecewise = calloc( 1, sizeof( ContinuousPiecewise ) );
-	piecewise->valueDomain = valueDomain;
-	piecewise->indexDomain = indexDomain;
-	
-	piecewise->evaluators = createIntTable();
-	
-	return piecewise;
+    ContinuousPiecewise *piecewise;
+    
+    piecewise = calloc( 1, sizeof( ContinuousPiecewise ) );
+    piecewise->valueDomain = valueDomain;
+    piecewise->indexDomain = indexDomain;
+    
+    piecewise->evaluators = createIntTable();
+    
+    return piecewise;
 }
 
 
 ContinuousAggregate *createContinuousAggregate( int valueDomain )
 {
-	ContinuousAggregate *aggregate;
-	
-	aggregate = calloc( 1, sizeof( ContinuousAggregate ) );
-	aggregate->valueDomain = valueDomain;
-	
-	aggregate->markup = createStringTable();
-	aggregate->evaluators = createIntTable();
-	
-	return aggregate;
+    ContinuousAggregate *aggregate;
+    
+    aggregate = calloc( 1, sizeof( ContinuousAggregate ) );
+    aggregate->valueDomain = valueDomain;
+    
+    aggregate->markup = createStringTable();
+    aggregate->evaluators = createIntTable();
+    
+    return aggregate;
 }
 
 
 ContinuousDereference *createContinuousDereference( int valueDomain, int valueIndexes, int valueSource )
 {
-	ContinuousDereference *dereference;
-	
-	dereference = calloc( 1, sizeof( ContinuousDereference ) );
-	dereference->valueDomain = valueDomain;
-	dereference->valueIndexes = valueIndexes;
-	dereference->valueSource = valueSource;
-	
-	return dereference;
+    ContinuousDereference *dereference;
+    
+    dereference = calloc( 1, sizeof( ContinuousDereference ) );
+    dereference->valueDomain = valueDomain;
+    dereference->valueIndexes = valueIndexes;
+    dereference->valueSource = valueSource;
+    
+    return dereference;
 }
 
 
@@ -176,13 +177,13 @@ Variable *createVariable( int valueDomain )
 
 FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
 {
-	FieldmlObject *object;
-	
-	object = calloc( 1, sizeof( FieldmlObject ) );
-	object->name = _strdup( name );
-	object->type = type;
-	
-	return object;
+    FieldmlObject *object;
+    
+    object = calloc( 1, sizeof( FieldmlObject ) );
+    object->name = _strdup( name );
+    object->type = type;
+    
+    return object;
 }
 
 //========================================================================
@@ -193,27 +194,27 @@ FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
 
 void destroyFieldmlContext( FieldmlContext *context )
 {
-	free( context );
+    free( context );
 }
 
 
 void destroyEnsembleDomain( EnsembleDomain *domain )
 {
-	free( domain );
+    free( domain );
 }
 
 
 void destroyContinuousDomain( ContinuousDomain *domain )
 {
-	free( domain );
+    free( domain );
 }
 
 
 void destroyMeshDomain( MeshDomain *domain )
 {
-	destroyIntTable( domain->shapes, free );
-	destroyStringTable( domain->connectivity, free );
-	free( domain );
+    destroyIntTable( domain->shapes, free );
+    destroyIntTable( domain->connectivity, free );
+    free( domain );
 }
 
 
@@ -238,7 +239,7 @@ void destroyParameters( Parameters *parameters )
     switch( parameters->descriptionType )
     {
     case DESCRIPTION_SEMIDENSE:
-    	destroySemidenseData( parameters->dataDescription.semidense );
+        destroySemidenseData( parameters->dataDescription.semidense );
         break;
     default:
         break;
@@ -247,13 +248,13 @@ void destroyParameters( Parameters *parameters )
     switch( parameters->locationType )
     {
     case LOCATION_FILE:
-    	free( parameters->dataLocation.fileData.filename );
-    	break;
-  	case LOCATION_INLINE:
-    	free( parameters->dataLocation.stringData.string );
-    	break;
+        free( parameters->dataLocation.fileData.filename );
+        break;
+      case LOCATION_INLINE:
+        free( parameters->dataLocation.stringData.string );
+        break;
     default:
-    	break;
+        break;
     }
 
     free( parameters );
@@ -262,22 +263,22 @@ void destroyParameters( Parameters *parameters )
 
 void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 {
-	destroyIntTable( piecewise->evaluators, NULL );
-	free( piecewise );
+    destroyIntTable( piecewise->evaluators, NULL );
+    free( piecewise );
 }
 
 
 void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
-	destroyStringTable( aggregate->markup, free );
-	destroyIntTable( aggregate->evaluators, free );
-	free( aggregate );
+    destroyStringTable( aggregate->markup, free );
+    destroyIntTable( aggregate->evaluators, free );
+    free( aggregate );
 }
 
 
 void destroyContinuousDereference( ContinuousDereference *dereference )
 {
-	free( dereference );
+    free( dereference );
 }
 
 
@@ -291,40 +292,40 @@ void destroyVariable( Variable *variable )
 
 void destroyFieldmlObject( FieldmlObject *object )
 {
-	switch( object->type )
-	{
-	case FHT_ENSEMBLE_DOMAIN:
-		destroyEnsembleDomain( object->object.ensembleDomain );
-		break;
-	case FHT_CONTINUOUS_DOMAIN:
-		destroyContinuousDomain( object->object.continuousDomain );
-		break;
-	case FHT_MESH_DOMAIN:
-		destroyMeshDomain( object->object.meshDomain );
-		break;
-	case FHT_CONTINUOUS_IMPORT:
-		destroyContinuousImport( object->object.continuousImport );
-		break;
-	case FHT_CONTINUOUS_PARAMETERS:
-	case FHT_ENSEMBLE_PARAMETERS:
-		destroyParameters( object->object.parameters );
-		break;
-	case FHT_CONTINUOUS_PIECEWISE:
-		destroyContinuousPiecewise( object->object.piecewise );
-		break;
-	case FHT_CONTINUOUS_AGGREGATE:
-		destroyContinuousAggregate( object->object.aggregate );
-		break;
-	case FHT_CONTINUOUS_VARIABLE:
-	case FHT_ENSEMBLE_VARIABLE:
-		destroyVariable( object->object.variable );
-		break;
-	case FHT_CONTINUOUS_DEREFERENCE:
-		destroyContinuousDereference( object->object.dereference );
-		break;
-	default:
-		break;
-	}
+    switch( object->type )
+    {
+    case FHT_ENSEMBLE_DOMAIN:
+        destroyEnsembleDomain( object->object.ensembleDomain );
+        break;
+    case FHT_CONTINUOUS_DOMAIN:
+        destroyContinuousDomain( object->object.continuousDomain );
+        break;
+    case FHT_MESH_DOMAIN:
+        destroyMeshDomain( object->object.meshDomain );
+        break;
+    case FHT_CONTINUOUS_IMPORT:
+        destroyContinuousImport( object->object.continuousImport );
+        break;
+    case FHT_CONTINUOUS_PARAMETERS:
+    case FHT_ENSEMBLE_PARAMETERS:
+        destroyParameters( object->object.parameters );
+        break;
+    case FHT_CONTINUOUS_PIECEWISE:
+        destroyContinuousPiecewise( object->object.piecewise );
+        break;
+    case FHT_CONTINUOUS_AGGREGATE:
+        destroyContinuousAggregate( object->object.aggregate );
+        break;
+    case FHT_CONTINUOUS_VARIABLE:
+    case FHT_ENSEMBLE_VARIABLE:
+        destroyVariable( object->object.variable );
+        break;
+    case FHT_CONTINUOUS_DEREFERENCE:
+        destroyContinuousDereference( object->object.dereference );
+        break;
+    default:
+        break;
+    }
     free( object->name );
     free( object );
 }
@@ -347,115 +348,133 @@ void destroyFieldmlParse( FieldmlParse *parse )
 
 static int getObjectHandle( FieldmlParse *parse, char *name )
 {
-	int i, count;
-	FieldmlObject *object;
-	
-	count = getSimpleListSize( parse->objects );
-	for( i = 0; i < count; i++ )
-	{
-		object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
-		if( strcmp( name, object->name ) == 0 )
-		{
-			return i;
-		}
-	}
-	
-	return FML_INVALID_HANDLE;
+    int i, count;
+    FieldmlObject *object;
+    
+    count = getSimpleListCount( parse->objects );
+    for( i = 0; i < count; i++ )
+    {
+        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        if( strcmp( name, object->name ) == 0 )
+        {
+            return i;
+        }
+    }
+    
+    return FML_INVALID_HANDLE;
 }
 
 
 static int addObject( FieldmlParse *parse, FieldmlObject *object )
 {
-	FieldmlObject *oldObject;
-	int handle = getObjectHandle( parse, object->name );
-	
-	if( handle == FML_INVALID_HANDLE )
-	{
-		return addSimpleListEntry( parse->objects, object );
-	}
+    FieldmlObject *oldObject;
+    int handle = getObjectHandle( parse, object->name );
+    
+    if( handle == FML_INVALID_HANDLE )
+    {
+        return addSimpleListEntry( parse->objects, object );
+    }
 
-	oldObject = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
-	if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN )
-	{
-		if( object->type == FHT_ENSEMBLE_DOMAIN )
-		{
-			oldObject->type = object->type;
-			oldObject->object = object->object;
-			object->type = FHT_UNKNOWN_ENSEMBLE_DOMAIN;
-			destroyFieldmlObject( object );
-			
-			return handle;
-		}
-	}
-	else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN )
-	{
-		if( object->type == FHT_CONTINUOUS_DOMAIN )
-		{
-			oldObject->type = object->type;
-			oldObject->object = object->object;
-			object->type = FHT_UNKNOWN_CONTINUOUS_DOMAIN;
-			destroyFieldmlObject( object );
-			
-			return handle;
-		}
-	}
-	else if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_SOURCE )
-	{
-		if( ( object->type == FHT_ENSEMBLE_DOMAIN ) ||
-		    ( object->type == FHT_ENSEMBLE_PARAMETERS ) ||
-		    ( object->type == FHT_ENSEMBLE_VARIABLE ) )
-		{
-			oldObject->type = object->type;
-			oldObject->object = object->object;
-			object->type = FHT_UNKNOWN_ENSEMBLE_SOURCE;
-			destroyFieldmlObject( object );
-			
-			return handle;
-		}
-	}
-	else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_SOURCE )
-	{
-		if( ( object->type == FHT_CONTINUOUS_DOMAIN ) ||
-			( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
-			( object->type == FHT_CONTINUOUS_IMPORT ) ||
-			( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
-			( object->type == FHT_CONTINUOUS_DEREFERENCE ) ||
-		    ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
-		    ( object->type == FHT_CONTINUOUS_VARIABLE ) )
-		{
-			oldObject->type = object->type;
-			oldObject->object = object->object;
-			object->type = FHT_UNKNOWN_CONTINUOUS_SOURCE;
-			destroyFieldmlObject( object );
-			
-			return handle;
-		}
-	}
-	
-	fprintf( stderr, "Handle collision: %d:%s cannot replace %d:%s\n",
-			object->type, object->name,
-			oldObject->type, oldObject->name );
-	destroyFieldmlObject( object );
-	
-	return FML_INVALID_HANDLE;
+    oldObject = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+    if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN )
+    {
+        if( object->type == FHT_ENSEMBLE_DOMAIN )
+        {
+            oldObject->type = object->type;
+            oldObject->object = object->object;
+            object->type = FHT_UNKNOWN_ENSEMBLE_DOMAIN;
+            destroyFieldmlObject( object );
+            
+            return handle;
+        }
+    }
+    else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN )
+    {
+        if( object->type == FHT_CONTINUOUS_DOMAIN )
+        {
+            oldObject->type = object->type;
+            oldObject->object = object->object;
+            object->type = FHT_UNKNOWN_CONTINUOUS_DOMAIN;
+            destroyFieldmlObject( object );
+            
+            return handle;
+        }
+    }
+    else if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_SOURCE )
+    {
+        if( ( object->type == FHT_ENSEMBLE_DOMAIN ) ||
+            ( object->type == FHT_ENSEMBLE_PARAMETERS ) ||
+            ( object->type == FHT_ENSEMBLE_VARIABLE ) )
+        {
+            oldObject->type = object->type;
+            oldObject->object = object->object;
+            object->type = FHT_UNKNOWN_ENSEMBLE_SOURCE;
+            destroyFieldmlObject( object );
+            
+            return handle;
+        }
+    }
+    else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_SOURCE )
+    {
+        if( ( object->type == FHT_CONTINUOUS_DOMAIN ) ||
+            ( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
+            ( object->type == FHT_CONTINUOUS_IMPORT ) ||
+            ( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
+            ( object->type == FHT_CONTINUOUS_DEREFERENCE ) ||
+            ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
+            ( object->type == FHT_CONTINUOUS_VARIABLE ) )
+        {
+            oldObject->type = object->type;
+            oldObject->object = object->object;
+            object->type = FHT_UNKNOWN_CONTINUOUS_SOURCE;
+            destroyFieldmlObject( object );
+            
+            return handle;
+        }
+    }
+    
+    fprintf( stderr, "Handle collision: %d:%s cannot replace %d:%s\n",
+            object->type, object->name,
+            oldObject->type, oldObject->name );
+    destroyFieldmlObject( object );
+    
+    return FML_INVALID_HANDLE;
 }
 
 
 int getOrCreateObjectHandle( FieldmlParse *parse, char *name, FieldmlHandleType type )
 {
-	int handle = getObjectHandle( parse, name );
+    int handle = getObjectHandle( parse, name );
 
-	if( handle == FML_INVALID_HANDLE )
-	{
-		handle = addObject( parse, createFieldmlObject( name, type ) );
-	}
-	
-	return handle;
+    if( handle == FML_INVALID_HANDLE )
+    {
+        handle = addObject( parse, createFieldmlObject( name, type ) );
+    }
+    
+    return handle;
 }
 
 
 void finalizeFieldmlParse( FieldmlParse *parse )
 {
+    FieldmlObject *object;
+    int i, count;
+    
+    count = getSimpleListCount( parse->objects );
+    
+    for( i = 0; i < count; i++ )
+    {
+        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        
+        if( object->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN )
+        {
+            object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
+        }
+        else if( object->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN )
+        {
+            object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
+        }
+    }
 }
 
 
@@ -482,11 +501,11 @@ void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes )
     componentEnsemble = getAttribute( attributes, "componentDomain" );
     if( componentEnsemble != NULL )
     {
-    	handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+        handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     }
     else
     {
-    	handle = FML_INVALID_HANDLE;
+        handle = FML_INVALID_HANDLE;
     }
 
     object = createFieldmlObject( name, FHT_ENSEMBLE_DOMAIN );
@@ -500,12 +519,33 @@ void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
 {
     char *count;
     FieldmlObject *object = context->currentObject;
-    EnsembleDomain *domain = object->object.ensembleDomain;
+    EnsembleDomain *domain;
+    
+    if( object->type == FHT_ENSEMBLE_DOMAIN )
+    {
+        domain = object->object.ensembleDomain;
+    }
+    else if( object->type == FHT_MESH_DOMAIN )
+    {
+        FieldmlObject *subObject = getSimpleListEntry( context->parse->objects, object->object.meshDomain->elementDomain );
+        
+        if( ( subObject == NULL ) || ( subObject->type != FHT_ENSEMBLE_DOMAIN ) )
+        {
+            fprintf( stderr, "MeshDomain %s is missing its element domain\n", object->name );
+            return;
+        }
+        
+        domain = subObject->object.ensembleDomain;
+    }
+    else
+    {
+        return;
+    }
     
     if( domain->boundsType != BOUNDS_UNKNOWN )
     {
-    	fprintf( stderr, "EnsembleDomain %s already has a bounds\n", object->name );
-    	return;
+        fprintf( stderr, "EnsembleDomain %s already has a bounds\n", object->name );
+        return;
     }
 
     count = getAttribute( attributes, "valueCount" );
@@ -555,11 +595,11 @@ void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
     componentEnsemble = getAttribute( attributes, "componentDomain" );
     if( componentEnsemble != NULL )
     {
-    	handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+        handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     }
     else
     {
-    	handle = FML_INVALID_HANDLE;
+        handle = FML_INVALID_HANDLE;
     }
 
     object = createFieldmlObject( name, FHT_CONTINUOUS_DOMAIN );
@@ -578,30 +618,53 @@ void endContinuousDomain( FieldmlContext *context )
 
 void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
 {
-	char *name;
-	char *xiEnsemble;
-	FieldmlObject *object;
-	int handle;
-	
-	name = getAttribute( attributes, "name" );
-	xiEnsemble = getAttribute( attributes, "xiComponentDomain" );
-	
-	if( name == NULL )
-	{
+    char *name;
+    char *xiEnsemble;
+    FieldmlObject *object, *xiObject, *elementObject;
+    int handle, xiHandle, elementHandle;
+    char *subName;
+    
+    name = getAttribute( attributes, "name" );
+    xiEnsemble = getAttribute( attributes, "xiComponentDomain" );
+    
+    if( name == NULL )
+    {
         fprintf( stderr, "MeshDomain has no name\n" );
         return;
-	}
-	
-	if( xiEnsemble == NULL )
-	{
+    }
+    
+    if( xiEnsemble == NULL )
+    {
         fprintf( stderr, "MeshDomain %s has no xi components\n", name );
         return;
-	}
+    }
 
-	handle = getOrCreateObjectHandle( context->parse, xiEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    subName = calloc( 1, strlen( name ) + 12 );
+    
+    handle = getOrCreateObjectHandle( context->parse, xiEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
-	object = createFieldmlObject( name, FHT_MESH_DOMAIN );
-    object->object.meshDomain = createMeshDomain( handle );
+    strcpy( subName, name );
+    strcat( subName, ".xi" );
+    xiObject = createFieldmlObject( subName, FHT_CONTINUOUS_DOMAIN );
+    xiObject->object.continuousDomain = createContinuousDomain( handle );
+    xiHandle = addObject( context->parse, xiObject );
+    if( xiHandle == FML_INVALID_HANDLE )
+    {
+        destroyFieldmlObject( xiObject );
+    }
+    
+    strcpy( subName, name );
+    strcat( subName, ".elements" );
+    elementObject = createFieldmlObject( subName, FHT_ENSEMBLE_DOMAIN );
+    elementObject->object.ensembleDomain = createEnsembleDomain( FML_INVALID_HANDLE );
+    elementHandle = addObject( context->parse, elementObject );
+    if( elementHandle == FML_INVALID_HANDLE )
+    {
+        destroyFieldmlObject( elementObject );
+    }
+    
+    object = createFieldmlObject( name, FHT_MESH_DOMAIN );
+    object->object.meshDomain = createMeshDomain( xiHandle, elementHandle );
 
     context->currentObject = object;
 }
@@ -609,7 +672,7 @@ void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
 
 void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
     MeshDomain *domain = object->object.meshDomain;
     char *element = getAttribute( attributes, "key" );
     char *shape = getAttribute( attributes, "value" );
@@ -626,18 +689,22 @@ void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
 
 void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
     MeshDomain *domain = object->object.meshDomain;
     char *type = getAttribute( attributes, "key" );
     char *field = getAttribute( attributes, "value" );
+    int fieldHandle, domainHandle;
 
     if( ( type == NULL ) || ( field == NULL ) )
     {
         fprintf( stderr, "MeshDomain %s has malformed connectivity entry\n", object->name );
         return;
     }
+    
+    domainHandle = getOrCreateObjectHandle( context->parse, type, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    fieldHandle = getOrCreateObjectHandle( context->parse, field, FHT_UNKNOWN_ENSEMBLE_SOURCE );
 
-    setStringTableEntry( domain->connectivity, type, _strdup( field ), free );
+    setIntTableEntry( domain->connectivity, domainHandle, (void*)(fieldHandle + 1), NULL );
 }
 
 
@@ -679,7 +746,7 @@ void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
     
     handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
-	object = createFieldmlObject( name, FHT_CONTINUOUS_IMPORT );
+    object = createFieldmlObject( name, FHT_CONTINUOUS_IMPORT );
     object->object.continuousImport = createContinuousImport( remoteName, handle );
 
     context->currentObject = object;
@@ -688,11 +755,11 @@ void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
 
 void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
     ContinuousImport *import = object->object.continuousImport;
     char *remote = getAttribute( attributes, "key" );
     char *local = getAttribute( attributes, "value" );
-	int localHandle, remoteHandle;
+    int localHandle, remoteHandle;
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
@@ -710,11 +777,11 @@ void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes
 
 void onEnsembleImportAlias( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
     ContinuousImport *import = object->object.continuousImport;
     char *remote = getAttribute( attributes, "key" );
     char *local = getAttribute( attributes, "value" );
-	int localHandle, remoteHandle;
+    int localHandle, remoteHandle;
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
@@ -743,8 +810,8 @@ void startContinuousDereference( FieldmlContext *context, SaxAttributes *attribu
     char *valueDomain = getAttribute( attributes, "valueDomain" );
     char *valueIndexes = getAttribute( attributes, "valueIndexes" );
     char *valueSource = getAttribute( attributes, "valueSource" );
-	FieldmlObject *object;
-	int valueHandle, indexHandle, sourceHandle;
+    FieldmlObject *object;
+    int valueHandle, indexHandle, sourceHandle;
 
     if( name == NULL )
     {
@@ -771,7 +838,7 @@ void startContinuousDereference( FieldmlContext *context, SaxAttributes *attribu
     indexHandle = getOrCreateObjectHandle( context->parse, valueIndexes, FHT_UNKNOWN_ENSEMBLE_SOURCE );
     sourceHandle = getOrCreateObjectHandle( context->parse, valueSource, FHT_UNKNOWN_CONTINUOUS_SOURCE );
 
-	object = createFieldmlObject( name, FHT_CONTINUOUS_DEREFERENCE );
+    object = createFieldmlObject( name, FHT_CONTINUOUS_DEREFERENCE );
     object->object.dereference = createContinuousDereference( valueHandle, indexHandle, sourceHandle );
 
     context->currentObject = object;
@@ -824,7 +891,7 @@ void endEnsembleParameters( FieldmlContext *context )
     }
     else
     {
-    	addObject( context->parse, context->currentObject );
+        addObject( context->parse, context->currentObject );
     }
     
     context->currentObject = NULL;
@@ -879,8 +946,8 @@ void endContinuousParameters( FieldmlContext *context )
 
 void startInlineData( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
     
     if( parameters->locationType != LOCATION_UNKNOWN )
     {
@@ -894,8 +961,8 @@ void startInlineData( FieldmlContext *context, SaxAttributes *attributes )
 
 void onInlineData( FieldmlContext *context, const char *const characters, const int length )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
     StringDataSource *source;
     char *newString;
 
@@ -918,8 +985,8 @@ void onInlineData( FieldmlContext *context, const char *const characters, const 
 
 void onFileData( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
     char *file = getAttribute( attributes, "file" );
     char *type = getAttribute( attributes, "type" );
     char *offset = getAttribute( attributes, "offset" );
@@ -949,19 +1016,19 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
     source->isText = ( strcmp( type, "text" ) != 0 );
     if( offset == NULL )
     {
-    	source->offset = 0;
+        source->offset = 0;
     }
     else
     {
-    	source->offset = atoi( offset );
+        source->offset = atoi( offset );
     }
 }
 
 
 void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
     
     if( parameters->descriptionType != DESCRIPTION_UNKNOWN )
     {
@@ -976,11 +1043,11 @@ void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
 
 void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
-	char *index;
-	int handle;
-	
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
+    char *index;
+    int handle;
+    
     if( parameters->descriptionType != DESCRIPTION_SEMIDENSE )
     {
         return;
@@ -995,16 +1062,16 @@ void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes 
     
     handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
-	addSimpleListEntry( parameters->dataDescription.semidense->sparseIndexes, (void*)(handle + 1) );//HACK!!
+    addSimpleListEntry( parameters->dataDescription.semidense->sparseIndexes, (void*)(handle + 1) );//HACK!!
 }
 
 
 void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	Parameters *parameters = object->object.parameters;
-	char *index;
-	int handle;
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
+    char *index;
+    int handle;
 
     if( parameters->descriptionType != DESCRIPTION_SEMIDENSE )
     {
@@ -1020,7 +1087,7 @@ void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes )
 
     handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
-	addSimpleListEntry( parameters->dataDescription.semidense->denseIndexes, (void*)(handle + 1) );//HACK!!
+    addSimpleListEntry( parameters->dataDescription.semidense->denseIndexes, (void*)(handle + 1) );//HACK!!
 }
 
 
@@ -1031,36 +1098,36 @@ void endSemidenseData( FieldmlContext *context )
 
 void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object;
-	char *name;
-	char *valueDomain;
-	char *indexDomain;
-	int valueHandle, indexHandle;
-	
-	name = getAttribute( attributes, "name" );
-	valueDomain = getAttribute( attributes, "valueDomain" );
-	indexDomain = getAttribute( attributes, "indexDomain" );
-	
-	if( name == NULL )
-	{
+    FieldmlObject *object;
+    char *name;
+    char *valueDomain;
+    char *indexDomain;
+    int valueHandle, indexHandle;
+    
+    name = getAttribute( attributes, "name" );
+    valueDomain = getAttribute( attributes, "valueDomain" );
+    indexDomain = getAttribute( attributes, "indexDomain" );
+    
+    if( name == NULL )
+    {
         fprintf( stderr, "ContinuousPiecewise has no name\n" );
         return;
-	}
-	
-	if( valueDomain == NULL )
-	{
-		fprintf( stderr, "ContinuousPiecewise %s has no value domain\n", name );
-		return;
-	}
-	
-	if( indexDomain == NULL )
-	{
-		fprintf( stderr, "ContinuousPiecewise %s has no index domain\n", name );
-		return;
-	}
-	
-	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
-	indexHandle = getOrCreateObjectHandle( context->parse, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    }
+    
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "ContinuousPiecewise %s has no value domain\n", name );
+        return;
+    }
+    
+    if( indexDomain == NULL )
+    {
+        fprintf( stderr, "ContinuousPiecewise %s has no index domain\n", name );
+        return;
+    }
+    
+    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    indexHandle = getOrCreateObjectHandle( context->parse, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
     object = createFieldmlObject( name, FHT_CONTINUOUS_PIECEWISE );
     object->object.piecewise = createContinuousPiecewise( valueHandle, indexHandle );
@@ -1071,24 +1138,24 @@ void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attribute
 
 void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	ContinuousPiecewise *piecewise = (ContinuousPiecewise*)object->object.piecewise;
-	char *key;
-	char *value;
-	int handle;
-	
-	key = getAttribute( attributes, "key" );
-	value = getAttribute( attributes, "value" );
-	
-	if( ( key == NULL ) || ( value == NULL ) )
-	{
-		fprintf( stderr, "Malformed element evaluator for ContinuousPiecewise %s\n", object->name );
-		return;
-	}
-	
-	handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
-	
-	setIntTableEntry( piecewise->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    ContinuousPiecewise *piecewise = (ContinuousPiecewise*)object->object.piecewise;
+    char *key;
+    char *value;
+    int handle;
+    
+    key = getAttribute( attributes, "key" );
+    value = getAttribute( attributes, "value" );
+    
+    if( ( key == NULL ) || ( value == NULL ) )
+    {
+        fprintf( stderr, "Malformed element evaluator for ContinuousPiecewise %s\n", object->name );
+        return;
+    }
+    
+    handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    
+    setIntTableEntry( piecewise->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
 }
 
 
@@ -1101,27 +1168,27 @@ void endContinuousPiecewise( FieldmlContext *context )
 
 void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object;
-	char *name;
-	char *valueDomain;
-	int valueHandle;
-	
-	name = getAttribute( attributes, "name" );
-	valueDomain = getAttribute( attributes, "valueDomain" );
-	
-	if( name == NULL )
-	{
+    FieldmlObject *object;
+    char *name;
+    char *valueDomain;
+    int valueHandle;
+    
+    name = getAttribute( attributes, "name" );
+    valueDomain = getAttribute( attributes, "valueDomain" );
+    
+    if( name == NULL )
+    {
         fprintf( stderr, "ContinuousAggregate has no name\n" );
         return;
-	}
-	
-	if( valueDomain == NULL )
-	{
-		fprintf( stderr, "ContinuousAggregate %s has no value domain\n", name );
-		return;
-	}
-	
-	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    }
+    
+    if( valueDomain == NULL )
+    {
+        fprintf( stderr, "ContinuousAggregate %s has no value domain\n", name );
+        return;
+    }
+    
+    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
     object = createFieldmlObject( name, FHT_CONTINUOUS_AGGREGATE );
     object->object.aggregate = createContinuousAggregate( valueHandle );
@@ -1132,24 +1199,24 @@ void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attribute
 
 void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	ContinuousAggregate *aggregate = (ContinuousAggregate*)object->object.aggregate;
-	char *key;
-	char *value;
-	int handle;
-	
-	key = getAttribute( attributes, "key" );
-	value = getAttribute( attributes, "value" );
-	
-	if( ( key == NULL ) || ( value == NULL ) )
-	{
-		fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", object->name );
-		return;
-	}
-	
-	handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
-	
-	setIntTableEntry( aggregate->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    ContinuousAggregate *aggregate = (ContinuousAggregate*)object->object.aggregate;
+    char *key;
+    char *value;
+    int handle;
+    
+    key = getAttribute( attributes, "key" );
+    value = getAttribute( attributes, "value" );
+    
+    if( ( key == NULL ) || ( value == NULL ) )
+    {
+        fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", object->name );
+        return;
+    }
+    
+    handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    
+    setIntTableEntry( aggregate->evaluators, atoi( key ), (void*)(handle + 1), NULL ); //HACK!!
 }
 
 
@@ -1178,7 +1245,7 @@ void startContinuousVariable( FieldmlContext *context, SaxAttributes *attributes
         return;
     }
 
-	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
     object = createFieldmlObject( name, FHT_CONTINUOUS_VARIABLE );
     object->object.variable = createVariable( valueHandle );
@@ -1205,7 +1272,7 @@ void startEnsembleVariable( FieldmlContext *context, SaxAttributes *attributes )
         return;
     }
 
-	valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
     object = createFieldmlObject( name, FHT_ENSEMBLE_VARIABLE );
     object->object.variable = createVariable( valueHandle );
@@ -1223,28 +1290,28 @@ void endVariable( FieldmlContext *context )
 
 void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
 {
-	FieldmlObject *object = (FieldmlObject*)context->currentObject;
-	StringTable *table;
-	char *key;
-	char *value;
-	
-	key = getAttribute( attributes, "key" );
-	value = getAttribute( attributes, "value" );
-	
-	if( ( key == NULL ) || ( value == NULL ) )
-	{
-		fprintf( stderr, "Malformed markup\n" );
-		return;
-	}
-	
-	table = NULL;
-	if( object->type == FHT_CONTINUOUS_AGGREGATE )
-	{
-		table = object->object.aggregate->markup;
-	}
-	
-	if( table != NULL )
-	{
-		setStringTableEntry( table, key, _strdup( value ), free );
-	}
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    StringTable *table;
+    char *key;
+    char *value;
+    
+    key = getAttribute( attributes, "key" );
+    value = getAttribute( attributes, "value" );
+    
+    if( ( key == NULL ) || ( value == NULL ) )
+    {
+        fprintf( stderr, "Malformed markup\n" );
+        return;
+    }
+    
+    table = NULL;
+    if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        table = object->object.aggregate->markup;
+    }
+    
+    if( table != NULL )
+    {
+        setStringTableEntry( table, key, _strdup( value ), free );
+    }
 }

@@ -18,7 +18,7 @@ struct _IntTable
 
 IntTable *createIntTable()
 {
-	IntTable *table = calloc( 1, sizeof( IntTable ) );
+    IntTable *table = calloc( 1, sizeof( IntTable ) );
     table->entries = 0;
     table->capacity = CAPACITY_INCREMENT;
     table->names = calloc( CAPACITY_INCREMENT, sizeof( int ) );

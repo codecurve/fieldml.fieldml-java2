@@ -35,6 +35,8 @@ void endContinuousDomain( FieldmlContext *context );
 
 void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes );
 
+void onMeshContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
+
 void onMeshShape( FieldmlContext *context, SaxAttributes *attributes );
 
 void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes );
