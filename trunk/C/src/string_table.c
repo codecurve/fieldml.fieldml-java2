@@ -110,15 +110,19 @@ void *getStringTableEntry( StringTable *table, char *name )
 void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard )
 {
     int i;
+    
     for( i = 0; i < table->entries; i++ )
     {
         if( table->names[i] != NULL )
         {
             free( table->names[i] );
         }
-        if( table->data[i] != NULL )
+        if( discard != NULL )
         {
-            discard( table->data[i] );
+            if( table->data[i] != NULL )
+            {
+                discard( table->data[i] );
+            }
         }
     }
     free( table->names );

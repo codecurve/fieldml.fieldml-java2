@@ -9,6 +9,9 @@ typedef struct _FieldmlContext FieldmlContext;
 
 typedef struct _FieldmlParse FieldmlParse;
 
+void addError( FieldmlParse *parse, char *error, char *name1, char *name2 );
+
+
 FieldmlContext *createFieldmlContext( FieldmlParse *parse );
 
 void destroyFieldmlContext( FieldmlContext *context );

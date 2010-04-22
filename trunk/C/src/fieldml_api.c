@@ -114,6 +114,28 @@ static FmlObjectHandle hackToHandle( void *hack )
     return (int)( hack ) - 1;
 }
 
+
+static int cappedCopy( char *source, char *buffer, int bufferLength )
+{
+    int length;
+    
+    if( bufferLength <= 0 )
+    {
+        return 0;
+    }
+    
+    length = strlen( source );
+    
+    if( length >= bufferLength )
+    {
+        length = ( bufferLength - 1 );
+    }
+    
+    memcpy( buffer, source, length );
+    buffer[length] = 0;
+    
+    return length;
+}
 //========================================================================
 //
 // API
@@ -125,6 +147,36 @@ FmlParseHandle fmlParseFile( char *filename )
     FieldmlParse *parse = parseFieldmlFile( filename );
 
     return parseToHandle( parse );
+}
+
+
+void fmlDestroyParse( FmlParseHandle handle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    
+    destroyFieldmlParse( parse );
+}
+
+
+int fmlGetErrorCount( FmlParseHandle handle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+
+    return getSimpleListCount( parse->errors );
+}
+
+
+char *fmlGetError( FmlParseHandle handle, int index )
+{
+    FieldmlParse *parse = handleToParse( handle );
+
+    return (char *)getSimpleListEntry( parse->errors, index - 1 );
+}
+
+
+int fmlCopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetError( handle, index ), buffer, bufferLength );
 }
 
 
@@ -190,6 +242,12 @@ char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle
 }
 
 
+int fmlCopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetMarkupAttribute( handle, objectHandle, index ), buffer, bufferLength );
+}
+
+
 char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -203,6 +261,11 @@ char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, in
     return (char*)getStringTableEntryData( object->markup, index - 1 );
 }
 
+
+int fmlCopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetMarkupValue( handle, objectHandle, index ), buffer, bufferLength );
+}
 
 
 FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle )
@@ -290,6 +353,12 @@ char *fmlGetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandl
 }
 
 
+int fmlCopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetMeshElementShape( handle, objectHandle, elementNumber ), buffer, bufferLength );
+}
+
+
 int fmlGetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -357,6 +426,12 @@ char *fmlGetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle )
     }
 
     return object->name;
+}
+
+
+int fmlCopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetObjectName( handle, objectHandle ), buffer, bufferLength );
 }
 
 
@@ -545,6 +620,12 @@ char *fmlGetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandl
     }
 
     return object->object.continuousImport->remoteName;
+}
+
+
+int fmlCopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+{
+    return cappedCopy( fmlGetImportRemoteName( handle, objectHandle ), buffer, bufferLength );
 }
 
 

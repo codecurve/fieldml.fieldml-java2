@@ -83,6 +83,27 @@ FmlParseHandle fmlParseFile( char *filename );
 
 
 /*
+     Frees all resources associated with the given parse.
+     
+     HANDLE SHOULD NOT BE USED AFTER THIS CALL.
+ */
+void fmlDestroyParse( FmlParseHandle handle );
+
+
+/*
+     Returns the number of errors encountered by the given parse.
+ */
+int fmlGetErrorCount( FmlParseHandle handle );
+
+
+/*
+     Returns the nth error string for the given parse.
+ */
+char *fmlGetError( FmlParseHandle handle, int index );
+int fmlCopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength );
+
+
+/*
      Returns the number of objects of the given type, or zero if there are none.
  */
 int fmlGetObjectCount( FmlParseHandle handle, FieldmlHandleType type );
@@ -104,12 +125,14 @@ int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
      Returns the attribute string of the nth markup entry for the given object.
  */
 char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+int fmlCopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
 
 
 /*
      Returns the value string of the nth markup entry for the given object.
  */
 char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+int fmlCopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
 
 /*
      Returns the handle of the given domain's component ensemble.
@@ -133,6 +156,7 @@ FmlObjectHandle fmlGetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle 
      Returns a string describing the shape of the element in the given mesh.
  */
 char *fmlGetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber );
+int fmlCopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
 
 
 /*
@@ -169,6 +193,7 @@ int fmlGetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHa
      Returns the name of the given object.
  */
 char *fmlGetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int fmlCopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
 
 
 /*
@@ -225,6 +250,7 @@ FmlObjectHandle fmlGetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle ob
      to identify the import's source fieldml region. 
  */
 char *fmlGetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int fmlCopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
 
 
 /*

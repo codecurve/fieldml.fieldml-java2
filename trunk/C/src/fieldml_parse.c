@@ -48,6 +48,7 @@ FieldmlParse *createFieldmlParse()
     parse = calloc( 1, sizeof( FieldmlParse ) );
 
     parse->objects = createSimpleList();
+    parse->errors = createSimpleList();
     
     return parse;
 }
@@ -213,7 +214,7 @@ void destroyContinuousDomain( ContinuousDomain *domain )
 void destroyMeshDomain( MeshDomain *domain )
 {
     destroyIntTable( domain->shapes, free );
-    destroyIntTable( domain->connectivity, free );
+    destroyIntTable( domain->connectivity, NULL );
     free( domain );
 }
 
@@ -221,7 +222,7 @@ void destroyMeshDomain( MeshDomain *domain )
 void destroyContinuousImport( ContinuousImport *import )
 {
     free( import->remoteName );
-    destroyIntTable( import->aliases, free );
+    destroyIntTable( import->aliases, NULL );
     free( import );
 }
 
@@ -270,7 +271,7 @@ void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 
 void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
-    destroyIntTable( aggregate->evaluators, free );
+    destroyIntTable( aggregate->evaluators, NULL );
     free( aggregate );
 }
 
@@ -333,7 +334,8 @@ void destroyFieldmlObject( FieldmlObject *object )
 
 void destroyFieldmlParse( FieldmlParse *parse )
 {
-    destroySimpleList( parse->objects, NULL );
+    destroySimpleList( parse->objects, destroyFieldmlObject );
+    destroySimpleList( parse->errors, free );
 
     free( parse );
 }
@@ -344,6 +346,44 @@ void destroyFieldmlParse( FieldmlParse *parse )
 // Utility
 //
 //========================================================================
+
+
+void addError( FieldmlParse *parse, char *error, char *name1, char *name2 )
+{
+    char *string;
+    int len;
+    
+    len = strlen( error );
+    if( name1 != NULL )
+    {
+        len +=  strlen( name1 ) + 2;
+    }
+    if( name2 != NULL )
+    {
+        len +=  strlen( name2 ) + 2;
+    }
+    
+    len++;
+    
+    string = malloc( len );
+    
+    strcpy( string, error );
+    
+    if( name1 != NULL )
+    {
+        strcat( string, ": " );
+        strcat( string, name1 );
+    }
+    if( name2 != NULL )
+    {
+        strcat( string, ": " );
+        strcat( string, name2 );
+    }
+    
+    addSimpleListEntry( parse->errors, string );
+    
+    fprintf( stderr, "%s\n", string );
+}
 
 
 static int getObjectHandle( FieldmlParse *parse, char *name )
@@ -433,9 +473,7 @@ static int addObject( FieldmlParse *parse, FieldmlObject *object )
         }
     }
     
-    fprintf( stderr, "Handle collision: %d:%s cannot replace %d:%s\n",
-            object->type, object->name,
-            oldObject->type, oldObject->name );
+    addError( parse, "Handle collision. Cannot replace", object->name, oldObject->name );
     destroyFieldmlObject( object );
     
     return FML_INVALID_HANDLE;
@@ -494,7 +532,7 @@ void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
-        fprintf( stderr, "EnsembleDomain has no name\n" );
+        addError( context->parse, "EnsembleDomain has no name", NULL, NULL );
         return;
     }
     
@@ -531,7 +569,7 @@ void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
         
         if( ( subObject == NULL ) || ( subObject->type != FHT_ENSEMBLE_DOMAIN ) )
         {
-            fprintf( stderr, "MeshDomain %s is missing its element domain\n", object->name );
+            addError( context->parse, "MeshDomain is missing its element domain", object->name, NULL );
             return;
         }
         
@@ -544,14 +582,14 @@ void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes )
     
     if( domain->boundsType != BOUNDS_UNKNOWN )
     {
-        fprintf( stderr, "EnsembleDomain %s already has a bounds\n", object->name );
+        addError( context->parse, "EnsembleDomain already has a bounds", object->name, NULL );
         return;
     }
 
     count = getAttribute( attributes, "valueCount" );
     if( count == NULL )
     {
-        fprintf( stderr, "ContiguousEnsembleBounds for %s has no value count\n", object->name );
+        addError( context->parse, "ContiguousEnsembleBounds for has no value count", object->name, NULL );
         return;
     }
 
@@ -566,7 +604,7 @@ void endEnsembleDomain( FieldmlContext *context )
 
     if( domain->boundsType == BOUNDS_UNKNOWN )
     {
-        fprintf( stderr, "EnsembleDomain %s has no bounds\n", context->currentObject->name );
+        addError( context->parse, "EnsembleDomain has no bounds", context->currentObject->name, NULL );
         destroyFieldmlObject( context->currentObject );
     }
     else
@@ -588,7 +626,7 @@ void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousDomain has no name\n" );
+        addError( context->parse, "ContinuousDomain has no name", NULL, NULL );
         return;
     }
     
@@ -629,13 +667,13 @@ void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        fprintf( stderr, "MeshDomain has no name\n" );
+        addError( context->parse, "MeshDomain has no name", NULL, NULL );
         return;
     }
     
     if( xiEnsemble == NULL )
     {
-        fprintf( stderr, "MeshDomain %s has no xi components\n", name );
+        addError( context->parse, "MeshDomain has no xi components", name, NULL );
         return;
     }
 
@@ -679,7 +717,7 @@ void onMeshShape( FieldmlContext *context, SaxAttributes *attributes )
 
     if( ( element == NULL ) || ( shape == NULL ) )
     {
-        fprintf( stderr, "MeshDomain %s has malformed shape entry\n", object->name );
+        addError( context->parse, "MeshDomain has malformed shape entry", object->name, NULL );
         return;
     }
 
@@ -697,7 +735,7 @@ void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes )
 
     if( ( type == NULL ) || ( field == NULL ) )
     {
-        fprintf( stderr, "MeshDomain %s has malformed connectivity entry\n", object->name );
+        addError( context->parse, "MeshDomain has malformed connectivity entry", object->name, NULL );
         return;
     }
     
@@ -726,21 +764,21 @@ void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, "name" );
     if( name == NULL )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator has no name\n" );
+        addError( context->parse, "ImportedContinuousEvaluator has no name", NULL, NULL );
         return;
     }
     
     remoteName = getAttribute( attributes, "evaluator" );
     if( remoteName == NULL )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator %s has no remote name\n", name );
+        addError( context->parse, "ImportedContinuousEvaluator has no remote name", name, NULL );
         return;
     }
     
     valueDomain = getAttribute( attributes, "valueDomain" );
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator %s has no value domain\n", name );
+        addError( context->parse, "ImportedContinuousEvaluator has no value domain", name, NULL );
         return;
     }
     
@@ -763,7 +801,7 @@ void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator %s has malformed alias\n", object->name );
+        addError( context->parse, "ImportedContinuousEvaluator has malformed alias", object->name, NULL );
         return;
     }
 
@@ -785,7 +823,7 @@ void onEnsembleImportAlias( FieldmlContext *context, SaxAttributes *attributes )
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
-        fprintf( stderr, "ImportedContinuousEvaluator %s has malformed alias\n", object->name );
+        addError( context->parse, "ImportedContinuousEvaluator has malformed alias", object->name, NULL );
         return;
     }
 
@@ -815,22 +853,22 @@ void startContinuousDereference( FieldmlContext *context, SaxAttributes *attribu
 
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousDereference has no name\n" );
+        addError( context->parse, "ContinuousDereference has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ContinuousDereference %s has no value domain\n", name );
+        addError( context->parse, "ContinuousDereference has no value domain", name, NULL );
         return;
     }
     if( valueIndexes == NULL )
     {
-        fprintf( stderr, "ContinuousDereference %s has no value indexes\n", name );
+        addError( context->parse, "ContinuousDereference has no value indexes", name, NULL );
         return;
     }
     if( valueSource == NULL )
     {
-        fprintf( stderr, "ContinuousDereference %s has no value source\n", name );
+        addError( context->parse, "ContinuousDereference has no value source", name, NULL );
         return;
     }
 
@@ -861,13 +899,13 @@ void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes
 
     if( name == NULL )
     {
-        fprintf( stderr, "EnsembleParameters has no name\n" );
+        addError( context->parse, "EnsembleParameters has no name", NULL, NULL );
         return;
     }
 
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "EnsembleParameters %s has no value domain\n", name );
+        addError( context->parse, "EnsembleParameters has no value domain", name, NULL );
         return;
     }
 
@@ -886,7 +924,7 @@ void endEnsembleParameters( FieldmlContext *context )
 
     if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
     {
-        fprintf( stderr, "EnsembleParameters %s has no data\n", context->currentObject->name );
+        addError( context->parse, "EnsembleParameters has no data", context->currentObject->name, NULL );
         destroyFieldmlObject( context->currentObject );
     }
     else
@@ -907,13 +945,13 @@ void startContinuousParameters( FieldmlContext *context, SaxAttributes *attribut
 
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousParameters has no name\n" );
+        addError( context->parse, "ContinuousParameters has no name", NULL, NULL );
         return;
     }
 
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ContinuousParameters %s has no value domain\n", name );
+        addError( context->parse, "ContinuousParameters has no value domain", name, NULL );
         return;
     }
 
@@ -932,7 +970,7 @@ void endContinuousParameters( FieldmlContext *context )
 
     if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
     {
-        fprintf( stderr, "ContinuousParameters %s has no data\n", context->currentObject->name );
+        addError( context->parse, "ContinuousParameters has no data", context->currentObject->name, NULL );
         destroyFieldmlObject( context->currentObject );
     }
     else
@@ -951,7 +989,7 @@ void startInlineData( FieldmlContext *context, SaxAttributes *attributes )
     
     if( parameters->locationType != LOCATION_UNKNOWN )
     {
-        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        addError( context->parse, "Parameters already has data", object->name, NULL );
         return;
     }
     
@@ -994,18 +1032,18 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
     
     if( parameters->locationType != LOCATION_UNKNOWN )
     {
-        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        addError( context->parse, "Parameters already has data", object->name, NULL );
         return;
     }
     
     if( file == NULL )
     {
-        fprintf( stderr, "Parameters file data for %s must have a file name\n", object->name );
+        addError( context->parse, "Parameters file data for must have a file name", object->name, NULL );
         return;
     }
     if( type == NULL )
     {
-        fprintf( stderr, "Parameters file data for %s must have a file type\n", object->name );
+        addError( context->parse, "Parameters file data for must have a file type", object->name, NULL );
         return;
     }
     
@@ -1032,7 +1070,7 @@ void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes )
     
     if( parameters->descriptionType != DESCRIPTION_UNKNOWN )
     {
-        fprintf( stderr, "Parameters %s already has data\n", object->name );
+        addError( context->parse, "Parameters already has data", object->name, NULL );
         return;
     }
     
@@ -1056,7 +1094,7 @@ void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes 
     index = getAttribute( attributes, "value" );
     if( index == NULL )
     {
-        fprintf( stderr, "Missing index in semi dense data\n" );
+        addError( context->parse, "Missing index in semi dense data", object->name, NULL );
         return;
     }
     
@@ -1081,7 +1119,7 @@ void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes )
     index = getAttribute( attributes, "value" );
     if( index == NULL )
     {
-        fprintf( stderr, "Missing index in semi dense data\n" );
+        addError( context->parse, "Missing index in semi dense data", object->name, NULL );
         return;
     }
 
@@ -1110,19 +1148,19 @@ void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attribute
     
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousPiecewise has no name\n" );
+        addError( context->parse, "ContinuousPiecewise has no name", NULL, NULL );
         return;
     }
     
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ContinuousPiecewise %s has no value domain\n", name );
+        addError( context->parse, "ContinuousPiecewise has no value domain", name, NULL );
         return;
     }
     
     if( indexDomain == NULL )
     {
-        fprintf( stderr, "ContinuousPiecewise %s has no index domain\n", name );
+        addError( context->parse, "ContinuousPiecewise has no index domain", name, NULL );
         return;
     }
     
@@ -1149,7 +1187,7 @@ void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attribu
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        fprintf( stderr, "Malformed element evaluator for ContinuousPiecewise %s\n", object->name );
+        addError( context->parse, "Malformed element evaluator for ContinuousPiecewise", object->name, NULL );
         return;
     }
     
@@ -1178,13 +1216,13 @@ void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attribute
     
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousAggregate has no name\n" );
+        addError( context->parse, "ContinuousAggregate has no name", NULL, NULL );
         return;
     }
     
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ContinuousAggregate %s has no value domain\n", name );
+        addError( context->parse, "ContinuousAggregate has no value domain", name, NULL );
         return;
     }
     
@@ -1210,7 +1248,7 @@ void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attribu
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        fprintf( stderr, "Malformed element evaluator for ContinuousAggregate %s\n", object->name );
+        addError( context->parse, "Malformed element evaluator for ContinuousAggregate", object->name, NULL );
         return;
     }
     
@@ -1236,12 +1274,12 @@ void startContinuousVariable( FieldmlContext *context, SaxAttributes *attributes
 
     if( name == NULL )
     {
-        fprintf( stderr, "ContinuousVariable has no name\n" );
+        addError( context->parse, "ContinuousVariable has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "ContinuousVariable %s has no value domain\n", name );
+        addError( context->parse, "ContinuousVariable has no value domain", name, NULL );
         return;
     }
 
@@ -1263,12 +1301,12 @@ void startEnsembleVariable( FieldmlContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        fprintf( stderr, "EnsembleVariable has no name\n" );
+        addError( context->parse, "EnsembleVariable has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        fprintf( stderr, "EnsembleVariable %s has no value domain\n", name );
+        addError( context->parse, "EnsembleVariable has no value domain", name, NULL );
         return;
     }
 
@@ -1296,7 +1334,7 @@ void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
     
     if( object == NULL )
     {
-        fprintf( stderr, "Unexpected markup\n" );
+        addError( context->parse, "Unexpected markup", NULL, NULL );
         return;
     }
     
@@ -1305,7 +1343,7 @@ void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes )
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        fprintf( stderr, "Malformed markup\n" );
+        addError( context->parse, "Malformed markup", object->name, NULL );
         return;
     }
 

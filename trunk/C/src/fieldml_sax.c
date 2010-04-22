@@ -334,8 +334,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     SaxAttributes *saxAttributes = createAttributes( nb_attributes, attributes );
     SaxContext *saxContext = (SaxContext*)context;
 
-    int i, len, state;
-    
+    int state;
     
     state = peekInt( saxContext->state );
     
@@ -559,41 +558,6 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         }
         //FALLTHROUGH
     default:
-        fprintf( stdout, "SAX.startElementNs( %s", ( char * ) name );
-        if ( prefix == NULL )
-        fprintf( stdout, ", NULL" );
-        else
-        fprintf( stdout, ", %s", ( char * ) prefix );
-        if ( URI == NULL )
-        fprintf( stdout, ", NULL" );
-        else
-        fprintf( stdout, ", '%s'", ( char * ) URI );
-        fprintf( stdout, ", %d", nb_namespaces );
-
-        fprintf( stdout, ", %d, %d", nb_attributes, nb_defaulted );
-        if ( attributes != NULL )
-        {
-            char attributeBuffer[1024];
-
-            for ( i = 0;i < nb_attributes * 5;i += 5 )
-            {
-                if ( attributes[i + 1] != NULL )
-                fprintf( stdout, ", %s:%s='", attributes[i + 1], attributes[i] );
-                else
-                fprintf( stdout, ", %s='", attributes[i] );
-                
-                len = ( int )( attributes[i + 4] - attributes[i + 3] );
-                if( len > 1023 )
-                {
-                    len = 1023;
-                }
-                strncpy( attributeBuffer, attributes[i + 3], len );
-                attributeBuffer[ len ] = 0;
-                
-                fprintf( stdout, "%s'", attributeBuffer );
-            }
-            fprintf( stdout, " )\n" );
-        }
         break;
     }
     
@@ -776,15 +740,6 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
         }
         //FALLTHROUGH
     default:
-        fprintf( stdout, "SAX.endElementNs( %s", ( char * ) name );
-        if ( prefix == NULL )
-        fprintf( stdout, ", NULL" );
-        else
-        fprintf( stdout, ", %s", ( char * ) prefix );
-        if ( URI == NULL )
-        fprintf( stdout, ", NULL )\n" );
-        else
-        fprintf( stdout, ", '%s' )\n", ( char * ) URI );
         break;
     }
 }
@@ -836,7 +791,7 @@ static xmlSAXHandlerPtr SAX2Handler = &SAX2HandlerStruct;
 
 FieldmlParse *parseFieldmlFile( char *filename )
 {
-    int res;
+    int res, state;
     SaxContext context;
     
     FieldmlParse *parse = createFieldmlParse();
@@ -853,17 +808,13 @@ FieldmlParse *parseFieldmlFile( char *filename )
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
     if( res != 0 ) 
     {
-        fprintf( stdout, "xmlSAXUserParseFile returned error %d\n", res );
+        addError( parse, "xmlSAXUserParseFile returned error", NULL, NULL );
     }
-    if( peekInt( context.state ) != -1 )
+    
+    state = peekInt( context.state );
+    if( state != FML_ROOT )
     {
-        int s;
-        fprintf( stdout, "Parser state not empty:\n");
-        while( peekInt( context.state ) != -1 )
-        {
-            s = popInt( context.state );
-            fprintf( stdout, "    %d\n", s );
-        }
+        addError( parse, "Parser state not empty", NULL, NULL );
     }
 
     xmlCleanupParser( );
