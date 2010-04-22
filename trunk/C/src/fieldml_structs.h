@@ -165,6 +165,8 @@ FieldmlObject;
 
 typedef struct _FieldmlParse
 {
+    SimpleList *errors;
+    
     SimpleList *objects;
 }
 FieldmlParse;

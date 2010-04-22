@@ -108,11 +108,15 @@ void *getIntTableEntry( IntTable *table, int name )
 void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard )
 {
     int i;
-    for( i = 0; i < table->entries; i++ )
+    
+    if( discard != NULL )
     {
-        if( table->data[i] != NULL )
+        for( i = 0; i < table->entries; i++ )
         {
-            discard( table->data[i] );
+            if( table->data[i] != NULL )
+            {
+                discard( table->data[i] );
+            }
         }
     }
     free( table->names );

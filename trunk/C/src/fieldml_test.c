@@ -1,6 +1,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <libxml/sax.h>
+#include <libxml/globals.h>
+#include <libxml/xmlerror.h>
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+
 #include "fieldml_api.h"
 
 
@@ -214,6 +220,26 @@ int main( int argc, char **argv )
         
         fprintf( stdout, "  %d: %s\n", i, fmlGetObjectName( handle, oHandle ) );
     }
+    
+    
+    fprintf( stdout, "*******************************\n" );
+    
+    count = fmlGetErrorCount( handle );
+    if( count <= 0 )
+    {
+        fprintf( stdout, "No Errors\n" );
+    }
+    else
+    {
+        for( i = 1; i <= count; i++ )
+        {
+            fprintf( stdout, "   %s\n", fmlGetError( handle, i ) );
+        }
+    }
 
+    fprintf( stdout, "*******************************\n" );
+    
+    fmlDestroyParse( handle );
+    
     return 0;
 }
