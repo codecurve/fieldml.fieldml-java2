@@ -65,7 +65,6 @@ typedef enum _FieldmlHandleType
     FHT_UNKNOWN_CONTINUOUS_DOMAIN,
     FHT_UNKNOWN_ENSEMBLE_SOURCE,
     FHT_UNKNOWN_CONTINUOUS_SOURCE,
-    
 }
 FieldmlHandleType;
 
@@ -79,7 +78,7 @@ typedef int FmlObjectHandle;
      Parses the given file, and returns a handle to the parsed data. This
      handle is then used for all subsequent API calls. 
  */
-FmlParseHandle fmlParseFile( char *filename );
+FmlParseHandle Fieldml_ParseFile( const char *filename );
 
 
 /*
@@ -87,94 +86,94 @@ FmlParseHandle fmlParseFile( char *filename );
      
      HANDLE SHOULD NOT BE USED AFTER THIS CALL.
  */
-void fmlDestroyParse( FmlParseHandle handle );
+void Fieldml_DestroyParse( FmlParseHandle handle );
 
 
 /*
      Returns the number of errors encountered by the given parse.
  */
-int fmlGetErrorCount( FmlParseHandle handle );
+int Fieldml_GetErrorCount( FmlParseHandle handle );
 
 
 /*
      Returns the nth error string for the given parse.
  */
-char *fmlGetError( FmlParseHandle handle, int index );
-int fmlCopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength );
+const char * Fieldml_GetError( FmlParseHandle handle, int index );
+int Fieldml_CopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength );
 
 
 /*
      Returns the number of objects of the given type, or zero if there are none.
  */
-int fmlGetObjectCount( FmlParseHandle handle, FieldmlHandleType type );
+int Fieldml_GetObjectCount( FmlParseHandle handle, FieldmlHandleType type );
 
 
 /*
      Returns a handle to the nth object of the given type.
  */
-FmlObjectHandle fmlGetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index );
+FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index );
 
 
 /*
      Returns the number of markup entries (attribute/value pairs) for the given object.
  */
-int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the attribute string of the nth markup entry for the given object.
  */
-char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
-int fmlCopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
+const char * Fieldml_GetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+int Fieldml_CopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
 
 
 /*
      Returns the value string of the nth markup entry for the given object.
  */
-char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
-int fmlCopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
+const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+int Fieldml_CopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
 
 /*
      Returns the handle of the given domain's component ensemble.
  */
-FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle );
+FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the handle of the given mesh domain's xi domain.
  */
-FmlObjectHandle fmlGetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
+FmlObjectHandle Fieldml_GetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the handle of the given mesh domain's element domain.
  */
-FmlObjectHandle fmlGetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
+FmlObjectHandle Fieldml_GetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns a string describing the shape of the element in the given mesh.
  */
-char *fmlGetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber );
-int fmlCopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
+const char *  Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber );
+int Fieldml_CopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
 
 
 /*
      Returns the number of connectivities specified for the given mesh domain.
  */
-int fmlGetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the domain of the nth connectivity for the given mesh. 
  */
-FmlObjectHandle fmlGetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
      Returns the source of the nth connectivity for the given mesh. 
  */
-FmlObjectHandle fmlGetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
@@ -183,64 +182,64 @@ FmlObjectHandle fmlGetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHa
     NOTE: Currently, only ensemble domains have explicit bounds.
     NOTE: Currently, only discrete contiguous bounds are supported.
  */
-DomainBoundsType fmlGetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle );
+DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
-int fmlGetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the name of the given object.
  */
-char *fmlGetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle );
-int fmlCopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
+const char * Fieldml_GetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_CopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
 
 
 /*
      Returns the value domain of the given evaluator.
  */
-FmlObjectHandle fmlGetValueDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
+FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
     Returns the data description type of the given parameter evaluator.
  */
-DataDescriptionType fmlGetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle );
+DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
      Returns the number of sparse or dense indexes of the semidense data store
      associated with the given parameter evaluator.
  */
-int fmlGetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse );
+int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse );
 
 
 /*
      Returns the handle of the nth sparse or dense index of the semidense data
      store associated with the given parameter evaluator.
  */
-FmlObjectHandle fmlGetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, int isSparse );
+FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, int isSparse );
 
 
 /*
     Returns the number of element->evaluator delegations for the given
     piecewise/aggregate evaluator.
  */
-int fmlGetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
     Returns the element number for the nth element->evaluator delegation in
     the given piecewise/aggregate evaluator.
  */
-int fmlGetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+int Fieldml_GetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
     Returns the evaluator handle for the nth element->evaluator delegation in
     the given piecewise/aggregate evaluator.
  */
-FmlObjectHandle fmlGetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
@@ -249,26 +248,26 @@ FmlObjectHandle fmlGetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle ob
      NOTE: At some point, the name will be a URI-style string allowing the caller
      to identify the import's source fieldml region. 
  */
-char *fmlGetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle );
-int fmlCopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
+const char * Fieldml_GetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_CopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
 
 
 /*
     Returns the number of aliases used by the given imported evaluator. 
  */
-int fmlGetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
     Returns the local domain/evaulator used by the nth alias of the given imported evaluator. 
  */
-FmlObjectHandle fmlGetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
     Returns the remote domain used by the nth alias of the given imported evaluator. 
  */
-FmlObjectHandle fmlGetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 
 /*
@@ -279,7 +278,7 @@ FmlObjectHandle fmlGetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectH
     NOTE: For piecewise evalutors, this is always one. For parameter evaluators,
     it depends on the data store.
  */
-int fmlGetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
@@ -287,6 +286,6 @@ int fmlGetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
     
     NOTE: Only defined for piecewise and parameter evaluators.
  */
-FmlObjectHandle fmlGetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
+FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 
 #endif // H_FIELDML_PARSE

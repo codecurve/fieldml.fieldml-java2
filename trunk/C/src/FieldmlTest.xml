@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<fieldml>
+<fieldml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Fieldml.xsd">
   <!--
 1____2____3_11_7
 |    |   /|    |
@@ -10,21 +10,26 @@
 -->
   <Region name="Fieldml_Test">
     <EnsembleDomain name="test_mesh.nodes">
-      <ContiguousEnsembleBounds valueCount="13" />
+      <bounds>
+        <ContiguousEnsembleBounds valueCount="13" />
+      </bounds>
     </EnsembleDomain>
     
 
-    <MeshDomain xiComponents="library.ensemble.xi.2d" name="test_mesh.domain">
+    <MeshDomain xiComponentDomain="library.ensemble.xi.2d" name="test_mesh.domain">
+      <bounds>
+        <ContiguousEnsembleBounds valueCount="4"/>
+      </bounds>
       <shapes>
-        <entry key="1" value="library.shape.quad" />
-        <entry key="2" value="library.shape.triangle" />
-        <entry key="3" value="library.shape.triangle" />
-        <entry key="4" value="library.shape.quad" />
+        <SimpleMapEntry key="1" value="library.shape.quad" />
+        <SimpleMapEntry key="2" value="library.shape.triangle" />
+        <SimpleMapEntry key="3" value="library.shape.triangle" />
+        <SimpleMapEntry key="4" value="library.shape.quad" />
       </shapes>
       <pointConnectivity>
-        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
-        <entry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
-        <entry key="library.local_nodes.quad.3x3" value="test_mesh.quad3x3_nodes" />
+        <SimpleMapEntry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
+        <SimpleMapEntry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
+        <SimpleMapEntry key="library.local_nodes.quad.3x3" value="test_mesh.quad3x3_nodes" />
       </pointConnectivity>
     </MeshDomain>
     
@@ -68,32 +73,33 @@
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template1" valueDomain="library.coordinates.rc.1d">
-      <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.bilinear_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.bilinear_simplex" />
-        <TemplateMap index="3" evaluator="test_mesh.bilinear_simplex" />
-        <TemplateMap index="4" evaluator="test_mesh.bilinear_lagrange" />
-      </elementMaps>
+      <elementEvaluators>
+        <SimpleMapEntry key="1" value="test_mesh.bilinear_lagrange" />
+        <SimpleMapEntry key="2" value="test_mesh.bilinear_simplex" />
+        <SimpleMapEntry key="3" value="test_mesh.bilinear_simplex" />
+        <SimpleMapEntry key="4" value="test_mesh.bilinear_lagrange" />
+      </elementEvaluators>
     </ContinuousPiecewiseEvaluator>
     
 
     <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates.template2" valueDomain="library.coordinates.rc.1d">
-      <elementMaps>
-        <TemplateMap index="1" evaluator="test_mesh.bilinear_lagrange" />
-        <TemplateMap index="2" evaluator="test_mesh.bilinear_simplex" />
-        <TemplateMap index="3" evaluator="test_mesh.bilinear_simplex" />
-        <TemplateMap index="4" evaluator="test_mesh.biquadratic_lagrange" />
-      </elementMaps>
+      <elementEvaluators>
+        <SimpleMapEntry key="1" value="test_mesh.bilinear_lagrange" />
+        <SimpleMapEntry key="2" value="test_mesh.bilinear_simplex" />
+        <SimpleMapEntry key="3" value="test_mesh.bilinear_simplex" />
+        <SimpleMapEntry key="4" value="test_mesh.biquadratic_lagrange" />
+      </elementEvaluators>
     </ContinuousPiecewiseEvaluator>
     
 
     <ContinuousParameters name="test_mesh.node.x" valueDomain="library.coordinates.rc.1d">
-        <SemiDenseData>
+        <SemidenseData>
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-        </SemiDenseData>
-        <inline_data>
+        </SemidenseData>
+        <dataLocation>
+          <inlineData>
             1 0.0
             2 10.0
             3 20.0
@@ -102,16 +108,18 @@
             6 20.0
             7 30.0
             13 30.0
-        </inline_data>
+          </inlineData>
+        </dataLocation>
     </ContinuousParameters>
 
     <ContinuousParameters name="test_mesh.node.y" valueDomain="library.coordinates.rc.1d">
-        <SemiDenseData>
+        <SemidenseData>
             <sparseIndexes>
                 <entry value="test_mesh.nodes"/>
             </sparseIndexes>
-        </SemiDenseData>
-        <inline_data>
+        </SemidenseData>
+        <dataLocation>
+          <inlineData>
             1 10.0
             2 10.0
             3 10.0
@@ -125,14 +133,15 @@
             11 10.0
             12 0.0
             13 0.0
-        </inline_data>
+          </inlineData>
+        </dataLocation>
     </ContinuousParameters>
     
 
     <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
       <sourceFields>
-        <entry value="test_mesh.coordinates.x"/>
-        <entry value="test_mesh.coordinates.y"/>
+        <SimpleMapEntry key="1" value="test_mesh.coordinates.x"/>
+        <SimpleMapEntry key="2" value="test_mesh.coordinates.y"/>
       </sourceFields>
       <markup>
         <SimpleMapEntry key="field" value="true" />
@@ -141,70 +150,76 @@
     
 
     <EnsembleParameters name="test_mesh.triangle2x2_nodes" valueDomain="test_mesh.nodes">
-      <SemiDenseData>
+      <SemidenseData>
           <sparseIndexes>
               <entry value="test_mesh.domain.elements"/>
           </sparseIndexes>
           <denseIndexes>
               <entry value="library.local_nodes.triangle.2x2"/>
           </denseIndexes>
-          <inline_data>
+      </SemidenseData>
+      <dataLocation>
+          <inlineData>
               2 2 5 3
               3 6 3 5
-          </inline_data>
-      </SemiDenseData>
+          </inlineData>
+      </dataLocation>
     </EnsembleParameters>
     
 
     <EnsembleParameters name="test_mesh.quad2x2_nodes" valueDomain="test_mesh.nodes">
-        <SemiDenseData>
+        <SemidenseData>
             <sparseIndexes>
                 <entry value="test_mesh.domain.elements"/>
             </sparseIndexes>
             <denseIndexes>
                 <entry value="library.local_nodes.quad.2x2"/>
             </denseIndexes>
-            <inline_data>
+        </SemidenseData>
+        <dataLocation>
+            <inlineData>
                 1 4 5 1 4
                 4 6 13 3 7
-            </inline_data>
-        </SemiDenseData>
-    </EnsembleParameters>
+            </inlineData>
+        </dataLocation>
+  </EnsembleParameters>
     
 
     <EnsembleParameters name="test_mesh.quad3x3_nodes" valueDomain="test_mesh.nodes">
-        <SemiDenseData>
+        <SemidenseData>
             <sparseIndexes>
                 <entry value="test_mesh.domain.elements"/>
             </sparseIndexes>
             <denseIndexes>
                 <entry value="library.local_nodes.quad.3x3"/>
             </denseIndexes>
-        </SemiDenseData>
-        <inline_data>
+        </SemidenseData>
+        <dataLocation>
+          <inlineData>
             4 6 12 13 8 9 10 3 11 7
-        </inline_data>
+          </inlineData>
+        </dataLocation>
     </EnsembleParameters>
     
-
-    <PiecewiseField template="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
-      <variables>
+    
+    <ImportedContinuousEvaluator evaluator="test_mesh.coordinates.template1" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
+      <continuousAliases>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.x" />
-      </variables>
+      </continuousAliases>
       <markup>
         <SimpleMapEntry key="field" value="true" />
       </markup>
-    </PiecewiseField>
+    </ImportedContinuousEvaluator>
     
 
-    <PiecewiseField template="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
-      <variables>
+    <ImportedContinuousEvaluator evaluator="test_mesh.coordinates.template2" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
+      <continuousAliases>
         <SimpleMapEntry key="test_mesh.mesh.dofs" value="test_mesh.node.y" />
-      </variables>
+      </continuousAliases>
       <markup>
         <SimpleMapEntry key="field" value="true" />
       </markup>
-    </PiecewiseField>
+    </ImportedContinuousEvaluator>
     
 
   </Region>

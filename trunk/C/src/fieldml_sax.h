@@ -22,6 +22,6 @@ SaxAttributes;
 
 char * getAttribute( SaxAttributes *saxAttributes, char *attribute );
 
-FieldmlParse *parseFieldmlFile( char *filename );
+FieldmlParse *parseFieldmlFile( const char *filename );
 
 #endif // H_FIELDMLSAX
