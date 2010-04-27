@@ -115,7 +115,7 @@ static FmlObjectHandle hackToHandle( void *hack )
 }
 
 
-static int cappedCopy( char *source, char *buffer, int bufferLength )
+static int cappedCopy( const char *source, char *buffer, int bufferLength )
 {
     int length;
     
@@ -142,7 +142,7 @@ static int cappedCopy( char *source, char *buffer, int bufferLength )
 //
 //========================================================================
 
-FmlParseHandle fmlParseFile( char *filename )
+FmlParseHandle Fieldml_ParseFile( const char *filename )
 {
     FieldmlParse *parse = parseFieldmlFile( filename );
 
@@ -150,7 +150,7 @@ FmlParseHandle fmlParseFile( char *filename )
 }
 
 
-void fmlDestroyParse( FmlParseHandle handle )
+void Fieldml_DestroyParse( FmlParseHandle handle )
 {
     FieldmlParse *parse = handleToParse( handle );
     
@@ -158,7 +158,7 @@ void fmlDestroyParse( FmlParseHandle handle )
 }
 
 
-int fmlGetErrorCount( FmlParseHandle handle )
+int Fieldml_GetErrorCount( FmlParseHandle handle )
 {
     FieldmlParse *parse = handleToParse( handle );
 
@@ -166,21 +166,21 @@ int fmlGetErrorCount( FmlParseHandle handle )
 }
 
 
-char *fmlGetError( FmlParseHandle handle, int index )
+const char * Fieldml_GetError( FmlParseHandle handle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
 
-    return (char *)getSimpleListEntry( parse->errors, index - 1 );
+    return (const char *)getSimpleListEntry( parse->errors, index - 1 );
 }
 
 
-int fmlCopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetError( handle, index ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetError( handle, index ), buffer, bufferLength );
 }
 
 
-int fmlGetObjectCount( FmlParseHandle handle, FieldmlHandleType type )
+int Fieldml_GetObjectCount( FmlParseHandle handle, FieldmlHandleType type )
 {
     FieldmlParse *parse = handleToParse( handle );
 
@@ -193,7 +193,7 @@ int fmlGetObjectCount( FmlParseHandle handle, FieldmlHandleType type )
 }
 
 
-FmlObjectHandle fmlGetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index )
+FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
 
@@ -201,7 +201,7 @@ FmlObjectHandle fmlGetObjectHandle( FmlParseHandle handle, FieldmlHandleType typ
 }
 
 
-FieldmlHandleType fmlGetObjectType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -214,7 +214,7 @@ FieldmlHandleType fmlGetObjectType( FmlParseHandle handle, FmlObjectHandle objec
     return object->type;
 }
 
-int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -228,7 +228,7 @@ int fmlGetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+const char * Fieldml_GetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -242,13 +242,13 @@ char *fmlGetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle
 }
 
 
-int fmlCopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetMarkupAttribute( handle, objectHandle, index ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetMarkupAttribute( handle, objectHandle, index ), buffer, bufferLength );
 }
 
 
-char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -262,13 +262,13 @@ char *fmlGetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, in
 }
 
 
-int fmlCopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetMarkupValue( handle, objectHandle, index ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetMarkupValue( handle, objectHandle, index ), buffer, bufferLength );
 }
 
 
-FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -292,7 +292,7 @@ FmlObjectHandle fmlGetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectH
 }
 
 
-DomainBoundsType fmlGetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -306,7 +306,7 @@ DomainBoundsType fmlGetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
-int fmlGetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -325,7 +325,7 @@ int fmlGetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHa
 }
 
 
-FmlObjectHandle fmlGetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -339,7 +339,7 @@ FmlObjectHandle fmlGetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
-char *fmlGetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber )
+const char * Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -353,13 +353,13 @@ char *fmlGetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandl
 }
 
 
-int fmlCopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
+int Fieldml_CopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetMeshElementShape( handle, objectHandle, elementNumber ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetMeshElementShape( handle, objectHandle, elementNumber ), buffer, bufferLength );
 }
 
 
-int fmlGetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -373,7 +373,7 @@ int fmlGetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHa
 }
 
 
-FmlObjectHandle fmlGetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -387,7 +387,7 @@ FmlObjectHandle fmlGetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHa
 }
 
 
-FmlObjectHandle fmlGetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -401,7 +401,7 @@ FmlObjectHandle fmlGetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHa
 }
 
 
-FmlObjectHandle fmlGetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -415,7 +415,7 @@ FmlObjectHandle fmlGetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-char *fmlGetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle )
+const char * Fieldml_GetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -429,13 +429,13 @@ char *fmlGetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-int fmlCopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+int Fieldml_CopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetObjectName( handle, objectHandle ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetObjectName( handle, objectHandle ), buffer, bufferLength );
 }
 
 
-FmlObjectHandle fmlGetValueDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -474,7 +474,7 @@ FmlObjectHandle fmlGetValueDomain( FmlParseHandle handle, FmlObjectHandle object
 }
 
 
-DataDescriptionType fmlGetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -493,7 +493,7 @@ DataDescriptionType fmlGetParameterDataDescription( FmlParseHandle handle, FmlOb
 }
 
 
-int fmlGetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse )
+int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -524,7 +524,7 @@ int fmlGetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHand
 }
 
 
-FmlObjectHandle fmlGetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, int isSparse )
+FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, int isSparse )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -559,7 +559,7 @@ FmlObjectHandle fmlGetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle obj
 
 
 
-int fmlGetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -574,7 +574,7 @@ int fmlGetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-int fmlGetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+int Fieldml_GetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -589,7 +589,7 @@ int fmlGetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle,
 }
 
 
-FmlObjectHandle fmlGetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -604,7 +604,7 @@ FmlObjectHandle fmlGetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle ob
 }
 
 
-char *fmlGetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle )
+const char * Fieldml_GetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -623,13 +623,13 @@ char *fmlGetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandl
 }
 
 
-int fmlCopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+int Fieldml_CopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
 {
-    return cappedCopy( fmlGetImportRemoteName( handle, objectHandle ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetImportRemoteName( handle, objectHandle ), buffer, bufferLength );
 }
 
 
-int fmlGetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -648,7 +648,7 @@ int fmlGetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle 
 }
 
 
-FmlObjectHandle fmlGetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -667,7 +667,7 @@ FmlObjectHandle fmlGetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHa
 }
 
 
-FmlObjectHandle fmlGetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -686,7 +686,7 @@ FmlObjectHandle fmlGetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectH
 }
 
 
-int fmlGetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -718,7 +718,7 @@ int fmlGetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-FmlObjectHandle fmlGetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );

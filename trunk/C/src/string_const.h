@@ -26,7 +26,7 @@ const char* const ENSEMBLE_VARIABLE_TAG             = "EnsembleVariableEvaluator
 const char* const ENSEMBLE_PARAMETERS_TAG           = "EnsembleParameters";
 
 const char* const CONTINUOUS_PARAMETERS_TAG         = "ContinuousParameters";
-const char* const SEMI_DENSE_DATA_TAG               = "SemiDenseData";
+const char* const SEMI_DENSE_DATA_TAG               = "SemidenseData";
 const char* const SPARSE_INDEXES_TAG                = "sparseIndexes";
 const char* const DENSE_INDEXES_TAG                 = "denseIndexes";
 
@@ -44,7 +44,7 @@ const char* const SIMPLE_MAP_ENTRY_TAG              = "SimpleMapEntry";
 
 const char* const ENTRY_TAG                         = "entry";
 
-const char* const INLINE_DATA_TAG                   = "inline_data";
-const char* const FILE_DATA_TAG                     = "file_data";
+const char* const INLINE_DATA_TAG                   = "inlineData";
+const char* const FILE_DATA_TAG                     = "fileData";
 
 #endif // H_STRING_CONST

@@ -7,12 +7,12 @@
 #include <libxml/xmlerror.h>
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
+#include <libxml/xmlschemas.h>
 
 #include "string_table.h"
 #include "fieldml_parse.h"
 #include "fieldml_sax.h"
 #include "string_const.h"
-
 
 //========================================================================
 //
@@ -43,7 +43,7 @@ typedef enum _SaxState
     FML_CONTINUOUS_PARAMETERS,
 
     FML_CONTINUOUS_VARIABLE,
-    
+
     FML_CONTINUOUS_DEREFERENCE,
 
     FML_ENSEMBLE_VARIABLE,
@@ -84,28 +84,29 @@ SaxContext;
 static char *strdupN( const xmlChar *str, unsigned int n )
 {
     char *dup;
-    
+
     if( strlen( str ) < n )
     {
         return _strdup( str );
     }
-    
+
     dup = malloc( n + 1 );
     memcpy( dup, str, n );
     dup[n] = 0;
-    
+
     return dup;
 }
+
 
 static SaxAttributes *createAttributes( const int attributeCount, const xmlChar ** attributes )
 {
     int i, attributeNumber;
-    
-    SaxAttributes *saxAttributes = calloc( 1, sizeof( SaxAttributes ) );
-    
+
+    SaxAttributes *saxAttributes = calloc( 1, sizeof(SaxAttributes) );
+
     saxAttributes->count = attributeCount;
-    saxAttributes->attributes = calloc( attributeCount, sizeof( SaxAttribute ) );
-    
+    saxAttributes->attributes = calloc( attributeCount, sizeof(SaxAttribute) );
+
     attributeNumber = 0;
     for( i = 0; i < attributeCount * 5; i += 5 )
     {
@@ -115,7 +116,7 @@ static SaxAttributes *createAttributes( const int attributeCount, const xmlChar 
         saxAttributes->attributes[attributeNumber].value = strdupN( attributes[i + 3], attributes[i + 4] - attributes[i + 3] );
         attributeNumber++;
     }
-    
+
     return saxAttributes;
 }
 
@@ -123,7 +124,7 @@ static SaxAttributes *createAttributes( const int attributeCount, const xmlChar 
 static void destroyAttributes( SaxAttributes *saxAttributes )
 {
     int i;
-    
+
     for( i = 0; i < saxAttributes->count; i++ )
     {
         free( saxAttributes->attributes[i].attribute );
@@ -132,7 +133,7 @@ static void destroyAttributes( SaxAttributes *saxAttributes )
         free( saxAttributes->attributes[i].value );
     }
     free( saxAttributes->attributes );
-    
+
     free( saxAttributes );
 }
 
@@ -147,7 +148,7 @@ char * getAttribute( SaxAttributes *saxAttributes, char *attribute )
             return saxAttributes->attributes[i].value;
         }
     }
-    
+
     return NULL;
 }
 
@@ -174,9 +175,11 @@ static int hasExternalSubset( void *context )
     return 0;
 }
 
+
 static void onInternalSubset( void *context, const xmlChar *name, const xmlChar *externalID, const xmlChar *systemID )
 {
 }
+
 
 static void externalSubset( void *context, const xmlChar *name, const xmlChar *externalID, const xmlChar *systemID )
 {
@@ -201,33 +204,27 @@ static xmlEntityPtr getParameterEntity( void *context, const xmlChar *name )
 }
 
 
-static void onEntityDecl( void *context, const xmlChar *name, int type, const xmlChar *publicId,
-                       const xmlChar *systemId, xmlChar *content )
+static void onEntityDecl( void *context, const xmlChar *name, int type, const xmlChar *publicId, const xmlChar *systemId, xmlChar *content )
 {
 }
 
 
-static void onAttributeDecl( void *context, const xmlChar * elem, const xmlChar * name, int type, int def,
-                   const xmlChar * defaultValue, xmlEnumerationPtr tree )
+static void onAttributeDecl( void *context, const xmlChar * elem, const xmlChar * name, int type, int def, const xmlChar * defaultValue, xmlEnumerationPtr tree )
 {
     xmlFreeEnumeration( tree );
 }
 
 
-static void onElementDecl( void *context, const xmlChar *name, int type,
-        xmlElementContentPtr content )
+static void onElementDecl( void *context, const xmlChar *name, int type, xmlElementContentPtr content )
 {
 }
 
 
-static void onNotationDecl( void *context, const xmlChar *name,
-         const xmlChar *publicId, const xmlChar *systemId )
+static void onNotationDecl( void *context, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId )
 {
 }
 
-
-static void onUnparsedEntityDecl( void *context, const xmlChar *name, const xmlChar *publicId,
-                               const xmlChar *systemId, const xmlChar *notationName )
+static void onUnparsedEntityDecl( void *context, const xmlChar *name, const xmlChar *publicId, const xmlChar *systemId, const xmlChar *notationName )
 {
 }
 
@@ -235,12 +232,12 @@ static void onUnparsedEntityDecl( void *context, const xmlChar *name, const xmlC
 static void setDocumentLocator( void *context, xmlSAXLocatorPtr loc )
 {
     /*
-    At the moment (libxml 2.7.2), this is worse than useless.
-    The locator only wraps functions which require the library's internal
-    parsing context, which is only passed into this function if you pass
-    in 'NULL' as the user-data which initiating the SAX parse...
-    which is exactly what we don't want to do.
-    */
+     At the moment (libxml 2.7.2), this is worse than useless.
+     The locator only wraps functions which require the library's internal
+     parsing context, which is only passed into this function if you pass
+     in 'NULL' as the user-data which initiating the SAX parse...
+     which is exactly what we don't want to do.
+     */
 }
 
 
@@ -327,17 +324,16 @@ static void XMLCDECL fatalError( void *context, const char *msg, ... )
 }
 
 
-static void onStartElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI,
-            int nb_namespaces, const xmlChar **namespaces,
-            int nb_attributes, int nb_defaulted, const xmlChar **attributes )
+static void onStartElementNs( void *context, const xmlChar *name, const xmlChar *prefix, const xmlChar *URI, int nb_namespaces, const xmlChar **namespaces,
+    int nb_attributes, int nb_defaulted, const xmlChar **attributes )
 {
     SaxAttributes *saxAttributes = createAttributes( nb_attributes, attributes );
     SaxContext *saxContext = (SaxContext*)context;
 
     int state;
-    
+
     state = peekInt( saxContext->state );
-    
+
     if( ( state != FML_ROOT ) && ( state != FML_FIELDML ) && ( state != FML_REGION ) )
     {
         if( strcmp( name, MARKUP_TAG ) == 0 )
@@ -345,7 +341,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             pushInt( saxContext->state, FML_MARKUP );
 
             destroyAttributes( saxAttributes );
-            
+
             return;
         }
     }
@@ -556,11 +552,12 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             pushInt( saxContext->state, FML_CONTINUOUS_DEREFERENCE );
             break;
         }
+        break;
         //FALLTHROUGH
     default:
         break;
     }
-    
+
     destroyAttributes( saxAttributes );
 }
 
@@ -789,38 +786,39 @@ static xmlSAXHandlerPtr SAX2Handler = &SAX2HandlerStruct;
 //
 //========================================================================
 
-FieldmlParse *parseFieldmlFile( char *filename )
+FieldmlParse *parseFieldmlFile( const char *filename )
 {
     int res, state;
     SaxContext context;
-    
-    FieldmlParse *parse = createFieldmlParse();
+    FieldmlParse * parse;
 
-    LIBXML_TEST_VERSION
+    parse = createFieldmlParse();
 
-    xmlSubstituteEntitiesDefault( 1 );
-    
     context.state = createIntStack();
     context.fieldmlContext = createFieldmlContext( parse );
 
     pushInt( context.state, FML_ROOT );
 
+    LIBXML_TEST_VERSION
+
+    xmlSubstituteEntitiesDefault( 1 );
+
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
-    if( res != 0 ) 
+    if( res != 0 )
     {
         addError( parse, "xmlSAXUserParseFile returned error", NULL, NULL );
     }
-    
+
     state = peekInt( context.state );
     if( state != FML_ROOT )
     {
         addError( parse, "Parser state not empty", NULL, NULL );
     }
 
-    xmlCleanupParser( );
-    xmlMemoryDump( );
-    
+    xmlCleanupParser();
+    xmlMemoryDump();
+
     finalizeFieldmlParse( parse );
-    
+
     return parse;
 }
