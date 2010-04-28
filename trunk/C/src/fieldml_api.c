@@ -17,13 +17,13 @@
 
 static FieldmlParse *handleToParse( FmlParseHandle handle )
 {
-    return (FieldmlParse*)(handle<<2);
+    return (FieldmlParse*)handle;
 }
 
 
 static FmlParseHandle parseToHandle( FieldmlParse *parse )
 {
-    return ((int)parse)>>2;
+    return (FmlParseHandle)parse;
 }
 
 
