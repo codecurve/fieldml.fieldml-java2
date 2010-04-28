@@ -69,7 +69,7 @@ typedef enum _FieldmlHandleType
 FieldmlHandleType;
 
 
-typedef int FmlParseHandle;
+typedef void * FmlParseHandle;
 
 typedef int FmlObjectHandle;
 
