@@ -39,14 +39,14 @@ StringTable *createStringTable();
 
     NOTE: Both name and data can be NULL.
 */
-void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard );
+void setStringTableEntry( StringTable *table, const char *name, void *data, TABLE_DATA_DISCARD discard );
 
 /*
     Returns the entry with the given name, or NULL if there is no such entry.
 
     NOTE: NULL may also be returned if the data is actually NULL.
 */
-void *getStringTableEntry( StringTable *table, char *name );
+void *getStringTableEntry( StringTable *table, const char *name );
 
 /*
     Get the number of entries in the table.
