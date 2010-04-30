@@ -258,13 +258,33 @@ const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle obje
         return NULL;
     }
     
-    return (char*)getStringTableEntryData( object->markup, index - 1 );
+    return (const char*)getStringTableEntryData( object->markup, index - 1 );
 }
 
 
 int Fieldml_CopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetMarkupValue( handle, objectHandle, index ), buffer, bufferLength );
+}
+
+
+const char * Fieldml_GetMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    return (const char*)getStringTableEntry( object->markup, attribute );
+}
+
+
+int Fieldml_CopyMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute, char *buffer, int bufferLength )
+{
+    return cappedCopy( Fieldml_GetMarkupAttributeValue( handle, objectHandle, attribute ), buffer, bufferLength );
 }
 
 
@@ -303,6 +323,25 @@ DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHa
     }
 
     return object->object.ensembleDomain->boundsType;
+}
+
+
+int Fieldml_GetEnsembleDomainElementCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( ( object == NULL ) || ( object->type != FHT_ENSEMBLE_DOMAIN ) )
+    {
+        return -1;
+    }
+
+    if( object->object.ensembleDomain->boundsType == BOUNDS_DISCRETE_CONTIGUOUS )
+    {
+        return object->object.ensembleDomain->bounds.contiguous.count;
+    }
+    
+    return -1;
 }
 
 

@@ -114,6 +114,8 @@ int Fieldml_GetObjectCount( FmlParseHandle handle, FieldmlHandleType type );
 FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index );
 
 
+FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle object );
+
 /*
      Returns the number of markup entries (attribute/value pairs) for the given object.
  */
@@ -132,6 +134,11 @@ int Fieldml_CopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHa
  */
 const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index );
 int Fieldml_CopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength );
+
+
+const char * Fieldml_GetMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute );
+int Fieldml_CopyMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute, char *buffer, int bufferLength );
+
 
 /*
      Returns the handle of the given domain's component ensemble.
@@ -154,7 +161,7 @@ FmlObjectHandle Fieldml_GetMeshElementDomain( FmlParseHandle handle, FmlObjectHa
 /*
      Returns a string describing the shape of the element in the given mesh.
  */
-const char *  Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber );
+const char * Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber );
 int Fieldml_CopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
 
 
@@ -183,6 +190,12 @@ FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObj
     NOTE: Currently, only discrete contiguous bounds are supported.
  */
 DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+int Fieldml_GetEnsembleDomainElementCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+int Fieldml_GetEnsembleDomainElementNames( FmlParseHandle handle, FmlObjectHandle objectHandle, const int *array, int arrayLength );
 
 
 int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
