@@ -106,7 +106,6 @@ Parameters *createParameters( int valueDomain )
     parameters = calloc( 1, sizeof( Parameters ) );
     parameters->valueDomain = valueDomain;
     parameters->descriptionType = DESCRIPTION_UNKNOWN;
-    parameters->locationType = LOCATION_UNKNOWN;
 
     return parameters;
 }
@@ -158,6 +157,7 @@ SemidenseData *createSemidenseData()
     data = calloc( 1, sizeof( SemidenseData ) );
     data->denseIndexes = createSimpleList();
     data->sparseIndexes = createSimpleList();
+    data->locationType = LOCATION_UNKNOWN;
 
     return data;
 }
@@ -231,6 +231,19 @@ void destroySemidenseData( SemidenseData *data )
 {
     destroySimpleList( data->sparseIndexes, NULL );
     destroySimpleList( data->denseIndexes, NULL );
+
+    switch( data->locationType )
+    {
+    case LOCATION_FILE:
+        free( data->dataLocation.fileData.filename );
+        break;
+      case LOCATION_INLINE:
+        free( data->dataLocation.stringData.string );
+        break;
+    default:
+        break;
+    }
+
     free( data );
 }
 
@@ -246,18 +259,6 @@ void destroyParameters( Parameters *parameters )
         break;
     }
     
-    switch( parameters->locationType )
-    {
-    case LOCATION_FILE:
-        free( parameters->dataLocation.fileData.filename );
-        break;
-      case LOCATION_INLINE:
-        free( parameters->dataLocation.stringData.string );
-        break;
-    default:
-        break;
-    }
-
     free( parameters );
 }
 
@@ -922,7 +923,13 @@ void endEnsembleParameters( FieldmlContext *context )
 {
     Parameters *parameters = context->currentObject->object.parameters;
 
-    if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
+    if( parameters->descriptionType == DESCRIPTION_UNKNOWN )
+    {
+        addError( context->parse, "EnsembleParameters has no data", context->currentObject->name, NULL );
+        destroyFieldmlObject( context->currentObject );
+    }
+    else if( ( parameters->descriptionType == DESCRIPTION_SEMIDENSE ) &&
+          ( parameters->dataDescription.semidense->locationType == LOCATION_UNKNOWN ) )
     {
         addError( context->parse, "EnsembleParameters has no data", context->currentObject->name, NULL );
         destroyFieldmlObject( context->currentObject );
@@ -968,7 +975,13 @@ void endContinuousParameters( FieldmlContext *context )
 {
     Parameters *parameters = context->currentObject->object.parameters;
 
-    if( ( parameters->descriptionType == DESCRIPTION_UNKNOWN ) || ( parameters->locationType == LOCATION_UNKNOWN ) )
+    if( parameters->descriptionType == DESCRIPTION_UNKNOWN )
+    {
+        addError( context->parse, "ContinuousParameters has no data", context->currentObject->name, NULL );
+        destroyFieldmlObject( context->currentObject );
+    }
+    else if( ( parameters->descriptionType == DESCRIPTION_SEMIDENSE ) &&
+          ( parameters->dataDescription.semidense->locationType == LOCATION_UNKNOWN ) )
     {
         addError( context->parse, "ContinuousParameters has no data", context->currentObject->name, NULL );
         destroyFieldmlObject( context->currentObject );
@@ -987,13 +1000,15 @@ void startInlineData( FieldmlContext *context, SaxAttributes *attributes )
     FieldmlObject *object = (FieldmlObject*)context->currentObject;
     Parameters *parameters = object->object.parameters;
     
-    if( parameters->locationType != LOCATION_UNKNOWN )
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
-        addError( context->parse, "Parameters already has data", object->name, NULL );
-        return;
+        if( parameters->dataDescription.semidense->locationType != LOCATION_UNKNOWN )
+        {
+            addError( context->parse, "Parameters already has data", object->name, NULL );
+            return;
+        }
+        parameters->dataDescription.semidense->locationType = LOCATION_INLINE;
     }
-    
-    parameters->locationType = LOCATION_INLINE;
 }
 
 
@@ -1003,13 +1018,16 @@ void onInlineData( FieldmlContext *context, const char *const characters, const 
     Parameters *parameters = object->object.parameters;
     StringDataSource *source;
     char *newString;
-
-    if( parameters->locationType != LOCATION_INLINE )
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
-        return;
+        if( parameters->dataDescription.semidense->locationType != LOCATION_INLINE )
+        {
+            return;
+        }
+        source = &(parameters->dataDescription.semidense->dataLocation.stringData);
     }
     
-    source = &(parameters->dataLocation.stringData);
 
     newString = malloc( source->length + length + 1 );
     memcpy( newString, source->string, source->length );
@@ -1030,10 +1048,13 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
     char *offset = getAttribute( attributes, "offset" );
     FileDataSource *source;
     
-    if( parameters->locationType != LOCATION_UNKNOWN )
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
-        addError( context->parse, "Parameters already has data", object->name, NULL );
-        return;
+        if( parameters->dataDescription.semidense->locationType != LOCATION_UNKNOWN )
+        {
+            addError( context->parse, "Parameters already has data", object->name, NULL );
+            return;
+        }
     }
     
     if( file == NULL )
@@ -1047,9 +1068,9 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
         return;
     }
     
-    parameters->locationType = LOCATION_FILE;
+    parameters->dataDescription.semidense->locationType = LOCATION_FILE;
 
-    source = &(parameters->dataLocation.fileData);
+    source = &(parameters->dataDescription.semidense->dataLocation.fileData);
     source->filename = _strdup( file );
     source->isText = ( strcmp( type, "text" ) != 0 );
     if( offset == NULL )

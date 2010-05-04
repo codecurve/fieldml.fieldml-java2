@@ -411,15 +411,6 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             startSemidenseData( saxContext->fieldmlContext, saxAttributes );
             pushInt( saxContext->state, FML_SEMI_DENSE );
         }
-        if( strcmp( name, INLINE_DATA_TAG ) == 0 )
-        {
-            startInlineData( saxContext->fieldmlContext, saxAttributes );
-            pushInt( saxContext->state, FML_INLINE_DATA );
-        }
-        if( strcmp( name, FILE_DATA_TAG ) == 0 )
-        {
-            onFileData( saxContext->fieldmlContext, saxAttributes );
-        }
         break;
     case FML_CONTINUOUS_PIECEWISE:
         if( strcmp( name, ELEMENT_EVALUATORS_TAG ) == 0 )
@@ -459,6 +450,15 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         if( strcmp( name, SPARSE_INDEXES_TAG ) == 0 )
         {
             pushInt( saxContext->state, FML_SPARSE_INDEXES );
+        }
+        if( strcmp( name, INLINE_DATA_TAG ) == 0 )
+        {
+            startInlineData( saxContext->fieldmlContext, saxAttributes );
+            pushInt( saxContext->state, FML_INLINE_DATA );
+        }
+        if( strcmp( name, FILE_DATA_TAG ) == 0 )
+        {
+            onFileData( saxContext->fieldmlContext, saxAttributes );
         }
         break;
     case FML_DENSE_INDEXES:

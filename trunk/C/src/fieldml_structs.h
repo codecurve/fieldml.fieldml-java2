@@ -105,6 +105,14 @@ typedef struct _SemidenseData
 {
     SimpleList *sparseIndexes;
     SimpleList *denseIndexes;
+
+    DataLocationType locationType;
+    union
+    {
+        StringDataSource stringData;
+        FileDataSource fileData;
+    }
+    dataLocation;
 }
 SemidenseData;
 
@@ -129,14 +137,6 @@ typedef struct _Parameters
         SemidenseData *semidense;
     }
     dataDescription;
-
-    DataLocationType locationType;
-    union
-    {
-        StringDataSource stringData;
-        FileDataSource fileData;
-    }
-    dataLocation;
 }
 Parameters;
 
