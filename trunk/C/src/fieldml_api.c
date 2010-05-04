@@ -77,6 +77,25 @@ static int getNthHandle( FieldmlParse *parse, FieldmlHandleType type, int index 
 }
 
 
+static int getNamedHandle( FieldmlParse *parse, const char *name )
+{
+    int count, i;
+    FieldmlObject *object;
+
+    count = getSimpleListCount( parse->objects );
+    for( i = 0; i < count; i++ )
+    {
+        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        if( strcmp( object->name, name ) == 0 )
+        {
+            return i;
+        }
+    }
+
+    return FML_INVALID_HANDLE;
+}
+
+
 static FieldmlObject *getNthObject( FieldmlParse *parse, FieldmlHandleType type, int index )
 {
     int handle = getNthHandle( parse, type, index );
@@ -119,7 +138,7 @@ static int cappedCopy( const char *source, char *buffer, int bufferLength )
 {
     int length;
     
-    if( bufferLength <= 0 )
+    if( ( bufferLength <= 0 ) || ( source == NULL ) )
     {
         return 0;
     }
@@ -136,6 +155,7 @@ static int cappedCopy( const char *source, char *buffer, int bufferLength )
     
     return length;
 }
+
 //========================================================================
 //
 // API
@@ -201,6 +221,14 @@ FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleTyp
 }
 
 
+FmlObjectHandle Fieldml_GetNamedObjectHandle( FmlParseHandle handle, const char * name )
+{
+    FieldmlParse *parse = handleToParse( handle );
+
+    return getNamedHandle( parse, name );
+}
+
+
 FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -213,6 +241,7 @@ FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle 
     
     return object->type;
 }
+
 
 int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
