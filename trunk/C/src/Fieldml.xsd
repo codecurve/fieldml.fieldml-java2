@@ -102,6 +102,7 @@
         <xs:all>
             <xs:element name="denseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
             <xs:element name="sparseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
         </xs:all>
     </xs:complexType>
 
@@ -129,7 +130,6 @@
         <xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
             <xs:element name="SemidenseData" type="SemidenseDataType" minOccurs="1" maxOccurs="1" />
-            <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="valueDomain" type="xs:string" />

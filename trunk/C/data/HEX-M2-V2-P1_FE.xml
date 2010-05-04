@@ -113,10 +113,10 @@
                 <entry value="library.ensemble.rc.3d"/>
                 <entry value="test_mesh.triquadratic_nodes"/>
             </denseIndexes>
+            <dataLocation>
+              <fileData file="HEX-M2-V2-P1_FE.C" type="text" offset="1" />
+            </dataLocation>
         </SemidenseData>
-        <dataLocation>
-          <fileData file="HEX-M2-V2-P1_FE.C" type="text" offset="1" />
-        </dataLocation>
     </ContinuousParameters>
     
 
@@ -126,10 +126,10 @@
                 <entry value="library.local_nodes.cube.3x3x3"/>
                 <entry value="test_mesh.domain.elements"/>
             </denseIndexes>
+            <dataLocation>
+              <fileData file="HEX-M2-V2-P1_FE.M" type="text" offset="1" />
+            </dataLocation>
         </SemidenseData>
-        <dataLocation>
-          <fileData file="HEX-M2-V2-P1_FE.M" type="text" offset="1" />
-        </dataLocation>
     </EnsembleParameters>
     
 
@@ -139,10 +139,10 @@
                 <entry value="library.local_nodes.cube.2x2x2"/>
                 <entry value="test_mesh.domain.elements"/>
             </denseIndexes>
+            <dataLocation>
+                <fileData file="HEX-M2-V2-P1_FE.M" type="text" offset="17" />
+            </dataLocation>
         </SemidenseData>
-        <dataLocation>
-            <fileData file="HEX-M2-V2-P1_FE.M" type="text" offset="17" />
-        </dataLocation>
     </EnsembleParameters>
     
 
