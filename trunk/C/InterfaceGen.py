@@ -40,7 +40,7 @@ def declareFunction( name, types, names ):
 
   for i, p in enumerate( types ):
     if( p == "char" ):
-      print "      CHARACTER(C_CHAR) :: " + names[i] + "(*)"
+      print "      CHARACTER(KIND=C_CHAR,LEN=*) :: " + names[i]
     elif( p == "FmlParseHandle" ):
       print "      TYPE(C_PTR), VALUE :: " + names[i]
     else:
@@ -55,7 +55,7 @@ def declareFunction( name, types, names ):
 
 
 def declareConstant( name, value ):
-  print "  INTEGER(INTG), PARAMETER :: " + name + " =",
+  print "  INTEGER(C_INT), PARAMETER :: " + name + " =",
   print value
 
 
