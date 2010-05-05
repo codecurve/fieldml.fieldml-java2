@@ -109,6 +109,11 @@ void onInlineData( FieldmlContext *context, const char *const characters, const 
 
 void onFileData( FieldmlContext *context, SaxAttributes *attributes );
 
+void startSwizzleData( FieldmlContext *context, SaxAttributes *attributes );
+
+void onSwizzleData( FieldmlContext *context, const char *const characters, const int length );
+
+void endSwizzleData( FieldmlContext *context );
 
 void finalizeFieldmlParse( FieldmlParse *parse );
 

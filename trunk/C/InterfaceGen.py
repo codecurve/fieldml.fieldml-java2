@@ -60,8 +60,10 @@ def declareConstant( name, value ):
 
 
 def processFunction( line ):
-  #Don't need to process functions returning char*, those aren't usable by Fortran.
+  #Don't need to process functions returning char* or int*, those aren't usable by Fortran.
   if( ( line.find( "char*" ) == 0 ) or ( line.find( "char *" ) == 0 ) or ( line.find( "const char *" ) == 0 )  ):
+    return
+  if( ( line.find( "int*" ) == 0 ) or ( line.find( "int *" ) == 0 ) or ( line.find( "const int *" ) == 0 )  ):
     return
 
   fStart = line.find( " " )

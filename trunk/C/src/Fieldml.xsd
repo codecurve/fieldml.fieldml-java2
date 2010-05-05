@@ -103,6 +103,7 @@
             <xs:element name="denseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
             <xs:element name="sparseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
             <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="swizzle" type="SwizzleType" minOccurs="0" maxOccurs="1" />
         </xs:all>
     </xs:complexType>
 
@@ -113,6 +114,13 @@
     </xs:complexType>
 
     <xs:complexType name="InlineDataType">
+      <xs:simpleContent>
+        <xs:extension base="xs:string">
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="SwizzleType">
       <xs:simpleContent>
         <xs:extension base="xs:string">
         </xs:extension>

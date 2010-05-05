@@ -30,7 +30,7 @@ StringTable *createStringTable()
 }
 
 
-static int getStringTableEntryIndex( StringTable *table, char *name )
+static int getStringTableEntryIndex( StringTable *table, const char *name )
 {
     int i;
     for( i = 0; i < table->entries; i++ )
@@ -45,7 +45,7 @@ static int getStringTableEntryIndex( StringTable *table, char *name )
 }
 
 
-void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA_DISCARD discard )
+void setStringTableEntry( StringTable *table, const char *name, void *data, TABLE_DATA_DISCARD discard )
 {
     int index;
     void *oldData;
@@ -94,7 +94,7 @@ void setStringTableEntry( StringTable *table, char *name, void *data, TABLE_DATA
 }
 
 
-void *getStringTableEntry( StringTable *table, char *name )
+void *getStringTableEntry( StringTable *table, const char *name )
 {
     int index = getStringTableEntryIndex( table, name );
 

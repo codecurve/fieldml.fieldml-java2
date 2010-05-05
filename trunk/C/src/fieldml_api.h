@@ -237,6 +237,11 @@ int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objec
 FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int indexIndex, int isSparse );
 
 
+int Fieldml_GetSwizzleCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+const int *Fieldml_GetSwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle, int *buffer, int bufferLength );
+
+
 /*
     Returns the number of element->evaluator delegations for the given
     piecewise/aggregate evaluator.
@@ -303,5 +308,12 @@ int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
     NOTE: Only defined for piecewise and parameter evaluators.
  */
 FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int indexIndex );
+
+
+FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
 
 #endif // H_FIELDML_PARSE

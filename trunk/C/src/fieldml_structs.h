@@ -105,6 +105,9 @@ typedef struct _SemidenseData
 {
     SimpleList *sparseIndexes;
     SimpleList *denseIndexes;
+    
+    const int *swizzle;
+    int swizzleCount;
 
     DataLocationType locationType;
     union
