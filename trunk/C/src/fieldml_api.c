@@ -542,6 +542,44 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle o
 }
 
 
+FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->type != FHT_CONTINUOUS_DEREFERENCE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    return object->object.dereference->valueIndexes;
+}
+
+
+FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->type != FHT_CONTINUOUS_DEREFERENCE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    return object->object.dereference->valueSource;
+}
+
+
 DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -625,6 +663,72 @@ FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandl
     return hackToHandle( hack );
 }
 
+
+int Fieldml_GetSwizzleCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    
+    if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    return object->object.parameters->dataDescription.semidense->swizzleCount;
+}
+
+
+const int *Fieldml_GetSwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    
+    if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
+    {
+        return NULL;
+    }
+
+    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return NULL;
+    }
+    
+    return object->object.parameters->dataDescription.semidense->swizzle;
+}
+
+
+int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle, int *buffer, int bufferLength )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    int length;
+    
+    if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    length = object->object.parameters->dataDescription.semidense->swizzleCount;
+    
+    if( length > bufferLength )
+    {
+        length = bufferLength;
+    }
+    
+    memcpy( buffer, object->object.parameters->dataDescription.semidense->swizzle, length * sizeof( int ) );
+    
+    return length;
+}
 
 
 int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )

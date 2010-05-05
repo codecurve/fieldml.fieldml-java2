@@ -46,5 +46,6 @@ const char* const ENTRY_TAG                         = "entry";
 
 const char* const INLINE_DATA_TAG                   = "inlineData";
 const char* const FILE_DATA_TAG                     = "fileData";
+const char* const SWIZZLE_TAG                       = "swizzle";
 
 #endif // H_STRING_CONST

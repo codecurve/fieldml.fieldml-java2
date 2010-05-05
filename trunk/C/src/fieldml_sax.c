@@ -52,6 +52,7 @@ typedef enum _SaxState
     FML_DENSE_INDEXES,
     FML_SPARSE_INDEXES,
     FML_INLINE_DATA,
+    FML_SWIZZLE_DATA,
     FML_FILE_DATA,
     
     FML_CONTINUOUS_PIECEWISE,
@@ -260,6 +261,9 @@ static void onCharacters( void *context, const xmlChar *ch, int len )
     case FML_INLINE_DATA:
         onInlineData( saxContext->fieldmlContext, ch, len );
         break;
+    case FML_SWIZZLE_DATA:
+        onSwizzleData( saxContext->fieldmlContext, ch, len );
+        break;
     default:
         break;
     }
@@ -459,6 +463,11 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         if( strcmp( name, FILE_DATA_TAG ) == 0 )
         {
             onFileData( saxContext->fieldmlContext, saxAttributes );
+        }
+        if( strcmp( name, SWIZZLE_TAG ) == 0 )
+        {
+            startSwizzleData( saxContext->fieldmlContext, saxAttributes );
+            pushInt( saxContext->state, FML_SWIZZLE_DATA );
         }
         break;
     case FML_DENSE_INDEXES:
@@ -707,6 +716,13 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_INLINE_DATA:
         if( strcmp( name, INLINE_DATA_TAG ) == 0 )
         {
+            popInt( saxContext->state );
+        }
+        break;
+    case FML_SWIZZLE_DATA:
+        if( strcmp( name, SWIZZLE_TAG ) == 0 )
+        {
+            endSwizzleData( saxContext->fieldmlContext );
             popInt( saxContext->state );
         }
         break;

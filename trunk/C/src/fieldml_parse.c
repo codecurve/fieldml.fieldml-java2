@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include <libxml/sax.h>
 
 #include "fieldml_parse.h"
@@ -20,6 +21,9 @@ struct _FieldmlContext
 {
     FieldmlObject *currentObject;
     
+    int bufferLength;
+    char *buffer;
+    
     FieldmlParse *parse;
 };
 
@@ -38,19 +42,6 @@ FieldmlContext *createFieldmlContext( FieldmlParse *parse )
     context->parse = parse;
     
     return context;
-}
-
-
-FieldmlParse *createFieldmlParse()
-{
-    FieldmlParse *parse;
-
-    parse = calloc( 1, sizeof( FieldmlParse ) );
-
-    parse->objects = createSimpleList();
-    parse->errors = createSimpleList();
-    
-    return parse;
 }
 
 
@@ -175,7 +166,7 @@ Variable *createVariable( int valueDomain )
 }
 
 
-FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
+FieldmlObject *createFieldmlObject( const char *name, FieldmlHandleType type )
 {
     FieldmlObject *object;
     
@@ -186,6 +177,104 @@ FieldmlObject *createFieldmlObject( char *name, FieldmlHandleType type )
     
     return object;
 }
+
+
+static int addObject( FieldmlParse *parse, FieldmlObject *object );
+
+
+int addEnsembleDomain( FieldmlParse *parse, const char *name, int count )
+{
+    FieldmlObject *object;
+    EnsembleDomain *ensemble;
+
+    ensemble = createEnsembleDomain( FML_INVALID_HANDLE );
+    ensemble->boundsType = BOUNDS_DISCRETE_CONTIGUOUS;
+    ensemble->bounds.contiguous.count = count;
+    object = createFieldmlObject( name, FHT_ENSEMBLE_DOMAIN );
+    object->object.ensembleDomain = ensemble;
+    return addObject( parse, object );
+}
+
+
+int addContinuousDomain( FieldmlParse *parse, const char *name, int componentHandle )
+{
+    FieldmlObject *object;
+    ContinuousDomain *continuous;
+
+    continuous = createContinuousDomain( componentHandle );
+    object = createFieldmlObject( name, FHT_CONTINUOUS_DOMAIN );
+    object->object.continuousDomain = continuous;
+
+    return addObject( parse, object );
+}
+
+
+static void addMarkup( FieldmlParse *parse, int handle, const char *attribute, const char *value );
+
+
+void addLibraryDomains( FieldmlParse *parse )
+{
+    int handle;
+
+    addContinuousDomain( parse, "library.real.1d", FML_INVALID_HANDLE );
+    addContinuousDomain( parse, "library.real.2d", FML_INVALID_HANDLE );
+    addContinuousDomain( parse, "library.real.3d", FML_INVALID_HANDLE );
+    
+    handle = addEnsembleDomain( parse, "library.ensemble.xi.1d", 1 );
+    handle = addContinuousDomain( parse, "library.xi.1d", handle );
+    addMarkup( parse, handle, "xi", "true" );
+
+    handle = addEnsembleDomain( parse, "library.ensemble.xi.2d", 2 );
+    handle = addContinuousDomain( parse, "library.xi.2d", handle );
+    addMarkup( parse, handle, "xi", "true" );
+
+    handle = addEnsembleDomain( parse, "library.ensemble.xi.3d", 3 );
+    handle = addContinuousDomain( parse, "library.xi.3d", handle );
+    addMarkup( parse, handle, "xi", "true" );
+
+    handle = addEnsembleDomain( parse, "library.local_nodes.line.2", 2 );
+    addContinuousDomain( parse, "library.parameters.linear_lagrange", handle ); 
+    handle = addEnsembleDomain( parse, "library.local_nodes.line.3", 3 );
+    addContinuousDomain( parse, "library.parameters.quadratic_lagrange", handle ); 
+
+    handle = addEnsembleDomain( parse, "library.local_nodes.quad.2x2", 4 );
+    addContinuousDomain( parse, "library.parameters.bilinear_lagrange", handle ); 
+    handle = addEnsembleDomain( parse, "library.local_nodes.quad.3x3", 9 );
+    addContinuousDomain( parse, "library.parameters.biquadratic_lagrange", handle ); 
+
+    handle = addEnsembleDomain( parse, "library.local_nodes.cube.2x2x2", 8 );
+    addContinuousDomain( parse, "library.parameters.trilinear_lagrange", handle ); 
+    handle = addEnsembleDomain( parse, "library.local_nodes.cube.3x3x3", 27 );
+    addContinuousDomain( parse, "library.parameters.triquadratic_lagrange", handle ); 
+    
+    handle = addEnsembleDomain( parse, "library.ensemble.rc.1d", 1 );
+    addContinuousDomain( parse, "library.coordinates.rc.1d", handle );
+    addContinuousDomain( parse, "library.velocity.rc.1d", handle );
+    handle = addEnsembleDomain( parse, "library.ensemble.rc.2d", 2 );
+    addContinuousDomain( parse, "library.coordinates.rc.2d", handle );
+    addContinuousDomain( parse, "library.velocity.rc.2d", handle );
+    handle = addEnsembleDomain( parse, "library.ensemble.rc.3d", 3 );
+    addContinuousDomain( parse, "library.coordinates.rc.3d", handle );
+    addContinuousDomain( parse, "library.velocity.rc.3d", handle );
+
+    addContinuousDomain( parse, "library.pressure", FML_INVALID_HANDLE );
+}
+
+
+FieldmlParse *createFieldmlParse()
+{
+    FieldmlParse *parse;
+
+    parse = calloc( 1, sizeof( FieldmlParse ) );
+
+    parse->objects = createSimpleList();
+    parse->errors = createSimpleList();
+    
+    addLibraryDomains( parse );
+    
+    return parse;
+}
+
 
 //========================================================================
 //
@@ -347,6 +436,75 @@ void destroyFieldmlParse( FieldmlParse *parse )
 // Utility
 //
 //========================================================================
+
+
+static void addMarkup( FieldmlParse *parse, int handle, const char *attribute, const char *value )
+{
+    FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+
+    setStringTableEntry( object->markup, attribute, _strdup( value ), free );
+}
+
+
+int intParserCount( const char *buffer )
+{
+    const char *p = buffer;
+    int digits = 0;
+    int count = 0;
+    char c;
+    
+    while( *p != 0 )
+    {
+        c = *p++;
+        if( isdigit( c ) )
+        {
+            digits++;
+            continue;
+        }
+        
+        if( digits > 0 )
+        {
+            count++;
+            digits = 0;
+        }
+    }
+    
+    return count;
+}
+
+
+const int *intParserInts( const char *buffer )
+{
+    int count = intParserCount( buffer );
+    int *ints = calloc( count, sizeof( int ) );
+    const char *p = buffer;
+    int number = 0;
+    int digits;
+    char c;
+    
+    digits = 0;
+    count = 0;
+    while( *p != 0 )
+    {
+        c = *p++;
+        if( isdigit( c ) )
+        {
+            number *= 10;
+            number += ( c - '0' );
+            digits++;
+            continue;
+        }
+        
+        if( digits > 0 )
+        {
+            ints[count++] = number;
+            number = 0;
+            digits = 0;
+        }
+    }
+    
+    return ints;
+}
 
 
 void addError( FieldmlParse *parse, char *error, char *name1, char *name2 )
@@ -1081,6 +1239,59 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
     {
         source->offset = atoi( offset );
     }
+}
+
+
+void startSwizzleData( FieldmlContext *context, SaxAttributes *attributes )
+{
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        if( parameters->dataDescription.semidense->swizzleCount > 0 )
+        {
+            addError( context->parse, "Parameters already has a swizzle", object->name, NULL );
+            return;
+        }
+    }
+}
+
+
+void onSwizzleData( FieldmlContext *context, const char *const characters, const int length )
+{
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
+    char *newString;
+    
+    newString = malloc( context->bufferLength + length + 1 );
+    if( context->buffer != NULL )
+    {
+        memcpy( newString, context->buffer, context->bufferLength );
+    }
+    memcpy( newString + context->bufferLength, characters, length );
+    context->bufferLength += length;
+    newString[ context->bufferLength ] = 0;
+    free( context->buffer );
+    context->buffer = newString;
+}
+
+
+void endSwizzleData( FieldmlContext *context )
+{
+    FieldmlObject *object = (FieldmlObject*)context->currentObject;
+    Parameters *parameters = object->object.parameters;
+    
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        parameters->dataDescription.semidense->swizzleCount = intParserCount( context->buffer );
+        parameters->dataDescription.semidense->swizzle = intParserInts( context->buffer );
+    }
+    
+    free( context->buffer );
+    context->buffer = NULL;
+    context->bufferLength = 0;
 }
 
 

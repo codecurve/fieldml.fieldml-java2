@@ -82,6 +82,7 @@ int main( int argc, char **argv )
     FmlObjectHandle oHandle;
     FmlParseHandle handle;
     DomainBoundsType boundsType;
+    const int *swizzle;
     
     if( !validate( argv[1] ) )
     {
@@ -164,6 +165,18 @@ int main( int argc, char **argv )
         {
             fprintf( stdout, "    dense: %s\n", Fieldml_GetObjectName( handle, Fieldml_GetSemidenseIndex( handle, oHandle, j, 0 ) ) );
         }
+        
+        count2 = Fieldml_GetSwizzleCount( handle, oHandle );
+        if( count2 > 0 )
+        {
+            swizzle = Fieldml_GetSwizzleData( handle, oHandle );
+            fprintf( stdout, "    swizzle: " );
+            for( j = 0; j < count2; j++ )
+            {
+                fprintf( stdout, "%d ", swizzle[j] );
+            }
+            fprintf( stdout, "\n" );
+        }
     }
 
     count = Fieldml_GetObjectCount( handle, FHT_ENSEMBLE_PARAMETERS );
@@ -184,6 +197,18 @@ int main( int argc, char **argv )
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "    dense: %s\n", Fieldml_GetObjectName( handle, Fieldml_GetSemidenseIndex( handle, oHandle, j, 0 ) ) );
+        }
+
+        count2 = Fieldml_GetSwizzleCount( handle, oHandle );
+        if( count2 > 0 )
+        {
+            swizzle = Fieldml_GetSwizzleData( handle, oHandle );
+            fprintf( stdout, "    swizzle: " );
+            for( j = 0; j < count2; j++ )
+            {
+                fprintf( stdout, "%d ", swizzle[j] );
+            }
+            fprintf( stdout, "\n" );
         }
     }
 
