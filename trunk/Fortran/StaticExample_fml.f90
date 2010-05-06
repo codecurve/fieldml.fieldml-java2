@@ -193,9 +193,10 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   INTEGER(CMISSIntg) :: count, i, j
 
   INTEGER(CMISSIntg) :: meshHandle, spaceHandle, velocityHandle, pressureHandle, connectivityHandle, layoutHandle, dofsHandle
+  INTEGER(CMISSIntg) :: basisType
   
   INTEGER(CMISSIntg), ALLOCATABLE :: basisUserNumbers(:), nodeDomains(:), nodeDomainOffsets(:)
-  INTEGER(CMISSIntg), ALLOCATABLE :: basisConnectivity(:,:)
+  INTEGER(CMISSIntg), ALLOCATABLE :: basisConnectivity(:,:), basisInterpolations(:)
  REAL(CMISSDP), ALLOCATABLE :: fieldValues(:,:)
 
   INTEGER(CMISSIntg) :: meshXiDimensions, fieldDimensions, domainHandle
@@ -342,9 +343,28 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   BASIS_NUMBER_VELOCITY = FieldmlInput_GetComponentBasis( parseHandle, velocityHandle, 1, err )
   BASIS_NUMBER_PRESSURE = FieldmlInput_GetComponentBasis( parseHandle, pressureHandle, 1, err )
   
-  CALL FieldmlInput_CreateBases( parseHandle, meshHandle, basisUserNumbers, err )
+  WRITE(*,'("Basis M: ",(i))') BASIS_NUMBER_SPACE
+  WRITE(*,'("Basis V: ",(i))') BASIS_NUMBER_VELOCITY
+  WRITE(*,'("Basis P: ",(i))') BASIS_NUMBER_PRESSURE
+  
+  CALL FieldmlInput_GetBasisHandles( parseHandle, meshHandle, basisUserNumbers, err )
+  
   DO i = 1, SIZE( basisUserNumbers )
+    WRITE(*,'("Basis: ",(i),(i))') i, basisUserNumbers(i)
+  
+    CALL FieldmlInput_GetBasisInfo( parseHandle, meshHandle, basisUserNumbers(i), basisType, basisInterpolations, err )
+    
+    CALL CMISSBasisCreateStart( basisUserNumbers(i), err )
+    CALL CMISSBasisTypeSet( basisUserNumbers(i), basisType, err )
+    CALL CMISSBasisNumberOfXiSet( basisUserNumbers(i), size( basisInterpolations ), err )
+    CALL CMISSBasisInterpolationXiSet( basisUserNumbers(i), basisInterpolations, err )
+    CALL CMISSBasisQuadratureNumberOfGaussXiSet( basisUserNumbers(i), (/3,3,3/), err ) !CPL MUST FIX
     CALL CMISSBasisCreateFinish( basisUserNumbers(i), err )
+    
+    IF( ALLOCATED( basisInterpolations ) ) THEN
+      DEALLOCATE( basisInterpolations )
+    ENDIF
+    
     IF( basisUserNumbers(i) == BASIS_NUMBER_SPACE ) THEN
       MESH_COMPONENT_NUMBER_SPACE = i
     END IF
