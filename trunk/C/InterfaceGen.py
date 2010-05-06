@@ -40,7 +40,11 @@ def declareFunction( name, types, names ):
 
   for i, p in enumerate( types ):
     if( p == "char" ):
+      print "      CHARACTER(KIND=C_CHAR) :: " + names[i]
+    elif( p == "char*" ):
       print "      CHARACTER(KIND=C_CHAR,LEN=*) :: " + names[i]
+    elif( p == "int*" ):
+      print "      TYPE(C_PTR), VALUE :: " + names[i]
     elif( p == "FmlParseHandle" ):
       print "      TYPE(C_PTR), VALUE :: " + names[i]
     else:
@@ -84,6 +88,7 @@ def processFunction( line ):
 
   types = []
   names = []
+  type = ""
 
   isType = True
 
@@ -93,18 +98,21 @@ def processFunction( line ):
       p = p[ 0 : pos ]
 
     if p == "*":
+      type = type + "*"
       continue
     if p == "const":
       continue
 
     pos = p.find( "*" )
     if( pos == 0 ):
+      type = type + "*"
       p = p[ 1 : len(p) ]
 
     if( isType ):
-      types.append( p.strip() )
+      type = p.strip()
       isType = False
     else:
+      types.append( type )
       names.append( p.strip() )
       isType = True
 
