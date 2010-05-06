@@ -86,9 +86,9 @@ MODULE FIELDML_INPUT_ROUTINES
 
   END INTERFACE
 
-  PUBLIC :: FieldmlInput_GetMeshInfo, FieldmlInput_GetCoordinateSystemInfo, FieldmlInput_CreateBases, &
+  PUBLIC :: FieldmlInput_GetMeshInfo, FieldmlInput_GetCoordinateSystemInfo, FieldmlInput_GetBasisInfo, &
     & Fieldml_GetFieldHandles, FieldmlInput_GetComponentBasis, FieldmlInput_GetBasisConnectivityInfo, &
-    & FieldmlInput_ReadRawData
+    & FieldmlInput_ReadRawData, FieldmlInput_GetBasisHandles
 
 CONTAINS
 
@@ -104,7 +104,7 @@ CONTAINS
     INTEGER(INTG), INTENT(OUT) :: err
 
     !Locals
-    INTEGER(C_INT) :: length, offset, fileType, dummy, dataUnit, i
+    INTEGER(C_INT) :: length, offset, fileType, dataUnit, i
     INTEGER(C_INT) :: index1Handle, index2Handle, count1, count2, swizzleCount
     INTEGER(C_INT), ALLOCATABLE, TARGET :: swizzle(:), buffer(:)
     CHARACTER(LEN=BUFFER_SIZE) :: name
@@ -202,7 +202,6 @@ CONTAINS
 
     !Locals
     INTEGER(C_INT) :: length, offset, fileType, dataUnit, i
-    REAL(C_DOUBLE) :: dummy
     INTEGER(C_INT) :: index1Handle, index2Handle, count1, count2, swizzleCount
     INTEGER(C_INT), ALLOCATABLE, TARGET :: swizzle(:)
     REAL(C_DOUBLE), ALLOCATABLE, TARGET :: buffer(:)
@@ -298,56 +297,6 @@ CONTAINS
   !================================================================================================================================
   !
 
-  SUBROUTINE FieldmlInput_CreateBasis( parseHandle, meshHandle, objectHandle, err )
-    !Argument variables
-    TYPE(C_PTR), INTENT(IN) :: parseHandle
-    INTEGER(C_INT), INTENT(IN) :: meshHandle
-    INTEGER(C_INT), INTENT(IN) :: objectHandle
-    INTEGER(INTG), INTENT(OUT) :: err
-
-    !Locals
-    INTEGER(C_INT) :: length, connectivityHandle, layoutHandle
-    INTEGER(INTG), ALLOCATABLE :: tpTypes(:)
-    CHARACTER(LEN=BUFFER_SIZE) :: name
-
-    length = Fieldml_CopyImportRemoteName( parseHandle, objectHandle, name, BUFFER_SIZE )
-
-    IF( Fieldml_GetObjectType( parseHandle, objectHandle ) /= FHT_CONTINUOUS_IMPORT ) THEN
-      err = FML_ERR_INVALID_BASIS
-      RETURN
-    ENDIF
-
-    IF( INDEX( name, 'library.fem.triquadratic_lagrange') == 1 ) THEN
-      CALL REALLOCATE_INT( tpTypes, 3, "", err, errorString, *999 )
-      tpTypes = BASIS_QUADRATIC_LAGRANGE_INTERPOLATION
-    ELSE IF( INDEX( name, 'library.fem.trilinear_lagrange') == 1 ) THEN
-      CALL REALLOCATE_INT( tpTypes, 3, "", err, errorString, *999 )
-      tpTypes = BASIS_LINEAR_LAGRANGE_INTERPOLATION
-    ELSE
-      err = FML_ERR_UNKNOWN_BASIS
-      RETURN
-    ENDIF
-    
-    CALL FieldmlInput_GetBasisConnectivityInfo( parseHandle, meshHandle, objectHandle, connectivityHandle, layoutHandle, err )
-    IF( connectivityHandle == FML_INVALID_HANDLE ) THEN
-      err = FML_ERR_INVALID_BASIS
-      RETURN
-    ENDIF
-
-    CALL CMISSBasisCreateStart( objectHandle, err )
-    CALL CMISSBasisTypeSet( objectHandle, BASIS_LAGRANGE_HERMITE_TP_TYPE, err )
-    CALL CMISSBasisNumberOfXiSet( objectHandle, size( tpTypes ), err )
-    CALL CMISSBasisInterpolationXiSet( objectHandle, tpTypes, err )
-    CALL CMISSBasisQuadratureNumberOfGaussXiSet( objectHandle, (/3,3,3/), err ) !CPL MUST FIX
-
-999 RETURN
-    !Deliberately not finalized, so the user can make OpenCMISS-specific tweaks.
-  END SUBROUTINE FieldmlInput_CreateBasis
-
-  !
-  !================================================================================================================================
-  !
-
   SUBROUTINE FieldmlInput_GetBasisConnectivityInfo( parseHandle, meshHandle, basisHandle, connectivityHandle, layoutHandle, err )
     !Argument variables
     TYPE(C_PTR), INTENT(IN) :: parseHandle !<The parse handle
@@ -404,7 +353,101 @@ CONTAINS
   !================================================================================================================================
   !
 
-  SUBROUTINE FieldmlInput_CreateBases( parseHandle, meshHandle, bases, err )
+  SUBROUTINE FieldmlInput_GetBasisInfo( parseHandle, meshHandle, objectHandle, basisType, basisInterpolations, err )
+    !Argument variables
+    TYPE(C_PTR), INTENT(IN) :: parseHandle
+    INTEGER(C_INT), INTENT(IN) :: meshHandle
+    INTEGER(C_INT), INTENT(IN) :: objectHandle
+    INTEGER(INTG), INTENT(OUT) :: basisType
+    INTEGER(C_INT), ALLOCATABLE, INTENT(OUT) :: basisInterpolations(:)
+    INTEGER(INTG), INTENT(OUT) :: err
+
+    !Locals
+    INTEGER(C_INT) :: length, connectivityHandle, layoutHandle
+    CHARACTER(LEN=BUFFER_SIZE) :: name
+    
+    IF( .NOT. FieldmlInput_IsKnownBasis( parseHandle, meshHandle, objectHandle, err ) ) THEN
+      RETURN
+    ENDIF
+
+    length = Fieldml_CopyImportRemoteName( parseHandle, objectHandle, name, BUFFER_SIZE )
+
+    IF( Fieldml_GetObjectType( parseHandle, objectHandle ) /= FHT_CONTINUOUS_IMPORT ) THEN
+      err = FML_ERR_INVALID_BASIS
+      RETURN
+    ENDIF
+
+    IF( INDEX( name, 'library.fem.triquadratic_lagrange') == 1 ) THEN
+      CALL REALLOCATE_INT( basisInterpolations, 3, "", err, errorString, *999 )
+      basisInterpolations = BASIS_QUADRATIC_LAGRANGE_INTERPOLATION
+      basisType = BASIS_LAGRANGE_HERMITE_TP_TYPE
+    ELSE IF( INDEX( name, 'library.fem.trilinear_lagrange') == 1 ) THEN
+      CALL REALLOCATE_INT( basisInterpolations, 3, "", err, errorString, *999 )
+      basisInterpolations = BASIS_LINEAR_LAGRANGE_INTERPOLATION
+      basisType = BASIS_LAGRANGE_HERMITE_TP_TYPE
+    ELSE
+      err = FML_ERR_UNKNOWN_BASIS
+      RETURN
+    ENDIF
+    
+    CALL FieldmlInput_GetBasisConnectivityInfo( parseHandle, meshHandle, objectHandle, connectivityHandle, layoutHandle, err )
+    IF( connectivityHandle == FML_INVALID_HANDLE ) THEN
+      err = FML_ERR_INVALID_BASIS
+      RETURN
+    ENDIF
+
+999 RETURN
+    !Deliberately not finalized, so the user can make OpenCMISS-specific tweaks.
+  END SUBROUTINE FieldmlInput_GetBasisInfo
+
+  !
+  !================================================================================================================================
+  !
+
+  FUNCTION FieldmlInput_IsKnownBasis( parseHandle, meshHandle, objectHandle, err )
+    !Argument variables
+    TYPE(C_PTR), INTENT(IN) :: parseHandle
+    INTEGER(C_INT), INTENT(IN) :: meshHandle
+    INTEGER(C_INT), INTENT(IN) :: objectHandle
+    INTEGER(INTG), INTENT(OUT) :: err
+    
+    !Function
+    LOGICAL :: FieldmlInput_IsKnownBasis
+
+    !Locals
+    INTEGER(C_INT) :: length, connectivityHandle, layoutHandle
+    CHARACTER(LEN=BUFFER_SIZE) :: name
+    
+    FieldmlInput_IsKnownBasis = .FALSE.
+
+    length = Fieldml_CopyImportRemoteName( parseHandle, objectHandle, name, BUFFER_SIZE )
+
+    IF( Fieldml_GetObjectType( parseHandle, objectHandle ) /= FHT_CONTINUOUS_IMPORT ) THEN
+      err = FML_ERR_INVALID_BASIS
+      RETURN
+    ENDIF
+
+    IF( ( INDEX( name, 'library.fem.triquadratic_lagrange') /= 1 ) .AND. &
+      & ( INDEX( name, 'library.fem.trilinear_lagrange') /= 1 ) ) THEN
+      err = FML_ERR_UNKNOWN_BASIS
+      RETURN
+    ENDIF
+    
+    CALL FieldmlInput_GetBasisConnectivityInfo( parseHandle, meshHandle, objectHandle, connectivityHandle, layoutHandle, err )
+    IF( connectivityHandle == FML_INVALID_HANDLE ) THEN
+      err = FML_ERR_INVALID_BASIS
+      RETURN
+    ENDIF
+    
+    FieldmlInput_IsKnownBasis = .TRUE.
+    
+  END FUNCTION FieldmlInput_IsKnownBasis
+  
+  !
+  !================================================================================================================================
+  !
+
+  SUBROUTINE FieldmlInput_GetBasisHandles( parseHandle, meshHandle, bases, err )
     !Argument variables
     TYPE(C_PTR), INTENT(IN) :: parseHandle !<The parse handle
     INTEGER(C_INT), INTENT(IN) :: meshHandle
@@ -421,12 +464,10 @@ CONTAINS
     DO i = 1, count
       objectHandle = Fieldml_GetObjectHandle( parseHandle, FHT_CONTINUOUS_IMPORT, i )
 
-      CALL FieldmlInput_CreateBasis( parseHandle, meshHandle, objectHandle, err )
-
-      IF( err /= FML_ERR_NO_ERROR ) THEN
+      IF( .NOT. FieldmlInput_IsKnownBasis( parseHandle, meshHandle, objectHandle, err ) ) THEN
         CYCLE
       ENDIF
-
+      
       basisCount = basisCount + 1
       CALL GROW_ARRAY( bases, 1, "", err, errorString, *999 )
       bases( basisCount ) = objectHandle
@@ -434,7 +475,7 @@ CONTAINS
 999   CYCLE
     ENDDO
 
-  END SUBROUTINE FieldmlInput_CreateBases
+  END SUBROUTINE FieldmlInput_GetBasisHandles
 
   !
   !================================================================================================================================
