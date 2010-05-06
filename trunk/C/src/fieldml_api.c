@@ -599,6 +599,125 @@ DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, 
 }
 
 
+DataLocationType Fieldml_GetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return LOCATION_UNKNOWN;
+    }
+
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            return object->object.parameters->dataDescription.semidense->locationType;
+        }
+    }
+
+    return LOCATION_UNKNOWN;
+}
+
+
+const char *Fieldml_GetParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FileDataSource *source;
+
+    if( object == NULL )
+    {
+        return 0;
+    }
+
+    source = NULL;
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+            {
+                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
+            }
+        }
+    }
+    
+    return source->filename;
+}
+
+
+int Fieldml_CopyParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+{
+    return cappedCopy( Fieldml_GetParameterDataFilename( handle, objectHandle ), buffer, bufferLength );
+}
+
+
+int Fieldml_GetParameterDataOffset( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FileDataSource *source;
+
+    if( object == NULL )
+    {
+        return 0;
+    }
+
+    source = NULL;
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+            {
+                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
+            }
+        }
+    }
+    
+    if( source != NULL )
+    {
+        return source->offset;
+    }
+
+    return 0;
+}
+
+
+DataFileType Fieldml_GetParameterDataFileType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FileDataSource *source;
+
+    if( object == NULL )
+    {
+        return TYPE_UNKNOWN;
+    }
+
+    source = NULL;
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+            {
+                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
+            }
+        }
+    }
+    
+    if( source != NULL )
+    {
+        return source->fileType;
+    }
+
+    return TYPE_UNKNOWN;
+}
+
+
 int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -706,26 +825,34 @@ int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
-    int length;
+    int length, swizzleCount;
+    const int *swizzle;
     
     if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
     {
-        return FML_INVALID_HANDLE;
+        return 0;
     }
 
-    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    swizzle = NULL;
+    
+    if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
-        return FML_INVALID_HANDLE;
+        swizzle = object->object.parameters->dataDescription.semidense->swizzle;
+        swizzleCount = object->object.parameters->dataDescription.semidense->swizzleCount;
+    }
+    else
+    {
+        return 0;
     }
     
-    length = object->object.parameters->dataDescription.semidense->swizzleCount;
+    length = swizzleCount;
     
     if( length > bufferLength )
     {
         length = bufferLength;
     }
     
-    memcpy( buffer, object->object.parameters->dataDescription.semidense->swizzle, length * sizeof( int ) );
+    memcpy( buffer, swizzle, length * sizeof( int ) );
     
     return length;
 }

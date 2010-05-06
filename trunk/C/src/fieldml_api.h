@@ -25,6 +25,15 @@ typedef enum _DomainBoundsType
 DomainBoundsType;
 
 
+typedef enum _DataFileType
+{
+    TYPE_UNKNOWN,
+    TYPE_TEXT,                  // Text file with CSV/space delimited numbers. Offset is numbers.
+    TYPE_LINES,                 // Formatted text file. Offset is lines. CSV/space delimited numbers expected at offset.
+}
+DataFileType;
+
+
 typedef enum _DataDescriptionType
 {
     DESCRIPTION_UNKNOWN,
@@ -221,6 +230,21 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle o
     Returns the data description type of the given parameter evaluator.
  */
 DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+DataLocationType Fieldml_GetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+const char *Fieldml_GetParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+int Fieldml_CopyParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
+
+
+int Fieldml_GetParameterDataOffset( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+DataFileType Fieldml_GetParameterDataFileType( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*

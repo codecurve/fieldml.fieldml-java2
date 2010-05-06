@@ -96,7 +96,7 @@ typedef struct _FileDataSource
 {
     char *filename;
     int offset;
-    int isText;
+    DataFileType fileType;
 }
 FileDataSource;
 

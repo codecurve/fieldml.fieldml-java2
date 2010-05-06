@@ -633,6 +633,7 @@ static int addObject( FieldmlParse *parse, FieldmlObject *object )
     }
     
     addError( parse, "Handle collision. Cannot replace", object->name, oldObject->name );
+    fprintf( stderr, "Handle collision. Cannot replace %s:%d with %s:%d\n", object->name, object->type, oldObject->name, oldObject->type );
     destroyFieldmlObject( object );
     
     return FML_INVALID_HANDLE;
@@ -1205,6 +1206,7 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
     char *type = getAttribute( attributes, "type" );
     char *offset = getAttribute( attributes, "offset" );
     FileDataSource *source;
+    DataFileType fileType;
     
     if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
@@ -1225,12 +1227,25 @@ void onFileData( FieldmlContext *context, SaxAttributes *attributes )
         addError( context->parse, "Parameters file data for must have a file type", object->name, NULL );
         return;
     }
+    else if( strcmp( type, "text" ) == 0 )
+    {
+        fileType = TYPE_TEXT;
+    }
+    else if( strcmp( type, "lines" ) == 0 )
+    {
+        fileType = TYPE_LINES;
+    }
+    else 
+    {
+        addError( context->parse, "Parameters file data for must have a known file type", object->name, NULL );
+        return;
+    }
     
     parameters->dataDescription.semidense->locationType = LOCATION_FILE;
 
     source = &(parameters->dataDescription.semidense->dataLocation.fileData);
     source->filename = _strdup( file );
-    source->isText = ( strcmp( type, "text" ) != 0 );
+    source->fileType = fileType;
     if( offset == NULL )
     {
         source->offset = 0;
