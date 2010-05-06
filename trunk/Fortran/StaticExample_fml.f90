@@ -95,34 +95,18 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
 
   !Program types
 
-  TYPE(EXPORT_CONTAINER):: CM
-
   !Program variables
 
-  INTEGER(CMISSIntg) :: NUMBER_OF_DIMENSIONS
-  
-  INTEGER(CMISSIntg) :: BASIS_TYPE
   INTEGER(CMISSIntg) :: BASIS_NUMBER_SPACE
   INTEGER(CMISSIntg) :: BASIS_NUMBER_VELOCITY
   INTEGER(CMISSIntg) :: BASIS_NUMBER_PRESSURE
   INTEGER(CMISSIntg) :: BASIS_XI_GAUSS_SPACE
   INTEGER(CMISSIntg) :: BASIS_XI_GAUSS_VELOCITY
   INTEGER(CMISSIntg) :: BASIS_XI_GAUSS_PRESSURE
-  INTEGER(CMISSIntg) :: BASIS_XI_INTERPOLATION_SPACE
-  INTEGER(CMISSIntg) :: BASIS_XI_INTERPOLATION_VELOCITY
-  INTEGER(CMISSIntg) :: BASIS_XI_INTERPOLATION_PRESSURE
   INTEGER(CMISSIntg) :: MESH_NUMBER_OF_COMPONENTS
   INTEGER(CMISSIntg) :: MESH_COMPONENT_NUMBER_SPACE
   INTEGER(CMISSIntg) :: MESH_COMPONENT_NUMBER_VELOCITY
   INTEGER(CMISSIntg) :: MESH_COMPONENT_NUMBER_PRESSURE
-  INTEGER(CMISSIntg) :: NUMBER_OF_NODES_SPACE
-  INTEGER(CMISSIntg) :: NUMBER_OF_NODES_VELOCITY
-  INTEGER(CMISSIntg) :: NUMBER_OF_NODES_PRESSURE
-  INTEGER(CMISSIntg) :: TOTAL_NUMBER_OF_NODES
-  INTEGER(CMISSIntg) :: TOTAL_NUMBER_OF_ELEMENTS
-  INTEGER(CMISSIntg) :: NUMBER_OF_ELEMENT_NODES_SPACE
-  INTEGER(CMISSIntg) :: NUMBER_OF_ELEMENT_NODES_VELOCITY
-  INTEGER(CMISSIntg) :: NUMBER_OF_ELEMENT_NODES_PRESSURE
   INTEGER(CMISSIntg) :: MAXIMUM_ITERATIONS
   INTEGER(CMISSIntg) :: RESTART_VALUE
 !   INTEGER(CMISSIntg) :: MPI_IERROR
@@ -206,17 +190,17 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   !CPL
   TYPE(C_PTR) :: parseHandle
 
-  INTEGER(CMISSIntg) :: count, i
+  INTEGER(CMISSIntg) :: count, i, j
 
-  INTEGER(CMISSIntg) :: meshHandle, spaceHandle, velocityHandle, pressureHandle
+  INTEGER(CMISSIntg) :: meshHandle, spaceHandle, velocityHandle, pressureHandle, connectivityHandle, layoutHandle, dofsHandle
   
   INTEGER(CMISSIntg), ALLOCATABLE :: basisUserNumbers(:), nodeDomains(:), nodeDomainOffsets(:)
+  INTEGER(CMISSIntg), ALLOCATABLE :: basisConnectivity(:,:)
+ REAL(CMISSDP), ALLOCATABLE :: fieldValues(:,:)
 
-  INTEGER(CMISSIntg) :: meshXiDimensions
-  INTEGER(CMISSIntg) :: meshElementCount
-  INTEGER(CMISSIntg) :: meshNodeCount
-  INTEGER(CMISSIntg) :: coordinateType
-  INTEGER(CMISSIntg) :: coordinateCount  
+  INTEGER(CMISSIntg) :: meshXiDimensions, fieldDimensions, domainHandle
+  INTEGER(CMISSIntg) :: meshElementCount, meshNodeCount, basisNodeCount
+  INTEGER(CMISSIntg) :: coordinateType, coordinateCount
   
 #ifdef WIN32
   !Quickwin type
@@ -246,24 +230,6 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
 
   !PROBLEM CONTROL PANEL
 
-  !Import cmHeart mesh information
-  CALL FLUID_MECHANICS_IO_READ_CMHEART(CM, err )  
-  BASIS_NUMBER_SPACE=CM%ID_M
-  BASIS_NUMBER_VELOCITY=CM%ID_V
-  BASIS_NUMBER_PRESSURE=CM%ID_P
-  NUMBER_OF_DIMENSIONS=CM%D
-  BASIS_TYPE=CM%IT_T
-  BASIS_XI_INTERPOLATION_SPACE=CM%IT_M
-  BASIS_XI_INTERPOLATION_VELOCITY=CM%IT_V
-  BASIS_XI_INTERPOLATION_PRESSURE=CM%IT_P
-  NUMBER_OF_NODES_SPACE=CM%N_M
-  NUMBER_OF_NODES_VELOCITY=CM%N_V
-  NUMBER_OF_NODES_PRESSURE=CM%N_P
-  TOTAL_NUMBER_OF_NODES=CM%N_T
-  TOTAL_NUMBER_OF_ELEMENTS=CM%E_T
-  NUMBER_OF_ELEMENT_NODES_SPACE=CM%EN_M
-  NUMBER_OF_ELEMENT_NODES_VELOCITY=CM%EN_V
-  NUMBER_OF_ELEMENT_NODES_PRESSURE=CM%EN_P
   !Set initial values
   INITIAL_FIELD_NAVIER_STOKES(1)=0.0_CMISSDP
   INITIAL_FIELD_NAVIER_STOKES(2)=0.0_CMISSDP
@@ -322,11 +288,6 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   !
   !================================================================================================================================
   !
-  !CPL
-  IF( .TRUE. ) THEN
-    CALL FIELDML_INPUT_TEST( Err )
-    !STOP
-  ENDIF
   
   parseHandle = Fieldml_ParseFile( "test.xml"//C_NULL_CHAR )
   
@@ -381,21 +342,17 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   BASIS_NUMBER_VELOCITY = FieldmlInput_GetComponentBasis( parseHandle, velocityHandle, 1, err )
   BASIS_NUMBER_PRESSURE = FieldmlInput_GetComponentBasis( parseHandle, pressureHandle, 1, err )
   
-  CALL FieldmlInput_ReadBases( parseHandle, basisUserNumbers, err )
+  CALL FieldmlInput_CreateBases( parseHandle, meshHandle, basisUserNumbers, err )
   DO i = 1, SIZE( basisUserNumbers )
-      WRITE(*,'(A)') "DOINK"
     CALL CMISSBasisCreateFinish( basisUserNumbers(i), err )
     IF( basisUserNumbers(i) == BASIS_NUMBER_SPACE ) THEN
       MESH_COMPONENT_NUMBER_SPACE = i
-      WRITE(*,'(A)') "  found space"
     END IF
     IF( basisUserNumbers(i) == BASIS_NUMBER_VELOCITY ) THEN
       MESH_COMPONENT_NUMBER_VELOCITY = i
-      WRITE(*,'(A)') "  found velocity"
     END IF
     IF( basisUserNumbers(i) == BASIS_NUMBER_PRESSURE ) THEN
       MESH_COMPONENT_NUMBER_PRESSURE = i
-      WRITE(*,'(A)') "  found pressure"
     END IF
   ENDDO
   
@@ -421,27 +378,31 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   !Specify spatial mesh component
   
   
-  !HACK
-  CALL CMISSMeshElementsCreateStart( RegionUserNumber, meshHandle, 1, basisUserNumbers( 1 ), err )
-  DO ELEMENT_NUMBER = 1, meshElementCount
-    CALL CMISSMeshElementsNodesSet(RegionUserNumber, meshHandle, 1,ELEMENT_NUMBER,CM%M(ELEMENT_NUMBER,1:NUMBER_OF_ELEMENT_NODES_SPACE), err )
-  ENDDO
-  CALL CMISSMeshElementsCreateFinish( RegionUserNumber, meshHandle, 1, err )
+  DO i = 1, SIZE( basisUserNumbers )
+    CALL FieldmlInput_GetBasisConnectivityInfo( parseHandle, meshHandle, basisUserNumbers( i ), connectivityHandle, layoutHandle, err )
+    
+    basisNodeCount = Fieldml_GetEnsembleDomainElementCount( parseHandle, layoutHandle )
+    
+    ALLOCATE( basisConnectivity( meshElementCount, basisNodeCount ) )
+    
+    CALL FieldmlInput_ReadRawData( parseHandle, connectivityHandle, basisConnectivity, err )
+    
+    DO j = 1, SIZE( nodeDomains )
+      IF( Fieldml_GetValueDomain( parseHandle, connectivityHandle ) == nodeDomains( j ) ) THEN
+        basisConnectivity = basisConnectivity + nodeDomainOffsets( j )
+      END IF
+    END DO
+    
+    CALL CMISSMeshElementsCreateStart( RegionUserNumber, meshHandle, i, basisUserNumbers( i ), err )
+    DO ELEMENT_NUMBER = 1, meshElementCount
+      CALL CMISSMeshElementsNodesSet(RegionUserNumber, meshHandle, i,ELEMENT_NUMBER,basisConnectivity(ELEMENT_NUMBER,1:basisNodeCount), err )
+    ENDDO
+    CALL CMISSMeshElementsCreateFinish( RegionUserNumber, meshHandle, i, err )
 
-  CALL CMISSMeshElementsCreateStart( RegionUserNumber, meshHandle, 2, basisUserNumbers( 2 ), err )
-  DO ELEMENT_NUMBER = 1, meshElementCount
-    CALL CMISSMeshElementsNodesSet(RegionUserNumber, meshHandle, 2,ELEMENT_NUMBER,CM%P(ELEMENT_NUMBER,1:NUMBER_OF_ELEMENT_NODES_PRESSURE), err )
-  ENDDO
-  CALL CMISSMeshElementsCreateFinish( RegionUserNumber, meshHandle, 2, err )
+    DEALLOCATE( basisConnectivity )
+    
+  END DO
   
-  !DO i = 1, SIZE( basisUserNumbers )
-  !  CALL CMISSMeshElementsCreateStart( RegionUserNumber, meshHandle, i, basisUserNumbers( i ), err )
-  !  DO ELEMENT_NUMBER = 1, meshElementCount
-  !    CALL CMISSMeshElementsNodesSet(RegionUserNumber, meshHandle, i,ELEMENT_NUMBER,CM%M(ELEMENT_NUMBER,1:NUMBER_OF_ELEMENT_NODES_SPACE), err )
-  !  ENDDO
-  !  CALL CMISSMeshElementsCreateFinish( RegionUserNumber, meshHandle, i, err )
-  !END DO
-
   !Finish the creation of the mesh
   CALL CMISSMeshCreateFinish(Mesh, err )
 
@@ -470,20 +431,37 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   !Set the scaling to use
   CALL CMISSFieldScalingTypeSet(GeometricField,CMISSFieldNoScaling, err )
   !Set the mesh component to be used by the field components.
-  DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
+  
+  domainHandle = Fieldml_GetValueDomain( parseHandle, spaceHandle )
+  
+  fieldDimensions = Fieldml_GetEnsembleDomainElementCount( parseHandle, Fieldml_GetDomainComponentEnsemble( parseHandle, domainHandle ) )
+  
+  DO COMPONENT_NUMBER=1,fieldDimensions
     CALL CMISSFieldComponentMeshComponentSet( GeometricField,CMISSFieldUVariableType,COMPONENT_NUMBER, & 
       & MESH_COMPONENT_NUMBER_SPACE, err )
   ENDDO
   !Finish creating the field
   CALL CMISSFieldCreateFinish( GeometricField, err )
   !Update the geometric field parameters
-  DO NODE_NUMBER=1,NUMBER_OF_NODES_SPACE
-    DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
-      VALUE=CM%N(NODE_NUMBER,COMPONENT_NUMBER)
+
+      dofsHandle = Fieldml_GetNamedObjectHandle( parseHandle, "test_mesh.node.coordinates"//C_NULL_CHAR )
+
+      ALLOCATE( fieldValues( meshNodeCount, fieldDimensions ) )
+    
+      CALL FieldmlInput_ReadRawData( parseHandle, dofsHandle, fieldValues, err )
+
+
+  DO NODE_NUMBER=1,meshNodeCount
+    DO COMPONENT_NUMBER=1,fieldDimensions
+
+      VALUE=fieldValues(NODE_NUMBER,COMPONENT_NUMBER)
       CALL CMISSFieldParameterSetUpdateNode(GeometricField,CMISSFieldUVariableType,CMISSFieldValuesSetType, & 
         & CMISSNoGlobalDerivative,NODE_NUMBER,COMPONENT_NUMBER,VALUE, err )
     ENDDO
   ENDDO
+  
+      DEALLOCATE( fieldValues )
+  
   CALL CMISSFieldParameterSetUpdateStart(GeometricField,CMISSFieldUVariableType,CMISSFieldValuesSetType, err )
   CALL CMISSFieldParameterSetUpdateFinish(GeometricField,CMISSFieldUVariableType,CMISSFieldValuesSetType, err )
 
@@ -514,13 +492,13 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   CALL CMISSEquationsSetDependentCreateStart(EquationsSetNavierStokes,DependentFieldUserNumberNavierStokes, & 
     & DependentFieldNavierStokes, err )
   !Set the mesh component to be used by the field components.
-  DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
+  DO COMPONENT_NUMBER=1,coordinateCount
     CALL CMISSFieldComponentMeshComponentSet(DependentFieldNavierStokes,CMISSFieldUVariableType,COMPONENT_NUMBER, & 
       & MESH_COMPONENT_NUMBER_VELOCITY, err )
     CALL CMISSFieldComponentMeshComponentSet(DependentFieldNavierStokes,CMISSFieldDeludelnVariableType,COMPONENT_NUMBER, & 
       & MESH_COMPONENT_NUMBER_VELOCITY, err )
   ENDDO
-  COMPONENT_NUMBER=NUMBER_OF_DIMENSIONS+1
+  COMPONENT_NUMBER=coordinateCount+1
     CALL CMISSFieldComponentMeshComponentSet(DependentFieldNavierStokes,CMISSFieldUVariableType,COMPONENT_NUMBER, & 
       & MESH_COMPONENT_NUMBER_PRESSURE, err )
     CALL CMISSFieldComponentMeshComponentSet(DependentFieldNavierStokes,CMISSFieldDeludelnVariableType,COMPONENT_NUMBER, & 
@@ -529,7 +507,7 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
   CALL CMISSEquationsSetDependentCreateFinish(EquationsSetNavierStokes, err )
 
   !Initialise dependent field
-  DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
+  DO COMPONENT_NUMBER=1,coordinateCount
     CALL CMISSFieldComponentValuesInitialise(DependentFieldNavierStokes,CMISSFieldUVariableType,CMISSFieldValuesSetType, & 
       & COMPONENT_NUMBER,INITIAL_FIELD_NAVIER_STOKES(COMPONENT_NUMBER), err )
   ENDDO
@@ -585,7 +563,7 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
     DO NODE_COUNTER=1,NUMBER_OF_FIXED_WALL_NODES_NAVIER_STOKES
       NODE_NUMBER=FIXED_WALL_NODES_NAVIER_STOKES(NODE_COUNTER)
       CONDITION=CMISSBoundaryConditionFixedWall
-      DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
+      DO COMPONENT_NUMBER=1,coordinateCount
         VALUE=0.0_CMISSDP
         CALL CMISSBoundaryConditionsSetNode(BoundaryConditionsNavierStokes,CMISSFieldUVariableType,CMISSNoGlobalDerivative, & 
           & NODE_NUMBER,COMPONENT_NUMBER,CONDITION,VALUE, err )
@@ -597,7 +575,7 @@ PROGRAM NAVIERSTOKESSTATICEXAMPLE
     DO NODE_COUNTER=1,NUMBER_OF_INLET_WALL_NODES_NAVIER_STOKES
       NODE_NUMBER=INLET_WALL_NODES_NAVIER_STOKES(NODE_COUNTER)
       CONDITION=CMISSBoundaryConditionInletWall
-      DO COMPONENT_NUMBER=1,NUMBER_OF_DIMENSIONS
+      DO COMPONENT_NUMBER=1,coordinateCount
         VALUE=BOUNDARY_CONDITIONS_NAVIER_STOKES(COMPONENT_NUMBER)
         CALL CMISSBoundaryConditionsSetNode(BoundaryConditionsNavierStokes,CMISSFieldUVariableType,CMISSNoGlobalDerivative, & 
           & NODE_NUMBER,COMPONENT_NUMBER,CONDITION,VALUE, err )
