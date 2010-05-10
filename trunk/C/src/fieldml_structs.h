@@ -48,7 +48,7 @@ MeshDomain;
 
 typedef struct _ContinuousImport
 {
-    char *remoteName;
+    int remoteEvaluator;
     int valueDomain;
 
     IntTable *aliases;
@@ -61,6 +61,7 @@ typedef struct _ContinuousPiecewise
     int valueDomain;
     int indexDomain;
     
+    IntTable *aliases;
     IntTable *evaluators;
 }
 ContinuousPiecewise;
@@ -70,6 +71,7 @@ typedef struct _ContinuousAggregate
 {
     int valueDomain;
 
+    IntTable *aliases;
     IntTable *evaluators;
 }
 ContinuousAggregate;
@@ -149,6 +151,7 @@ typedef struct _FieldmlObject
     FieldmlHandleType type;
     StringTable *markup;
     char *name;
+    int regionHandle; // One day this will be meaningful. For now, 0 = library, 1 = not library.
     union
     {
         EnsembleDomain *ensembleDomain;

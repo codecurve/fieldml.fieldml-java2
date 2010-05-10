@@ -3,33 +3,36 @@ ICONV_PATH = "C:\Program Files\iconv\iconv-1.9.2.win32"
 ZLIB_PATH = "C:\Program Files\zlib\zlib-1.2.3.win32"
 
 INCLUDE_PATH = /I $(LIBXML_PATH)/include /I $(ICONV_PATH)/include
-LIB_PATH = /LIBPATH:$(LIBXML_PATH)/lib /LIBPATH:$(ICONV_PATH)/lib /LIBPATH:$(ZLIB_PATH)/lib /LIBPATH:"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
+LIB_PATH = /LIBPATH:$(LIBXML_PATH)/lib /LIBPATH:$(ZLIB_PATH)/lib /LIBPATH:$(ICONV_PATH)/lib /LIBPATH:"C:\Program Files\Microsoft SDKs\Windows\v6.0A\Lib"
 
-CFLAGS = /O2 /Oi /GL /D "WIN32" /MD /Gy /W3 /c /nologo /D_CRT_SECURE_NO_WARNINGS
+CFLAGS_RELEASE = /O2 /Oi /GL /D "WIN32" /MT /Gy /W3 /c /nologo /D_CRT_SECURE_NO_WARNINGS
+CFLAGS_DEBUG = /O2 /Oi /GL /D "WIN32" /MTd /Gy /W3 /c /nologo /D_CRT_SECURE_NO_WARNINGS
 
 LIB_FLAGS = /LIB /OUT:fieldml.lib /LTCG /MACHINE:X86 /nologo
 
-EXE_FLAGS = /OUT:fieldml_test.exe /INCREMENTAL:NO /MANIFEST /MANIFESTFILE:fieldml_test.exe.intermediate.manifest /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /MACHINE:X86 /nologo
+EXE_FLAGS = /DEBUG /NODEFAULTLIB:LIBCMT /OUT:fieldml_test.exe /INCREMENTAL:NO /MANIFEST /MANIFESTFILE:fieldml_test.exe.intermediate.manifest /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /MACHINE:X86 /nologo
+
+XL_FLAGS = /DEBUG /NODEFAULTLIB:LIBCMT /OUT:xl.exe /INCREMENTAL:NO /MANIFEST /MANIFESTFILE:xl.exe.intermediate.manifest /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /MACHINE:X86 /nologo
 
 COMPILER = @cl.exe
 LINKER = @link.exe
 DELETER = @del /q
 
-LIB_OBJS = fieldml_sax.obj string_table.obj int_table.obj fieldml_parse.obj simple_list.obj int_stack.obj fieldml_api.obj
+LIB_OBJS = fieldml_sax.obj string_const.obj fieldml_write.obj string_table.obj int_table.obj fieldml_parse.obj simple_list.obj int_stack.obj fieldml_api.obj
 
 TEST_OBJS = fieldml_test.obj
 
-LIBS = libxml2_a.lib WSock32.Lib iconv_a.lib zlib.lib
-
+#LIBS = libxml2.lib iconv_a.lib WSock32.Lib zlib.lib
+LIBS = libxml2.lib
 %.obj : %.c
-	$(COMPILER) $< $(INCLUDE_PATH) $(CFLAGS)
+	$(COMPILER) $< $(INCLUDE_PATH) $(CFLAGS_DEBUG)
 
 
 default: lib
 
 
 fieldml_test.exe: fieldml.lib $(TEST_OBJS)
-	$(LINKER) $(EXE_FLAGS) $(LIB_PATH) $(LIBS) fieldml.lib $(TEST_OBJS)
+	$(LINKER) $(EXE_FLAGS) fieldml.lib $(TEST_OBJS) $(LIB_PATH) $(LIBS)
 	@mt.exe /outputresource:fieldml_test.exe;#1 /manifest fieldml_test.exe.intermediate.manifest /nologo
 
 fieldml.lib: $(LIB_OBJS)
@@ -37,9 +40,15 @@ fieldml.lib: $(LIB_OBJS)
 
 lib: fieldml.lib
 
-test: clean fieldml_test.exe
+test: fieldml_test.exe
 	fieldml_test ..\data\HEX-M2-V2-P1_FE.XML
 
+install: fieldml.lib $(TEST_OBJS)
+	copy /y fieldml.lib \data\Workspace\opencmissextras\external\i386-win32-debug\lib
+
+xl: xl.obj
+	$(LINKER) $(XL_FLAGS) xl.obj $(LIB_PATH) $(LIBS)
+	@mt.exe /outputresource:xl.exe;#1 /manifest xl.exe.intermediate.manifest /nologo
 
 clean:
 	$(DELETER) /q *.obj

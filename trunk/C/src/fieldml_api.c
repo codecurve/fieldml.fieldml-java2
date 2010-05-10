@@ -7,6 +7,7 @@
 #include "fieldml_parse.h"
 #include "fieldml_sax.h"
 #include "fieldml_structs.h"
+#include "fieldml_write.h"
 
 
 //========================================================================
@@ -167,6 +168,14 @@ FmlParseHandle Fieldml_ParseFile( const char *filename )
     FieldmlParse *parse = parseFieldmlFile( filename );
 
     return parseToHandle( parse );
+}
+
+
+int Fieldml_WriteFile( FmlParseHandle handle, const char *filename )
+{
+    FieldmlParse *parse = handleToParse( handle );
+
+    return writeFieldmlFile( parse, filename );
 }
 
 
@@ -903,32 +912,26 @@ FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHand
 }
 
 
-const char * Fieldml_GetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
 
     if( object == NULL )
     {
-        return NULL;
+        return FML_INVALID_HANDLE;
     }
 
     if( object->type != FHT_CONTINUOUS_IMPORT )
     {
-        return NULL;
+        return FML_INVALID_HANDLE;
     }
 
-    return object->object.continuousImport->remoteName;
+    return object->object.continuousImport->remoteEvaluator;
 }
 
 
-int Fieldml_CopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
-{
-    return cappedCopy( Fieldml_GetImportRemoteName( handle, objectHandle ), buffer, bufferLength );
-}
-
-
-int Fieldml_GetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -947,26 +950,7 @@ int Fieldml_GetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHa
 }
 
 
-FmlObjectHandle Fieldml_GetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
-{
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
-
-    if( object == NULL )
-    {
-        return FML_INVALID_HANDLE;
-    }
-
-    if( object->type != FHT_CONTINUOUS_IMPORT )
-    {
-        return FML_INVALID_HANDLE;
-    }
-
-    return getIntTableEntryName( object->object.continuousImport->aliases, index - 1 );
-}
-
-
-FmlObjectHandle Fieldml_GetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -982,6 +966,25 @@ FmlObjectHandle Fieldml_GetImportAliasRemoteHandle( FmlParseHandle handle, FmlOb
     }
 
     return hackToHandle( getIntTableEntryData( object->object.continuousImport->aliases, index - 1 ) );
+}
+
+
+FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->type != FHT_CONTINUOUS_IMPORT )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    return getIntTableEntryName( object->object.continuousImport->aliases, index - 1 );
 }
 
 

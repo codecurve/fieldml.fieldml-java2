@@ -20,7 +20,7 @@ typedef struct _SaxAttributes
 }
 SaxAttributes;
 
-char * getAttribute( SaxAttributes *saxAttributes, char *attribute );
+const char * getAttribute( SaxAttributes *saxAttributes, const char *attribute );
 
 FieldmlParse *parseFieldmlFile( const char *filename );
 
