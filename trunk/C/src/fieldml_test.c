@@ -76,20 +76,15 @@ static int validate( char *filename )
 }
 
 
-int main( int argc, char **argv )
+void testRead( const char * filename )
 {
     int i, j, count, count2;
     FmlObjectHandle oHandle;
     FmlParseHandle handle;
     DomainBoundsType boundsType;
     const int *swizzle;
-    
-    if( !validate( argv[1] ) )
-    {
-        return 1;
-    }
-    
-    handle = Fieldml_ParseFile( argv[1] );
+
+    handle = Fieldml_ParseFile( filename );
 
     count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_DOMAIN );
     fprintf( stdout, "ContinuousDomains: %d\n", count ); 
@@ -220,14 +215,14 @@ int main( int argc, char **argv )
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
-        fprintf( stdout, "    Remote name: %s\n", Fieldml_GetImportRemoteName( handle, oHandle ) );
+        fprintf( stdout, "    Remote name: %s\n", Fieldml_GetObjectName( handle, Fieldml_GetImportRemoteEvaluator( handle, oHandle ) ) );
         
-        count2 = Fieldml_GetImportAliasCount( handle, oHandle );
+        count2 = Fieldml_GetAliasCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "    %s  -->  %s\n",
-                Fieldml_GetObjectName( handle, Fieldml_GetImportAliasLocalHandle( handle, oHandle, j ) ),
-                Fieldml_GetObjectName( handle, Fieldml_GetImportAliasRemoteHandle( handle, oHandle, j ) ) ); 
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
         }
     }
 
@@ -241,6 +236,15 @@ int main( int argc, char **argv )
             Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetIndexDomain( handle, oHandle, 1 ) ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
+
+        count2 = Fieldml_GetAliasCount( handle, oHandle );
+        for( j = 1; j <= count2; j++ )
+        {
+            fprintf( stdout, "    %s  -->  %s\n",
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
+        }
+
         count2 = Fieldml_GetEvaluatorCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )
         {
@@ -257,6 +261,15 @@ int main( int argc, char **argv )
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
+
+        count2 = Fieldml_GetAliasCount( handle, oHandle );
+        for( j = 1; j <= count2; j++ )
+        {
+            fprintf( stdout, "    %s  -->  %s\n",
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
+        }
+
         count2 = Fieldml_GetEvaluatorCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )
         {
@@ -332,6 +345,34 @@ int main( int argc, char **argv )
     fprintf( stdout, "*******************************\n" );
     
     Fieldml_DestroyParse( handle );
+}
+
+
+int testWrite( const char *filename )
+{
+    FmlParseHandle handle;
+    const char *outputFilename;
+
+    handle = Fieldml_ParseFile( filename );
+    
+    outputFilename = calloc( 1, strlen( filename ) + 10 );
+    strcpy( outputFilename, filename );
+    strcat( outputFilename, "_out.xml" );
+    
+    return Fieldml_WriteFile( handle, outputFilename );
+}
+
+
+int main( int argc, char **argv )
+{
+    if( !validate( argv[1] ) )
+    {
+        return 1;
+    }
+    
+    testRead( argv[1] );
+    
+    testWrite( argv[1] );
     
     return 0;
 }

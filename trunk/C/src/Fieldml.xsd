@@ -78,8 +78,7 @@
 	<xs:complexType name="ImportedContinuousEvaluatorType">
 		<xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="continuousAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="ensembleAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+			<xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" />
 		<xs:attribute name="valueDomain" type="xs:string" />
@@ -90,8 +89,7 @@
         <xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
             <xs:element name="elementEvaluators" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="continuousAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="ensembleAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="valueDomain" type="xs:string" />
@@ -147,8 +145,7 @@
         <xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
             <xs:element name="sourceFields" type="SimpleMapType" minOccurs="1" maxOccurs="1" />
-            <xs:element name="continuousAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="ensembleAliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute name="valueDomain" type="xs:string" />

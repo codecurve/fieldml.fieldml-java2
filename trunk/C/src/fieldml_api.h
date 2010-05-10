@@ -72,6 +72,8 @@ typedef enum _FieldmlHandleType
     //These four are stand-in types used to allow forward-declaration during parsing.
     FHT_UNKNOWN_ENSEMBLE_DOMAIN,
     FHT_UNKNOWN_CONTINUOUS_DOMAIN,
+    FHT_UNKNOWN_ENSEMBLE_EVALUATOR,
+    FHT_UNKNOWN_CONTINUOUS_EVALUATOR,
     FHT_UNKNOWN_ENSEMBLE_SOURCE,
     FHT_UNKNOWN_CONTINUOUS_SOURCE,
 }
@@ -88,6 +90,9 @@ typedef int FmlObjectHandle;
      handle is then used for all subsequent API calls. 
  */
 FmlParseHandle Fieldml_ParseFile( const char *filename );
+
+
+int Fieldml_WriteFile( FmlParseHandle parse, const char *filename );
 
 
 /*
@@ -287,32 +292,25 @@ int Fieldml_GetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHa
 FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int evaluatorIndex );
 
 
-/*
-     Returns the remote name of the given imported evaluator.
-     
-     NOTE: At some point, the name will be a URI-style string allowing the caller
-     to identify the import's source fieldml region. 
- */
-const char * Fieldml_GetImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle );
-int Fieldml_CopyImportRemoteName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength );
+FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
-    Returns the number of aliases used by the given imported evaluator. 
+    Returns the number of aliases used by the given evaluator. 
  */
-int Fieldml_GetImportAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
+int Fieldml_GetAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
 
 /*
-    Returns the local domain/evaulator used by the nth alias of the given imported evaluator. 
+    Returns the local domain/evaulator used by the nth alias of the given evaluator. 
  */
-FmlObjectHandle Fieldml_GetImportAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
+FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
 
 
 /*
-    Returns the remote domain used by the nth alias of the given imported evaluator. 
+    Returns the remote domain used by the nth alias of the given evaluator. 
  */
-FmlObjectHandle Fieldml_GetImportAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
+FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
 
 
 /*

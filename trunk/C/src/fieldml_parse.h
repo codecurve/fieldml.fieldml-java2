@@ -3,13 +3,20 @@
 
 #include "string_table.h"
 
+extern const int FILE_REGION_HANDLE;
+
+extern const int LIBRARY_REGION_HANDLE;
+
+extern const int VIRTURAL_REGION_HANDLE;
+
+
 typedef struct _SaxAttributes SaxAttributes;
 
 typedef struct _FieldmlContext FieldmlContext;
 
 typedef struct _FieldmlParse FieldmlParse;
 
-void addError( FieldmlParse *parse, char *error, char *name1, char *name2 );
+void addError( FieldmlParse *parse, const char *error, const char *name1, const char *name2 );
 
 
 FieldmlContext *createFieldmlContext( FieldmlParse *parse );
@@ -49,9 +56,7 @@ void endMeshDomain( FieldmlContext *context );
 
 void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes );
 
-void onContinuousImportAlias( FieldmlContext *context, SaxAttributes *attributes );
-
-void onEnsembleImportAlias( FieldmlContext *context, SaxAttributes *attributes );
+void onAlias( FieldmlContext *context, SaxAttributes *attributes );
 
 void endContinuousImport( FieldmlContext *context );
 
