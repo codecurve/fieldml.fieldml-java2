@@ -2,123 +2,54 @@
 #define H_FIELDML_PARSE
 
 #include "string_table.h"
+#include "fieldml_structs.h"
+#include "fieldml_api.h"
 
 extern const int FILE_REGION_HANDLE;
 
 extern const int LIBRARY_REGION_HANDLE;
 
-extern const int VIRTURAL_REGION_HANDLE;
+extern const int VIRTUAL_REGION_HANDLE;
 
-
-typedef struct _SaxAttributes SaxAttributes;
-
-typedef struct _FieldmlContext FieldmlContext;
 
 typedef struct _FieldmlParse FieldmlParse;
 
+typedef struct _FieldmlObject FieldmlObject;
+
 void addError( FieldmlParse *parse, const char *error, const char *name1, const char *name2 );
 
+FmlObjectHandle addFieldmlObject( FieldmlParse *parse, FieldmlObject *object );
 
-FieldmlContext *createFieldmlContext( FieldmlParse *parse );
-
-void destroyFieldmlContext( FieldmlContext *context );
-
-
-void destroyFieldmlParse( FieldmlParse *parse );
+FmlObjectHandle getOrCreateObjectHandle( FieldmlParse *parse, const char *name, FieldmlHandleType type );
 
 FieldmlParse *createFieldmlParse();
 
 void destroyFieldmlParse( FieldmlParse *parse );
 
 
-void startEnsembleDomain( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHandle componentDomain );
 
-void startContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createContinuousDomain( const char * name, int region, FmlObjectHandle componentDomain );
 
-void endEnsembleDomain( FieldmlContext *context );
+FieldmlObject *createMeshDomain( const char *name, int region, FmlObjectHandle xiDomain, FmlObjectHandle elementDomain );
 
+FieldmlObject *createContinuousImport( const char *name, int region, FmlObjectHandle evaluator, FmlObjectHandle valueDomain );
 
-void startContinuousDomain( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createEnsembleVariable( const char *name, int region, FmlObjectHandle valueDomain );
 
-void endContinuousDomain( FieldmlContext *context );
+FieldmlObject *createContinuousVariable( const char *name, int region, FmlObjectHandle valueDomain );
 
+FieldmlObject *createEnsembleParameters( const char *name, int region, FmlObjectHandle valueDomain );
 
-void startMeshDomain( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createContinuousParameters( const char *name, int region, FmlObjectHandle valueDomain );
 
-void onMeshContiguousBounds( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createContinuousPiecewise( const char *name, int region, FmlObjectHandle indexDomain, FmlObjectHandle valueDomain );
 
-void onMeshShape( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createContinuousAggregate( const char *name, int region, FmlObjectHandle valueDomain );
 
-void onMeshConnectivity( FieldmlContext *context, SaxAttributes *attributes );
+FieldmlObject *createContinuousDereference( const char *name, int region, FmlObjectHandle valueIndexes, FmlObjectHandle valueSource, FmlObjectHandle valueDomain );
 
-void endMeshDomain( FieldmlContext *context );
-
-
-void startContinuousImport( FieldmlContext *context, SaxAttributes *attributes );
-
-void onAlias( FieldmlContext *context, SaxAttributes *attributes );
-
-void endContinuousImport( FieldmlContext *context );
-
-
-void startEnsembleParameters( FieldmlContext *context, SaxAttributes *attributes );
-
-void endEnsembleParameters( FieldmlContext *context );
-
-
-void startContinuousParameters( FieldmlContext *context, SaxAttributes *attributes );
-
-void endContinuousParameters( FieldmlContext *context );
-
-
-void startContinuousPiecewise( FieldmlContext *context, SaxAttributes *attributes );
-
-void onContinuousPiecewiseEntry( FieldmlContext *context, SaxAttributes *attributes );
-
-void endContinuousPiecewise( FieldmlContext *context );
-
-
-void startContinuousAggregate( FieldmlContext *context, SaxAttributes *attributes );
-
-void onContinuousAggregateEntry( FieldmlContext *context, SaxAttributes *attributes );
-
-void endContinuousAggregate( FieldmlContext *context );
-
-
-void startContinuousDereference( FieldmlContext *context, SaxAttributes *attributes );
-
-void endContinuousDereference( FieldmlContext *context );
-
-
-void startContinuousVariable( FieldmlContext *context, SaxAttributes *attributes );
-
-void startEnsembleVariable( FieldmlContext *context, SaxAttributes *attributes );
-
-void endVariable( FieldmlContext *context );
-
-
-void onMarkupEntry( FieldmlContext *context, SaxAttributes *attributes );
-
-
-void startSemidenseData( FieldmlContext *context, SaxAttributes *attributes );
-
-void onSemidenseDenseIndex( FieldmlContext *context, SaxAttributes *attributes );
-
-void onSemidenseSparseIndex( FieldmlContext *context, SaxAttributes *attributes );
-
-void endSemidenseData( FieldmlContext *context );
-
-void startInlineData( FieldmlContext *context, SaxAttributes *attributes );
-
-void onInlineData( FieldmlContext *context, const char *const characters, const int length );
-
-void onFileData( FieldmlContext *context, SaxAttributes *attributes );
-
-void startSwizzleData( FieldmlContext *context, SaxAttributes *attributes );
-
-void onSwizzleData( FieldmlContext *context, const char *const characters, const int length );
-
-void endSwizzleData( FieldmlContext *context );
+SemidenseData *createSemidenseData();
 
 void finalizeFieldmlParse( FieldmlParse *parse );
 

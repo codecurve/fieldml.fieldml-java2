@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include <stdio.h>
 
 #include "int_table.h"
@@ -8,6 +9,7 @@
 #include "fieldml_sax.h"
 #include "fieldml_structs.h"
 #include "fieldml_write.h"
+#include "fieldml_validate.h"
 
 
 //========================================================================
@@ -171,6 +173,14 @@ FmlParseHandle Fieldml_ParseFile( const char *filename )
 }
 
 
+FmlParseHandle Fieldml_Create()
+{
+    FieldmlParse *parse = createFieldmlParse();
+
+    return parseToHandle( parse );
+}
+
+
 int Fieldml_WriteFile( FmlParseHandle handle, const char *filename )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -252,6 +262,22 @@ FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
+int Fieldml_SetMarkup(  FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute, const char * value )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+    
+    setStringTableEntry( object->markup, attribute, _strdup( value ), free );
+
+    return FML_ERR_NO_ERROR;
+}
+
+
 int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -263,6 +289,20 @@ int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle 
     }
     
     return getStringTableCount( object->markup );
+}
+
+
+int Fieldml_ValidateObject( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_ERR_NO_ERROR;
+    }
+    
+    return validateFieldmlObject( parse, object );
 }
 
 
@@ -399,6 +439,44 @@ int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle obj
     }
 
     return object->object.ensembleDomain->bounds.contiguous.count;
+}
+
+
+int Fieldml_SetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int count )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object->regionHandle != FILE_REGION_HANDLE )
+    {
+        return FML_ERR_ACCESS_VIOLATION;
+    }
+    
+    if( object->type == FHT_ENSEMBLE_DOMAIN )
+    {
+        object->object.ensembleDomain->boundsType = BOUNDS_DISCRETE_CONTIGUOUS;
+        object->object.ensembleDomain->bounds.contiguous.count = count;
+        
+        return FML_ERR_NO_ERROR;
+    }
+    else if( object->type == FHT_MESH_DOMAIN )
+    {
+        FieldmlObject *subObject;
+        
+        subObject = getSimpleListEntry( parse->objects, object->object.meshDomain->elementDomain );
+        
+        if( ( subObject == NULL ) || ( subObject->type != FHT_ENSEMBLE_DOMAIN ) )
+        {
+            return FML_ERR_INCOMPLETE_OBJECT;
+        }
+        
+        subObject->object.ensembleDomain->boundsType = BOUNDS_DISCRETE_CONTIGUOUS;
+        subObject->object.ensembleDomain->bounds.contiguous.count = count;
+        
+        return FML_ERR_NO_ERROR;
+    }
+
+    return FML_ERR_INVALID_OBJECT;
 }
 
 
@@ -551,6 +629,17 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle o
 }
 
 
+FmlObjectHandle Fieldml_CreateContinuousDereference( FmlParseHandle handle, const char * name, FmlObjectHandle indexes, FmlObjectHandle values, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousDereference( name, FILE_REGION_HANDLE, indexes, values, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
 FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -588,6 +677,80 @@ FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHa
     return object->object.dereference->valueSource;
 }
 
+
+FmlObjectHandle Fieldml_CreateEnsembleVariable( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createEnsembleVariable( name, FILE_REGION_HANDLE, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateContinuousVariable( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousVariable( name, FILE_REGION_HANDLE, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateEnsembleParameters( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createEnsembleParameters( name, FILE_REGION_HANDLE, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateContinuousParameters( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousParameters( name, FILE_REGION_HANDLE, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+int Fieldml_SetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle, DataDescriptionType description )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType != DESCRIPTION_UNKNOWN )
+        {
+            return FML_ERR_ACCESS_VIOLATION;
+        }
+
+        object->object.parameters->descriptionType = description;
+        
+        if( description == DESCRIPTION_SEMIDENSE )
+        {
+            object->object.parameters->dataDescription.semidense = createSemidenseData();
+        }
+        
+        return FML_ERR_NO_ERROR;  
+    }
+
+    return FML_ERR_INVALID_OBJECT;
+}
 
 DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
@@ -627,6 +790,116 @@ DataLocationType Fieldml_GetParameterDataLocation( FmlParseHandle handle, FmlObj
     }
 
     return LOCATION_UNKNOWN;
+}
+
+
+int Fieldml_SetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle objectHandle, DataLocationType location )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+
+    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
+    {
+        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( object->object.parameters->dataDescription.semidense->locationType != LOCATION_UNKNOWN )
+            {
+                return FML_ERR_ACCESS_VIOLATION;
+            }
+            
+            object->object.parameters->dataDescription.semidense->locationType = location;
+            return FML_ERR_NO_ERROR;
+        }
+    }
+
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+int Fieldml_AddInlineParameterData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char *data, int length )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    Parameters *parameters;
+    StringDataSource *source;
+    char *newString;
+    
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+    
+    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+    
+    parameters = object->object.parameters;
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        if( parameters->dataDescription.semidense->locationType != LOCATION_INLINE )
+        {
+            return FML_ERR_INVALID_OBJECT;
+        }
+        source = &(parameters->dataDescription.semidense->dataLocation.stringData);
+    }
+
+    newString = malloc( source->length + length + 1 );
+    memcpy( newString, source->string, source->length );
+    memcpy( newString + source->length, data, length );
+    source->length += length;
+    newString[ source->length ] = 0;
+    free( source->string );
+    source->string = newString;
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * file, DataFileType type, int offset )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    Parameters *parameters;
+    FileDataSource *source;
+    
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+    
+    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+    
+    parameters = object->object.parameters;
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        if( parameters->dataDescription.semidense->locationType != LOCATION_FILE )
+        {
+            return FML_ERR_INVALID_OBJECT;
+        }
+        source = &(parameters->dataDescription.semidense->dataLocation.fileData);
+    }
+    
+    if( source->filename != NULL )
+    {
+        free( source->filename );
+    }
+    
+    source->filename = _strdup( file );
+    source->fileType = type;
+    source->offset = offset;
+    
+    return FML_ERR_NO_ERROR;
 }
 
 
@@ -727,6 +1000,39 @@ DataFileType Fieldml_GetParameterDataFileType( FmlParseHandle handle, FmlObjectH
 }
 
 
+int Fieldml_AddSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle indexHandle, int isSparse )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+
+    if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+
+    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+
+    if( isSparse )
+    {
+        addSimpleListEntry( object->object.parameters->dataDescription.semidense->sparseIndexes, (void*)(indexHandle + 1) );
+    }
+    else
+    {
+        addSimpleListEntry( object->object.parameters->dataDescription.semidense->denseIndexes, (void*)(indexHandle + 1) );
+    }
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
 int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -789,6 +1095,37 @@ FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandl
     }
 
     return hackToHandle( hack );
+}
+
+
+int Fieldml_SetSwizzle( FmlParseHandle handle, FmlObjectHandle objectHandle, const int *buffer, int count )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    int *ints;
+    
+    if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    if( object->object.parameters->dataDescription.semidense->swizzle != NULL )
+    {
+        free( (int*)object->object.parameters->dataDescription.semidense->swizzle );
+    }
+    
+    ints = malloc( count * sizeof( int ) );
+    memcpy( ints, buffer, sizeof( int ) * count );
+    
+    object->object.parameters->dataDescription.semidense->swizzleCount = count;
+    object->object.parameters->dataDescription.semidense->swizzle = ints;
+    
+    return FML_ERR_NO_ERROR;
 }
 
 
@@ -867,6 +1204,49 @@ int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle
 }
 
 
+FmlObjectHandle Fieldml_CreateContinuousPiecewise( FmlParseHandle handle, const char * name, FmlObjectHandle indexHandle, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousPiecewise( name, FILE_REGION_HANDLE, indexHandle, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlParseHandle handle, const char * name, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousAggregate( name, FILE_REGION_HANDLE, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+int Fieldml_SetEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle, int element, FmlObjectHandle evaluator )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    IntTable *table = getEntryIntTable( object );
+    
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+    if( table == NULL )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+
+    setIntTableEntry( table, element, (void*)(evaluator + 1), NULL ); //HACK!!
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
 int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -912,6 +1292,17 @@ FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHand
 }
 
 
+FmlObjectHandle Fieldml_CreateContinuousImport( FmlParseHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+    
+    object = createContinuousImport( name, FILE_REGION_HANDLE, remoteEvaluator, valueDomain );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
 FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlParse *parse = handleToParse( handle );
@@ -941,12 +1332,21 @@ int Fieldml_GetAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
         return -1;
     }
 
-    if( object->type != FHT_CONTINUOUS_IMPORT )
+    if( object->type == FHT_CONTINUOUS_IMPORT )
     {
-        return -1;
+        return getIntTableCount( object->object.continuousImport->aliases );
     }
+    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        return getIntTableCount( object->object.piecewise->aliases );
+    }
+    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        return getIntTableCount( object->object.aggregate->aliases );
+    }
+    
+    return -1;
 
-    return getIntTableCount( object->object.continuousImport->aliases );
 }
 
 
@@ -960,12 +1360,20 @@ FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHan
         return FML_INVALID_HANDLE;
     }
 
-    if( object->type != FHT_CONTINUOUS_IMPORT )
+    if( object->type == FHT_CONTINUOUS_IMPORT )
     {
-        return FML_INVALID_HANDLE;
+        return hackToHandle( getIntTableEntryData( object->object.continuousImport->aliases, index - 1 ) );
+    }
+    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        return hackToHandle( getIntTableEntryData( object->object.piecewise->aliases, index - 1 ) );
+    }
+    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        return hackToHandle( getIntTableEntryData( object->object.aggregate->aliases, index - 1 ) );
     }
 
-    return hackToHandle( getIntTableEntryData( object->object.continuousImport->aliases, index - 1 ) );
+    return FML_INVALID_HANDLE; 
 }
 
 
@@ -979,13 +1387,48 @@ FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlParseHandle handle, FmlObjectHa
         return FML_INVALID_HANDLE;
     }
 
-    if( object->type != FHT_CONTINUOUS_IMPORT )
+    if( object->type == FHT_CONTINUOUS_IMPORT )
     {
-        return FML_INVALID_HANDLE;
+        return getIntTableEntryName( object->object.continuousImport->aliases, index - 1 );
+    }
+    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        return getIntTableEntryName( object->object.piecewise->aliases, index - 1 );
+    }
+    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        return getIntTableEntryName( object->object.aggregate->aliases, index - 1 );
     }
 
-    return getIntTableEntryName( object->object.continuousImport->aliases, index - 1 );
+    return FML_INVALID_HANDLE;
 }
+
+
+int Fieldml_SetAlias( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    IntTable *table = NULL;
+    
+    if( object->type == FHT_CONTINUOUS_IMPORT )
+    {
+        setIntTableEntry( object->object.continuousImport->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        return FML_ERR_NO_ERROR;
+    }
+    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        setIntTableEntry( object->object.aggregate->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        return FML_ERR_NO_ERROR;
+    }
+    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        setIntTableEntry( object->object.continuousImport->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        return FML_ERR_NO_ERROR;
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
+}
+
 
 
 int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
@@ -1062,4 +1505,100 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle o
     }
     
     return FML_INVALID_HANDLE;
+}
+
+
+FmlObjectHandle Fieldml_CreateContinuousDomain( FmlParseHandle handle, const char * name, FmlObjectHandle componentHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createContinuousDomain( name, FILE_REGION_HANDLE, componentHandle );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlParseHandle handle, const char * name, FmlObjectHandle componentHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object;
+
+    object = createEnsembleDomain( name, FILE_REGION_HANDLE, FML_INVALID_HANDLE );
+    
+    return addFieldmlObject( parse, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateMeshDomain( FmlParseHandle handle, const char * name, FmlObjectHandle xiEnsemble )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object, *xiObject, *elementObject;
+    FmlObjectHandle xiHandle, elementHandle;
+    char *subName;
+
+    if( Fieldml_GetNamedObjectHandle( handle, name ) != FML_INVALID_HANDLE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    subName = calloc( 1, strlen( name ) + 12 );
+
+    strcpy( subName, name );
+    strcat( subName, ".xi" );
+    if( Fieldml_GetNamedObjectHandle( handle, subName ) != FML_INVALID_HANDLE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    strcpy( subName, name );
+    strcat( subName, ".elements" );
+    if( Fieldml_GetNamedObjectHandle( handle, subName ) != FML_INVALID_HANDLE )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    strcpy( subName, name );
+    strcat( subName, ".xi" );
+    xiObject = createContinuousDomain( subName, VIRTUAL_REGION_HANDLE, xiEnsemble );
+    xiHandle = addFieldmlObject( parse, xiObject );
+    
+    strcpy( subName, name );
+    strcat( subName, ".elements" );
+    elementObject = createEnsembleDomain( subName, VIRTUAL_REGION_HANDLE, FML_INVALID_HANDLE );
+    elementHandle = addFieldmlObject( parse, elementObject );
+    
+    object = createMeshDomain( name, FILE_REGION_HANDLE, xiHandle, elementHandle );
+
+    return addFieldmlObject( parse, object );
+}
+
+
+int Fieldml_SetMeshElementShape( FmlParseHandle handle, FmlObjectHandle mesh, int elementNumber, const char * shape )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, mesh );
+
+    if( object->type == FHT_MESH_DOMAIN )
+    {
+        setIntTableEntry( object->object.meshDomain->shapes, elementNumber, _strdup( shape ), free );
+        return FML_ERR_NO_ERROR;
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, FmlObjectHandle pointDomain, FmlObjectHandle evaluator )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, mesh );
+
+    if( object->type == FHT_MESH_DOMAIN )
+    {
+        setIntTableEntry( object->object.meshDomain->connectivity, pointDomain, (void*)(evaluator + 1), NULL );
+        return FML_ERR_NO_ERROR;
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
 }
