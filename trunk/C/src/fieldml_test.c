@@ -19,7 +19,7 @@
 
 static int validate( char *filename )
 {
-    int res, state;
+    int res;
     xmlParserInputBufferPtr buffer;
     char *schema;
     xmlSchemaPtr schemas = NULL;
@@ -352,6 +352,7 @@ int testWrite( const char *filename )
 {
     FmlParseHandle handle;
     const char *outputFilename;
+    int result;
 
     handle = Fieldml_ParseFile( filename );
     
@@ -359,7 +360,9 @@ int testWrite( const char *filename )
     strcpy( outputFilename, filename );
     strcat( outputFilename, "_out.xml" );
     
-    return Fieldml_WriteFile( handle, outputFilename );
+    result = Fieldml_WriteFile( handle, outputFilename );
+
+    Fieldml_DestroyParse( handle );
 }
 
 

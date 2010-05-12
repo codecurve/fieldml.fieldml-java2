@@ -488,6 +488,9 @@ int writeFieldmlFile( FieldmlParse *parse, const char *filename )
         {
             writeFieldmlObject( writer, parse, object );
         }
+        else
+        {
+        }
     }
 
     rc = xmlTextWriterEndDocument( writer );

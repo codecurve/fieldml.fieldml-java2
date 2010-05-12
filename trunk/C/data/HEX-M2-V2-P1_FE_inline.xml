@@ -36,14 +36,14 @@
     </MeshDomain>
     
 
-    <ContinuousVariableEvaluator name="test_mesh.triquadratic_dofs" valueDomain="library.coordinates.rc.1d">
+    <ContinuousVariableEvaluator name="test_mesh.nodal_dofs" valueDomain="library.coordinates.rc.1d">
       <parameterDomains>
         <entry value="test_mesh.triquadratic_nodes" />
       </parameterDomains>
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube3x3x3_nodes" valueSource="test_mesh.triquadratic_dofs" name="test_mesh.element_params.triquadratic_lagrange" valueDomain="library.parameters.triquadratic_lagrange" />
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube3x3x3_nodes" valueSource="test_mesh.nodal_dofs" name="test_mesh.element_params.triquadratic_lagrange" valueDomain="library.parameters.triquadratic_lagrange" />
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.triquadratic_lagrange" name="test_mesh.triquadratic_lagrange" valueDomain="library.real.1d">
@@ -54,14 +54,7 @@
     </ImportedContinuousEvaluator>
 
 
-    <ContinuousVariableEvaluator name="test_mesh.trilinear_dofs" valueDomain="library.coordinates.rc.1d">
-      <parameterDomains>
-        <entry value="test_mesh.trilinear_nodes" />
-      </parameterDomains>
-    </ContinuousVariableEvaluator>
-    
-
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube1x1_nodes" valueSource="test_mesh.trilinear_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
+    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube1x1_nodes" valueSource="test_mesh.nodal_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.trilinear_lagrange" name="test_mesh.trilinear_lagrange" valueDomain="library.real.1d">
@@ -282,7 +275,7 @@
 
     <ContinuousAggregateEvaluator name="test_mesh.coordinates" valueDomain="library.coordinates.rc.3d">
       <continuousAliases>
-        <SimpleMapEntry key="test_mesh.triquadratic_dofs" value="test_mesh.node.coordinates" />
+        <SimpleMapEntry key="test_mesh.nodal_dofs" value="test_mesh.node.coordinates" />
       </continuousAliases>
       <sourceFields>
         <SimpleMapEntry key="1" value="test_mesh.template.triquadratic"/>

@@ -56,7 +56,7 @@
 		<xs:attribute name="xiComponentDomain" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="ContinuousVariableEvaluatorType">
+	<xs:complexType name="VariableEvaluatorType">
 		<xs:all>
 			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="parameterDomains" type="SimpleListType" minOccurs="0" maxOccurs="1" />
@@ -155,7 +155,8 @@
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="EnsembleDomain" type="EnsembleDomainType" />
 			<xs:element name="MeshDomain" type="MeshDomainType" />
-			<xs:element name="ContinuousVariableEvaluator" type="ContinuousVariableEvaluatorType" />
+			<xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
+            <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
 			<xs:element name="ContinuousDereferenceEvaluator" type="ContinuousDereferenceEvaluatorType" />
 			<xs:element name="ImportedContinuousEvaluator" type="ImportedContinuousEvaluatorType" />
             <xs:element name="ContinuousPiecewiseEvaluator" type="PiecewiseEvaluatorType" />

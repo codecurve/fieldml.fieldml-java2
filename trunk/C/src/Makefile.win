@@ -18,7 +18,7 @@ COMPILER = @cl.exe
 LINKER = @link.exe
 DELETER = @del /q
 
-LIB_OBJS = fieldml_sax.obj string_const.obj fieldml_write.obj string_table.obj int_table.obj fieldml_parse.obj simple_list.obj int_stack.obj fieldml_api.obj
+LIB_OBJS = fieldml_sax.obj fieldml_validate.obj string_const.obj fieldml_write.obj string_table.obj int_table.obj fieldml_parse.obj simple_list.obj int_stack.obj fieldml_api.obj
 
 TEST_OBJS = fieldml_test.obj
 
