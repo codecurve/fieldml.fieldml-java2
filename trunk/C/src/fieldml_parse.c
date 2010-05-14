@@ -60,6 +60,7 @@ FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHan
     FieldmlObject *object = createFieldmlObject( name, FHT_ENSEMBLE_DOMAIN, region );
     EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
     domain->boundsType = BOUNDS_UNKNOWN;
+    domain->componentDomain = FML_INVALID_HANDLE;
 
     object->object.ensembleDomain = domain;
 
