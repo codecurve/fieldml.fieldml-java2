@@ -243,5 +243,6 @@ def processFile():
   expose( ParseState.functions )
   for e in ParseState.enums:
     expose( e )
+  expose( ParseState.defines )
 
 processFile()

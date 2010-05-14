@@ -104,7 +104,7 @@ static void writeIntTable( xmlTextWriterPtr writer, const char *name, IntTable *
 
 static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntTable *table )
 {
-    int i, count;
+    int i, count, objectHandle;
     
     count = getIntTableCount( table );
     if( count == 0 )
@@ -116,9 +116,15 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse
 
     for( i = 0; i < count; i++ )
     {
+        objectHandle = (int)getIntTableEntryData( table, i ) - 1;
+        if( objectHandle == FML_INVALID_HANDLE )
+        {
+            continue;
+        }
+        
         writeStringTableEntry( writer,
             Fieldml_GetObjectName( parse, getIntTableEntryName( table, i ) ),
-            Fieldml_GetObjectName( parse, (int)getIntTableEntryData( table, i ) - 1 )
+            Fieldml_GetObjectName( parse, objectHandle )
             );
     }
 
@@ -128,7 +134,7 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse
 
 static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntTable *table )
 {
-    int i, count;
+    int i, count, objectHandle;
     
     count = getIntTableCount( table );
     if( count == 0 )
@@ -140,9 +146,15 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, c
 
     for( i = 0; i < count; i++ )
     {
+        objectHandle = (int)getIntTableEntryData( table, i ) - 1;
+        if( objectHandle == FML_INVALID_HANDLE )
+        {
+            continue;
+        }
+        
         writeIntTableEntry( writer,
             getIntTableEntryName( table, i ),
-            Fieldml_GetObjectName( parse, (int)getIntTableEntryData( table, i ) - 1 )
+            Fieldml_GetObjectName( parse, objectHandle )
             );
     }
 

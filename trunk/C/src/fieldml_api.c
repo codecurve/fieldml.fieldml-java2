@@ -862,7 +862,7 @@ int Fieldml_AddInlineParameterData( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * file, DataFileType type, int offset )
+int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * filename, DataFileType type, int offset )
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
@@ -895,7 +895,7 @@ int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectH
         free( source->filename );
     }
     
-    source->filename = _strdup( file );
+    source->filename = _strdup( filename );
     source->fileType = type;
     source->offset = offset;
     
@@ -1410,6 +1410,11 @@ int Fieldml_SetAlias( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlOb
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
     IntTable *table = NULL;
     
+    if( remoteDomain == FML_INVALID_HANDLE )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+    
     if( object->type == FHT_CONTINUOUS_IMPORT )
     {
         setIntTableEntry( object->object.continuousImport->aliases, remoteDomain, (void*)(localSource + 1), NULL );
@@ -1594,6 +1599,11 @@ int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, Fm
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, mesh );
 
+    if( pointDomain == FML_INVALID_HANDLE )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+    
     if( object->type == FHT_MESH_DOMAIN )
     {
         setIntTableEntry( object->object.meshDomain->connectivity, pointDomain, (void*)(evaluator + 1), NULL );

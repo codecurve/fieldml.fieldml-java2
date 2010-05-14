@@ -283,7 +283,7 @@ int Fieldml_SetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle obj
 
 int Fieldml_AddInlineParameterData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char *data, int length );
 
-int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * file, DataFileType type, int offset );
+int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * filename, DataFileType type, int offset );
 
 const char *Fieldml_GetParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
