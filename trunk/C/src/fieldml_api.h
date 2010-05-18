@@ -21,6 +21,7 @@
 #define FML_ERR_INCOMPLETE_OBJECT   1002
 #define FML_ERR_INVALID_OBJECT      1003
 #define FML_ERR_ACCESS_VIOLATION    1004
+#define FML_ERR_FILE_READ_ERROR     1005
 
 
 typedef enum _DomainBoundsType
@@ -89,7 +90,11 @@ typedef enum _FieldmlHandleType
 FieldmlHandleType;
 
 
-typedef void * FmlParseHandle;
+typedef struct _ParameterReader *FmlReaderHandle;
+
+typedef struct _ParameterWriter *FmlWriterHandle;
+
+typedef struct _FieldmlParse *FmlParseHandle;
 
 typedef int FmlObjectHandle;
 
@@ -400,5 +405,28 @@ FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectH
 
 FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHandle objectHandle );
 
+
+FmlReaderHandle Fieldml_OpenReader( FmlParseHandle handle, FmlObjectHandle objectHandle );
+
+
+int Fieldml_ReadIntSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, int *valueBuffer );
+
+
+int Fieldml_ReadDoubleSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, double *valueBuffer );
+
+
+int Fieldml_CloseReader( FmlParseHandle handle, FmlReaderHandle reader );
+
+
+FmlWriterHandle Fieldml_OpenWriter( FmlParseHandle handle, FmlObjectHandle objectHandle, int append );
+
+
+int Fieldml_WriteIntSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, int *valueBuffer );
+
+
+int Fieldml_WriteDoubleSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, double *valueBuffer );
+
+
+int Fieldml_CloseWriter( FmlParseHandle handle, FmlWriterHandle writer );
 
 #endif // H_FIELDML_PARSE

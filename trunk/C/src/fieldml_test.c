@@ -8,6 +8,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/xmlschemas.h>
 
+#include "fieldml_io.h"
 #include "fieldml_api.h"
 
 
@@ -366,6 +367,43 @@ int testWrite( const char *filename )
 }
 
 
+void testStream()
+{
+    FmlInputStream stream = FmlCreateStringInputStream( "129 24 ,, 333 .. 456 -512  \n 6324 \r\n asc123asc" );
+    int iExpected[7] = { 129, 24, 333, 456, -512, 6324, 123 };
+    int iActual;
+    double dExpected[9] = { 129, 24.1, -78.239, -21.34, 65.12, 3.0, 3.2, 0.092, -0.873 };
+    double dActual; 
+    int i;
+    
+    for( i = 0; i < 7; i++ )
+    {
+        iActual = FmlInputStreamReadInt( stream );
+        
+        if( iActual != iExpected[i] )
+        {
+            fprintf( stderr, "Mismatch at %d: %d != %d\n", i, iExpected[i], iActual );
+        }
+    }
+    
+    FmlInputStreamDestroy( stream );
+    
+    stream = FmlCreateStringInputStream( "129 ,, 24.1 -78.239-21.34 --65.12,,\r\n\t asf3asf3.2asf.092xxx-.873" );
+
+    for( i = 0; i < 7; i++ )
+    {
+        dActual = FmlInputStreamReadDouble( stream );
+        
+        if( dActual != dExpected[i] )
+        {
+            fprintf( stderr, "Mismatch at %d: %f != %f\n", i, dExpected[i], dActual );
+        }
+    }
+
+    FmlInputStreamDestroy( stream );
+}
+
+
 int main( int argc, char **argv )
 {
     if( !validate( argv[1] ) )
@@ -376,6 +414,8 @@ int main( int argc, char **argv )
     testRead( argv[1] );
     
     testWrite( argv[1] );
+
+    testStream();
     
     return 0;
 }

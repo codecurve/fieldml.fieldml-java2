@@ -131,7 +131,7 @@
 					<entry value="test_mesh.domain.elements" />
 				</denseIndexes>
 				<dataLocation>
-					<fileData file="HEX-M2-V2-P1_FE.M" type="lines" offset="1" />
+					<fileData file="HEX-M2-V2-P1_FE.M" type="lines" offset="17" />
 				</dataLocation>
 			</SemidenseData>
 		</EnsembleParameters>

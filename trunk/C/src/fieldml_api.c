@@ -10,6 +10,343 @@
 #include "fieldml_structs.h"
 #include "fieldml_write.h"
 #include "fieldml_validate.h"
+#include "fieldml_io.h"
+
+
+typedef struct _SemidenseStream
+{
+    int indexCount;
+    int valueCount;
+    const int *swizzle;
+}
+SemidenseStream;
+
+
+typedef enum _ParameterStreamType
+{
+    SEMIDENSE_STREAM,
+}
+ParameterStreamType;
+
+
+typedef struct _ParameterReader
+{
+    ParameterStreamType type;
+    union
+    {
+        SemidenseStream semidenseStream;
+    }
+    reader;
+
+    FmlInputStream stream;
+    DataFileType streamFormat;
+}
+ParameterReader;
+
+
+typedef struct _ParameterWriter
+{
+    ParameterStreamType type;
+    union
+    {
+        SemidenseStream semidenseStream;
+    }
+    writer;
+
+    FmlOutputStream stream;
+    DataFileType streamFormat;
+}
+ParameterWriter;
+
+
+static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle parameters )
+{
+    ParameterReader *reader;
+    int i, offset;
+    FmlInputStream streamHandle;
+    
+    if( Fieldml_GetParameterDataDescription( parse, parameters ) == DESCRIPTION_SEMIDENSE )
+    {
+        int indexCount = Fieldml_GetSemidenseIndexCount( parse, parameters, 1 );
+        int firstIndex = Fieldml_GetSemidenseIndex( parse, parameters, 1, 0 );
+        int valueCount = Fieldml_GetEnsembleDomainElementCount( parse, firstIndex );
+        int swizzleCount = Fieldml_GetSwizzleCount( parse, parameters );
+        
+        if( ( indexCount < 0 ) ||
+            ( firstIndex == FML_INVALID_HANDLE ) ||
+            ( valueCount < 1 ) )
+        {
+            return NULL;
+        }
+        
+        if( ( swizzleCount > 0 ) && ( swizzleCount != valueCount ) )
+        {
+            return NULL;
+        }
+        
+        streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( parse, parameters ) );
+        if( streamHandle == NULL )
+        {
+            return NULL;
+        }
+        
+        reader = calloc( 1, sizeof( ParameterReader ) );
+        reader->type = SEMIDENSE_STREAM;
+        reader->streamFormat = Fieldml_GetParameterDataFileType( parse, parameters );
+        
+        reader->reader.semidenseStream.indexCount = indexCount;
+        reader->reader.semidenseStream.valueCount = valueCount;
+        reader->stream = streamHandle;
+        
+        if( swizzleCount == 0 )
+        {
+            reader->reader.semidenseStream.swizzle = NULL;
+        }
+        else
+        {
+            reader->reader.semidenseStream.swizzle = Fieldml_GetSwizzleData( parse, parameters );
+        }
+        
+    }
+    else
+    {
+        return NULL;
+    }
+    
+    offset = Fieldml_GetParameterDataOffset( parse, parameters );
+    if( reader->streamFormat == TYPE_LINES )
+    {
+        for( i = 0; i < offset; i++ )
+        {
+            FmlInputStreamSkipLine( streamHandle );
+        }
+    }
+    
+    return reader;
+}
+
+
+static int readIntSlice( ParameterReader *reader, int *indexBuffer, int *valueBuffer )
+{
+    if( reader->type == SEMIDENSE_STREAM )
+    {
+        int i;
+        int *buffer = malloc( reader->reader.semidenseStream.valueCount * sizeof(int) );
+        
+        for( i = 0; i < reader->reader.semidenseStream.indexCount; i++ )
+        {
+            indexBuffer[i] = FmlInputStreamReadInt( reader->stream );
+        }
+        
+        for( i = 0; i < reader->reader.semidenseStream.valueCount; i++ )
+        {
+            buffer[i] = FmlInputStreamReadInt( reader->stream );
+        }
+        
+        for( i = 0; i < reader->reader.semidenseStream.valueCount; i++ )
+        {
+            if( reader->reader.semidenseStream.swizzle != NULL )
+            {
+                valueBuffer[i] = buffer[reader->reader.semidenseStream.swizzle[i] - 1];
+            }
+            else
+            {
+                valueBuffer[i] = buffer[i];
+            }
+        }
+        
+        free( buffer );
+        
+        if( reader->streamFormat == TYPE_LINES )
+        {
+            FmlInputStreamSkipLine( reader->stream );
+        }
+        
+        return FmlInputStreamIsEof( reader->stream );
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+static int readDoubleSlice( ParameterReader *reader, int *indexBuffer, double *valueBuffer )
+{
+    if( reader->type == SEMIDENSE_STREAM )
+    {
+        int i;
+        double *buffer = malloc( reader->reader.semidenseStream.valueCount * sizeof(double) );
+        
+        for( i = 0; i < reader->reader.semidenseStream.indexCount; i++ )
+        {
+            indexBuffer[i] = FmlInputStreamReadInt( reader->stream );
+        }
+        
+        for( i = 0; i < reader->reader.semidenseStream.valueCount; i++ )
+        {
+            buffer[i] = FmlInputStreamReadDouble( reader->stream );
+        }
+        
+        for( i = 0; i < reader->reader.semidenseStream.valueCount; i++ )
+        {
+            if( reader->reader.semidenseStream.swizzle != NULL )
+            {
+                valueBuffer[i] = buffer[reader->reader.semidenseStream.swizzle[i] - 1];
+            }
+            else
+            {
+                valueBuffer[i] = buffer[i];
+            }
+        }
+        
+        free( buffer );
+
+        if( reader->streamFormat == TYPE_LINES )
+        {
+            FmlInputStreamSkipLine( reader->stream );
+        }
+
+        return FmlInputStreamIsEof( reader->stream );
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+static void destroyReader( ParameterReader *reader )
+{
+    if( reader->type == SEMIDENSE_STREAM )
+    {
+        FmlInputStreamDestroy( reader->stream );
+    }
+    
+    free( reader );
+}
+
+
+static ParameterWriter *createFileWriter( FmlParseHandle parse, FmlObjectHandle parameters, int append )
+{
+    ParameterWriter *writer;
+    FmlOutputStream streamHandle;
+    
+    if( Fieldml_GetParameterDataDescription( parse, parameters ) == DESCRIPTION_SEMIDENSE )
+    {
+        int indexCount = Fieldml_GetSemidenseIndexCount( parse, parameters, 1 );
+        int firstIndex = Fieldml_GetSemidenseIndex( parse, parameters, 1, 0 );
+        int valueCount = Fieldml_GetEnsembleDomainElementCount( parse, firstIndex );
+        int swizzleCount = Fieldml_GetSwizzleCount( parse, parameters );
+        
+        if( ( indexCount < 0 ) ||
+            ( firstIndex == FML_INVALID_HANDLE ) ||
+            ( valueCount < 1 ) ||
+            ( swizzleCount != 0 )
+            )
+        {
+            return NULL;
+        }
+        
+        if( ( ( Fieldml_GetParameterDataOffset( parse, parameters ) != 0 ) && !append ) ||
+            ( swizzleCount != 0 ) )
+        {
+            return NULL;
+        }
+        
+        streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( parse, parameters ), append );
+        if( streamHandle == NULL )
+        {
+            return NULL;
+        }
+        
+        writer = calloc( 1, sizeof( ParameterWriter ) );
+        writer->type = SEMIDENSE_STREAM;
+        writer->streamFormat = Fieldml_GetParameterDataFileType( parse, parameters );
+        
+        writer->writer.semidenseStream.indexCount = indexCount;
+        writer->writer.semidenseStream.valueCount = valueCount;
+        writer->stream = streamHandle;
+        
+        if( swizzleCount == 0 )
+        {
+            writer->writer.semidenseStream.swizzle = NULL;
+        }
+        else
+        {
+            writer->writer.semidenseStream.swizzle = Fieldml_GetSwizzleData( parse, parameters );
+        }
+    }
+    else
+    {
+        return NULL;
+    }
+    
+    return writer;
+}
+
+
+static int writeIntSlice( ParameterWriter *writer, int *indexBuffer, int *valueBuffer )
+{
+    if( writer->type == SEMIDENSE_STREAM )
+    {
+        int i, err;
+        
+        for( i = 0; i < writer->writer.semidenseStream.indexCount; i++ )
+        {
+            err = FmlOutputStreamWriteInt( writer->stream, indexBuffer[i] );
+        }
+        
+        for( i = 0; i < writer->writer.semidenseStream.valueCount; i++ )
+        {
+            err = FmlOutputStreamWriteInt( writer->stream, valueBuffer[i] );
+        }
+
+        if( writer->streamFormat == TYPE_LINES )
+        {
+            FmlOutputStreamWriteNewline( writer->stream );
+        }
+
+        return err;
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+static int writeDoubleSlice( ParameterWriter *writer, int *indexBuffer, double *valueBuffer )
+{
+    if( writer->type == SEMIDENSE_STREAM )
+    {
+        int i, err;
+        
+        for( i = 0; i < writer->writer.semidenseStream.indexCount; i++ )
+        {
+            err = FmlOutputStreamWriteInt( writer->stream, indexBuffer[i] );
+        }
+        
+        for( i = 0; i < writer->writer.semidenseStream.valueCount; i++ )
+        {
+            err = FmlOutputStreamWriteDouble( writer->stream, valueBuffer[i] );
+        }
+
+        if( writer->streamFormat == TYPE_LINES )
+        {
+            FmlOutputStreamWriteNewline( writer->stream );
+        }
+
+        return err;
+    }
+
+    return FML_ERR_INVALID_OBJECT;
+}
+
+
+static void destroyWriter( ParameterWriter *writer )
+{
+    if( writer->type == SEMIDENSE_STREAM )
+    {
+        FmlOutputStreamDestroy( writer->stream );
+    }
+    
+    free( writer );
+}
 
 
 //========================================================================
@@ -1611,4 +1948,129 @@ int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, Fm
     }
     
     return FML_ERR_INVALID_OBJECT;
+}
+
+
+FmlReaderHandle Fieldml_OpenReader( FmlParseHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    Parameters *parameters;
+    ParameterReader *reader;
+    
+    reader = NULL;
+    
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        return NULL;
+    }
+    
+    parameters = object->object.parameters;
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+        {
+            reader = createFileReader( handle, objectHandle );
+        }
+    }
+    return reader;
+}
+
+
+int Fieldml_ReadIntSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, int *valueBuffer )
+{
+    if( !readIntSlice( reader, indexBuffer, valueBuffer ) )
+    {
+        return FML_ERR_FILE_READ_ERROR;
+    }
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+int Fieldml_ReadDoubleSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, double *valueBuffer )
+{
+    if( !readDoubleSlice( reader, indexBuffer, valueBuffer ) )
+    {
+        return FML_ERR_FILE_READ_ERROR;
+    }
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+int Fieldml_CloseReader( FmlParseHandle handle, FmlReaderHandle reader )
+{
+    destroyReader( reader );
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+FmlWriterHandle Fieldml_OpenWriter( FmlParseHandle handle, FmlObjectHandle objectHandle, int append )
+{
+    FieldmlParse *parse = handleToParse( handle );
+    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    Parameters *parameters;
+    ParameterWriter *writer;
+    
+    writer = NULL;
+    
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        return NULL;
+    }
+    
+    parameters = object->object.parameters;
+    
+    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+    {
+        if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+        {
+            writer = createFileWriter( handle, objectHandle, append );
+        }
+    }
+    
+    return writer;
+}
+
+
+int Fieldml_WriteIntSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, int *valueBuffer )
+{
+    if( !writeIntSlice( writer, indexBuffer, valueBuffer ) )
+    {
+        return FML_ERR_FILE_READ_ERROR;
+    }
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+int Fieldml_WriteDoubleSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, double *valueBuffer )
+{
+    if( !writeDoubleSlice( writer, indexBuffer, valueBuffer ) )
+    {
+        return FML_ERR_FILE_READ_ERROR;
+    }
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
+int Fieldml_CloseWriter( FmlParseHandle handle, FmlWriterHandle writer )
+{
+    destroyWriter( writer );
+    
+    return FML_ERR_NO_ERROR;
 }
