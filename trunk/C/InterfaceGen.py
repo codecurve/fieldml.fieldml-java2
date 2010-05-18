@@ -43,15 +43,19 @@ def declareFunction( name, types, names ):
       print "      CHARACTER(KIND=C_CHAR) :: " + names[i]
     elif( p == "char*" ):
       print "      CHARACTER(KIND=C_CHAR,LEN=*) :: " + names[i]
-    elif( p == "int*" ):
+    elif( p == "int*" ) or ( p == "double*"):
       print "      TYPE(C_PTR), VALUE :: " + names[i]
-    elif( p == "FmlParseHandle" ):
+    elif( p == "FmlParseHandle" ): #HACK
+      print "      TYPE(C_PTR), VALUE :: " + names[i]
+    elif( p == "FmlReaderHandle" ): #HACK
+      print "      TYPE(C_PTR), VALUE :: " + names[i]
+    elif( p == "FmlWriterHandle" ): #HACK
       print "      TYPE(C_PTR), VALUE :: " + names[i]
     else:
       print "      INTEGER(C_INT), VALUE :: " + names[i]
 
   #VERY NASTY HACK!!
-  if( name == "Fieldml_ParseFile" ):
+  if( name == "Fieldml_ParseFile" ) or ( name == "Fieldml_OpenReader" ) or ( name == "Fieldml_OpenWriter" ):
       print "      TYPE(C_PTR) :: " + name
   else:
       print "      INTEGER(C_INT) :: " + name
@@ -61,6 +65,15 @@ def declareFunction( name, types, names ):
 def declareConstant( name, value ):
   print "  INTEGER(C_INT), PARAMETER :: " + name + " =",
   print value
+
+
+def writeHeader():
+  print "MODULE FIELDML_API"
+  print ""
+  print "  USE ISO_C_BINDING"
+  print ""
+  print "  IMPLICIT NONE"
+  print ""
 
 
 def processFunction( line ):
@@ -223,6 +236,9 @@ def processFile():
       state = processLine( line[ startSegment : ], state )
 
   headerFile.close()
+
+
+  writeHeader()
 
   for d in ParseState.defines:
     declareConstant( d[0], d[1] )
