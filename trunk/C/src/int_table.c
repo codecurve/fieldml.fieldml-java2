@@ -1,6 +1,5 @@
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
+#include <string.h>
 
 #include "int_table.h"
 
@@ -40,6 +39,17 @@ static int getIntTableEntryIndex( IntTable *table, int name )
     }
 
     return -1;
+}
+
+
+void setIntTableIntEntry( IntTable *table, int name, int data, TABLE_DATA_DISCARD discard )
+{
+    int *entry;
+    
+    entry = malloc( sizeof( int ) );
+    *entry = data;
+    
+    setIntTableEntry( table, name, entry, discard );
 }
 
 
@@ -105,6 +115,22 @@ void *getIntTableEntry( IntTable *table, int name )
 }
 
 
+int getIntTableIntEntry( IntTable *table, int name )
+{
+    int *entry;
+    
+    entry = getIntTableEntry( table, name );
+    if( entry != NULL )
+    {
+        return *entry;
+    }
+    else
+    {
+        return -1;
+    }
+}
+
+
 void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard )
 {
     int i;
@@ -148,4 +174,20 @@ void *getIntTableEntryData( IntTable *table, int index )
         return NULL;
     }
     return table->data[index];
+}
+
+
+int getIntTableEntryIntData( IntTable *table, int index )
+{
+    int *data;
+    
+    data = getIntTableEntryData( table, index );
+    if( data == NULL )
+    {
+        return -1;
+    }
+    else
+    {
+        return *data;
+    }
 }

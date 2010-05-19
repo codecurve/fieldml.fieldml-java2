@@ -116,7 +116,7 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse
 
     for( i = 0; i < count; i++ )
     {
-        objectHandle = (int)getIntTableEntryData( table, i ) - 1;
+        objectHandle = getIntTableEntryIntData( table, i );
         if( objectHandle == FML_INVALID_HANDLE )
         {
             continue;
@@ -146,7 +146,7 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, c
 
     for( i = 0; i < count; i++ )
     {
-        objectHandle = (int)getIntTableEntryData( table, i ) - 1;
+        objectHandle = getIntTableEntryIntData( table, i );
         if( objectHandle == FML_INVALID_HANDLE )
         {
             continue;
@@ -162,11 +162,11 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, c
 }
 
 
-static void writeObjectList( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, SimpleList *list )
+static void writeObjectStack( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntStack *stack )
 {
     int i, count;
     
-    count = getSimpleListCount( list );
+    count = intStackGetCount( stack );
     if( count == 0 )
     {
         return;
@@ -176,7 +176,7 @@ static void writeObjectList( xmlTextWriterPtr writer, FieldmlParse *parse, const
 
     for( i = 0; i < count; i++ )
     {
-        writeListEntry( writer, Fieldml_GetObjectName( parse, (int)getSimpleListEntry( list, i ) - 1 ) );
+        writeListEntry( writer, Fieldml_GetObjectName( parse, intStackGet( stack, i ) ) );
     }
 
     xmlTextWriterEndElement( writer );
@@ -358,8 +358,8 @@ static void writeSemidenseData( xmlTextWriterPtr writer, FieldmlParse *parse, Se
 {
     xmlTextWriterStartElement( writer, SEMI_DENSE_DATA_TAG );
 
-    writeObjectList( writer, parse, SPARSE_INDEXES_TAG, data->sparseIndexes );
-    writeObjectList( writer, parse, DENSE_INDEXES_TAG, data->denseIndexes );
+    writeObjectStack( writer, parse, SPARSE_INDEXES_TAG, data->sparseIndexes );
+    writeObjectStack( writer, parse, DENSE_INDEXES_TAG, data->denseIndexes );
     
     if( data->swizzleCount > 0 )
     {

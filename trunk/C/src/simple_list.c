@@ -1,3 +1,4 @@
+#include <string.h>
 #include <stdlib.h>
 
 #include "simple_list.h"

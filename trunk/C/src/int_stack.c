@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "int_stack.h"
 
@@ -22,7 +23,7 @@ IntStack *createIntStack()
 }
 
 
-void pushInt( IntStack *stack, int value )
+void intStackPush( IntStack *stack, int value )
 {
     if( stack->size == stack->capacity )
     {
@@ -37,7 +38,7 @@ void pushInt( IntStack *stack, int value )
 }
 
 
-int popInt( IntStack *stack )
+int intStackPop( IntStack *stack )
 {
     if( stack->size == 0 )
     {
@@ -48,7 +49,7 @@ int popInt( IntStack *stack )
 }
 
 
-int peekInt( IntStack *stack )
+int intStackPeek( IntStack *stack )
 {
     if( stack->size == 0 )
     {
@@ -63,4 +64,21 @@ void destroyIntStack( IntStack *stack )
 {
     free( stack->data );
     free( stack );
+}
+
+
+int intStackGetCount( IntStack *stack )
+{
+    return stack->size;
+}
+
+
+int intStackGet( IntStack *stack, int index )
+{
+    if( ( index < 0 ) || ( index >= stack->size ) )
+    {
+        return -1;
+    }
+    
+    return stack->data[index];
 }

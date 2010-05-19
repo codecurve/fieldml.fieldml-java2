@@ -12,10 +12,6 @@ extern const int LIBRARY_REGION_HANDLE;
 extern const int VIRTUAL_REGION_HANDLE;
 
 
-typedef struct _FieldmlParse FieldmlParse;
-
-typedef struct _FieldmlObject FieldmlObject;
-
 void addError( FieldmlParse *parse, const char *error, const char *name1, const char *name2 );
 
 FmlObjectHandle addFieldmlObject( FieldmlParse *parse, FieldmlObject *object );

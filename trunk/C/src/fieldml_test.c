@@ -1,7 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
-#include <libxml/sax.h>
+#include <libxml/SAX.h>
 #include <libxml/globals.h>
 #include <libxml/xmlerror.h>
 #include <libxml/parser.h>

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <libxml/sax.h>
+#include <libxml/SAX.h>
 
 #include "string_const.h"
 #include "fieldml_parse.h"
@@ -47,7 +47,7 @@ FieldmlObject *createFieldmlObject( const char *name, FieldmlHandleType type, in
 {
     FieldmlObject *object = calloc( 1, sizeof( FieldmlObject ) );
     object->regionHandle = regionHandle;
-    object->name = _strdup( name );
+    object->name = strdup( name );
     object->type = type;
     object->markup = createStringTable();
     
@@ -114,7 +114,7 @@ FieldmlObject *createEnsembleVariable( const char *name, int region, FmlObjectHa
     FieldmlObject *object = createFieldmlObject( name, FHT_ENSEMBLE_VARIABLE, region );
     Variable *variable = calloc( 1, sizeof( Variable ) );
     variable->valueDomain = valueDomain;
-    variable->parameters = createSimpleList();
+    variable->parameters = createIntStack();
 
     object->object.variable = variable;
 
@@ -127,7 +127,7 @@ FieldmlObject *createContinuousVariable( const char *name, int region, FmlObject
     FieldmlObject *object = createFieldmlObject( name, FHT_CONTINUOUS_VARIABLE, region );
     Variable *variable = calloc( 1, sizeof( Variable ) );
     variable->valueDomain = valueDomain;
-    variable->parameters = createSimpleList();
+    variable->parameters = createIntStack();
 
     object->object.variable = variable;
 
@@ -210,8 +210,8 @@ FieldmlObject *createContinuousDereference( const char *name, int region, FmlObj
 SemidenseData *createSemidenseData()
 {
     SemidenseData *data = calloc( 1, sizeof( SemidenseData ) );
-    data->denseIndexes = createSimpleList();
-    data->sparseIndexes = createSimpleList();
+    data->denseIndexes = createIntStack();
+    data->sparseIndexes = createIntStack();
     data->locationType = LOCATION_UNKNOWN;
 
     return data;
@@ -341,8 +341,8 @@ void destroyContinuousImport( ContinuousImport *import )
 
 void destroySemidenseData( SemidenseData *data )
 {
-    destroySimpleList( data->sparseIndexes, NULL );
-    destroySimpleList( data->denseIndexes, NULL );
+    destroyIntStack( data->sparseIndexes );
+    destroyIntStack( data->denseIndexes );
 
     switch( data->locationType )
     {
@@ -399,7 +399,7 @@ void destroyContinuousDereference( ContinuousDereference *dereference )
 
 void destroyVariable( Variable *variable )
 {
-    destroySimpleList( variable->parameters, free );
+    destroyIntStack( variable->parameters );
 
     free( variable );
 }
@@ -467,7 +467,7 @@ static void addMarkup( FieldmlParse *parse, FmlObjectHandle handle, const char *
 {
     FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
 
-    setStringTableEntry( object->markup, attribute, _strdup( value ), free );
+    setStringTableEntry( object->markup, attribute, strdup( value ), free );
 }
 
 

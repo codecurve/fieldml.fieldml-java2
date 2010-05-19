@@ -3,6 +3,7 @@
 
 #include "simple_list.h"
 #include "string_table.h"
+#include "int_stack.h"
 #include "int_table.h"
 #include "fieldml_api.h"
 
@@ -105,8 +106,8 @@ FileDataSource;
 
 typedef struct _SemidenseData
 {
-    SimpleList *sparseIndexes;
-    SimpleList *denseIndexes;
+    IntStack *sparseIndexes;
+    IntStack *denseIndexes;
     
     const int *swizzle;
     int swizzleCount;
@@ -126,7 +127,7 @@ typedef struct _Variable
 {
     int valueDomain;
 
-    SimpleList *parameters;
+    IntStack *parameters;
 }
 Variable;
 
