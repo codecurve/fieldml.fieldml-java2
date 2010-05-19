@@ -463,17 +463,6 @@ static IntTable *getEntryIntTable( FieldmlObject *object )
 }
 
 
-static FmlObjectHandle hackToHandle( void *hack )
-{
-    if( hack == NULL )
-    {
-        return FML_INVALID_HANDLE;
-    }
-
-    return (int)( hack ) - 1;
-}
-
-
 static int cappedCopy( const char *source, char *buffer, int bufferLength )
 {
     int length;
@@ -609,7 +598,7 @@ int Fieldml_SetMarkup(  FmlParseHandle handle, FmlObjectHandle objectHandle, con
         return FML_ERR_UNKNOWN_OBJECT;
     }
     
-    setStringTableEntry( object->markup, attribute, _strdup( value ), free );
+    setStringTableEntry( object->markup, attribute, strdup( value ), free );
 
     return FML_ERR_NO_ERROR;
 }
@@ -889,7 +878,7 @@ FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObj
         return FML_INVALID_HANDLE;
     }
 
-    return hackToHandle( getIntTableEntryData( object->object.meshDomain->connectivity, index - 1 ) );
+    return getIntTableEntryIntData( object->object.meshDomain->connectivity, index - 1 );
 }
 
 
@@ -1232,7 +1221,7 @@ int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectH
         free( source->filename );
     }
     
-    source->filename = _strdup( filename );
+    source->filename = strdup( filename );
     source->fileType = type;
     source->offset = offset;
     
@@ -1359,11 +1348,11 @@ int Fieldml_AddSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHand
 
     if( isSparse )
     {
-        addSimpleListEntry( object->object.parameters->dataDescription.semidense->sparseIndexes, (void*)(indexHandle + 1) );
+        intStackPush( object->object.parameters->dataDescription.semidense->sparseIndexes, indexHandle );
     }
     else
     {
-        addSimpleListEntry( object->object.parameters->dataDescription.semidense->denseIndexes, (void*)(indexHandle + 1) );
+        intStackPush( object->object.parameters->dataDescription.semidense->denseIndexes, indexHandle );
     }
     
     return FML_ERR_NO_ERROR;
@@ -1392,11 +1381,11 @@ int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objec
 
     if( isSparse )
     {
-        return getSimpleListCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
+        return intStackGetCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
     }
     else
     {
-        return getSimpleListCount( object->object.parameters->dataDescription.semidense->denseIndexes );
+        return intStackGetCount( object->object.parameters->dataDescription.semidense->denseIndexes );
     }
 }
 
@@ -1405,7 +1394,6 @@ FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandl
 {
     FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
-    void *hack;
 
     if( object == NULL )
     {
@@ -1424,14 +1412,12 @@ FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandl
 
     if( isSparse )
     {
-        hack = getSimpleListEntry( object->object.parameters->dataDescription.semidense->sparseIndexes, index - 1 );
+        return intStackGet( object->object.parameters->dataDescription.semidense->sparseIndexes, index - 1 );
     }
     else
     {
-        hack = getSimpleListEntry( object->object.parameters->dataDescription.semidense->denseIndexes, index - 1 );
+        return intStackGet( object->object.parameters->dataDescription.semidense->denseIndexes, index - 1 );
     }
-
-    return hackToHandle( hack );
 }
 
 
@@ -1578,7 +1564,7 @@ int Fieldml_SetEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle, i
         return FML_ERR_INVALID_OBJECT;
     }
 
-    setIntTableEntry( table, element, (void*)(evaluator + 1), NULL ); //HACK!!
+    setIntTableIntEntry( table, element, evaluator, free );
     
     return FML_ERR_NO_ERROR;
 }
@@ -1625,7 +1611,7 @@ FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHand
         return FML_INVALID_HANDLE;
     }
 
-    return hackToHandle( getIntTableEntryData( table, index - 1 ) );
+    return getIntTableEntryIntData( table, index - 1 );
 }
 
 
@@ -1699,15 +1685,15 @@ FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHan
 
     if( object->type == FHT_CONTINUOUS_IMPORT )
     {
-        return hackToHandle( getIntTableEntryData( object->object.continuousImport->aliases, index - 1 ) );
+        return getIntTableEntryIntData( object->object.continuousImport->aliases, index - 1 );
     }
     else if( object->type == FHT_CONTINUOUS_PIECEWISE )
     {
-        return hackToHandle( getIntTableEntryData( object->object.piecewise->aliases, index - 1 ) );
+        return getIntTableEntryIntData( object->object.piecewise->aliases, index - 1 );
     }
     else if( object->type == FHT_CONTINUOUS_AGGREGATE )
     {
-        return hackToHandle( getIntTableEntryData( object->object.aggregate->aliases, index - 1 ) );
+        return getIntTableEntryIntData( object->object.aggregate->aliases, index - 1 );
     }
 
     return FML_INVALID_HANDLE; 
@@ -1754,17 +1740,17 @@ int Fieldml_SetAlias( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlOb
     
     if( object->type == FHT_CONTINUOUS_IMPORT )
     {
-        setIntTableEntry( object->object.continuousImport->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        setIntTableIntEntry( object->object.continuousImport->aliases, remoteDomain, localSource, free );
         return FML_ERR_NO_ERROR;
     }
     else if( object->type == FHT_CONTINUOUS_AGGREGATE )
     {
-        setIntTableEntry( object->object.aggregate->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        setIntTableIntEntry( object->object.aggregate->aliases, remoteDomain, localSource, free );
         return FML_ERR_NO_ERROR;
     }
     else if( object->type == FHT_CONTINUOUS_PIECEWISE )
     {
-        setIntTableEntry( object->object.continuousImport->aliases, remoteDomain, (void*)(localSource + 1), NULL );
+        setIntTableIntEntry( object->object.continuousImport->aliases, remoteDomain, localSource, free );
         return FML_ERR_NO_ERROR;
     }
     
@@ -1793,8 +1779,8 @@ int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
         
         if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
         {
-            count1 = getSimpleListCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
-            count2 = getSimpleListCount( object->object.parameters->dataDescription.semidense->denseIndexes );
+            count1 = intStackGetCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
+            count2 = intStackGetCount( object->object.parameters->dataDescription.semidense->denseIndexes );
             return count1 + count2;
         }
         
@@ -1830,16 +1816,16 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle o
         
         if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
         {
-            count = getSimpleListCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
+            count = intStackGetCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
             
             if( index <= count )
             {
-                return hackToHandle( getSimpleListEntry( object->object.parameters->dataDescription.semidense->sparseIndexes, index - 1 ) );
+                return intStackGet( object->object.parameters->dataDescription.semidense->sparseIndexes, index - 1 );
             }
             else
             {
                 index -= count;
-                return hackToHandle( getSimpleListEntry( object->object.parameters->dataDescription.semidense->denseIndexes, index - 1 ) );
+                return intStackGet( object->object.parameters->dataDescription.semidense->denseIndexes, index - 1 );
             }
         }
         
@@ -1923,7 +1909,7 @@ int Fieldml_SetMeshElementShape( FmlParseHandle handle, FmlObjectHandle mesh, in
 
     if( object->type == FHT_MESH_DOMAIN )
     {
-        setIntTableEntry( object->object.meshDomain->shapes, elementNumber, _strdup( shape ), free );
+        setIntTableEntry( object->object.meshDomain->shapes, elementNumber, strdup( shape ), free );
         return FML_ERR_NO_ERROR;
     }
     
@@ -1943,7 +1929,7 @@ int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, Fm
     
     if( object->type == FHT_MESH_DOMAIN )
     {
-        setIntTableEntry( object->object.meshDomain->connectivity, pointDomain, (void*)(evaluator + 1), NULL );
+        setIntTableIntEntry( object->object.meshDomain->connectivity, pointDomain, evaluator, free );
         return FML_ERR_NO_ERROR;
     }
     

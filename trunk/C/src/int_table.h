@@ -40,6 +40,7 @@ IntTable *createIntTable();
     NOTE: Both name and data can be NULL.
 */
 void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD discard );
+void setIntTableIntEntry( IntTable *table, int name, int data, TABLE_DATA_DISCARD discard );
 
 /*
     Returns the entry with the given name, or NULL if there is no such entry.
@@ -47,6 +48,7 @@ void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD
     NOTE: NULL may also be returned if the data is actually NULL.
 */
 void *getIntTableEntry( IntTable *table, int name );
+int getIntTableIntEntry( IntTable *table, int name );
 
 /*
     Get the number of entries in the table.
@@ -68,6 +70,7 @@ int getIntTableEntryName( IntTable *table, int index );
     NOTE: NULL if index is invalid. May also be NULL otherwise.
 */
 void *getIntTableEntryData( IntTable *table, int index );
+int getIntTableEntryIntData( IntTable *table, int index );
 
 /*
     Deallocate the table's data. Each entry's data is passed to the discard function.

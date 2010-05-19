@@ -1,6 +1,4 @@
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
-#include <crtdbg.h>
 
 #include <string.h>
 
@@ -88,7 +86,7 @@ void setStringTableEntry( StringTable *table, const char *name, void *data, TABL
         free( oldData );
     }
 
-    table->names[table->entries] = _strdup( name );
+    table->names[table->entries] = strdup( name );
     table->data[table->entries] = data;
     table->entries++;
 }

@@ -147,7 +147,7 @@ FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleTyp
 FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle object );
 
 
-FieldmlHandleType Fieldml_GetNamedObjectHandle( FmlParseHandle handle, const char * name );
+FmlObjectHandle Fieldml_GetNamedObjectHandle( FmlParseHandle handle, const char * name );
 
 /*
      Returns the number of markup entries (attribute/value pairs) for the given object.
