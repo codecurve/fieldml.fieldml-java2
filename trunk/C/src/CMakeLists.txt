@@ -97,7 +97,7 @@ MESSAGE( STATUS "XML L:${LIBXML2_LIBRARIES}" )
 SET( LIBRARY_SRCS
 	fieldml_api.c
 	fieldml_io.c
-        fieldml_parse.c
+        fieldml_structs.c
         fieldml_sax.c
         fieldml_validate.c
         fieldml_write.c
@@ -110,7 +110,6 @@ SET( LIBRARY_PUBLIC_HDRS
         fieldml_api.h )
 SET( LIBRARY_PRIVATE_HDRS
 	fieldml_io.h
-	fieldml_parse.h
 	fieldml_sax.h
 	fieldml_structs.h
 	fieldml_validate.h

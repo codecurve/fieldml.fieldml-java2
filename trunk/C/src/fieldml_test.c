@@ -82,11 +82,11 @@ void testRead( const char * filename )
 {
     int i, j, count, count2;
     FmlObjectHandle oHandle;
-    FmlParseHandle handle;
+    FmlHandle handle;
     DomainBoundsType boundsType;
     const int *swizzle;
 
-    handle = Fieldml_ParseFile( filename );
+    handle = Fieldml_CreateFromFile( filename );
 
     count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_DOMAIN );
     fprintf( stdout, "ContinuousDomains: %d\n", count ); 
@@ -346,17 +346,17 @@ void testRead( const char * filename )
 
     fprintf( stdout, "*******************************\n" );
     
-    Fieldml_DestroyParse( handle );
+    Fieldml_Destroy( handle );
 }
 
 
 int testWrite( const char *filename )
 {
-    FmlParseHandle handle;
-    const char *outputFilename;
+    FmlHandle handle;
+    char *outputFilename;
     int result;
 
-    handle = Fieldml_ParseFile( filename );
+    handle = Fieldml_CreateFromFile( filename );
     
     outputFilename = calloc( 1, strlen( filename ) + 10 );
     strcpy( outputFilename, filename );
@@ -364,7 +364,7 @@ int testWrite( const char *filename )
     
     result = Fieldml_WriteFile( handle, outputFilename );
 
-    Fieldml_DestroyParse( handle );
+    Fieldml_Destroy( handle );
 }
 
 

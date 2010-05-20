@@ -1,8 +1,8 @@
 #ifndef H_FIELDMLWRITE
 #define H_FIELDMLWRITE
 
-#include "fieldml_parse.h"
+#include "fieldml_structs.h"
 
-int writeFieldmlFile( FieldmlParse *parse, const char *filename );
+int writeFieldmlFile( FieldmlRegion *region, const char *filename );
 
 #endif // H_FIELDMLWRITE

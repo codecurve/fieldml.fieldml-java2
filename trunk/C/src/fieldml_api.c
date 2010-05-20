@@ -5,7 +5,6 @@
 #include "int_table.h"
 #include "string_table.h"
 #include "fieldml_api.h"
-#include "fieldml_parse.h"
 #include "fieldml_sax.h"
 #include "fieldml_structs.h"
 #include "fieldml_write.h"
@@ -59,18 +58,18 @@ typedef struct _ParameterWriter
 ParameterWriter;
 
 
-static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle parameters )
+static ParameterReader *createFileReader( FmlHandle handle, FmlObjectHandle parameters )
 {
     ParameterReader *reader;
     int i, offset;
     FmlInputStream streamHandle;
     
-    if( Fieldml_GetParameterDataDescription( parse, parameters ) == DESCRIPTION_SEMIDENSE )
+    if( Fieldml_GetParameterDataDescription( handle, parameters ) == DESCRIPTION_SEMIDENSE )
     {
-        int indexCount = Fieldml_GetSemidenseIndexCount( parse, parameters, 1 );
-        int firstIndex = Fieldml_GetSemidenseIndex( parse, parameters, 1, 0 );
-        int valueCount = Fieldml_GetEnsembleDomainElementCount( parse, firstIndex );
-        int swizzleCount = Fieldml_GetSwizzleCount( parse, parameters );
+        int indexCount = Fieldml_GetSemidenseIndexCount( handle, parameters, 1 );
+        int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
+        int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
+        int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -84,7 +83,7 @@ static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle 
             return NULL;
         }
         
-        streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( parse, parameters ) );
+        streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( handle, parameters ) );
         if( streamHandle == NULL )
         {
             return NULL;
@@ -92,7 +91,7 @@ static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle 
         
         reader = calloc( 1, sizeof( ParameterReader ) );
         reader->type = SEMIDENSE_STREAM;
-        reader->streamFormat = Fieldml_GetParameterDataFileType( parse, parameters );
+        reader->streamFormat = Fieldml_GetParameterDataFileType( handle, parameters );
         
         reader->reader.semidenseStream.indexCount = indexCount;
         reader->reader.semidenseStream.valueCount = valueCount;
@@ -104,7 +103,7 @@ static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle 
         }
         else
         {
-            reader->reader.semidenseStream.swizzle = Fieldml_GetSwizzleData( parse, parameters );
+            reader->reader.semidenseStream.swizzle = Fieldml_GetSwizzleData( handle, parameters );
         }
         
     }
@@ -113,7 +112,7 @@ static ParameterReader *createFileReader( FmlParseHandle parse, FmlObjectHandle 
         return NULL;
     }
     
-    offset = Fieldml_GetParameterDataOffset( parse, parameters );
+    offset = Fieldml_GetParameterDataOffset( handle, parameters );
     if( reader->streamFormat == TYPE_LINES )
     {
         for( i = 0; i < offset; i++ )
@@ -223,17 +222,17 @@ static void destroyReader( ParameterReader *reader )
 }
 
 
-static ParameterWriter *createFileWriter( FmlParseHandle parse, FmlObjectHandle parameters, int append )
+static ParameterWriter *createFileWriter( FmlHandle handle, FmlObjectHandle parameters, int append )
 {
     ParameterWriter *writer;
     FmlOutputStream streamHandle;
     
-    if( Fieldml_GetParameterDataDescription( parse, parameters ) == DESCRIPTION_SEMIDENSE )
+    if( Fieldml_GetParameterDataDescription( handle, parameters ) == DESCRIPTION_SEMIDENSE )
     {
-        int indexCount = Fieldml_GetSemidenseIndexCount( parse, parameters, 1 );
-        int firstIndex = Fieldml_GetSemidenseIndex( parse, parameters, 1, 0 );
-        int valueCount = Fieldml_GetEnsembleDomainElementCount( parse, firstIndex );
-        int swizzleCount = Fieldml_GetSwizzleCount( parse, parameters );
+        int indexCount = Fieldml_GetSemidenseIndexCount( handle, parameters, 1 );
+        int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
+        int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
+        int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -244,13 +243,13 @@ static ParameterWriter *createFileWriter( FmlParseHandle parse, FmlObjectHandle 
             return NULL;
         }
         
-        if( ( ( Fieldml_GetParameterDataOffset( parse, parameters ) != 0 ) && !append ) ||
+        if( ( ( Fieldml_GetParameterDataOffset( handle, parameters ) != 0 ) && !append ) ||
             ( swizzleCount != 0 ) )
         {
             return NULL;
         }
         
-        streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( parse, parameters ), append );
+        streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( handle, parameters ), append );
         if( streamHandle == NULL )
         {
             return NULL;
@@ -258,7 +257,7 @@ static ParameterWriter *createFileWriter( FmlParseHandle parse, FmlObjectHandle 
         
         writer = calloc( 1, sizeof( ParameterWriter ) );
         writer->type = SEMIDENSE_STREAM;
-        writer->streamFormat = Fieldml_GetParameterDataFileType( parse, parameters );
+        writer->streamFormat = Fieldml_GetParameterDataFileType( handle, parameters );
         
         writer->writer.semidenseStream.indexCount = indexCount;
         writer->writer.semidenseStream.valueCount = valueCount;
@@ -270,7 +269,7 @@ static ParameterWriter *createFileWriter( FmlParseHandle parse, FmlObjectHandle 
         }
         else
         {
-            writer->writer.semidenseStream.swizzle = Fieldml_GetSwizzleData( parse, parameters );
+            writer->writer.semidenseStream.swizzle = Fieldml_GetSwizzleData( handle, parameters );
         }
     }
     else
@@ -355,28 +354,16 @@ static void destroyWriter( ParameterWriter *writer )
 //
 //========================================================================
 
-static FieldmlParse *handleToParse( FmlParseHandle handle )
-{
-    return (FieldmlParse*)handle;
-}
-
-
-static FmlParseHandle parseToHandle( FieldmlParse *parse )
-{
-    return (FmlParseHandle)parse;
-}
-
-
-static int getTotal( FieldmlParse *parse, FieldmlHandleType type )
+static int getTotal( FieldmlRegion *region, FieldmlHandleType type )
 {
     int count, i, total;
     FieldmlObject *object;
 
     total = 0;
-    count = getSimpleListCount( parse->objects );
+    count = getSimpleListCount( region->objects );
     for( i = 0; i < count; i++ )
     {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
         if( object->type == type )
         {
             total++;
@@ -387,7 +374,7 @@ static int getTotal( FieldmlParse *parse, FieldmlHandleType type )
 }
 
 
-static int getNthHandle( FieldmlParse *parse, FieldmlHandleType type, int index )
+static int getNthHandle( FieldmlRegion *region, FieldmlHandleType type, int index )
 {
     int count, i;
     FieldmlObject *object;
@@ -397,10 +384,10 @@ static int getNthHandle( FieldmlParse *parse, FieldmlHandleType type, int index 
         return FML_INVALID_HANDLE;
     }
 
-    count = getSimpleListCount( parse->objects );
+    count = getSimpleListCount( region->objects );
     for( i = 0; i < count; i++ )
     {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
         if( object->type != type )
         {
             continue;
@@ -417,15 +404,15 @@ static int getNthHandle( FieldmlParse *parse, FieldmlHandleType type, int index 
 }
 
 
-static int getNamedHandle( FieldmlParse *parse, const char *name )
+static int getNamedHandle( FieldmlRegion *region, const char *name )
 {
     int count, i;
     FieldmlObject *object;
 
-    count = getSimpleListCount( parse->objects );
+    count = getSimpleListCount( region->objects );
     for( i = 0; i < count; i++ )
     {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
         if( strcmp( object->name, name ) == 0 )
         {
             return i;
@@ -436,11 +423,11 @@ static int getNamedHandle( FieldmlParse *parse, const char *name )
 }
 
 
-static FieldmlObject *getNthObject( FieldmlParse *parse, FieldmlHandleType type, int index )
+static FieldmlObject *getNthObject( FieldmlRegion *region, FieldmlHandleType type, int index )
 {
-    int handle = getNthHandle( parse, type, index );
+    int objectHandle = getNthHandle( region, type, index );
 
-    return getSimpleListEntry( parse->objects, handle );
+    return getSimpleListEntry( region->objects, objectHandle );
 }
 
 
@@ -491,93 +478,74 @@ static int cappedCopy( const char *source, char *buffer, int bufferLength )
 //
 //========================================================================
 
-FmlParseHandle Fieldml_ParseFile( const char *filename )
+FmlHandle Fieldml_CreateFromFile( const char *filename )
 {
-    FieldmlParse *parse = parseFieldmlFile( filename );
-
-    return parseToHandle( parse );
+    return parseFieldmlFile( filename );
 }
 
 
-FmlParseHandle Fieldml_Create()
+FmlHandle Fieldml_Create()
 {
-    FieldmlParse *parse = createFieldmlParse();
-
-    return parseToHandle( parse );
+    return createFieldmlRegion( "" );
 }
 
 
-int Fieldml_WriteFile( FmlParseHandle handle, const char *filename )
+int Fieldml_WriteFile( FmlHandle handle, const char *filename )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
-    return writeFieldmlFile( parse, filename );
+    return writeFieldmlFile( handle, filename );
 }
 
 
-void Fieldml_DestroyParse( FmlParseHandle handle )
+void Fieldml_Destroy( FmlHandle handle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    
-    destroyFieldmlParse( parse );
+    destroyFieldmlRegion( handle );
 }
 
 
-int Fieldml_GetErrorCount( FmlParseHandle handle )
+int Fieldml_GetErrorCount( FmlHandle handle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
-    return getSimpleListCount( parse->errors );
+    return getSimpleListCount( handle->errors );
 }
 
 
-const char * Fieldml_GetError( FmlParseHandle handle, int index )
+const char * Fieldml_GetError( FmlHandle handle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
-    return (const char *)getSimpleListEntry( parse->errors, index - 1 );
+    return (const char *)getSimpleListEntry( handle->errors, index - 1 );
 }
 
 
-int Fieldml_CopyError( FmlParseHandle handle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyError( FmlHandle handle, int index, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetError( handle, index ), buffer, bufferLength );
 }
 
 
-int Fieldml_GetObjectCount( FmlParseHandle handle, FieldmlHandleType type )
+int Fieldml_GetObjectCount( FmlHandle handle, FieldmlHandleType type )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
     if( type == FHT_UNKNOWN )
     {
         return -1;
     }
 
-    return getTotal( parse, type );
+    return getTotal( handle, type );
 }
 
 
-FmlObjectHandle Fieldml_GetObjectHandle( FmlParseHandle handle, FieldmlHandleType type, int index )
+FmlObjectHandle Fieldml_GetObjectHandle( FmlHandle handle, FieldmlHandleType type, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
-    return getNthHandle( parse, type, index );
+    return getNthHandle( handle, type, index );
 }
 
 
-FmlObjectHandle Fieldml_GetNamedObjectHandle( FmlParseHandle handle, const char * name )
+FmlObjectHandle Fieldml_GetNamedObjectHandle( FmlHandle handle, const char * name )
 {
-    FieldmlParse *parse = handleToParse( handle );
-
-    return getNamedHandle( parse, name );
+    return getNamedHandle( handle, name );
 }
 
 
-FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FieldmlHandleType Fieldml_GetObjectType( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -588,10 +556,9 @@ FieldmlHandleType Fieldml_GetObjectType( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
-int Fieldml_SetMarkup(  FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute, const char * value )
+int Fieldml_SetMarkup(  FmlHandle handle, FmlObjectHandle objectHandle, const char * attribute, const char * value )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     
     if( object == NULL )
     {
@@ -604,10 +571,9 @@ int Fieldml_SetMarkup(  FmlParseHandle handle, FmlObjectHandle objectHandle, con
 }
 
 
-int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetMarkupCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -618,24 +584,22 @@ int Fieldml_GetMarkupCount( FmlParseHandle handle, FmlObjectHandle objectHandle 
 }
 
 
-int Fieldml_ValidateObject( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_ValidateObject( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
         return FML_ERR_NO_ERROR;
     }
     
-    return validateFieldmlObject( parse, object );
+    return validateFieldmlObject( handle, object );
 }
 
 
-const char * Fieldml_GetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+const char * Fieldml_GetMarkupAttribute( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -646,16 +610,15 @@ const char * Fieldml_GetMarkupAttribute( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
-int Fieldml_CopyMarkupAttribute( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyMarkupAttribute( FmlHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetMarkupAttribute( handle, objectHandle, index ), buffer, bufferLength );
 }
 
 
-const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+const char * Fieldml_GetMarkupValue( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -666,16 +629,15 @@ const char * Fieldml_GetMarkupValue( FmlParseHandle handle, FmlObjectHandle obje
 }
 
 
-int Fieldml_CopyMarkupValue( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
+int Fieldml_CopyMarkupValue( FmlHandle handle, FmlObjectHandle objectHandle, int index, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetMarkupValue( handle, objectHandle, index ), buffer, bufferLength );
 }
 
 
-const char * Fieldml_GetMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute )
+const char * Fieldml_GetMarkupAttributeValue( FmlHandle handle, FmlObjectHandle objectHandle, const char * attribute )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -686,16 +648,15 @@ const char * Fieldml_GetMarkupAttributeValue( FmlParseHandle handle, FmlObjectHa
 }
 
 
-int Fieldml_CopyMarkupAttributeValue( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * attribute, char *buffer, int bufferLength )
+int Fieldml_CopyMarkupAttributeValue( FmlHandle handle, FmlObjectHandle objectHandle, const char * attribute, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetMarkupAttributeValue( handle, objectHandle, attribute ), buffer, bufferLength );
 }
 
 
-FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -716,10 +677,9 @@ FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlParseHandle handle, FmlOb
 }
 
 
-DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DomainBoundsType Fieldml_GetDomainBoundsType( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_ENSEMBLE_DOMAIN ) )
     {
@@ -730,10 +690,9 @@ DomainBoundsType Fieldml_GetDomainBoundsType( FmlParseHandle handle, FmlObjectHa
 }
 
 
-int Fieldml_GetEnsembleDomainElementCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetEnsembleDomainElementCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_ENSEMBLE_DOMAIN ) )
     {
@@ -749,10 +708,9 @@ int Fieldml_GetEnsembleDomainElementCount( FmlParseHandle handle, FmlObjectHandl
 }
 
 
-int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetContiguousBoundsCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_ENSEMBLE_DOMAIN ) )
     {
@@ -768,10 +726,9 @@ int Fieldml_GetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle obj
 }
 
 
-int Fieldml_SetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int count )
+int Fieldml_SetContiguousBoundsCount( FmlHandle handle, FmlObjectHandle objectHandle, int count )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object->regionHandle != FILE_REGION_HANDLE )
     {
@@ -789,7 +746,7 @@ int Fieldml_SetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle obj
     {
         FieldmlObject *subObject;
         
-        subObject = getSimpleListEntry( parse->objects, object->object.meshDomain->elementDomain );
+        subObject = getSimpleListEntry( handle->objects, object->object.meshDomain->elementDomain );
         
         if( ( subObject == NULL ) || ( subObject->type != FHT_ENSEMBLE_DOMAIN ) )
         {
@@ -806,10 +763,9 @@ int Fieldml_SetContiguousBoundsCount( FmlParseHandle handle, FmlObjectHandle obj
 }
 
 
-FmlObjectHandle Fieldml_GetMeshElementDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetMeshElementDomain( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -820,10 +776,9 @@ FmlObjectHandle Fieldml_GetMeshElementDomain( FmlParseHandle handle, FmlObjectHa
 }
 
 
-const char * Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber )
+const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -834,16 +789,15 @@ const char * Fieldml_GetMeshElementShape( FmlParseHandle handle, FmlObjectHandle
 }
 
 
-int Fieldml_CopyMeshElementShape( FmlParseHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
+int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetMeshElementShape( handle, objectHandle, elementNumber ), buffer, bufferLength );
 }
 
 
-int Fieldml_GetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetMeshConnectivityCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -854,10 +808,9 @@ int Fieldml_GetMeshConnectivityCount( FmlParseHandle handle, FmlObjectHandle obj
 }
 
 
-FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -868,10 +821,9 @@ FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlParseHandle handle, FmlObj
 }
 
 
-FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -882,10 +834,9 @@ FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlParseHandle handle, FmlObj
 }
 
 
-FmlObjectHandle Fieldml_GetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetMeshXiDomain( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( ( object == NULL ) || ( object->type != FHT_MESH_DOMAIN ) )
     {
@@ -896,10 +847,9 @@ FmlObjectHandle Fieldml_GetMeshXiDomain( FmlParseHandle handle, FmlObjectHandle 
 }
 
 
-const char * Fieldml_GetObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle )
+const char * Fieldml_GetObjectName( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -910,16 +860,15 @@ const char * Fieldml_GetObjectName( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_CopyObjectName( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+int Fieldml_CopyObjectName( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetObjectName( handle, objectHandle ), buffer, bufferLength );
 }
 
 
-FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetValueDomain( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -955,21 +904,19 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlParseHandle handle, FmlObjectHandle o
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousDereference( FmlParseHandle handle, const char * name, FmlObjectHandle indexes, FmlObjectHandle values, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousDereference( FmlHandle handle, const char * name, FmlObjectHandle indexes, FmlObjectHandle values, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousDereference( name, FILE_REGION_HANDLE, indexes, values, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -985,10 +932,9 @@ FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlParseHandle handle, FmlObjectH
 }
 
 
-FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetDereferenceSource( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1004,54 +950,49 @@ FmlObjectHandle Fieldml_GetDereferenceSource( FmlParseHandle handle, FmlObjectHa
 }
 
 
-FmlObjectHandle Fieldml_CreateEnsembleVariable( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateEnsembleVariable( FmlHandle handle, const char *name, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createEnsembleVariable( name, FILE_REGION_HANDLE, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousVariable( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousVariable( FmlHandle handle, const char *name, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousVariable( name, FILE_REGION_HANDLE, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateEnsembleParameters( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateEnsembleParameters( FmlHandle handle, const char *name, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createEnsembleParameters( name, FILE_REGION_HANDLE, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousParameters( FmlParseHandle handle, const char *name, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousParameters( FmlHandle handle, const char *name, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousParameters( name, FILE_REGION_HANDLE, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-int Fieldml_SetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle, DataDescriptionType description )
+int Fieldml_SetParameterDataDescription( FmlHandle handle, FmlObjectHandle objectHandle, DataDescriptionType description )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1078,10 +1019,9 @@ int Fieldml_SetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle 
     return FML_ERR_INVALID_OBJECT;
 }
 
-DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DataDescriptionType Fieldml_GetParameterDataDescription( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1097,10 +1037,9 @@ DataDescriptionType Fieldml_GetParameterDataDescription( FmlParseHandle handle, 
 }
 
 
-DataLocationType Fieldml_GetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DataLocationType Fieldml_GetParameterDataLocation( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1119,10 +1058,9 @@ DataLocationType Fieldml_GetParameterDataLocation( FmlParseHandle handle, FmlObj
 }
 
 
-int Fieldml_SetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle objectHandle, DataLocationType location )
+int Fieldml_SetParameterDataLocation( FmlHandle handle, FmlObjectHandle objectHandle, DataLocationType location )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1147,10 +1085,9 @@ int Fieldml_SetParameterDataLocation( FmlParseHandle handle, FmlObjectHandle obj
 }
 
 
-int Fieldml_AddInlineParameterData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char *data, int length )
+int Fieldml_AddInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     Parameters *parameters;
     StringDataSource *source;
     char *newString;
@@ -1188,10 +1125,9 @@ int Fieldml_AddInlineParameterData( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectHandle, const char * filename, DataFileType type, int offset )
+int Fieldml_SetParameterFileData( FmlHandle handle, FmlObjectHandle objectHandle, const char * filename, DataFileType type, int offset )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     Parameters *parameters;
     FileDataSource *source;
     
@@ -1229,10 +1165,9 @@ int Fieldml_SetParameterFileData( FmlParseHandle handle, FmlObjectHandle objectH
 }
 
 
-const char *Fieldml_GetParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle )
+const char *Fieldml_GetParameterDataFilename( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
 
     if( object == NULL )
@@ -1256,16 +1191,15 @@ const char *Fieldml_GetParameterDataFilename( FmlParseHandle handle, FmlObjectHa
 }
 
 
-int Fieldml_CopyParameterDataFilename( FmlParseHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
+int Fieldml_CopyParameterDataFilename( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetParameterDataFilename( handle, objectHandle ), buffer, bufferLength );
 }
 
 
-int Fieldml_GetParameterDataOffset( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetParameterDataOffset( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
 
     if( object == NULL )
@@ -1294,10 +1228,9 @@ int Fieldml_GetParameterDataOffset( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-DataFileType Fieldml_GetParameterDataFileType( FmlParseHandle handle, FmlObjectHandle objectHandle )
+DataFileType Fieldml_GetParameterDataFileType( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
 
     if( object == NULL )
@@ -1326,10 +1259,9 @@ DataFileType Fieldml_GetParameterDataFileType( FmlParseHandle handle, FmlObjectH
 }
 
 
-int Fieldml_AddSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle indexHandle, int isSparse )
+int Fieldml_AddSemidenseIndex( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle indexHandle, int isSparse )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1359,10 +1291,9 @@ int Fieldml_AddSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHand
 }
 
 
-int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle, int isSparse )
+int Fieldml_GetSemidenseIndexCount( FmlHandle handle, FmlObjectHandle objectHandle, int isSparse )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1390,10 +1321,9 @@ int Fieldml_GetSemidenseIndexCount( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandle objectHandle, int index, int isSparse )
+FmlObjectHandle Fieldml_GetSemidenseIndex( FmlHandle handle, FmlObjectHandle objectHandle, int index, int isSparse )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1421,10 +1351,9 @@ FmlObjectHandle Fieldml_GetSemidenseIndex( FmlParseHandle handle, FmlObjectHandl
 }
 
 
-int Fieldml_SetSwizzle( FmlParseHandle handle, FmlObjectHandle objectHandle, const int *buffer, int count )
+int Fieldml_SetSwizzle( FmlHandle handle, FmlObjectHandle objectHandle, const int *buffer, int count )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     int *ints;
     
     if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
@@ -1452,10 +1381,9 @@ int Fieldml_SetSwizzle( FmlParseHandle handle, FmlObjectHandle objectHandle, con
 }
 
 
-int Fieldml_GetSwizzleCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetSwizzleCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     
     if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
     {
@@ -1471,10 +1399,9 @@ int Fieldml_GetSwizzleCount( FmlParseHandle handle, FmlObjectHandle objectHandle
 }
 
 
-const int *Fieldml_GetSwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle )
+const int *Fieldml_GetSwizzleData( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     
     if( ( object->type != FHT_ENSEMBLE_PARAMETERS ) && ( object->type != FHT_CONTINUOUS_PARAMETERS ) )
     {
@@ -1490,10 +1417,9 @@ const int *Fieldml_GetSwizzleData( FmlParseHandle handle, FmlObjectHandle object
 }
 
 
-int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle, int *buffer, int bufferLength )
+int Fieldml_CopySwizzleData( FmlHandle handle, FmlObjectHandle objectHandle, int *buffer, int bufferLength )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     int length, swizzleCount;
     const int *swizzle;
     
@@ -1527,32 +1453,29 @@ int Fieldml_CopySwizzleData( FmlParseHandle handle, FmlObjectHandle objectHandle
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousPiecewise( FmlParseHandle handle, const char * name, FmlObjectHandle indexHandle, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousPiecewise( FmlHandle handle, const char * name, FmlObjectHandle indexHandle, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousPiecewise( name, FILE_REGION_HANDLE, indexHandle, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlParseHandle handle, const char * name, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlHandle handle, const char * name, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousAggregate( name, FILE_REGION_HANDLE, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-int Fieldml_SetEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle, int element, FmlObjectHandle evaluator )
+int Fieldml_SetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int element, FmlObjectHandle evaluator )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table = getEntryIntTable( object );
     
     if( object == NULL )
@@ -1570,10 +1493,9 @@ int Fieldml_SetEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle, i
 }
 
 
-int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetEvaluatorCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table = getEntryIntTable( object );
 
     if( table == NULL )
@@ -1585,10 +1507,9 @@ int Fieldml_GetEvaluatorCount( FmlParseHandle handle, FmlObjectHandle objectHand
 }
 
 
-int Fieldml_GetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+int Fieldml_GetEvaluatorElement( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table = getEntryIntTable( object );
 
     if( table == NULL )
@@ -1600,10 +1521,9 @@ int Fieldml_GetEvaluatorElement( FmlParseHandle handle, FmlObjectHandle objectHa
 }
 
 
-FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table = getEntryIntTable( object );
 
     if( table == NULL )
@@ -1615,21 +1535,19 @@ FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlParseHandle handle, FmlObjectHand
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousImport( FmlParseHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousImport( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
     
     object = createContinuousImport( name, FILE_REGION_HANDLE, remoteEvaluator, valueDomain );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1645,10 +1563,9 @@ FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlParseHandle handle, FmlObje
 }
 
 
-int Fieldml_GetAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetAliasCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1673,10 +1590,9 @@ int Fieldml_GetAliasCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1700,10 +1616,9 @@ FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlParseHandle handle, FmlObjectHan
 }
 
 
-FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1727,10 +1642,9 @@ FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlParseHandle handle, FmlObjectHa
 }
 
 
-int Fieldml_SetAlias( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource )
+int Fieldml_SetAlias( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table = NULL;
     
     if( remoteDomain == FML_INVALID_HANDLE )
@@ -1759,10 +1673,9 @@ int Fieldml_SetAlias( FmlParseHandle handle, FmlObjectHandle objectHandle, FmlOb
 
 
 
-int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
+int Fieldml_GetIndexCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1791,10 +1704,9 @@ int Fieldml_GetIndexCount( FmlParseHandle handle, FmlObjectHandle objectHandle )
 }
 
 
-FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle objectHandle, int index )
+FmlObjectHandle Fieldml_GetIndexDomain( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
     if( object == NULL )
     {
@@ -1836,31 +1748,28 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlParseHandle handle, FmlObjectHandle o
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousDomain( FmlParseHandle handle, const char * name, FmlObjectHandle componentHandle )
+FmlObjectHandle Fieldml_CreateContinuousDomain( FmlHandle handle, const char * name, FmlObjectHandle componentHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createContinuousDomain( name, FILE_REGION_HANDLE, componentHandle );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlParseHandle handle, const char * name, FmlObjectHandle componentHandle )
+FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlHandle handle, const char * name, FmlObjectHandle componentHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object;
 
     object = createEnsembleDomain( name, FILE_REGION_HANDLE, FML_INVALID_HANDLE );
     
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_CreateMeshDomain( FmlParseHandle handle, const char * name, FmlObjectHandle xiEnsemble )
+FmlObjectHandle Fieldml_CreateMeshDomain( FmlHandle handle, const char * name, FmlObjectHandle xiEnsemble )
 {
-    FieldmlParse *parse = handleToParse( handle );
     FieldmlObject *object, *xiObject, *elementObject;
     FmlObjectHandle xiHandle, elementHandle;
     char *subName;
@@ -1889,23 +1798,22 @@ FmlObjectHandle Fieldml_CreateMeshDomain( FmlParseHandle handle, const char * na
     strcpy( subName, name );
     strcat( subName, ".xi" );
     xiObject = createContinuousDomain( subName, VIRTUAL_REGION_HANDLE, xiEnsemble );
-    xiHandle = addFieldmlObject( parse, xiObject );
+    xiHandle = addFieldmlObject( handle, xiObject );
     
     strcpy( subName, name );
     strcat( subName, ".elements" );
     elementObject = createEnsembleDomain( subName, VIRTUAL_REGION_HANDLE, FML_INVALID_HANDLE );
-    elementHandle = addFieldmlObject( parse, elementObject );
+    elementHandle = addFieldmlObject( handle, elementObject );
     
     object = createMeshDomain( name, FILE_REGION_HANDLE, xiHandle, elementHandle );
 
-    return addFieldmlObject( parse, object );
+    return addFieldmlObject( handle, object );
 }
 
 
-int Fieldml_SetMeshElementShape( FmlParseHandle handle, FmlObjectHandle mesh, int elementNumber, const char * shape )
+int Fieldml_SetMeshElementShape( FmlHandle handle, FmlObjectHandle mesh, int elementNumber, const char * shape )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, mesh );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, mesh );
 
     if( object->type == FHT_MESH_DOMAIN )
     {
@@ -1917,10 +1825,9 @@ int Fieldml_SetMeshElementShape( FmlParseHandle handle, FmlObjectHandle mesh, in
 }
 
 
-int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, FmlObjectHandle pointDomain, FmlObjectHandle evaluator )
+int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObjectHandle pointDomain, FmlObjectHandle evaluator )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, mesh );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, mesh );
 
     if( pointDomain == FML_INVALID_HANDLE )
     {
@@ -1937,10 +1844,9 @@ int Fieldml_SetMeshConnectivity( FmlParseHandle handle, FmlObjectHandle mesh, Fm
 }
 
 
-FmlReaderHandle Fieldml_OpenReader( FmlParseHandle handle, FmlObjectHandle objectHandle )
+FmlReaderHandle Fieldml_OpenReader( FmlHandle handle, FmlObjectHandle objectHandle )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     Parameters *parameters;
     ParameterReader *reader;
     
@@ -1969,7 +1875,7 @@ FmlReaderHandle Fieldml_OpenReader( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_ReadIntSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, int *valueBuffer )
+int Fieldml_ReadIntSlice( FmlHandle handle, FmlReaderHandle reader, int *indexBuffer, int *valueBuffer )
 {
     if( !readIntSlice( reader, indexBuffer, valueBuffer ) )
     {
@@ -1980,7 +1886,7 @@ int Fieldml_ReadIntSlice( FmlParseHandle handle, FmlReaderHandle reader, int *in
 }
 
 
-int Fieldml_ReadDoubleSlice( FmlParseHandle handle, FmlReaderHandle reader, int *indexBuffer, double *valueBuffer )
+int Fieldml_ReadDoubleSlice( FmlHandle handle, FmlReaderHandle reader, int *indexBuffer, double *valueBuffer )
 {
     if( !readDoubleSlice( reader, indexBuffer, valueBuffer ) )
     {
@@ -1991,7 +1897,7 @@ int Fieldml_ReadDoubleSlice( FmlParseHandle handle, FmlReaderHandle reader, int 
 }
 
 
-int Fieldml_CloseReader( FmlParseHandle handle, FmlReaderHandle reader )
+int Fieldml_CloseReader( FmlHandle handle, FmlReaderHandle reader )
 {
     destroyReader( reader );
     
@@ -1999,10 +1905,9 @@ int Fieldml_CloseReader( FmlParseHandle handle, FmlReaderHandle reader )
 }
 
 
-FmlWriterHandle Fieldml_OpenWriter( FmlParseHandle handle, FmlObjectHandle objectHandle, int append )
+FmlWriterHandle Fieldml_OpenWriter( FmlHandle handle, FmlObjectHandle objectHandle, int append )
 {
-    FieldmlParse *parse = handleToParse( handle );
-    FieldmlObject *object = getSimpleListEntry( parse->objects, objectHandle );
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     Parameters *parameters;
     ParameterWriter *writer;
     
@@ -2032,7 +1937,7 @@ FmlWriterHandle Fieldml_OpenWriter( FmlParseHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_WriteIntSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, int *valueBuffer )
+int Fieldml_WriteIntSlice( FmlHandle handle, FmlWriterHandle writer, int *indexBuffer, int *valueBuffer )
 {
     if( !writeIntSlice( writer, indexBuffer, valueBuffer ) )
     {
@@ -2043,7 +1948,7 @@ int Fieldml_WriteIntSlice( FmlParseHandle handle, FmlWriterHandle writer, int *i
 }
 
 
-int Fieldml_WriteDoubleSlice( FmlParseHandle handle, FmlWriterHandle writer, int *indexBuffer, double *valueBuffer )
+int Fieldml_WriteDoubleSlice( FmlHandle handle, FmlWriterHandle writer, int *indexBuffer, double *valueBuffer )
 {
     if( !writeDoubleSlice( writer, indexBuffer, valueBuffer ) )
     {
@@ -2054,7 +1959,7 @@ int Fieldml_WriteDoubleSlice( FmlParseHandle handle, FmlWriterHandle writer, int
 }
 
 
-int Fieldml_CloseWriter( FmlParseHandle handle, FmlWriterHandle writer )
+int Fieldml_CloseWriter( FmlHandle handle, FmlWriterHandle writer )
 {
     destroyWriter( writer );
     

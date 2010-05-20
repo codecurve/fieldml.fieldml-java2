@@ -13,9 +13,9 @@
 const char * MY_ENCODING = "ISO-8859-1";
 
 
-static void writeObjectName( xmlTextWriterPtr writer, FieldmlParse *parse, const char *attribute, int handle )
+static void writeObjectName( xmlTextWriterPtr writer, FieldmlRegion *region, const char *attribute, int handle )
 {
-    xmlTextWriterWriteAttribute( writer, attribute, Fieldml_GetObjectName( parse, handle ) );
+    xmlTextWriterWriteAttribute( writer, attribute, Fieldml_GetObjectName( region, handle ) );
 }
 
 
@@ -102,7 +102,7 @@ static void writeIntTable( xmlTextWriterPtr writer, const char *name, IntTable *
 }
 
 
-static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntTable *table )
+static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlRegion *region, const char *name, IntTable *table )
 {
     int i, count, objectHandle;
     
@@ -123,8 +123,8 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse
         }
         
         writeStringTableEntry( writer,
-            Fieldml_GetObjectName( parse, getIntTableEntryName( table, i ) ),
-            Fieldml_GetObjectName( parse, objectHandle )
+            Fieldml_GetObjectName( region, getIntTableEntryName( table, i ) ),
+            Fieldml_GetObjectName( region, objectHandle )
             );
     }
 
@@ -132,7 +132,7 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse
 }
 
 
-static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntTable *table )
+static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlRegion *region, const char *name, IntTable *table )
 {
     int i, count, objectHandle;
     
@@ -154,7 +154,7 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, c
         
         writeIntTableEntry( writer,
             getIntTableEntryName( table, i ),
-            Fieldml_GetObjectName( parse, objectHandle )
+            Fieldml_GetObjectName( region, objectHandle )
             );
     }
 
@@ -162,7 +162,7 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlParse *parse, c
 }
 
 
-static void writeObjectStack( xmlTextWriterPtr writer, FieldmlParse *parse, const char *name, IntStack *stack )
+static void writeObjectStack( xmlTextWriterPtr writer, FieldmlRegion *region, const char *name, IntStack *stack )
 {
     int i, count;
     
@@ -176,14 +176,14 @@ static void writeObjectStack( xmlTextWriterPtr writer, FieldmlParse *parse, cons
 
     for( i = 0; i < count; i++ )
     {
-        writeListEntry( writer, Fieldml_GetObjectName( parse, intStackGet( stack, i ) ) );
+        writeListEntry( writer, Fieldml_GetObjectName( region, intStackGet( stack, i ) ) );
     }
 
     xmlTextWriterEndElement( writer );
 }
 
 
-static int writeContinuousDomain( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeContinuousDomain( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousDomain *domain = object->object.continuousDomain;
     
@@ -192,7 +192,7 @@ static int writeContinuousDomain( xmlTextWriterPtr writer, FieldmlParse *parse, 
     
     if( domain->componentDomain != FML_INVALID_HANDLE )
     {
-        writeObjectName( writer, parse, COMPONENT_DOMAIN_ATTRIB, domain->componentDomain );
+        writeObjectName( writer, region, COMPONENT_DOMAIN_ATTRIB, domain->componentDomain );
     }
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
@@ -216,7 +216,7 @@ static void writeBounds( xmlTextWriterPtr writer, EnsembleDomain *domain )
 }
 
 
-static int writeEnsembleDomain( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeEnsembleDomain( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     EnsembleDomain *domain = object->object.ensembleDomain;
 
@@ -225,7 +225,7 @@ static int writeEnsembleDomain( xmlTextWriterPtr writer, FieldmlParse *parse, Fi
     
     if( domain->componentDomain != FML_INVALID_HANDLE )
     {
-        writeObjectName( writer, parse, COMPONENT_DOMAIN_ATTRIB, domain->componentDomain );
+        writeObjectName( writer, region, COMPONENT_DOMAIN_ATTRIB, domain->componentDomain );
     }
     
     writeStringTable( writer, MARKUP_TAG, object->markup );
@@ -238,21 +238,21 @@ static int writeEnsembleDomain( xmlTextWriterPtr writer, FieldmlParse *parse, Fi
 }
 
 
-static int writeMeshDomain( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeMeshDomain( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     MeshDomain *domain = object->object.meshDomain;
     FieldmlObject *elements;
     FieldmlObject *xi;
     
-    elements = (FieldmlObject*)getSimpleListEntry( parse->objects, domain->elementDomain );
-    xi = (FieldmlObject*)getSimpleListEntry( parse->objects, domain->xiDomain );
+    elements = (FieldmlObject*)getSimpleListEntry( region->objects, domain->elementDomain );
+    xi = (FieldmlObject*)getSimpleListEntry( region->objects, domain->xiDomain );
 
     xmlTextWriterStartElement( writer, MESH_DOMAIN_TAG );
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
     if( xi->object.continuousDomain->componentDomain != FML_INVALID_HANDLE )
     {
-        writeObjectName( writer, parse, XI_COMPONENT_DOMAIN_ATTRIB, xi->object.continuousDomain->componentDomain );
+        writeObjectName( writer, region, XI_COMPONENT_DOMAIN_ATTRIB, xi->object.continuousDomain->componentDomain );
     }
     
     writeStringTable( writer, MARKUP_TAG, object->markup );
@@ -261,7 +261,7 @@ static int writeMeshDomain( xmlTextWriterPtr writer, FieldmlParse *parse, Fieldm
     
     writeIntTable( writer, MESH_SHAPES_TAG, domain->shapes );
 
-    writeObjectObjectTable( writer, parse, MESH_CONNECTIVITY_TAG, domain->connectivity );
+    writeObjectObjectTable( writer, region, MESH_CONNECTIVITY_TAG, domain->connectivity );
 
     xmlTextWriterEndElement( writer );
     
@@ -269,7 +269,7 @@ static int writeMeshDomain( xmlTextWriterPtr writer, FieldmlParse *parse, Fieldm
 }
 
 
-static int writeVariable( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeVariable( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     Variable *variable = object->object.variable;
 
@@ -283,7 +283,7 @@ static int writeVariable( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlO
     }
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, variable->valueDomain );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, variable->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
 
@@ -293,16 +293,16 @@ static int writeVariable( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlO
 }
 
 
-static int writeContinuousDereference( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeContinuousDereference( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousDereference *deref = object->object.dereference;
 
     xmlTextWriterStartElement( writer, CONTINUOUS_DEREFERENCE_TAG );
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, VALUE_SOURCE_ATTRIB, deref->valueSource );
-    writeObjectName( writer, parse, VALUE_INDEXES_ATTRIB, deref->valueIndexes );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, deref->valueDomain );
+    writeObjectName( writer, region, VALUE_SOURCE_ATTRIB, deref->valueSource );
+    writeObjectName( writer, region, VALUE_INDEXES_ATTRIB, deref->valueIndexes );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, deref->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
 
@@ -312,19 +312,19 @@ static int writeContinuousDereference( xmlTextWriterPtr writer, FieldmlParse *pa
 }
 
 
-static writeContinuousImport( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static writeContinuousImport( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousImport *import = object->object.continuousImport;
 
     xmlTextWriterStartElement( writer, IMPORTED_CONTINUOUS_TAG );
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, EVALUATOR_ATTRIB, import->remoteEvaluator );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, import->valueDomain );
+    writeObjectName( writer, region, EVALUATOR_ATTRIB, import->remoteEvaluator );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, import->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
     
-    writeObjectObjectTable( writer, parse, ALIASES_TAG, import->aliases );
+    writeObjectObjectTable( writer, region, ALIASES_TAG, import->aliases );
 
     xmlTextWriterEndElement( writer );
     
@@ -332,21 +332,21 @@ static writeContinuousImport( xmlTextWriterPtr writer, FieldmlParse *parse, Fiel
 }
 
 
-static int writeContinuousPiecewise( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeContinuousPiecewise( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousPiecewise *piecewise = object->object.piecewise;
 
     xmlTextWriterStartElement( writer, CONTINUOUS_PIECEWISE_TAG );
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, INDEX_DOMAIN_ATTRIB, piecewise->indexDomain );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, piecewise->valueDomain );
+    writeObjectName( writer, region, INDEX_DOMAIN_ATTRIB, piecewise->indexDomain );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, piecewise->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
     
-    writeObjectObjectTable( writer, parse, ALIASES_TAG, piecewise->aliases );
+    writeObjectObjectTable( writer, region, ALIASES_TAG, piecewise->aliases );
 
-    writeIntObjectTable( writer, parse, ELEMENT_EVALUATORS_TAG, piecewise->evaluators );
+    writeIntObjectTable( writer, region, ELEMENT_EVALUATORS_TAG, piecewise->evaluators );
 
     xmlTextWriterEndElement( writer );
     
@@ -354,12 +354,12 @@ static int writeContinuousPiecewise( xmlTextWriterPtr writer, FieldmlParse *pars
 }
 
 
-static void writeSemidenseData( xmlTextWriterPtr writer, FieldmlParse *parse, SemidenseData *data )
+static void writeSemidenseData( xmlTextWriterPtr writer, FieldmlRegion *region, SemidenseData *data )
 {
     xmlTextWriterStartElement( writer, SEMI_DENSE_DATA_TAG );
 
-    writeObjectStack( writer, parse, SPARSE_INDEXES_TAG, data->sparseIndexes );
-    writeObjectStack( writer, parse, DENSE_INDEXES_TAG, data->denseIndexes );
+    writeObjectStack( writer, region, SPARSE_INDEXES_TAG, data->sparseIndexes );
+    writeObjectStack( writer, region, DENSE_INDEXES_TAG, data->denseIndexes );
     
     if( data->swizzleCount > 0 )
     {
@@ -390,7 +390,7 @@ static void writeSemidenseData( xmlTextWriterPtr writer, FieldmlParse *parse, Se
 }
 
 
-static int writeParameters( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeParameters( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     Parameters *parameters = object->object.parameters;
     
@@ -404,13 +404,13 @@ static int writeParameters( xmlTextWriterPtr writer, FieldmlParse *parse, Fieldm
     }
 
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, parameters->valueDomain );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, parameters->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
     
     if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
     {
-        writeSemidenseData( writer, parse, parameters->dataDescription.semidense );
+        writeSemidenseData( writer, region, parameters->dataDescription.semidense );
     }
     
     xmlTextWriterEndElement( writer );
@@ -419,19 +419,19 @@ static int writeParameters( xmlTextWriterPtr writer, FieldmlParse *parse, Fieldm
 }
 
 
-static int writeAggregate( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeAggregate( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousAggregate *aggregate = object->object.aggregate;
     
     xmlTextWriterStartElement( writer, CONTINUOUS_AGGREGATE_TAG );
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, parse, VALUE_DOMAIN_ATTRIB, aggregate->valueDomain );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, aggregate->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
     
-    writeObjectObjectTable( writer, parse, ALIASES_TAG, aggregate->aliases );
+    writeObjectObjectTable( writer, region, ALIASES_TAG, aggregate->aliases );
 
-    writeIntObjectTable( writer, parse, SOURCE_FIELDS_TAG, aggregate->evaluators );
+    writeIntObjectTable( writer, region, SOURCE_FIELDS_TAG, aggregate->evaluators );
 
     xmlTextWriterEndElement( writer );
     
@@ -439,30 +439,30 @@ static int writeAggregate( xmlTextWriterPtr writer, FieldmlParse *parse, Fieldml
 }
 
 
-static int writeFieldmlObject( xmlTextWriterPtr writer, FieldmlParse *parse, FieldmlObject *object )
+static int writeFieldmlObject( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     switch( object->type )
     {
     case FHT_CONTINUOUS_DOMAIN:
-        return writeContinuousDomain( writer, parse, object );
+        return writeContinuousDomain( writer, region, object );
     case FHT_ENSEMBLE_DOMAIN:
-        return writeEnsembleDomain( writer, parse, object );
+        return writeEnsembleDomain( writer, region, object );
     case FHT_MESH_DOMAIN:
-        return writeMeshDomain( writer, parse, object );
+        return writeMeshDomain( writer, region, object );
     case FHT_CONTINUOUS_VARIABLE:
     case FHT_ENSEMBLE_VARIABLE:
-        return writeVariable( writer, parse, object );
+        return writeVariable( writer, region, object );
     case FHT_CONTINUOUS_DEREFERENCE:
-        return writeContinuousDereference( writer, parse, object );
+        return writeContinuousDereference( writer, region, object );
     case FHT_CONTINUOUS_IMPORT:
-        return writeContinuousImport( writer, parse, object );
+        return writeContinuousImport( writer, region, object );
     case FHT_CONTINUOUS_PIECEWISE:
-        return writeContinuousPiecewise( writer, parse, object );
+        return writeContinuousPiecewise( writer, region, object );
     case FHT_CONTINUOUS_PARAMETERS:
     case FHT_ENSEMBLE_PARAMETERS:
-        return writeParameters( writer, parse, object );
+        return writeParameters( writer, region, object );
     case FHT_CONTINUOUS_AGGREGATE:
-        return writeAggregate( writer, parse, object );
+        return writeAggregate( writer, region, object );
     default:
         break;
     }
@@ -471,7 +471,7 @@ static int writeFieldmlObject( xmlTextWriterPtr writer, FieldmlParse *parse, Fie
 }
 
 
-int writeFieldmlFile( FieldmlParse *parse, const char *filename )
+int writeFieldmlFile( FieldmlRegion *region, const char *filename )
 {
     FieldmlObject *object;
     int i, count;
@@ -492,13 +492,13 @@ int writeFieldmlFile( FieldmlParse *parse, const char *filename )
     xmlTextWriterWriteAttribute( writer, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );        
     xmlTextWriterStartElement( writer, REGION_TAG );
     
-    count = getSimpleListCount( parse->objects );
+    count = getSimpleListCount( region->objects );
     for( i = 0; i < count; i++ )
     {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
+        object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
         if( object->regionHandle == FILE_REGION_HANDLE )
         {
-            writeFieldmlObject( writer, parse, object );
+            writeFieldmlObject( writer, region, object );
         }
         else
         {
