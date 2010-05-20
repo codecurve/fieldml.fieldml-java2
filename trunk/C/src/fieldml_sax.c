@@ -12,10 +12,10 @@
 
 #include "string_table.h"
 #include "int_stack.h"
-#include "fieldml_parse.h"
 #include "fieldml_sax.h"
 #include "string_const.h"
 #include "fieldml_structs.h"
+#include "fieldml_api.h"
 
 //========================================================================
 //
@@ -94,7 +94,7 @@ typedef struct _SaxContext
     int bufferLength;
     char *buffer;
     
-    FieldmlParse *parse;
+    FieldmlRegion *region;
 }
 SaxContext;
 
@@ -179,7 +179,7 @@ static void destroyAttributes( SaxAttributes *saxAttributes )
 }
 
 
-const char * getAttribute( SaxAttributes *saxAttributes, const char *attribute )
+static const char * getAttribute( SaxAttributes *saxAttributes, const char *attribute )
 {
     int i;
     for( i = 0; i < saxAttributes->count; i++ )
@@ -194,7 +194,7 @@ const char * getAttribute( SaxAttributes *saxAttributes, const char *attribute )
 }
 
 
-int intParserCount( const char *buffer )
+static int intParserCount( const char *buffer )
 {
     const char *p = buffer;
     int digits = 0;
@@ -221,7 +221,7 @@ int intParserCount( const char *buffer )
 }
 
 
-const int *intParserInts( const char *buffer )
+static const int *intParserInts( const char *buffer )
 {
     int count = intParserCount( buffer );
     int *ints = calloc( count, sizeof( int ) );
@@ -257,11 +257,56 @@ const int *intParserInts( const char *buffer )
 
 //========================================================================
 //
-// SAX -> FieldmlParse glue
+// SAX -> FieldmlRegion glue
 //
 //========================================================================
 
-void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
+
+static FmlObjectHandle getOrCreateObjectHandle( FieldmlRegion *region, const char *name, FieldmlHandleType type )
+{
+    FmlObjectHandle handle = Fieldml_GetNamedObjectHandle( region, name );
+
+    if( handle == FML_INVALID_HANDLE )
+    {
+        handle = addFieldmlObject( region, createFieldmlObject( name, type, VIRTUAL_REGION_HANDLE ) );
+    }
+    
+    return handle;
+}
+
+
+static void finalizeFieldmlRegion( FieldmlRegion *region )
+{
+    FieldmlObject *object;
+    int i, count;
+    
+    count = getSimpleListCount( region->objects );
+    
+    for( i = 0; i < count; i++ )
+    {
+        object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
+        
+        if( ( object->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN ) || ( object->type == FHT_UNKNOWN_CONTINUOUS_SOURCE ) )
+        {
+            object->type = FHT_REMOTE_CONTINUOUS_DOMAIN;
+        }
+        else if( ( object->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN ) || ( object->type == FHT_UNKNOWN_ENSEMBLE_SOURCE ) )
+        {
+            object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
+        }
+        else if( object->type == FHT_UNKNOWN_CONTINUOUS_EVALUATOR )
+        {
+            object->type = FHT_REMOTE_CONTINUOUS_EVALUATOR;
+        }
+        else if( object->type == FHT_UNKNOWN_ENSEMBLE_EVALUATOR )
+        {
+            object->type = FHT_REMOTE_ENSEMBLE_EVALUATOR;
+        }
+    }
+}
+
+
+static void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *componentEnsemble;
@@ -270,49 +315,49 @@ void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, NAME_ATTRIB );
     if( name == NULL )
     {
-        addError( context->parse, "EnsembleDomain has no name", NULL, NULL );
+        addError( context->region, "EnsembleDomain has no name", NULL, NULL );
         return;
     }
     
     componentEnsemble = getAttribute( attributes, COMPONENT_DOMAIN_ATTRIB );
     if( componentEnsemble != NULL )
     {
-        handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+        handle = getOrCreateObjectHandle( context->region, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     }
     else
     {
         handle = FML_INVALID_HANDLE;
     }
 
-    context->currentObject = Fieldml_CreateEnsembleDomain( context->parse, name, handle );
+    context->currentObject = Fieldml_CreateEnsembleDomain( context->region, name, handle );
 }
 
 
-void endEnsembleDomain( SaxContext *context )
+static void endEnsembleDomain( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContiguousBounds( SaxContext *context, SaxAttributes *attributes )
+static void startContiguousBounds( SaxContext *context, SaxAttributes *attributes )
 {
     const char *count;
     
     count = getAttribute( attributes, VALUE_COUNT_ATTRIB );
     if( count == NULL )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Contiguous bounds has no value count", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Contiguous bounds has no value count", name, NULL );
         return;
     }
     
-    Fieldml_SetContiguousBoundsCount( context->parse, context->currentObject, atoi( count ) );
+    Fieldml_SetContiguousBoundsCount( context->region, context->currentObject, atoi( count ) );
 }
 
 
-void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *componentEnsemble;
@@ -321,33 +366,33 @@ void startContinuousDomain( SaxContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, NAME_ATTRIB );
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousDomain has no name", name, NULL );
+        addError( context->region, "ContinuousDomain has no name", name, NULL );
         return;
     }
     
     componentEnsemble = getAttribute( attributes, COMPONENT_DOMAIN_ATTRIB );
     if( componentEnsemble != NULL )
     {
-        handle = getOrCreateObjectHandle( context->parse, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+        handle = getOrCreateObjectHandle( context->region, componentEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     }
     else
     {
         handle = FML_INVALID_HANDLE;
     }
 
-    context->currentObject = Fieldml_CreateContinuousDomain( context->parse, name, handle );
+    context->currentObject = Fieldml_CreateContinuousDomain( context->region, name, handle );
 }
 
 
-void endContinuousDomain( SaxContext *context )
+static void endContinuousDomain( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startMeshDomain( SaxContext *context, SaxAttributes *attributes )
+static void startMeshDomain( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *xiEnsemble;
@@ -359,41 +404,41 @@ void startMeshDomain( SaxContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        addError( context->parse, "MeshDomain has no name", NULL, NULL );
+        addError( context->region, "MeshDomain has no name", NULL, NULL );
         return;
     }
     
     if( xiEnsemble == NULL )
     {
-        addError( context->parse, "MeshDomain has no xi components", name, NULL );
+        addError( context->region, "MeshDomain has no xi components", name, NULL );
         return;
     }
 
     subName = calloc( 1, strlen( name ) + 12 );
     
-    xiHandle = getOrCreateObjectHandle( context->parse, xiEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    xiHandle = getOrCreateObjectHandle( context->region, xiEnsemble, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     
-    context->currentObject = Fieldml_CreateMeshDomain( context->parse, name, xiHandle );
+    context->currentObject = Fieldml_CreateMeshDomain( context->region, name, xiHandle );
 }
 
 
-void onMeshShape( SaxContext *context, SaxAttributes *attributes )
+static void onMeshShape( SaxContext *context, SaxAttributes *attributes )
 {
     const char *element = getAttribute( attributes, KEY_ATTRIB );
     const char *shape = getAttribute( attributes, VALUE_ATTRIB );
 
     if( ( element == NULL ) || ( shape == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "MeshDomain has malformed shape entry", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "MeshDomain has malformed shape entry", name, NULL );
         return;
     }
     
-    Fieldml_SetMeshElementShape( context->parse, context->currentObject, atoi( element ), shape );
+    Fieldml_SetMeshElementShape( context->region, context->currentObject, atoi( element ), shape );
 }
 
 
-void onMeshConnectivity( SaxContext *context, SaxAttributes *attributes )
+static void onMeshConnectivity( SaxContext *context, SaxAttributes *attributes )
 {
     const char *type = getAttribute( attributes, KEY_ATTRIB );
     const char *field = getAttribute( attributes, VALUE_ATTRIB );
@@ -401,27 +446,27 @@ void onMeshConnectivity( SaxContext *context, SaxAttributes *attributes )
 
     if( ( type == NULL ) || ( field == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "MeshDomain has malformed connectivity entry", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "MeshDomain has malformed connectivity entry", name, NULL );
         return;
     }
     
-    domainHandle = getOrCreateObjectHandle( context->parse, type, FHT_UNKNOWN_ENSEMBLE_SOURCE );
-    fieldHandle = getOrCreateObjectHandle( context->parse, field, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    domainHandle = getOrCreateObjectHandle( context->region, type, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    fieldHandle = getOrCreateObjectHandle( context->region, field, FHT_UNKNOWN_ENSEMBLE_SOURCE );
     
-    Fieldml_SetMeshConnectivity( context->parse, context->currentObject, domainHandle, fieldHandle );
+    Fieldml_SetMeshConnectivity( context->region, context->currentObject, domainHandle, fieldHandle );
 }
 
 
-void endMeshDomain( SaxContext *context )
+static void endMeshDomain( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *remoteName;
@@ -431,32 +476,32 @@ void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
     name = getAttribute( attributes, NAME_ATTRIB );
     if( name == NULL )
     {
-        addError( context->parse, "ImportedContinuousEvaluator has no name", NULL, NULL );
+        addError( context->region, "ImportedContinuousEvaluator has no name", NULL, NULL );
         return;
     }
     
     remoteName = getAttribute( attributes, EVALUATOR_ATTRIB );
     if( remoteName == NULL )
     {
-        addError( context->parse, "ImportedContinuousEvaluator has no remote name", name, NULL );
+        addError( context->region, "ImportedContinuousEvaluator has no remote name", name, NULL );
         return;
     }
     
     valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ImportedContinuousEvaluator has no value domain", name, NULL );
+        addError( context->region, "ImportedContinuousEvaluator has no value domain", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
-    remoteHandle = getOrCreateObjectHandle( context->parse, remoteName, FHT_UNKNOWN_CONTINUOUS_EVALUATOR );
+    handle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    remoteHandle = getOrCreateObjectHandle( context->region, remoteName, FHT_UNKNOWN_CONTINUOUS_EVALUATOR );
 
-    context->currentObject = Fieldml_CreateContinuousImport( context->parse, name, remoteHandle, handle );
+    context->currentObject = Fieldml_CreateContinuousImport( context->region, name, remoteHandle, handle );
 }
 
 
-void onAlias( SaxContext *context, SaxAttributes *attributes )
+static void onAlias( SaxContext *context, SaxAttributes *attributes )
 {
     const char *remote = getAttribute( attributes, KEY_ATTRIB );
     const char *local = getAttribute( attributes, VALUE_ATTRIB );
@@ -464,28 +509,28 @@ void onAlias( SaxContext *context, SaxAttributes *attributes )
 
     if( ( remote == NULL ) || ( local == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Evaluator has malformed alias", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Evaluator has malformed alias", name, NULL );
         return;
     }
 
-    localHandle = getOrCreateObjectHandle( context->parse, local, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    localHandle = getOrCreateObjectHandle( context->region, local, FHT_UNKNOWN_CONTINUOUS_SOURCE );
 
-    remoteHandle = getOrCreateObjectHandle( context->parse, remote, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    remoteHandle = getOrCreateObjectHandle( context->region, remote, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
     
-    Fieldml_SetAlias( context->parse, context->currentObject, remoteHandle, localHandle );
+    Fieldml_SetAlias( context->region, context->currentObject, remoteHandle, localHandle );
 }
 
 
-void endContinuousImport( SaxContext *context )
+static void endContinuousImport( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContinuousDereference( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousDereference( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name = getAttribute( attributes, NAME_ATTRIB );
     const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
@@ -495,42 +540,42 @@ void startContinuousDereference( SaxContext *context, SaxAttributes *attributes 
 
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousDereference has no name", NULL, NULL );
+        addError( context->region, "ContinuousDereference has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ContinuousDereference has no value domain", name, NULL );
+        addError( context->region, "ContinuousDereference has no value domain", name, NULL );
         return;
     }
     if( valueIndexes == NULL )
     {
-        addError( context->parse, "ContinuousDereference has no value indexes", name, NULL );
+        addError( context->region, "ContinuousDereference has no value indexes", name, NULL );
         return;
     }
     if( valueSource == NULL )
     {
-        addError( context->parse, "ContinuousDereference has no value source", name, NULL );
+        addError( context->region, "ContinuousDereference has no value source", name, NULL );
         return;
     }
 
-    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
-    indexHandle = getOrCreateObjectHandle( context->parse, valueIndexes, FHT_UNKNOWN_ENSEMBLE_SOURCE );
-    sourceHandle = getOrCreateObjectHandle( context->parse, valueSource, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    indexHandle = getOrCreateObjectHandle( context->region, valueIndexes, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    sourceHandle = getOrCreateObjectHandle( context->region, valueSource, FHT_UNKNOWN_CONTINUOUS_SOURCE );
 
-    context->currentObject = Fieldml_CreateContinuousDereference( context->parse, name, indexHandle, sourceHandle, valueHandle );
+    context->currentObject = Fieldml_CreateContinuousDereference( context->region, name, indexHandle, sourceHandle, valueHandle );
 }
 
 
-void endContinuousDereference( SaxContext *context )
+static void endContinuousDereference( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
+static void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name = getAttribute( attributes, NAME_ATTRIB );
     const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
@@ -538,31 +583,31 @@ void startEnsembleParameters( SaxContext *context, SaxAttributes *attributes )
 
     if( name == NULL )
     {
-        addError( context->parse, "EnsembleParameters has no name", NULL, NULL );
+        addError( context->region, "EnsembleParameters has no name", NULL, NULL );
         return;
     }
 
     if( valueDomain == NULL )
     {
-        addError( context->parse, "EnsembleParameters has no value domain", name, NULL );
+        addError( context->region, "EnsembleParameters has no value domain", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    handle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
-    context->currentObject = Fieldml_CreateEnsembleParameters( context->parse, name, handle );
+    context->currentObject = Fieldml_CreateEnsembleParameters( context->region, name, handle );
 }
 
 
-void endEnsembleParameters( SaxContext *context )
+static void endEnsembleParameters( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name = getAttribute( attributes, NAME_ATTRIB );
     const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
@@ -570,43 +615,43 @@ void startContinuousParameters( SaxContext *context, SaxAttributes *attributes )
 
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousParameters has no name", NULL, NULL );
+        addError( context->region, "ContinuousParameters has no name", NULL, NULL );
         return;
     }
 
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ContinuousParameters has no value domain", name, NULL );
+        addError( context->region, "ContinuousParameters has no value domain", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    handle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
-    context->currentObject = Fieldml_CreateContinuousParameters( context->parse, name, handle );
+    context->currentObject = Fieldml_CreateContinuousParameters( context->region, name, handle );
 }
 
 
-void endContinuousParameters( SaxContext *context )
+static void endContinuousParameters( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startInlineData( SaxContext *context, SaxAttributes *attributes )
+static void startInlineData( SaxContext *context, SaxAttributes *attributes )
 {
-    Fieldml_SetParameterDataLocation( context->parse, context->currentObject, LOCATION_INLINE );
+    Fieldml_SetParameterDataLocation( context->region, context->currentObject, LOCATION_INLINE );
 }
 
 
-void onInlineData( SaxContext *context, const char *const characters, const int length )
+static void onInlineData( SaxContext *context, const char *const characters, const int length )
 {
-    Fieldml_AddInlineParameterData( context->parse, context->currentObject, characters, length );
+    Fieldml_AddInlineParameterData( context->region, context->currentObject, characters, length );
 }
 
 
-void onFileData( SaxContext *context, SaxAttributes *attributes )
+static void onFileData( SaxContext *context, SaxAttributes *attributes )
 {
     const char *file = getAttribute( attributes, FILE_ATTRIB );
     const char *type = getAttribute( attributes, TYPE_ATTRIB );
@@ -616,15 +661,15 @@ void onFileData( SaxContext *context, SaxAttributes *attributes )
     
     if( file == NULL )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Parameters file data for must have a file name", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Parameters file data for must have a file name", name, NULL );
         return;
     }
     
     if( type == NULL )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Parameters file data for must have a file type", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Parameters file data for must have a file type", name, NULL );
         return;
     }
     else if( strcmp( type, STRING_TYPE_TEXT ) == 0 )
@@ -637,8 +682,8 @@ void onFileData( SaxContext *context, SaxAttributes *attributes )
     }
     else 
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Parameters file data for must have a known file type", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Parameters file data for must have a known file type", name, NULL );
         return;
     }
     
@@ -651,17 +696,17 @@ void onFileData( SaxContext *context, SaxAttributes *attributes )
         offsetAmount = atoi( offset );
     }
     
-    Fieldml_SetParameterDataLocation( context->parse, context->currentObject, LOCATION_FILE );
-    Fieldml_SetParameterFileData( context->parse, context->currentObject, file, fileType, offsetAmount );
+    Fieldml_SetParameterDataLocation( context->region, context->currentObject, LOCATION_FILE );
+    Fieldml_SetParameterFileData( context->region, context->currentObject, file, fileType, offsetAmount );
 }
 
 
-void startSwizzleData( SaxContext *context, SaxAttributes *attributes )
+static void startSwizzleData( SaxContext *context, SaxAttributes *attributes )
 {
 }
 
 
-void onSwizzleData( SaxContext *context, const char *const characters, const int length )
+static void onSwizzleData( SaxContext *context, const char *const characters, const int length )
 {
     char *newString;
     
@@ -678,7 +723,7 @@ void onSwizzleData( SaxContext *context, const char *const characters, const int
 }
 
 
-void endSwizzleData( SaxContext *context )
+static void endSwizzleData( SaxContext *context )
 {
     int intCount;
     const int *ints;
@@ -686,7 +731,7 @@ void endSwizzleData( SaxContext *context )
     intCount = intParserCount( context->buffer );
     ints = intParserInts( context->buffer );
     
-    Fieldml_SetSwizzle( context->parse, context->currentObject, ints, intCount );
+    Fieldml_SetSwizzle( context->region, context->currentObject, ints, intCount );
     
     free( (int*)ints );
     free( context->buffer );
@@ -695,32 +740,13 @@ void endSwizzleData( SaxContext *context )
 }
 
 
-void startSemidenseData( SaxContext *context, SaxAttributes *attributes )
+static void startSemidenseData( SaxContext *context, SaxAttributes *attributes )
 {
-    Fieldml_SetParameterDataDescription( context->parse, context->currentObject, DESCRIPTION_SEMIDENSE );
+    Fieldml_SetParameterDataDescription( context->region, context->currentObject, DESCRIPTION_SEMIDENSE );
 }
 
 
-void onSemidenseSparseIndex( SaxContext *context, SaxAttributes *attributes )
-{
-    const char *index;
-    FmlObjectHandle handle;
-    
-    index = getAttribute( attributes, VALUE_ATTRIB );
-    if( index == NULL )
-    {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Missing index in semi dense data", name, NULL );
-        return;
-    }
-    
-    handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
-    
-    Fieldml_AddSemidenseIndex( context->parse, context->currentObject, handle, 1 );
-}
-
-
-void onSemidenseDenseIndex( SaxContext *context, SaxAttributes *attributes )
+static void onSemidenseSparseIndex( SaxContext *context, SaxAttributes *attributes )
 {
     const char *index;
     FmlObjectHandle handle;
@@ -728,23 +754,42 @@ void onSemidenseDenseIndex( SaxContext *context, SaxAttributes *attributes )
     index = getAttribute( attributes, VALUE_ATTRIB );
     if( index == NULL )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Missing index in semi dense data", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Missing index in semi dense data", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    handle = getOrCreateObjectHandle( context->region, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     
-    Fieldml_AddSemidenseIndex( context->parse, context->currentObject, handle, 0 );
+    Fieldml_AddSemidenseIndex( context->region, context->currentObject, handle, 1 );
 }
 
 
-void endSemidenseData( SaxContext *context )
+static void onSemidenseDenseIndex( SaxContext *context, SaxAttributes *attributes )
+{
+    const char *index;
+    FmlObjectHandle handle;
+    
+    index = getAttribute( attributes, VALUE_ATTRIB );
+    if( index == NULL )
+    {
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Missing index in semi dense data", name, NULL );
+        return;
+    }
+    
+    handle = getOrCreateObjectHandle( context->region, index, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    
+    Fieldml_AddSemidenseIndex( context->region, context->currentObject, handle, 0 );
+}
+
+
+static void endSemidenseData( SaxContext *context )
 {
 }
 
 
-void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *valueDomain;
@@ -757,30 +802,30 @@ void startContinuousPiecewise( SaxContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousPiecewise has no name", NULL, NULL );
+        addError( context->region, "ContinuousPiecewise has no name", NULL, NULL );
         return;
     }
     
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ContinuousPiecewise has no value domain", name, NULL );
+        addError( context->region, "ContinuousPiecewise has no value domain", name, NULL );
         return;
     }
     
     if( indexDomain == NULL )
     {
-        addError( context->parse, "ContinuousPiecewise has no index domain", name, NULL );
+        addError( context->region, "ContinuousPiecewise has no index domain", name, NULL );
         return;
     }
     
-    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
-    indexHandle = getOrCreateObjectHandle( context->parse, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    indexHandle = getOrCreateObjectHandle( context->region, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     
-    context->currentObject = Fieldml_CreateContinuousPiecewise( context->parse, name, indexHandle, valueHandle );
+    context->currentObject = Fieldml_CreateContinuousPiecewise( context->region, name, indexHandle, valueHandle );
 }
 
 
-void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes )
+static void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes )
 {
     const char *key;
     const char *value;
@@ -791,26 +836,26 @@ void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes 
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Malformed element evaluator for ContinuousPiecewise", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Malformed element evaluator for ContinuousPiecewise", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    handle = getOrCreateObjectHandle( context->region, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
     
-    Fieldml_SetEvaluator( context->parse, context->currentObject, atoi( key ), handle );
+    Fieldml_SetEvaluator( context->region, context->currentObject, atoi( key ), handle );
 }
 
 
-void endContinuousPiecewise( SaxContext *context )
+static void endContinuousPiecewise( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *valueDomain;
@@ -821,23 +866,23 @@ void startContinuousAggregate( SaxContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousAggregate has no name", NULL, NULL );
+        addError( context->region, "ContinuousAggregate has no name", NULL, NULL );
         return;
     }
     
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ContinuousAggregate has no value domain", name, NULL );
+        addError( context->region, "ContinuousAggregate has no value domain", name, NULL );
         return;
     }
     
-    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
     
-    context->currentObject = Fieldml_CreateContinuousAggregate( context->parse, name, valueHandle );
+    context->currentObject = Fieldml_CreateContinuousAggregate( context->region, name, valueHandle );
 }
 
 
-void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes )
+static void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes )
 {
     const char *key;
     const char *value;
@@ -848,26 +893,26 @@ void onContinuousAggregateEntry( SaxContext *context, SaxAttributes *attributes 
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Malformed element evaluator for ContinuousAggregate", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Malformed element evaluator for ContinuousAggregate", name, NULL );
         return;
     }
     
-    handle = getOrCreateObjectHandle( context->parse, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
+    handle = getOrCreateObjectHandle( context->region, value, FHT_UNKNOWN_CONTINUOUS_SOURCE );
     
-    Fieldml_SetEvaluator( context->parse, context->currentObject, atoi( key ), handle );
+    Fieldml_SetEvaluator( context->region, context->currentObject, atoi( key ), handle );
 }
 
 
-void endContinuousAggregate( SaxContext *context )
+static void endContinuousAggregate( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void startContinuousVariable( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousVariable( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name = getAttribute( attributes, NAME_ATTRIB );
     const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
@@ -875,22 +920,22 @@ void startContinuousVariable( SaxContext *context, SaxAttributes *attributes )
 
     if( name == NULL )
     {
-        addError( context->parse, "ContinuousVariable has no name", NULL, NULL );
+        addError( context->region, "ContinuousVariable has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        addError( context->parse, "ContinuousVariable has no value domain", name, NULL );
+        addError( context->region, "ContinuousVariable has no value domain", name, NULL );
         return;
     }
 
-    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
 
-    context->currentObject = Fieldml_CreateContinuousVariable( context->parse, name, valueHandle );
+    context->currentObject = Fieldml_CreateContinuousVariable( context->region, name, valueHandle );
 }
 
 
-void startEnsembleVariable( SaxContext *context, SaxAttributes *attributes )
+static void startEnsembleVariable( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name = getAttribute( attributes, NAME_ATTRIB );
     const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
@@ -898,30 +943,30 @@ void startEnsembleVariable( SaxContext *context, SaxAttributes *attributes )
     
     if( name == NULL )
     {
-        addError( context->parse, "EnsembleVariable has no name", NULL, NULL );
+        addError( context->region, "EnsembleVariable has no name", NULL, NULL );
         return;
     }
     if( valueDomain == NULL )
     {
-        addError( context->parse, "EnsembleVariable has no value domain", name, NULL );
+        addError( context->region, "EnsembleVariable has no value domain", name, NULL );
         return;
     }
 
-    valueHandle = getOrCreateObjectHandle( context->parse, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
+    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
 
-    context->currentObject = Fieldml_CreateEnsembleVariable( context->parse, name, valueHandle );
+    context->currentObject = Fieldml_CreateEnsembleVariable( context->region, name, valueHandle );
 }
 
 
-void endVariable( SaxContext *context )
+static void endVariable( SaxContext *context )
 {
-    Fieldml_ValidateObject( context->parse, context->currentObject );
+    Fieldml_ValidateObject( context->region, context->currentObject );
     
     context->currentObject = FML_INVALID_HANDLE;
 }
 
 
-void onMarkupEntry( SaxContext *context, SaxAttributes *attributes )
+static void onMarkupEntry( SaxContext *context, SaxAttributes *attributes )
 {
     const char *key;
     const char *value;
@@ -931,12 +976,12 @@ void onMarkupEntry( SaxContext *context, SaxAttributes *attributes )
     
     if( ( key == NULL ) || ( value == NULL ) )
     {
-        const char * name =  Fieldml_GetObjectName( context->parse, context->currentObject );
-        addError( context->parse, "Malformed markup", name, NULL );
+        const char * name =  Fieldml_GetObjectName( context->region, context->currentObject );
+        addError( context->region, "Malformed markup", name, NULL );
         return;
     }
     
-    Fieldml_SetMarkup( context->parse, context->currentObject, key, value );
+    Fieldml_SetMarkup( context->region, context->currentObject, key, value );
 }
 
 //========================================================================
@@ -1567,16 +1612,16 @@ static xmlSAXHandlerPtr SAX2Handler = &SAX2HandlerStruct;
 //
 //========================================================================
 
-FieldmlParse *parseFieldmlFile( const char *filename )
+FieldmlRegion *parseFieldmlFile( const char *filename )
 {
     int res, state;
     SaxContext context;
-    FieldmlParse * parse;
+    FieldmlRegion *region;
 
-    parse = Fieldml_Create();
+    region = Fieldml_Create();
 
     context.state = createIntStack();
-    context.parse = parse;
+    context.region = region;
     context.currentObject = FML_INVALID_HANDLE;
     context.bufferLength = 0;
     context.buffer = NULL;
@@ -1590,19 +1635,19 @@ FieldmlParse *parseFieldmlFile( const char *filename )
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
     if( res != 0 )
     {
-        addError( parse, "xmlSAXUserParseFile returned error", NULL, NULL );
+        addError( region, "xmlSAXUserParseFile returned error", NULL, NULL );
     }
 
     state = intStackPeek( context.state );
     if( state != FML_ROOT )
     {
-        addError( parse, "Parser state not empty", NULL, NULL );
+        addError( region, "Parser state not empty", NULL, NULL );
     }
 
     xmlCleanupParser();
     xmlMemoryDump();
 
-    finalizeFieldmlParse( parse );
+    finalizeFieldmlRegion( region );
 
-    return parse;
+    return region;
 }

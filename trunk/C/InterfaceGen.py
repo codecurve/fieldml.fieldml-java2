@@ -42,10 +42,10 @@ def declareFunction( name, types, names ):
     if( p == "char" ):
       print "      CHARACTER(KIND=C_CHAR) :: " + names[i]
     elif( p == "char*" ):
-      print "      CHARACTER(KIND=C_CHAR,LEN=*) :: " + names[i]
+      print "      CHARACTER(KIND=C_CHAR) :: " + names[i] + "(*)"
     elif( p == "int*" ) or ( p == "double*"):
       print "      TYPE(C_PTR), VALUE :: " + names[i]
-    elif( p == "FmlParseHandle" ): #HACK
+    elif( p == "FmlHandle" ): #HACK
       print "      TYPE(C_PTR), VALUE :: " + names[i]
     elif( p == "FmlReaderHandle" ): #HACK
       print "      TYPE(C_PTR), VALUE :: " + names[i]
@@ -55,7 +55,7 @@ def declareFunction( name, types, names ):
       print "      INTEGER(C_INT), VALUE :: " + names[i]
 
   #VERY NASTY HACK!!
-  if( name == "Fieldml_ParseFile" ) or ( name == "Fieldml_OpenReader" ) or ( name == "Fieldml_OpenWriter" ):
+  if( name == "Fieldml_CreateFromFile" ) or ( name == "Fieldml_Create" ) or ( name == "Fieldml_OpenReader" ) or ( name == "Fieldml_OpenWriter" ):
       print "      TYPE(C_PTR) :: " + name
   else:
       print "      INTEGER(C_INT) :: " + name

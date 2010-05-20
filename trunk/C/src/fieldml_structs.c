@@ -4,7 +4,6 @@
 #include <libxml/SAX.h>
 
 #include "string_const.h"
-#include "fieldml_parse.h"
 #include "int_table.h"
 #include "string_table.h"
 #include "simple_list.h"
@@ -29,9 +28,9 @@ const int FILE_REGION_HANDLE = 1;
 //========================================================================
 
 
-static void setRegionHandle( FieldmlParse *parse, FmlObjectHandle handle, int regionHandle )
+static void setRegionHandle( FieldmlRegion *region, FmlObjectHandle handle, int regionHandle )
 {
-    FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+    FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( region->objects, handle );
     object->regionHandle = regionHandle;
 }
 
@@ -218,91 +217,92 @@ SemidenseData *createSemidenseData()
 }
 
 
-static FmlObjectHandle addEnsembleDomain( FieldmlParse *parse, int regionHandle, const char *name, int count )
+static FmlObjectHandle addEnsembleDomain( FieldmlRegion *region, int regionHandle, const char *name, int count )
 {
     int handle;
     
-    handle = Fieldml_CreateEnsembleDomain( parse, name, FML_INVALID_HANDLE );
-    Fieldml_SetContiguousBoundsCount( parse, handle, count );
-    setRegionHandle( parse, handle, regionHandle );
+    handle = Fieldml_CreateEnsembleDomain( region, name, FML_INVALID_HANDLE );
+    Fieldml_SetContiguousBoundsCount( region, handle, count );
+    setRegionHandle( region, handle, regionHandle );
     
     return handle;
 }
 
 
-static FmlObjectHandle addContinuousDomain( FieldmlParse *parse, int regionHandle, const char *name, FmlObjectHandle componentHandle )
+static FmlObjectHandle addContinuousDomain( FieldmlRegion *region, int regionHandle, const char *name, FmlObjectHandle componentHandle )
 {
     int handle;
 
-    handle = Fieldml_CreateContinuousDomain( parse, name, componentHandle );
-    setRegionHandle( parse, handle, regionHandle );
+    handle = Fieldml_CreateContinuousDomain( region, name, componentHandle );
+    setRegionHandle( region, handle, regionHandle );
     
     return handle;
 }
 
 
-static void addMarkup( FieldmlParse *parse, FmlObjectHandle handle, const char *attribute, const char *value );
+static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char *attribute, const char *value );
 
 
-void addLibraryDomains( FieldmlParse *parse )
+void addLibraryDomains( FieldmlRegion *region )
 {
     FmlObjectHandle handle;
 
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.real.1d", FML_INVALID_HANDLE );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.real.2d", FML_INVALID_HANDLE );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.real.3d", FML_INVALID_HANDLE );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.1d", FML_INVALID_HANDLE );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.2d", FML_INVALID_HANDLE );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.3d", FML_INVALID_HANDLE );
     
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.xi.1d", 1 );
-    handle = addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.xi.1d", handle );
-    addMarkup( parse, handle, "xi", "true" );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.1d", 1 );
+    handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.1d", handle );
+    addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.xi.2d", 2 );
-    handle = addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.xi.2d", handle );
-    addMarkup( parse, handle, "xi", "true" );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.2d", 2 );
+    handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.2d", handle );
+    addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.xi.3d", 3 );
-    handle = addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.xi.3d", handle );
-    addMarkup( parse, handle, "xi", "true" );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.3d", 3 );
+    handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.3d", handle );
+    addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.line.2", 2 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.linear_lagrange", handle ); 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.quadratic_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.2", 2 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.linear_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.quadratic_lagrange", handle ); 
 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.2x2", 4 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle ); 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.3x3", 9 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.biquadratic_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.2x2", 4 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.3x3", 9 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.biquadratic_lagrange", handle ); 
 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.trilinear_lagrange", handle ); 
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.3x3x3", 27 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.parameters.triquadratic_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.trilinear_lagrange", handle ); 
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.3x3x3", 27 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.triquadratic_lagrange", handle ); 
     
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.rc.1d", 1 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.coordinates.rc.1d", handle );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.velocity.rc.1d", handle );
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.rc.2d", 2 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.coordinates.rc.2d", handle );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.velocity.rc.2d", handle );
-    handle = addEnsembleDomain( parse, LIBRARY_REGION_HANDLE, "library.ensemble.rc.3d", 3 );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.coordinates.rc.3d", handle );
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.velocity.rc.3d", handle );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.1d", 1 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.1d", handle );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.1d", handle );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.2d", 2 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.2d", handle );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.2d", handle );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.3d", 3 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.3d", handle );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.3d", handle );
 
-    addContinuousDomain( parse, LIBRARY_REGION_HANDLE, "library.pressure", FML_INVALID_HANDLE );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.pressure", FML_INVALID_HANDLE );
 }
 
 
-FieldmlParse *createFieldmlParse()
+FieldmlRegion *createFieldmlRegion( const char *name )
 {
-    FieldmlParse *parse = calloc( 1, sizeof( FieldmlParse ) );
+    FieldmlRegion *region = calloc( 1, sizeof( FieldmlRegion ) );
 
-    parse->objects = createSimpleList();
-    parse->errors = createSimpleList();
+    region->name = strdup( name );
+    region->objects = createSimpleList();
+    region->errors = createSimpleList();
     
-    addLibraryDomains( parse );
+    addLibraryDomains( region );
     
-    return parse;
+    return region;
 }
 
 
@@ -447,12 +447,13 @@ void destroyFieldmlObject( FieldmlObject *object )
 }
 
 
-void destroyFieldmlParse( FieldmlParse *parse )
+void destroyFieldmlRegion( FieldmlRegion *region )
 {
-    destroySimpleList( parse->objects, destroyFieldmlObject );
-    destroySimpleList( parse->errors, free );
+    destroySimpleList( region->objects, destroyFieldmlObject );
+    destroySimpleList( region->errors, free );
+    free( region->name );
 
-    free( parse );
+    free( region );
 }
 
 
@@ -463,15 +464,15 @@ void destroyFieldmlParse( FieldmlParse *parse )
 //========================================================================
 
 
-static void addMarkup( FieldmlParse *parse, FmlObjectHandle handle, const char *attribute, const char *value )
+static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char *attribute, const char *value )
 {
-    FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+    FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( region->objects, handle );
 
     setStringTableEntry( object->markup, attribute, strdup( value ), free );
 }
 
 
-void addError( FieldmlParse *parse, const char *error, const char *name1, const char *name2 )
+void addError( FieldmlRegion *region, const char *error, const char *name1, const char *name2 )
 {
     char *string;
     int len;
@@ -503,45 +504,26 @@ void addError( FieldmlParse *parse, const char *error, const char *name1, const 
         strcat( string, name2 );
     }
     
-    addSimpleListEntry( parse->errors, string );
+    addSimpleListEntry( region->errors, string );
     
     fprintf( stderr, "%s\n", string );
 }
 
 
-static FmlObjectHandle getObjectHandle( FieldmlParse *parse, const char *name )
-{
-    int i, count;
-    FieldmlObject *object;
-    
-    count = getSimpleListCount( parse->objects );
-    for( i = 0; i < count; i++ )
-    {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
-        if( strcmp( name, object->name ) == 0 )
-        {
-            return i;
-        }
-    }
-    
-    return FML_INVALID_HANDLE;
-}
-
-
-FmlObjectHandle addFieldmlObject( FieldmlParse *parse, FieldmlObject *object )
+FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
 {
     int doSwitch;
     FieldmlObject *oldObject;
-    FmlObjectHandle handle = getObjectHandle( parse, object->name );
+    FmlObjectHandle handle = Fieldml_GetNamedObjectHandle( region, object->name );
     
     if( handle == FML_INVALID_HANDLE )
     {
-        return addSimpleListEntry( parse->objects, object );
+        return addSimpleListEntry( region->objects, object );
     }
 
     doSwitch = 0;
     
-    oldObject = (FieldmlObject*)getSimpleListEntry( parse->objects, handle );
+    oldObject = (FieldmlObject*)getSimpleListEntry( region->objects, handle );
     
     if( ( oldObject->regionHandle != VIRTUAL_REGION_HANDLE ) ||
         ( object->regionHandle == VIRTUAL_REGION_HANDLE ) )
@@ -596,53 +578,9 @@ FmlObjectHandle addFieldmlObject( FieldmlParse *parse, FieldmlObject *object )
         return handle;
     }
     
-    addError( parse, "Handle collision. Cannot replace", object->name, oldObject->name );
+    addError( region, "Handle collision. Cannot replace", object->name, oldObject->name );
     fprintf( stderr, "Handle collision. Cannot replace %s:%d with %s:%d\n", object->name, object->type, oldObject->name, oldObject->type );
     destroyFieldmlObject( object );
     
     return FML_INVALID_HANDLE;
-}
-
-
-FmlObjectHandle getOrCreateObjectHandle( FieldmlParse *parse, const char *name, FieldmlHandleType type )
-{
-    FmlObjectHandle handle = getObjectHandle( parse, name );
-
-    if( handle == FML_INVALID_HANDLE )
-    {
-        handle = addFieldmlObject( parse, createFieldmlObject( name, type, VIRTUAL_REGION_HANDLE ) );
-    }
-    
-    return handle;
-}
-
-
-void finalizeFieldmlParse( FieldmlParse *parse )
-{
-    FieldmlObject *object;
-    int i, count;
-    
-    count = getSimpleListCount( parse->objects );
-    
-    for( i = 0; i < count; i++ )
-    {
-        object = (FieldmlObject*)getSimpleListEntry( parse->objects, i );
-        
-        if( ( object->type == FHT_UNKNOWN_CONTINUOUS_DOMAIN ) || ( object->type == FHT_UNKNOWN_CONTINUOUS_SOURCE ) )
-        {
-            object->type = FHT_REMOTE_CONTINUOUS_DOMAIN;
-        }
-        else if( ( object->type == FHT_UNKNOWN_ENSEMBLE_DOMAIN ) || ( object->type == FHT_UNKNOWN_ENSEMBLE_SOURCE ) )
-        {
-            object->type = FHT_REMOTE_ENSEMBLE_DOMAIN;
-        }
-        else if( object->type == FHT_UNKNOWN_CONTINUOUS_EVALUATOR )
-        {
-            object->type = FHT_REMOTE_CONTINUOUS_EVALUATOR;
-        }
-        else if( object->type == FHT_UNKNOWN_ENSEMBLE_EVALUATOR )
-        {
-            object->type = FHT_REMOTE_ENSEMBLE_EVALUATOR;
-        }
-    }
 }
