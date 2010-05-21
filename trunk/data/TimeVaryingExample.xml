@@ -65,7 +65,11 @@
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="tv_test.time.element_dof_indexes" valueSource="tv_test.mesh.dofs" name="tv_test.mesh.element.quadratic_lagrange.params" valueDomain="library.parameters.quadratic_lagrange" />
+    <ImportedContinuousEvaluator evaluator="tv_test.mesh.dofs" name="tv_test.mesh.element.quadratic_lagrange.params" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="tv_test.time.dofs.domain" value="tv_test.time.element_dof_indexes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.quadratic_lagrange" name="tv_test.mesh.quadratic_lagrange" valueDomain="library.real.1d">

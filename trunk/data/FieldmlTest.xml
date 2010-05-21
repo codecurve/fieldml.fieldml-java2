@@ -30,9 +30,9 @@
         <entry key="4" value="library.shape.quad" />
       </shapes>
       <pointConnectivity>
-        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
-        <entry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
         <entry key="library.local_nodes.quad.3x3" value="test_mesh.quad3x3_nodes" />
+        <entry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
+        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
       </pointConnectivity>
       <ContiguousEnsembleBounds valueCount="4" />
     </MeshDomain>
@@ -43,9 +43,6 @@
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad2x2_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange.params" valueDomain="library.parameters.bilinear_lagrange" />
-    
-
     <ImportedContinuousEvaluator evaluator="library.fem.bilinear_lagrange" name="test_mesh.bilinear_lagrange" valueDomain="library.real.1d">
       <continuousAliases>
         <SimpleMapEntry key="library.xi.2d" value="test_mesh.domain.xi" />
@@ -54,7 +51,11 @@
     </ImportedContinuousEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad3x3_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.biquadratic_lagrange" valueDomain="library.parameters.biquadratic_lagrange" />
+    <ImportedContinuousEvaluator evaluator="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_lagrange.params" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.quad2x2_nodes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.biquadratic_lagrange" name="test_mesh.biquadratic_lagrange" valueDomain="library.real.1d">
@@ -65,7 +66,11 @@
     </ImportedContinuousEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.triangle2x2_nodes" valueSource="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.parameters.bilinear_simplex" />
+    <ImportedContinuousEvaluator evaluator="test_mesh.mesh.dofs" name="test_mesh.element.bilinear_simplex" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.triangle2x2_nodes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.bilinear_simplex" name="test_mesh.bilinear_simplex" valueDomain="library.real.1d">

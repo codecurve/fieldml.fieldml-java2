@@ -86,7 +86,11 @@ x____x____x____x____x____x
     </ContinuousVariableEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.element_dof_indexes" valueSource="test_mesh.dofs" name="test_mesh.element.quadratic_bspline.params" valueDomain="library.parameters.quadratic_bspline" />
+    <ImportedContinuousEvaluator evaluator="test_mesh.dofs" name="test_mesh.element.quadratic_bspline.params" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.element_dof_indexes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.quadratic_bspline" name="test_mesh.quadratic_bspline" valueDomain="library.real.1d">

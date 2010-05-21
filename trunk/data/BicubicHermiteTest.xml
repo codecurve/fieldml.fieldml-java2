@@ -90,7 +90,11 @@
     </ContinuousPiecewiseEvaluator>
     
 
-    <ContinuousDereferenceEvaluator valueIndexes="test_mesh.quad_nodes" valueSource="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange.params" valueDomain="library.parameters.bilinear_lagrange" />
+    <ImportedContinuousEvaluator evaluator="test_mesh.node.dofs.u" name="test_mesh.element.bilinear_lagrange.params" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.nodes" value="test_mesh.quad_nodes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
     
 
     <ImportedContinuousEvaluator evaluator="library.fem.bilinear_lagrange" name="test_mesh.element.bilinear_lagrange" valueDomain="library.real.1d">
