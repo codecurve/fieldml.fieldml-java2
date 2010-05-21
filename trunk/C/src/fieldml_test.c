@@ -300,16 +300,6 @@ void testRead( const char * filename )
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
     }
 
-    count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_DEREFERENCE );
-    fprintf( stdout, "ContinuousDereference: %d\n", count ); 
-    for( i = 1; i <= count; i++ )
-    {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_DEREFERENCE, i );
-        
-        fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
-            Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
-    }
-
     count = Fieldml_GetObjectCount( handle, FHT_REMOTE_ENSEMBLE_DOMAIN );
     fprintf( stdout, "External ensemble domain: %d\n", count ); 
     for( i = 1; i <= count; i++ )

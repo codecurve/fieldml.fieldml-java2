@@ -40,11 +40,14 @@
 		</ContinuousVariableEvaluator>
 
 
-		<ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube3x3x3_nodes" valueSource="test_mesh.nodal_dofs"
-			name="test_mesh.element_params.triquadratic_lagrange" valueDomain="library.parameters.triquadratic_lagrange" />
+		<ImportedContinuousEvaluator evaluator="test_mesh.nodal_dofs" name="test_mesh.element_params.triquadratic_lagrange" valueDomain="library.real.1d">
+			<aliases>
+				<SimpleMapEntry key="test_mesh.nodes" value="test_mesh.cube3x3x3_nodes" />
+			</aliases>
+		</ImportedContinuousEvaluator>
 
-        <ImportedContinuousEvaluator evaluator="library.fem.triquadratic_lagrange" name="test_mesh.triquadratic_lagrange"
-			valueDomain="library.real.1d">
+
+		<ImportedContinuousEvaluator evaluator="library.fem.triquadratic_lagrange" name="test_mesh.triquadratic_lagrange" valueDomain="library.real.1d">
 			<aliases>
 				<SimpleMapEntry key="library.xi.3d" value="test_mesh.domain.xi" />
 				<SimpleMapEntry key="library.parameters.triquadratic_lagrange" value="test_mesh.element_params.triquadratic_lagrange" />
@@ -52,8 +55,11 @@
 		</ImportedContinuousEvaluator>
 
 
-		<ContinuousDereferenceEvaluator valueIndexes="test_mesh.cube2x2x2_nodes" valueSource="test_mesh.nodal_dofs"
-			name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.parameters.trilinear_lagrange" />
+		<ImportedContinuousEvaluator evaluator="test_mesh.nodal_dofs" name="test_mesh.element_params.trilinear_lagrange" valueDomain="library.real.1d">
+			<aliases>
+				<SimpleMapEntry key="test_mesh.nodes" value="test_mesh.cube2x2x2_nodes" />
+			</aliases>
+		</ImportedContinuousEvaluator>
 
 
 		<ImportedContinuousEvaluator evaluator="library.fem.trilinear_lagrange" name="test_mesh.trilinear_lagrange"

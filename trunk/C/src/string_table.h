@@ -74,4 +74,11 @@ void *getStringTableEntryData( StringTable *table, int index );
 */
 void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard );
 
+
+void setStringTableDefault( StringTable *table, void *value, TABLE_DATA_DISCARD discard );
+
+
+void *getStringTableDefault( StringTable *table );
+
+
 #endif // H_STRING_TABLE

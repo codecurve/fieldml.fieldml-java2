@@ -36,7 +36,7 @@ static void writeIntArray( xmlTextWriterPtr writer, const char *tag, int count, 
 
 static void writeStringTableEntry( xmlTextWriterPtr writer, const char *key, const char *value )
 {
-    xmlTextWriterStartElement( writer, SIMPLE_MAP_ENTRY_TAG );
+    xmlTextWriterStartElement( writer, MAP_ENTRY_TAG );
     xmlTextWriterWriteAttribute( writer, KEY_ATTRIB, key );
     xmlTextWriterWriteAttribute( writer, VALUE_ATTRIB, value );
     xmlTextWriterEndElement( writer );
@@ -74,7 +74,7 @@ static void writeStringTable( xmlTextWriterPtr writer, const char *name, StringT
 
 static void writeIntTableEntry( xmlTextWriterPtr writer, int key, const char *value )
 {
-    xmlTextWriterStartElement( writer, SIMPLE_MAP_ENTRY_TAG );
+    xmlTextWriterStartElement( writer, MAP_ENTRY_TAG );
     xmlTextWriterWriteFormatAttribute( writer, KEY_ATTRIB, "%d", key );
     xmlTextWriterWriteAttribute( writer, VALUE_ATTRIB, value );
     xmlTextWriterEndElement( writer );
@@ -293,25 +293,6 @@ static int writeVariable( xmlTextWriterPtr writer, FieldmlRegion *region, Fieldm
 }
 
 
-static int writeContinuousDereference( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
-{
-    ContinuousDereference *deref = object->object.dereference;
-
-    xmlTextWriterStartElement( writer, CONTINUOUS_DEREFERENCE_TAG );
-    
-    xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, region, VALUE_SOURCE_ATTRIB, deref->valueSource );
-    writeObjectName( writer, region, VALUE_INDEXES_ATTRIB, deref->valueIndexes );
-    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, deref->valueDomain );
-
-    writeStringTable( writer, MARKUP_TAG, object->markup );
-
-    xmlTextWriterEndElement( writer );
-    
-    return 0;
-}
-
-
 static writeContinuousImport( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
     ContinuousImport *import = object->object.continuousImport;
@@ -452,8 +433,6 @@ static int writeFieldmlObject( xmlTextWriterPtr writer, FieldmlRegion *region, F
     case FHT_CONTINUOUS_VARIABLE:
     case FHT_ENSEMBLE_VARIABLE:
         return writeVariable( writer, region, object );
-    case FHT_CONTINUOUS_DEREFERENCE:
-        return writeContinuousDereference( writer, region, object );
     case FHT_CONTINUOUS_IMPORT:
         return writeContinuousImport( writer, region, object );
     case FHT_CONTINUOUS_PIECEWISE:

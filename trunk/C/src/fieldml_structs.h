@@ -84,15 +84,6 @@ typedef struct _ContinuousAggregate
 ContinuousAggregate;
 
 
-typedef struct _ContinuousDereference
-{
-    int valueDomain;
-    int valueIndexes;
-    int valueSource;
-}
-ContinuousDereference;
-
-
 typedef struct _StringDataSource
 {
     char *string;
@@ -169,7 +160,6 @@ typedef struct _FieldmlObject
         Variable* variable;
         ContinuousPiecewise *piecewise;
         ContinuousAggregate *aggregate;
-        ContinuousDereference *dereference;
     }
     object;
 }
@@ -216,8 +206,6 @@ FieldmlObject *createContinuousParameters( const char *name, int region, FmlObje
 FieldmlObject *createContinuousPiecewise( const char *name, int region, FmlObjectHandle indexDomain, FmlObjectHandle valueDomain );
 
 FieldmlObject *createContinuousAggregate( const char *name, int region, FmlObjectHandle valueDomain );
-
-FieldmlObject *createContinuousDereference( const char *name, int region, FmlObjectHandle valueIndexes, FmlObjectHandle valueSource, FmlObjectHandle valueDomain );
 
 SemidenseData *createSemidenseData();
 

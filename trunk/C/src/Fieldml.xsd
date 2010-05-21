@@ -11,6 +11,13 @@
 		</xs:choice>
 	</xs:complexType>
 
+    <xs:complexType name="DefaultSimpleMapType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="SimpleMapEntry" type="SimpleMapEntryType" />
+        </xs:choice>
+        <xs:attribute name="default" type="xs:string" use="optional"/>
+    </xs:complexType>
+
 	<xs:complexType name="SimpleListEntryType">
 		<xs:attribute name="value" type="xs:string" />
 	</xs:complexType>
@@ -49,7 +56,7 @@
 		<xs:all>
 			<xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="shapes" type="SimpleMapType" minOccurs="1" maxOccurs="1" />
+			<xs:element name="shapes" type="DefaultSimpleMapType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="pointConnectivity" type="ConnectivityType" minOccurs="1" maxOccurs="1" />
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" />
@@ -65,16 +72,6 @@
 		<xs:attribute name="valueDomain" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="ContinuousDereferenceEvaluatorType">
-        <xs:all>
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-        </xs:all>
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="valueDomain" type="xs:string" />
-		<xs:attribute name="valueIndexes" type="xs:string" />
-		<xs:attribute name="valueSource" type="xs:string" />
-	</xs:complexType>
-
 	<xs:complexType name="ImportedContinuousEvaluatorType">
 		<xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
@@ -88,7 +85,7 @@
     <xs:complexType name="PiecewiseEvaluatorType">
         <xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="elementEvaluators" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="elementEvaluators" type="DefaultSimpleMapType" minOccurs="0" maxOccurs="1" />
             <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" />
@@ -157,7 +154,6 @@
 			<xs:element name="MeshDomain" type="MeshDomainType" />
 			<xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
             <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
-			<xs:element name="ContinuousDereferenceEvaluator" type="ContinuousDereferenceEvaluatorType" />
 			<xs:element name="ImportedContinuousEvaluator" type="ImportedContinuousEvaluatorType" />
             <xs:element name="ContinuousPiecewiseEvaluator" type="PiecewiseEvaluatorType" />
             <xs:element name="EnsemblePiecewiseEvaluator" type="PiecewiseEvaluatorType" />

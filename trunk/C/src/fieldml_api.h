@@ -71,7 +71,6 @@ typedef enum _FieldmlHandleType
     FHT_CONTINUOUS_PARAMETERS,
     FHT_CONTINUOUS_PIECEWISE,
     FHT_CONTINUOUS_AGGREGATE,
-    FHT_CONTINUOUS_DEREFERENCE,
     FHT_CONTINUOUS_VARIABLE,
     FHT_ENSEMBLE_VARIABLE,
     FHT_REMOTE_ENSEMBLE_DOMAIN,
@@ -207,6 +206,8 @@ FmlObjectHandle Fieldml_GetMeshElementDomain( FmlHandle handle, FmlObjectHandle 
  */
 const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber );
 int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
+
+int Fieldml_SetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, const char * shape );
 
 int Fieldml_SetMeshElementShape( FmlHandle handle, FmlObjectHandle mesh, int elementNumber, const char * shape );
 
@@ -396,14 +397,6 @@ int Fieldml_GetIndexCount( FmlHandle handle, FmlObjectHandle objectHandle );
     NOTE: Only defined for piecewise and parameter evaluators.
  */
 FmlObjectHandle Fieldml_GetIndexDomain( FmlHandle handle, FmlObjectHandle objectHandle, int indexIndex );
-
-
-FmlObjectHandle Fieldml_CreateContinuousDereference( FmlHandle handle, const char * name, FmlObjectHandle indexes, FmlObjectHandle values, FmlObjectHandle valueDomain );
-
-FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlHandle handle, FmlObjectHandle objectHandle );
-
-
-FmlObjectHandle Fieldml_GetDereferenceSource( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
 FmlReaderHandle Fieldml_OpenReader( FmlHandle handle, FmlObjectHandle objectHandle );

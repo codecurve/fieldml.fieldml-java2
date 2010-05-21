@@ -191,21 +191,6 @@ FieldmlObject *createContinuousAggregate( const char *name, int region, FmlObjec
 }
 
 
-FieldmlObject *createContinuousDereference( const char *name, int region, FmlObjectHandle valueIndexes, FmlObjectHandle valueSource, FmlObjectHandle valueDomain )
-{
-    FieldmlObject *object = createFieldmlObject( name, FHT_CONTINUOUS_DEREFERENCE, region );
-    ContinuousDereference *dereference = calloc( 1, sizeof( ContinuousDereference ) );
-    
-    dereference->valueDomain = valueDomain;
-    dereference->valueIndexes = valueIndexes;
-    dereference->valueSource = valueSource;
-
-    object->object.dereference = dereference;
-    
-    return object;
-}
-
-
 SemidenseData *createSemidenseData()
 {
     SemidenseData *data = calloc( 1, sizeof( SemidenseData ) );
@@ -391,12 +376,6 @@ void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 }
 
 
-void destroyContinuousDereference( ContinuousDereference *dereference )
-{
-    free( dereference );
-}
-
-
 void destroyVariable( Variable *variable )
 {
     destroyIntStack( variable->parameters );
@@ -434,9 +413,6 @@ void destroyFieldmlObject( FieldmlObject *object )
     case FHT_CONTINUOUS_VARIABLE:
     case FHT_ENSEMBLE_VARIABLE:
         destroyVariable( object->object.variable );
-        break;
-    case FHT_CONTINUOUS_DEREFERENCE:
-        destroyContinuousDereference( object->object.dereference );
         break;
     default:
         break;
@@ -559,7 +535,6 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
             ( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
             ( object->type == FHT_CONTINUOUS_IMPORT ) ||
             ( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
-            ( object->type == FHT_CONTINUOUS_DEREFERENCE ) ||
             ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
             ( object->type == FHT_CONTINUOUS_VARIABLE ) )
         {
