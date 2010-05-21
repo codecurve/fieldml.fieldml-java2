@@ -46,8 +46,6 @@ typedef enum _SaxState
 
     FML_CONTINUOUS_VARIABLE,
 
-    FML_CONTINUOUS_DEREFERENCE,
-
     FML_ENSEMBLE_VARIABLE,
 
     FML_SEMI_DENSE,
@@ -422,6 +420,17 @@ static void startMeshDomain( SaxContext *context, SaxAttributes *attributes )
 }
 
 
+static void startMeshShapes( SaxContext *context, SaxAttributes *attributes )
+{
+    const char *defaultValue = getAttribute( attributes, DEFAULT_ATTRIB );
+
+    if( defaultValue != NULL )
+    {
+        Fieldml_SetMeshDefaultShape( context->region, context->currentObject, defaultValue );
+    }
+}
+
+
 static void onMeshShape( SaxContext *context, SaxAttributes *attributes )
 {
     const char *element = getAttribute( attributes, KEY_ATTRIB );
@@ -523,51 +532,6 @@ static void onAlias( SaxContext *context, SaxAttributes *attributes )
 
 
 static void endContinuousImport( SaxContext *context )
-{
-    Fieldml_ValidateObject( context->region, context->currentObject );
-    
-    context->currentObject = FML_INVALID_HANDLE;
-}
-
-
-static void startContinuousDereference( SaxContext *context, SaxAttributes *attributes )
-{
-    const char *name = getAttribute( attributes, NAME_ATTRIB );
-    const char *valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
-    const char *valueIndexes = getAttribute( attributes, VALUE_INDEXES_ATTRIB );
-    const char *valueSource = getAttribute( attributes, VALUE_SOURCE_ATTRIB );
-    FmlObjectHandle valueHandle, indexHandle, sourceHandle;
-
-    if( name == NULL )
-    {
-        addError( context->region, "ContinuousDereference has no name", NULL, NULL );
-        return;
-    }
-    if( valueDomain == NULL )
-    {
-        addError( context->region, "ContinuousDereference has no value domain", name, NULL );
-        return;
-    }
-    if( valueIndexes == NULL )
-    {
-        addError( context->region, "ContinuousDereference has no value indexes", name, NULL );
-        return;
-    }
-    if( valueSource == NULL )
-    {
-        addError( context->region, "ContinuousDereference has no value source", name, NULL );
-        return;
-    }
-
-    valueHandle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
-    indexHandle = getOrCreateObjectHandle( context->region, valueIndexes, FHT_UNKNOWN_ENSEMBLE_SOURCE );
-    sourceHandle = getOrCreateObjectHandle( context->region, valueSource, FHT_UNKNOWN_CONTINUOUS_SOURCE );
-
-    context->currentObject = Fieldml_CreateContinuousDereference( context->region, name, indexHandle, sourceHandle, valueHandle );
-}
-
-
-static void endContinuousDereference( SaxContext *context )
 {
     Fieldml_ValidateObject( context->region, context->currentObject );
     
@@ -794,11 +758,13 @@ static void startContinuousPiecewise( SaxContext *context, SaxAttributes *attrib
     const char *name;
     const char *valueDomain;
     const char *indexDomain;
+    const char *defaultValue;
     FmlObjectHandle valueHandle, indexHandle;
     
     name = getAttribute( attributes, NAME_ATTRIB );
     valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
     indexDomain = getAttribute( attributes, INDEX_DOMAIN_ATTRIB );
+    defaultValue = getAttribute( attributes, DEFAULT_ATTRIB );
     
     if( name == NULL )
     {
@@ -822,6 +788,11 @@ static void startContinuousPiecewise( SaxContext *context, SaxAttributes *attrib
     indexHandle = getOrCreateObjectHandle( context->region, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     
     context->currentObject = Fieldml_CreateContinuousPiecewise( context->region, name, indexHandle, valueHandle );
+    if( defaultValue != NULL )
+    {
+        int defaultHandle = getOrCreateObjectHandle( context->region, defaultValue, FHT_UNKNOWN_CONTINUOUS_EVALUATOR );
+        Fieldml_SetDefaultEvaluator( context->region, context->currentObject );
+    }
 }
 
 
@@ -1203,6 +1174,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     case FML_MESH_DOMAIN:
         if( strcmp( name, MESH_SHAPES_TAG ) == 0 )
         {
+            startMeshShapes( saxContext, saxAttributes );
             intStackPush( saxContext->state, FML_MESH_SHAPES );
         }
         else if( strcmp( name, MESH_CONNECTIVITY_TAG ) == 0 )
@@ -1216,13 +1188,13 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         }
         break;
     case FML_MESH_SHAPES:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onMeshShape( saxContext, saxAttributes );
         }
         break;
     case FML_MESH_CONNECTIVITY:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onMeshConnectivity( saxContext, saxAttributes );
         }
@@ -1262,19 +1234,19 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         }
         break;
     case FML_MARKUP:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onMarkupEntry( saxContext, saxAttributes );
         }
         break;
     case FML_SOURCE_FIELDS:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onContinuousAggregateEntry( saxContext, saxAttributes );
         }
         break;
     case FML_ELEMENT_EVALUATORS:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onContinuousPiecewiseEntry( saxContext, saxAttributes );
         }
@@ -1316,7 +1288,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         }
         break;
     case FML_ALIASES:
-        if( strcmp( name, SIMPLE_MAP_ENTRY_TAG ) == 0 )
+        if( strcmp( name, MAP_ENTRY_TAG ) == 0 )
         {
             onAlias( saxContext, saxAttributes );
         }
@@ -1371,11 +1343,6 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         {
             startEnsembleVariable( saxContext, saxAttributes );
             intStackPush( saxContext->state, FML_ENSEMBLE_VARIABLE );
-        }
-        else if( strcmp( name, CONTINUOUS_DEREFERENCE_TAG ) == 0 )
-        {
-            startContinuousDereference( saxContext, saxAttributes );
-            intStackPush( saxContext->state, FML_CONTINUOUS_DEREFERENCE );
         }
         break;
         //FALLTHROUGH
@@ -1441,13 +1408,6 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
     case FML_ALIASES:
         if( strcmp( name, ALIASES_TAG ) == 0 )
         {
-            intStackPop( saxContext->state );
-        }
-        break;
-    case FML_CONTINUOUS_DEREFERENCE:
-        if( strcmp( name, CONTINUOUS_DEREFERENCE_TAG ) == 0 )
-        {
-            endContinuousDereference( saxContext );
             intStackPop( saxContext->state );
         }
         break;

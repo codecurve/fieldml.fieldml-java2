@@ -36,11 +36,9 @@ extern const char * const ELEMENT_EVALUATORS_TAG;
 extern const char * const CONTINUOUS_AGGREGATE_TAG;
 extern const char * const SOURCE_FIELDS_TAG;
 
-extern const char * const CONTINUOUS_DEREFERENCE_TAG;
-
 extern const char * const MARKUP_TAG;
 
-extern const char * const SIMPLE_MAP_ENTRY_TAG;
+extern const char * const MAP_ENTRY_TAG;
 
 extern const char * const ENTRY_TAG;
 
@@ -61,6 +59,7 @@ extern const char * const COMPONENT_DOMAIN_ATTRIB;
 
 extern const char * const KEY_ATTRIB;
 extern const char * const VALUE_ATTRIB;
+extern const char * const DEFAULT_ATTRIB;
 
 extern const char * const VALUE_COUNT_ATTRIB;
 

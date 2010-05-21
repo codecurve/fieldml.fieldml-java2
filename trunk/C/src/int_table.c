@@ -7,6 +7,8 @@ static const int CAPACITY_INCREMENT = 32;
 
 struct _IntTable
 {
+    void *defaultValue;
+    
     int entries;
     int capacity;
 
@@ -108,7 +110,7 @@ void *getIntTableEntry( IntTable *table, int name )
 
     if( index < 0 )
     {
-        return NULL;
+        return table->defaultValue;
     }
 
     return table->data[index];
@@ -120,6 +122,10 @@ int getIntTableIntEntry( IntTable *table, int name )
     int *entry;
     
     entry = getIntTableEntry( table, name );
+    if( entry == NULL )
+    {
+        entry = table->defaultValue;
+    }
     if( entry != NULL )
     {
         return *entry;
@@ -190,4 +196,43 @@ int getIntTableEntryIntData( IntTable *table, int index )
     {
         return *data;
     }
+}
+
+
+void setIntTableDefault( IntTable *table, void *value, TABLE_DATA_DISCARD discard )
+{
+    if( table->defaultValue != NULL )
+    {
+        discard( table->defaultValue );
+    }
+    
+    table->defaultValue = value;
+}
+
+
+void setIntTableDefaultInt( IntTable *table, int value, TABLE_DATA_DISCARD discard )
+{
+    int *newValue;
+    
+    newValue = malloc( sizeof( int ) );
+    *newValue = value;
+    
+    setIntTableDefault( table, newValue, discard );
+}
+
+
+void *getIntTableDefault( IntTable *table )
+{
+    return table->defaultValue;
+}
+
+
+int getIntTableDefaultInt( IntTable *table )
+{
+    if( table->defaultValue == NULL )
+    {
+        return -1;
+    }
+    
+    return *((int*)table->defaultValue);
 }

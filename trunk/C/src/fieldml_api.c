@@ -895,58 +895,8 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlHandle handle, FmlObjectHandle object
     {
         return object->object.variable->valueDomain;
     }
-    else if( object->type == FHT_CONTINUOUS_DEREFERENCE )
-    {
-        return object->object.dereference->valueDomain;
-    }
 
     return FML_INVALID_HANDLE;
-}
-
-
-FmlObjectHandle Fieldml_CreateContinuousDereference( FmlHandle handle, const char * name, FmlObjectHandle indexes, FmlObjectHandle values, FmlObjectHandle valueDomain )
-{
-    FieldmlObject *object;
-
-    object = createContinuousDereference( name, FILE_REGION_HANDLE, indexes, values, valueDomain );
-    
-    return addFieldmlObject( handle, object );
-}
-
-
-FmlObjectHandle Fieldml_GetDereferenceIndexes( FmlHandle handle, FmlObjectHandle objectHandle )
-{
-    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-
-    if( object == NULL )
-    {
-        return FML_INVALID_HANDLE;
-    }
-
-    if( object->type != FHT_CONTINUOUS_DEREFERENCE )
-    {
-        return FML_INVALID_HANDLE;
-    }
-    
-    return object->object.dereference->valueIndexes;
-}
-
-
-FmlObjectHandle Fieldml_GetDereferenceSource( FmlHandle handle, FmlObjectHandle objectHandle )
-{
-    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-
-    if( object == NULL )
-    {
-        return FML_INVALID_HANDLE;
-    }
-
-    if( object->type != FHT_CONTINUOUS_DEREFERENCE )
-    {
-        return FML_INVALID_HANDLE;
-    }
-    
-    return object->object.dereference->valueSource;
 }
 
 
@@ -1473,6 +1423,26 @@ FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlHandle handle, const char 
 }
 
 
+int Fieldml_SetDefaultEvaluator(  FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle evaluator )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    IntTable *table = getEntryIntTable( object );
+    
+    if( object == NULL )
+    {
+        return FML_ERR_UNKNOWN_OBJECT;
+    }
+    if( ( object->type != FHT_CONTINUOUS_PIECEWISE ) || ( table == NULL ) )
+    {
+        return FML_ERR_INVALID_OBJECT;
+    }
+
+    setIntTableDefaultInt( table, evaluator, free );
+    
+    return FML_ERR_NO_ERROR;
+}
+
+
 int Fieldml_SetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int element, FmlObjectHandle evaluator )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
@@ -1532,6 +1502,20 @@ FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlHandle handle, FmlObjectHandle ob
     }
 
     return getIntTableEntryIntData( table, index - 1 );
+}
+
+
+FmlObjectHandle Fieldml_GetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    IntTable *table = getEntryIntTable( object );
+
+    if( table == NULL )
+    {
+        return FML_INVALID_HANDLE;
+    }
+
+    return getIntTableIntEntry( table, elementNumber );
 }
 
 
@@ -1808,6 +1792,20 @@ FmlObjectHandle Fieldml_CreateMeshDomain( FmlHandle handle, const char * name, F
     object = createMeshDomain( name, FILE_REGION_HANDLE, xiHandle, elementHandle );
 
     return addFieldmlObject( handle, object );
+}
+
+
+int Fieldml_SetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, const char * shape )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, mesh );
+
+    if( object->type == FHT_MESH_DOMAIN )
+    {
+        setIntTableDefault( object->object.meshDomain->shapes, strdup( shape ), free );
+        return FML_ERR_NO_ERROR;
+    }
+    
+    return FML_ERR_INVALID_OBJECT;
 }
 
 

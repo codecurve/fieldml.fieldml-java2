@@ -8,11 +8,13 @@ static const int CAPACITY_INCREMENT = 32;
 
 struct _StringTable
 {
+    void *defaultValue;
+    
     int entries;
     int capacity;
 
     char **names;
-    char **data;
+    void **data;
 };
 
 
@@ -70,10 +72,10 @@ void setStringTableEntry( StringTable *table, const char *name, void *data, TABL
     if( table->entries == table->capacity )
     {
         char **newNames = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( char * ) );
-        char **newData = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( void * ) );
+        void **newData = calloc( table->capacity + CAPACITY_INCREMENT, sizeof( void * ) );
 
         char **oldNames = table->names;
-        char **oldData = table->data;
+        void **oldData = table->data;
 
         memcpy( newNames, oldNames, table->capacity * sizeof( char * ) );
         memcpy( newData, oldData, table->capacity * sizeof( void * ) );
@@ -98,7 +100,7 @@ void *getStringTableEntry( StringTable *table, const char *name )
 
     if( index < 0 )
     {
-        return NULL;
+        return table->defaultValue;
     }
 
     return table->data[index];
@@ -152,4 +154,20 @@ void *getStringTableEntryData( StringTable *table, int index )
         return NULL;
     }
     return table->data[index];
+}
+
+
+void setStringTableDefault( StringTable *table, void *value, TABLE_DATA_DISCARD discard )
+{
+    if( table->defaultValue != NULL )
+    {
+        discard( table->defaultValue );
+    }
+    table->defaultValue = value;
+}
+
+
+void *getStringTableDefault( StringTable *table )
+{
+    return table->defaultValue;
 }

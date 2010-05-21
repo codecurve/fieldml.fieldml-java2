@@ -77,4 +77,12 @@ int getIntTableEntryIntData( IntTable *table, int index );
 */
 void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard );
 
+
+void setIntTableDefault( IntTable *table, void *value, TABLE_DATA_DISCARD discard );
+void setIntTableDefaultInt( IntTable *table, int value, TABLE_DATA_DISCARD discard );
+
+
+void *getIntTableDefault( IntTable *table );
+int getIntTableDefaultInt( IntTable *table );
+
 #endif // H_INT_TABLE
