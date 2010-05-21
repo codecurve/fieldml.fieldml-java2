@@ -8,7 +8,6 @@ import java.io.PrintStream;
 import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
-import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -164,8 +163,9 @@ public class QuadraticBSplineExample
         ContinuousVariableEvaluator dofs = new ContinuousVariableEvaluator( "test_mesh.dofs", rc1CoordinatesDomain, globalDofsDomain );
         testRegion.addEvaluator( dofs );
 
-        ContinuousDereferenceEvaluator meshQuadraticBsplineParams = new ContinuousDereferenceEvaluator(
-            "test_mesh.element.quadratic_bspline.params", libraryQuadraticBsplineParams, elementDofIndexes, dofs );
+        ImportedContinuousEvaluator meshQuadraticBsplineParams = testRegion.importContinuousEvaluator( "test_mesh.element.quadratic_bspline.params",
+            "test_mesh.dofs" );
+        meshQuadraticBsplineParams.alias( elementDofIndexes, globalDofsDomain );
         testRegion.addEvaluator( meshQuadraticBsplineParams );
 
         ImportedContinuousEvaluator elementBSpline = library.importContinuousEvaluator( "test_mesh.quadratic_bspline",

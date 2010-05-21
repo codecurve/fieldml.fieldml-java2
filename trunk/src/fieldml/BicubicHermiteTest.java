@@ -7,7 +7,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -120,8 +119,9 @@ public class BicubicHermiteTest
 
         ContinuousDomain libraryBilinearLagrangeParams = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
 
-        ContinuousDereferenceEvaluator meshBilinearLagrangeParams = new ContinuousDereferenceEvaluator(
-            "test_mesh.element.bilinear_lagrange.params", libraryBilinearLagrangeParams, quadNodeList, nodalUDofs );
+        ImportedContinuousEvaluator meshBilinearLagrangeParams = testRegion.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange.params",
+            "test_mesh.node.dofs.u" );
+        meshBilinearLagrangeParams.alias( quadNodeList, globalNodesDomain );
         testRegion.addEvaluator( meshBilinearLagrangeParams );
 
         ImportedContinuousEvaluator elementBilinear = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange",

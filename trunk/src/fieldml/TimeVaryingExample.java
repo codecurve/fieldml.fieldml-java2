@@ -7,7 +7,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -145,10 +144,10 @@ public class TimeVaryingExample
 
         ContinuousDomain quadraticLagrangeParams = library.getContinuousDomain( "library.parameters.quadratic_lagrange" );
 
-        ContinuousDereferenceEvaluator meshQuadraticLagrangeParams = new ContinuousDereferenceEvaluator( "tv_test.mesh.element.quadratic_lagrange.params",
-            quadraticLagrangeParams, elementDofIndexes, tvMeshDofs );
+        ImportedContinuousEvaluator meshQuadraticLagrangeParams = tvRegion.importContinuousEvaluator( "tv_test.mesh.element.quadratic_lagrange.params", "tv_test.mesh.dofs" );
+        meshQuadraticLagrangeParams.alias( elementDofIndexes, timeDofsDomain );
         tvRegion.addEvaluator( meshQuadraticLagrangeParams );
-
+        
         ImportedContinuousEvaluator elementQLagrange = library.importContinuousEvaluator( "tv_test.mesh.quadratic_lagrange", "library.fem.quadratic_lagrange" );
         elementQLagrange.alias( timeMeshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.1d" ) );
         elementQLagrange.alias( meshQuadraticLagrangeParams, quadraticLagrangeParams );
@@ -267,8 +266,8 @@ public class TimeVaryingExample
 
         ContinuousDomain linearLagrangeParams = library.getContinuousDomain( "library.parameters.linear_lagrange" );
 
-        ContinuousDereferenceEvaluator meshLinearLagrangeParams = new ContinuousDereferenceEvaluator( "test_mesh.element.linear_lagrange.params",
-            linearLagrangeParams, lineNodeList, linearDofs );
+        ImportedContinuousEvaluator meshLinearLagrangeParams = testRegion.importContinuousEvaluator( "test_mesh.element.linear_lagrange.params", "test_mesh.linear.dofs" );
+        meshLinearLagrangeParams.alias( lineNodeList, globalNodesDomain );
         testRegion.addEvaluator( meshLinearLagrangeParams );
 
         ImportedContinuousEvaluator elementLLagrange = library.importContinuousEvaluator( "test_mesh.linear_lagrange", "library.fem.linear_lagrange" );

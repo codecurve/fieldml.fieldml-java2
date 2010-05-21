@@ -4,7 +4,6 @@ import fieldml.domain.ContinuousDomain;
 import fieldml.domain.EnsembleDomain;
 import fieldml.domain.MeshDomain;
 import fieldml.evaluator.ContinuousAggregateEvaluator;
-import fieldml.evaluator.ContinuousDereferenceEvaluator;
 import fieldml.evaluator.ContinuousParameters;
 import fieldml.evaluator.ContinuousPiecewiseEvaluator;
 import fieldml.evaluator.ContinuousVariableEvaluator;
@@ -188,10 +187,10 @@ public class HangingNodeTest
         
         ContinuousDomain bilinearLagrangeParameters = library.getContinuousDomain( "library.parameters.bilinear_lagrange" );
         
-        ContinuousDereferenceEvaluator lagrangeParameters = new ContinuousDereferenceEvaluator( "test_mesh.element.bilinear_lagrange.parameters",
-            bilinearLagrangeParameters, quadNodeList, localDofs );
+        ImportedContinuousEvaluator lagrangeParameters = testRegion.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange.parameters", "test_mesh.local_dofs_map" );
+        lagrangeParameters.alias( quadNodeList, localDofsDomain );
         testRegion.addEvaluator( lagrangeParameters );
-
+        
         ImportedContinuousEvaluator elementBilinearLagrange = library.importContinuousEvaluator( "test_mesh.element.bilinear_lagrange", "library.fem.bilinear_lagrange" );
         elementBilinearLagrange.alias( meshDomain.getXiDomain(), library.getContinuousDomain( "library.xi.2d" ) );
         elementBilinearLagrange.alias( lagrangeParameters, bilinearLagrangeParameters );
