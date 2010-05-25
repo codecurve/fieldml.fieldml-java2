@@ -121,6 +121,8 @@ FmlHandle Fieldml_CreateFromFile( const char *filename );
 
 FmlHandle Fieldml_Create();
 
+int Fieldml_SetDebug( FmlHandle handle, int debug );
+
 int Fieldml_GetLastError( FmlHandle handle );
 
 
@@ -246,7 +248,7 @@ FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlHandle handle, FmlObjectHa
 FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlHandle handle, FmlObjectHandle objectHandle, int connectivityIndex );
 
 
-int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObjectHandle pointDomain, FmlObjectHandle evaluator );
+int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObjectHandle evaluator, FmlObjectHandle pointDomain );
 
 /*
     Returns the bounds-type of the given domain.

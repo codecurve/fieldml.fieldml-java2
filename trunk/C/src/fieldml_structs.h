@@ -170,6 +170,8 @@ typedef struct _FieldmlRegion
 {
     int lastError;
     
+    int debug;
+    
     const char *name;
     
     SimpleList *errors;
@@ -181,7 +183,7 @@ FieldmlRegion;
 
 void logError( FieldmlRegion *region, const char *error, const char *name1, const char *name2 );
 
-int setErrorX( const char *file, const int line, FieldmlRegion *region, int error );
+int setErrorDirect( const char *file, const int line, FieldmlRegion *region, int error );
 
 int getError( FieldmlRegion *region );
 
@@ -215,6 +217,6 @@ FieldmlObject *createContinuousAggregate( const char *name, int region, FmlObjec
 
 SemidenseData *createSemidenseData();
 
-#define setError( x, y ) setErrorX( __FILE__, __LINE__, x, y )
+#define setError( x, y ) setErrorDirect( __FILE__, __LINE__, x, y )
 
 #endif //H_FIELDML_STRUCTS

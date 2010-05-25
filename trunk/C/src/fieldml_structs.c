@@ -495,13 +495,16 @@ static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char
 }
 
 
-int setErrorX( const char *file, const int line, FieldmlRegion *region, int error )
+int setErrorDirect( const char *file, const int line, FieldmlRegion *region, int error )
 {
     region->lastError = error;
 
     if( error != FML_ERR_NO_ERROR )
     {
-        printf("Error: %s:%d - %d\n", file, line, error );
+        if( region->debug )
+        {
+            printf("FIELDML %s (%s): Error %d at %s:%d\n", FML_VERSION_STRING, __DATE__, error, file, line );
+        }
     }
     
     return error;

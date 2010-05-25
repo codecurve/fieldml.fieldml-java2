@@ -1,6 +1,8 @@
 #ifndef H_STRING_CONST
 #define H_STRING_CONST
 
+extern const char * const FML_VERSION_STRING;
+
 extern const char * const FIELDML_TAG;
 
 extern const char * const REGION_TAG;

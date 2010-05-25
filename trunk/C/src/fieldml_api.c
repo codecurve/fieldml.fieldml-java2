@@ -498,6 +498,14 @@ FmlHandle Fieldml_Create()
 }
 
 
+int Fieldml_SetDebug( FmlHandle handle, int debug )
+{
+    handle->debug = debug;
+    
+    return setError( handle, FML_ERR_NO_ERROR );
+}
+
+
 int Fieldml_WriteFile( FmlHandle handle, const char *filename )
 {
     return writeFieldmlFile( handle, filename );
@@ -921,7 +929,7 @@ FmlObjectHandle Fieldml_GetMeshConnectivityDomain( FmlHandle handle, FmlObjectHa
     if( object->type == FHT_MESH_DOMAIN ) 
     {
         setError( handle, FML_ERR_NO_ERROR );  
-        return getIntTableEntryName( object->object.meshDomain->connectivity, index - 1 );
+        return getIntTableEntryIntData( object->object.meshDomain->connectivity, index - 1 );
     }
 
     setError( handle, FML_ERR_INVALID_OBJECT );
@@ -941,7 +949,7 @@ FmlObjectHandle Fieldml_GetMeshConnectivitySource( FmlHandle handle, FmlObjectHa
     if( object->type == FHT_MESH_DOMAIN ) 
     {
         setError( handle, FML_ERR_NO_ERROR );  
-        return getIntTableEntryIntData( object->object.meshDomain->connectivity, index - 1 );
+        return getIntTableEntryName( object->object.meshDomain->connectivity, index - 1 );
     }
 
     setError( handle, FML_ERR_INVALID_OBJECT );
@@ -2261,7 +2269,7 @@ int Fieldml_SetMeshElementShape( FmlHandle handle, FmlObjectHandle mesh, int ele
 }
 
 
-int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObjectHandle pointDomain, FmlObjectHandle evaluator )
+int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObjectHandle evaluator, FmlObjectHandle pointDomain )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, mesh );
 
@@ -2270,7 +2278,7 @@ int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObje
         return setError( handle, FML_ERR_UNKNOWN_OBJECT );
     }
 
-    if( pointDomain == FML_INVALID_HANDLE )
+    if( ( pointDomain == FML_INVALID_HANDLE ) || ( evaluator == FML_INVALID_HANDLE ) )
     {
         // This could be use to 'un-set' a connectivity.
         return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
@@ -2283,7 +2291,7 @@ int Fieldml_SetMeshConnectivity( FmlHandle handle, FmlObjectHandle mesh, FmlObje
     
     if( object->type == FHT_MESH_DOMAIN )
     {
-        setIntTableIntEntry( object->object.meshDomain->connectivity, pointDomain, evaluator );
+        setIntTableIntEntry( object->object.meshDomain->connectivity, evaluator, pointDomain );
         return setError( handle, FML_ERR_NO_ERROR );
     }
     

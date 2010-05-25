@@ -1,3 +1,5 @@
+const char * const FML_VERSION_STRING               = "0.2_alpha";
+
 const char * const FIELDML_TAG                      = "fieldml";
 
 const char * const REGION_TAG                       = "Region";

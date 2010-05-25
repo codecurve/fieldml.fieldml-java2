@@ -87,6 +87,8 @@ void testRead( const char * filename )
     const int *swizzle;
 
     handle = Fieldml_CreateFromFile( filename );
+    
+    Fieldml_SetDebug( handle, 1 );
 
     count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_DOMAIN );
     fprintf( stdout, "ContinuousDomains: %d\n", count ); 
@@ -348,6 +350,8 @@ int testWrite( const char *filename )
 
     handle = Fieldml_CreateFromFile( filename );
     
+    Fieldml_SetDebug( handle, 1 );
+
     outputFilename = calloc( 1, strlen( filename ) + 10 );
     strcpy( outputFilename, filename );
     strcat( outputFilename, "_out.xml" );
