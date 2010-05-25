@@ -92,7 +92,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousDomains: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_DOMAIN, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_DOMAIN, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetDomainComponentEnsemble( handle, oHandle ) ) );
@@ -102,7 +102,7 @@ void testRead( const char * filename )
     fprintf( stdout, "EnsembleDomains: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_ENSEMBLE_DOMAIN, i );
+        oHandle = Fieldml_GetObject( handle, FHT_ENSEMBLE_DOMAIN, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetDomainComponentEnsemble( handle, oHandle ) ) );
@@ -118,7 +118,7 @@ void testRead( const char * filename )
     fprintf( stdout, "MeshDomains: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_MESH_DOMAIN, i );
+        oHandle = Fieldml_GetObject( handle, FHT_MESH_DOMAIN, i );
         
         fprintf( stdout, "  %d: %s (%s, %s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetMeshElementDomain( handle, oHandle ) ),
@@ -147,7 +147,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousParameters: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_PARAMETERS, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_PARAMETERS, i );
         
         fprintf( stdout, "  %d: %d %s (%s)\n", i, Fieldml_GetParameterDataDescription( handle, oHandle ),
             Fieldml_GetObjectName( handle, oHandle ),
@@ -180,7 +180,7 @@ void testRead( const char * filename )
     fprintf( stdout, "EnsembleParameters: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_ENSEMBLE_PARAMETERS, i );
+        oHandle = Fieldml_GetObject( handle, FHT_ENSEMBLE_PARAMETERS, i );
         
         fprintf( stdout, "  %d: %d %s (%s)\n", i, Fieldml_GetParameterDataDescription( handle, oHandle ),
             Fieldml_GetObjectName( handle, oHandle ),
@@ -213,7 +213,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousImports: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_IMPORT, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_IMPORT, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
@@ -223,8 +223,8 @@ void testRead( const char * filename )
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "    %s  -->  %s\n",
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocal( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemote( handle, oHandle, j ) ) ); 
         }
     }
 
@@ -232,7 +232,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousPiecewise: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_PIECEWISE, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_PIECEWISE, i );
         
         fprintf( stdout, "  %d: %s over %s (%s)\n", i,
             Fieldml_GetObjectName( handle, oHandle ),
@@ -243,15 +243,15 @@ void testRead( const char * filename )
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "    %s  -->  %s\n",
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocal( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemote( handle, oHandle, j ) ) ); 
         }
 
         count2 = Fieldml_GetEvaluatorCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "   entry %d: %d -> %s\n", j, Fieldml_GetEvaluatorElement( handle, oHandle, j ),
-                Fieldml_GetObjectName( handle, Fieldml_GetEvaluatorHandle( handle, oHandle, j ) ) );
+                Fieldml_GetObjectName( handle, Fieldml_GetEvaluator( handle, oHandle, j ) ) );
         }
     }
 
@@ -259,7 +259,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousAggregate: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_AGGREGATE, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_AGGREGATE, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
@@ -268,15 +268,15 @@ void testRead( const char * filename )
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "    %s  -->  %s\n",
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocalHandle( handle, oHandle, j ) ),
-                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemoteHandle( handle, oHandle, j ) ) ); 
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasLocal( handle, oHandle, j ) ),
+                Fieldml_GetObjectName( handle, Fieldml_GetAliasRemote( handle, oHandle, j ) ) ); 
         }
 
         count2 = Fieldml_GetEvaluatorCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )
         {
             fprintf( stdout, "   entry %d: %d -> %s\n", j, Fieldml_GetEvaluatorElement( handle, oHandle, j ),
-                Fieldml_GetObjectName( handle, Fieldml_GetEvaluatorHandle( handle, oHandle, j ) ) );
+                Fieldml_GetObjectName( handle, Fieldml_GetEvaluator( handle, oHandle, j ) ) );
         }
     }
 
@@ -284,7 +284,7 @@ void testRead( const char * filename )
     fprintf( stdout, "ContinuousVariable: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_CONTINUOUS_VARIABLE, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_VARIABLE, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
@@ -294,7 +294,7 @@ void testRead( const char * filename )
     fprintf( stdout, "EnsembleVariable: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_ENSEMBLE_VARIABLE, i );
+        oHandle = Fieldml_GetObject( handle, FHT_ENSEMBLE_VARIABLE, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
@@ -304,7 +304,7 @@ void testRead( const char * filename )
     fprintf( stdout, "External ensemble domain: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_REMOTE_ENSEMBLE_DOMAIN, i );
+        oHandle = Fieldml_GetObject( handle, FHT_REMOTE_ENSEMBLE_DOMAIN, i );
         
         fprintf( stdout, "  %d: %s\n", i, Fieldml_GetObjectName( handle, oHandle ) );
     }
@@ -313,7 +313,7 @@ void testRead( const char * filename )
     fprintf( stdout, "External continuous domain: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObjectHandle( handle, FHT_REMOTE_CONTINUOUS_DOMAIN, i );
+        oHandle = Fieldml_GetObject( handle, FHT_REMOTE_CONTINUOUS_DOMAIN, i );
         
         fprintf( stdout, "  %d: %s\n", i, Fieldml_GetObjectName( handle, oHandle ) );
     }

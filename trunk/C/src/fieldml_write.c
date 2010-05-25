@@ -54,14 +54,21 @@ static void writeListEntry( xmlTextWriterPtr writer, const char *value )
 static void writeStringTable( xmlTextWriterPtr writer, const char *name, StringTable *table )
 {
     int i, count;
+    void *defaultValue;
     
     count = getStringTableCount( table );
-    if( count == 0 )
+    if( ( count == 0 ) && ( getStringTableDefault( table ) == NULL ) )
     {
         return;
     }
 
     xmlTextWriterStartElement( writer, name );
+    
+    defaultValue = getStringTableDefault( table );
+    if( defaultValue != NULL )
+    {
+        xmlTextWriterWriteFormatAttribute( writer, DEFAULT_ATTRIB, "%s", defaultValue );
+    }
     
     for( i = 0; i < count; i++ )
     {
@@ -84,14 +91,20 @@ static void writeIntTableEntry( xmlTextWriterPtr writer, int key, const char *va
 static void writeIntTable( xmlTextWriterPtr writer, const char *name, IntTable *table )
 {
     int i, count;
+    void *defaultValue;
     
     count = getIntTableCount( table );
-    if( count == 0 )
+    if( ( count == 0 ) && ( getIntTableDefault( table ) == NULL ) )
     {
         return;
     }
 
     xmlTextWriterStartElement( writer, name );
+    defaultValue = getIntTableDefault( table );
+    if( defaultValue != NULL )
+    {
+        xmlTextWriterWriteFormatAttribute( writer, DEFAULT_ATTRIB, "%s", defaultValue );
+    }
     
     for( i = 0; i < count; i++ )
     {
@@ -107,12 +120,17 @@ static void writeObjectObjectTable( xmlTextWriterPtr writer, FieldmlRegion *regi
     int i, count, objectHandle;
     
     count = getIntTableCount( table );
-    if( count == 0 )
+    if( ( count == 0 ) && ( getIntTableDefault( table ) == NULL ) )
     {
         return;
     }
 
     xmlTextWriterStartElement( writer, name );
+    objectHandle = getIntTableDefaultInt( table );
+    if( objectHandle != FML_INVALID_HANDLE )
+    {
+        xmlTextWriterWriteFormatAttribute( writer, DEFAULT_ATTRIB, "%s", Fieldml_GetObjectName( region, objectHandle ) );
+    }
 
     for( i = 0; i < count; i++ )
     {
@@ -137,12 +155,17 @@ static void writeIntObjectTable( xmlTextWriterPtr writer, FieldmlRegion *region,
     int i, count, objectHandle;
     
     count = getIntTableCount( table );
-    if( count == 0 )
+    if( ( count == 0 ) && ( getIntTableDefault( table ) == NULL ) )
     {
         return;
     }
 
     xmlTextWriterStartElement( writer, name );
+    objectHandle = getIntTableDefaultInt( table );
+    if( objectHandle != FML_INVALID_HANDLE )
+    {
+        xmlTextWriterWriteFormatAttribute( writer, DEFAULT_ATTRIB, "%s", Fieldml_GetObjectName( region, objectHandle ) );
+    }
 
     for( i = 0; i < count; i++ )
     {

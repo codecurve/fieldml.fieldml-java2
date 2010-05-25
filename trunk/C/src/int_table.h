@@ -40,7 +40,7 @@ IntTable *createIntTable();
     NOTE: Both name and data can be NULL.
 */
 void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD discard );
-void setIntTableIntEntry( IntTable *table, int name, int data, TABLE_DATA_DISCARD discard );
+void setIntTableIntEntry( IntTable *table, int name, int data );
 
 /*
     Returns the entry with the given name, or NULL if there is no such entry.
@@ -79,7 +79,7 @@ void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard );
 
 
 void setIntTableDefault( IntTable *table, void *value, TABLE_DATA_DISCARD discard );
-void setIntTableDefaultInt( IntTable *table, int value, TABLE_DATA_DISCARD discard );
+void setIntTableDefaultInt( IntTable *table, int value );
 
 
 void *getIntTableDefault( IntTable *table );
