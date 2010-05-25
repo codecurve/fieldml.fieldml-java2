@@ -16,12 +16,27 @@
 
 #define FML_INVALID_HANDLE -1
 
-#define FML_ERR_NO_ERROR            0
-#define FML_ERR_UNKNOWN_OBJECT      1001
-#define FML_ERR_INCOMPLETE_OBJECT   1002
-#define FML_ERR_INVALID_OBJECT      1003
-#define FML_ERR_ACCESS_VIOLATION    1004
-#define FML_ERR_FILE_READ_ERROR     1005
+#define FML_ERR_NO_ERROR                0
+#define FML_ERR_UNKNOWN_OBJECT          1001
+#define FML_ERR_INVALID_OBJECT          1002
+#define FML_ERR_INCOMPLETE_OBJECT       1003
+#define FML_ERR_MISCONFIGURED_OBJECT    1004
+#define FML_ERR_ACCESS_VIOLATION        1005
+#define FML_ERR_FILE_READ               1006
+#define FML_ERR_FILE_WRITE              1007
+
+//Used for giving the user precise feedback on bad parameters passed to the API
+//Only used for parameters other than the FieldML handle and object handle parameters.
+#define FML_ERR_INVALID_PARAMETER_1     1101
+#define FML_ERR_INVALID_PARAMETER_2     1102
+#define FML_ERR_INVALID_PARAMETER_3     1103
+#define FML_ERR_INVALID_PARAMETER_4     1104
+#define FML_ERR_INVALID_PARAMETER_5     1105
+#define FML_ERR_INVALID_PARAMETER_6     1106
+#define FML_ERR_INVALID_PARAMETER_7     1107
+#define FML_ERR_INVALID_PARAMETER_8     1108
+
+#define FML_ERR_UNSUPPORTED             2000  //Used for operations that are valid, but not yet implemented.
 
 
 typedef enum _DomainBoundsType
@@ -78,7 +93,7 @@ typedef enum _FieldmlHandleType
     FHT_REMOTE_ENSEMBLE_EVALUATOR,
     FHT_REMOTE_CONTINUOUS_EVALUATOR,
     
-    //These four are stand-in types used to allow forward-declaration during parsing.
+    //These are stand-in types used to allow forward-declaration during parsing.
     FHT_UNKNOWN_ENSEMBLE_DOMAIN,
     FHT_UNKNOWN_CONTINUOUS_DOMAIN,
     FHT_UNKNOWN_ENSEMBLE_EVALUATOR,
@@ -106,6 +121,8 @@ FmlHandle Fieldml_CreateFromFile( const char *filename );
 
 FmlHandle Fieldml_Create();
 
+int Fieldml_GetLastError( FmlHandle handle );
+
 
 int Fieldml_WriteFile( FmlHandle handle, const char *filename );
 
@@ -119,7 +136,7 @@ void Fieldml_Destroy( FmlHandle handle );
 
 
 /*
-     Returns the number of errors encountered by the given handle.
+     Returns the number of errors encountered during parsing by the given handle.
  */
 int Fieldml_GetErrorCount( FmlHandle handle );
 
@@ -140,13 +157,13 @@ int Fieldml_GetObjectCount( FmlHandle handle, FieldmlHandleType type );
 /*
      Returns a handle to the nth object of the given type.
  */
-FmlObjectHandle Fieldml_GetObjectHandle( FmlHandle handle, FieldmlHandleType type, int objectIndex );
+FmlObjectHandle Fieldml_GetObject( FmlHandle handle, FieldmlHandleType type, int objectIndex );
 
 
 FieldmlHandleType Fieldml_GetObjectType( FmlHandle handle, FmlObjectHandle object );
 
 
-FmlObjectHandle Fieldml_GetNamedObjectHandle( FmlHandle handle, const char * name );
+FmlObjectHandle Fieldml_GetNamedObject( FmlHandle handle, const char * name );
 
 /*
      Returns the number of markup entries (attribute/value pairs) for the given object.
@@ -333,6 +350,8 @@ FmlObjectHandle Fieldml_CreateContinuousPiecewise( FmlHandle handle, const char 
 FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlHandle handle, const char * name, FmlObjectHandle valueDomain );
 
 
+int Fieldml_SetDefaultEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle evaluator );
+
 int Fieldml_SetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int element, FmlObjectHandle evaluator );
 
 /*
@@ -353,7 +372,9 @@ int Fieldml_GetEvaluatorElement( FmlHandle handle, FmlObjectHandle objectHandle,
     Returns the evaluator handle for the nth element->evaluator delegation in
     the given piecewise/aggregate evaluator.
  */
-FmlObjectHandle Fieldml_GetEvaluatorHandle( FmlHandle handle, FmlObjectHandle objectHandle, int evaluatorIndex );
+FmlObjectHandle Fieldml_GetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int evaluatorIndex );
+
+FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber );
 
 
 FmlObjectHandle Fieldml_CreateContinuousImport( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain );
@@ -370,13 +391,13 @@ int Fieldml_GetAliasCount( FmlHandle handle, FmlObjectHandle objectHandle );
 /*
     Returns the local domain/evaulator used by the nth alias of the given evaluator. 
  */
-FmlObjectHandle Fieldml_GetAliasLocalHandle( FmlHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
+FmlObjectHandle Fieldml_GetAliasLocal( FmlHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
 
 
 /*
     Returns the remote domain used by the nth alias of the given evaluator. 
  */
-FmlObjectHandle Fieldml_GetAliasRemoteHandle( FmlHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
+FmlObjectHandle Fieldml_GetAliasRemote( FmlHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
 
 int Fieldml_SetAlias( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource );
 

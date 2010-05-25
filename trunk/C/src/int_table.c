@@ -44,14 +44,14 @@ static int getIntTableEntryIndex( IntTable *table, int name )
 }
 
 
-void setIntTableIntEntry( IntTable *table, int name, int data, TABLE_DATA_DISCARD discard )
+void setIntTableIntEntry( IntTable *table, int name, int data )
 {
     int *entry;
     
     entry = malloc( sizeof( int ) );
     *entry = data;
     
-    setIntTableEntry( table, name, entry, discard );
+    setIntTableEntry( table, name, entry, free );
 }
 
 
@@ -210,14 +210,14 @@ void setIntTableDefault( IntTable *table, void *value, TABLE_DATA_DISCARD discar
 }
 
 
-void setIntTableDefaultInt( IntTable *table, int value, TABLE_DATA_DISCARD discard )
+void setIntTableDefaultInt( IntTable *table, int value )
 {
     int *newValue;
     
     newValue = malloc( sizeof( int ) );
     *newValue = value;
     
-    setIntTableDefault( table, newValue, discard );
+    setIntTableDefault( table, newValue, free );
 }
 
 

@@ -207,7 +207,7 @@ int FmlInputStreamSkipLine( FmlInputStream stream )
         {
             if( !loadBuffer( stream ) )
             {
-                return FML_ERR_FILE_READ_ERROR;
+                return FML_ERR_FILE_READ;
             }
         }
         

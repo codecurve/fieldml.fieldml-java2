@@ -75,6 +75,8 @@ def writeHeader():
   print "  IMPLICIT NONE"
   print ""
 
+def writeFooter():
+  print "END MODULE FIELDML_API"
 
 def processFunction( line ):
   #Don't need to process functions returning char* or int*, those aren't usable by Fortran.
@@ -260,5 +262,7 @@ def processFile():
   for e in ParseState.enums:
     expose( e )
   expose( ParseState.defines )
+
+  writeFooter()
 
 processFile()

@@ -60,6 +60,7 @@ FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHan
     EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
     domain->boundsType = BOUNDS_UNKNOWN;
     domain->componentDomain = FML_INVALID_HANDLE;
+    //TODO Support (or remove) multi-component ensemble domains.
 
     object->object.ensembleDomain = domain;
 
@@ -225,10 +226,34 @@ static FmlObjectHandle addContinuousDomain( FieldmlRegion *region, int regionHan
 }
 
 
+static FmlObjectHandle addEvaluator( FieldmlRegion *region, int regionHandle, const char *name, FmlObjectHandle domainHandle )
+{
+    FieldmlObject *object;
+    int handle;
+    int type;
+    
+    type = Fieldml_GetObjectType( region, domainHandle );
+    
+    if( type == FHT_ENSEMBLE_DOMAIN )
+    {
+        object = createFieldmlObject( name, FHT_REMOTE_ENSEMBLE_EVALUATOR, regionHandle );
+    }
+    else if( type == FHT_CONTINUOUS_DOMAIN )
+    {
+        object = createFieldmlObject( name, FHT_REMOTE_CONTINUOUS_EVALUATOR, regionHandle );
+    }
+
+    handle = addFieldmlObject( region, object );
+    setRegionHandle( region, handle, regionHandle );
+    
+    return handle;
+}
+
+
 static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char *attribute, const char *value );
 
 
-void addLibraryDomains( FieldmlRegion *region )
+static void addLibraryDomains( FieldmlRegion *region )
 {
     FmlObjectHandle handle;
 
@@ -253,9 +278,9 @@ void addLibraryDomains( FieldmlRegion *region )
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.quadratic_lagrange", handle ); 
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.2x2", 4 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.2x2", 4 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle ); 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.quad.3x3", 9 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.3x3", 9 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.biquadratic_lagrange", handle ); 
 
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8 );
@@ -277,6 +302,26 @@ void addLibraryDomains( FieldmlRegion *region )
 }
 
 
+static void addLibraryEvaluators( FieldmlRegion *region )
+{
+    FmlObjectHandle domainHandle;
+    
+    domainHandle = Fieldml_GetNamedObject( region, "library.real.1d" );
+    
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.linear_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.bilinear_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.trilinear_lagrange", domainHandle );
+
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.quadratic_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.biquadratic_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.triquadratic_lagrange", domainHandle );
+
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.cubic_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.bicubic_lagrange", domainHandle );
+    addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.tricubic_lagrange", domainHandle );
+}
+
+
 FieldmlRegion *createFieldmlRegion( const char *name )
 {
     FieldmlRegion *region = calloc( 1, sizeof( FieldmlRegion ) );
@@ -286,6 +331,8 @@ FieldmlRegion *createFieldmlRegion( const char *name )
     region->errors = createSimpleList();
     
     addLibraryDomains( region );
+    
+    addLibraryEvaluators( region );
     
     return region;
 }
@@ -448,7 +495,26 @@ static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char
 }
 
 
-void addError( FieldmlRegion *region, const char *error, const char *name1, const char *name2 )
+int setErrorX( const char *file, const int line, FieldmlRegion *region, int error )
+{
+    region->lastError = error;
+
+    if( error != FML_ERR_NO_ERROR )
+    {
+        printf("Error: %s:%d - %d\n", file, line, error );
+    }
+    
+    return error;
+}
+
+
+int getError( FieldmlRegion *region )
+{
+    return region->lastError;
+}
+
+
+void logError( FieldmlRegion *region, const char *error, const char *name1, const char *name2 )
 {
     char *string;
     int len;
@@ -490,7 +556,7 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
 {
     int doSwitch;
     FieldmlObject *oldObject;
-    FmlObjectHandle handle = Fieldml_GetNamedObjectHandle( region, object->name );
+    FmlObjectHandle handle = Fieldml_GetNamedObject( region, object->name );
     
     if( handle == FML_INVALID_HANDLE )
     {
@@ -553,7 +619,7 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
         return handle;
     }
     
-    addError( region, "Handle collision. Cannot replace", object->name, oldObject->name );
+    logError( region, "Handle collision. Cannot replace", object->name, oldObject->name );
     fprintf( stderr, "Handle collision. Cannot replace %s:%d with %s:%d\n", object->name, object->type, oldObject->name, oldObject->type );
     destroyFieldmlObject( object );
     
