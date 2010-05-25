@@ -449,8 +449,8 @@ static void onMeshShape( SaxContext *context, SaxAttributes *attributes )
 
 static void onMeshConnectivity( SaxContext *context, SaxAttributes *attributes )
 {
-    const char *type = getAttribute( attributes, KEY_ATTRIB );
-    const char *field = getAttribute( attributes, VALUE_ATTRIB );
+    const char *field = getAttribute( attributes, KEY_ATTRIB );
+    const char *type = getAttribute( attributes, VALUE_ATTRIB );
     FmlObjectHandle fieldHandle, domainHandle;
 
     if( ( type == NULL ) || ( field == NULL ) )
@@ -460,10 +460,10 @@ static void onMeshConnectivity( SaxContext *context, SaxAttributes *attributes )
         return;
     }
     
-    domainHandle = getOrCreateObjectHandle( context->region, type, FHT_UNKNOWN_ENSEMBLE_SOURCE );
+    domainHandle = getOrCreateObjectHandle( context->region, type, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     fieldHandle = getOrCreateObjectHandle( context->region, field, FHT_UNKNOWN_ENSEMBLE_SOURCE );
     
-    Fieldml_SetMeshConnectivity( context->region, context->currentObject, domainHandle, fieldHandle );
+    Fieldml_SetMeshConnectivity( context->region, context->currentObject, fieldHandle, domainHandle );
 }
 
 
