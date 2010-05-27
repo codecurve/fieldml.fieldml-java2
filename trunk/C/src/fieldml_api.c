@@ -2068,7 +2068,7 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlHandle handle, FmlObjectHandle object
             }
 
             index -= count;
-            count = intStackGetCount( object->object.parameters->dataDescription.semidense->sparseIndexes );
+            count = intStackGetCount( object->object.parameters->dataDescription.semidense->denseIndexes );
 
             if( index <= count )
             {
@@ -2078,9 +2078,10 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlHandle handle, FmlObjectHandle object
             
             setError( handle, FML_ERR_INVALID_PARAMETER_3 );
         }
-        
-        setError( handle, FML_ERR_UNSUPPORTED );
-        return FML_INVALID_HANDLE;
+        else
+        {
+            setError( handle, FML_ERR_UNSUPPORTED );
+        }
     }
     
     setError( handle, FML_ERR_INVALID_OBJECT );
