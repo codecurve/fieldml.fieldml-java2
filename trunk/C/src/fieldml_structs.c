@@ -257,9 +257,14 @@ static void addLibraryDomains( FieldmlRegion *region )
 {
     FmlObjectHandle handle;
 
-    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.1d", FML_INVALID_HANDLE );
-    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.2d", FML_INVALID_HANDLE );
-    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.3d", FML_INVALID_HANDLE );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.1d", 1 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.1d", handle );
+
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.2d", 2 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.2d", handle );
+
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.3d", 3 );
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.3d", handle );
     
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.1d", 1 );
     handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.1d", handle );
