@@ -1,3 +1,5 @@
+import datetime
+
 class ParseState:
   InHeader, InStartEnum, InEnums, InEndEnum = range(4)
   enumCounter = 0
@@ -35,7 +37,7 @@ def declareFunction( name, types, names ):
 
   print line
   print "      & BIND(C,NAME=\""+ name + "\")"
-  print "      USE TYPES"
+#  print "      USE TYPES"
   print "      USE ISO_C_BINDING"
 
   for i, p in enumerate( types ):
@@ -68,6 +70,9 @@ def declareConstant( name, value ):
 
 
 def writeHeader():
+  now = datetime.datetime.now()
+
+  print "!This file was automatically generated from fieldml_api.h on " + now.strftime("%Y-%m-%d %H:%M")
   print "MODULE FIELDML_API"
   print ""
   print "  USE ISO_C_BINDING"
