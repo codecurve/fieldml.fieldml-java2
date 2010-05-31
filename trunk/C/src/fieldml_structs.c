@@ -658,6 +658,25 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
             doSwitch = 1;
         }
     }
+    else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_EVALUATOR )
+    {
+        if( ( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
+            ( object->type == FHT_CONTINUOUS_IMPORT ) ||
+            ( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
+            ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
+            ( object->type == FHT_CONTINUOUS_VARIABLE ) )
+        {
+            doSwitch = 1;
+        }
+    }
+    else if( oldObject->type == FHT_UNKNOWN_ENSEMBLE_EVALUATOR )
+    {
+        if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) ||
+            ( object->type == FHT_ENSEMBLE_VARIABLE ) )
+        {
+            doSwitch = 1;
+        }
+    }
     
     if( doSwitch )
     {

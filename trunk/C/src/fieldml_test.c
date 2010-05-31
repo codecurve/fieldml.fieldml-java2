@@ -128,6 +128,7 @@ void testRead( const char * filename )
     FmlHandle handle;
     DomainBoundsType boundsType;
     const int *swizzle;
+    const char *shape;
 
     handle = Fieldml_CreateFromFile( filename );
     
@@ -175,7 +176,11 @@ void testRead( const char * filename )
             fprintf( stdout, "    1...%d\n", bounds );
             for( j = 1; j <= bounds; j++ )
             {
-                fprintf( stdout, "    %d: %s\n", j, Fieldml_GetMeshElementShape( handle, oHandle, j ) );
+                shape = Fieldml_GetMeshElementShape( handle, oHandle, j, 0 );
+                if( shape != NULL )
+                {
+                    fprintf( stdout, "    %d: %s\n", j, shape );
+                }
             }
         }
         

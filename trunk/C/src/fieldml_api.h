@@ -356,17 +356,22 @@ FmlObjectHandle Fieldml_GetMeshElementDomain( FmlHandle handle, FmlObjectHandle 
  *   
  *      NOTE: At the moment, shapes are only described via strings. This may change in the future.
  */
-const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber );
-int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength );
+const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault );
+int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault, char *buffer, int bufferLength );
 
 
 /**
- *      Sets the default shape for the mesh. If not explicitly specified, and element will have this shape.
- *      
- *      NOTE: Default shapes are optional, it is therefore possible, and invalid, to leave an element's
- *      shape unspecified. 
+ *      Sets the default shape for the mesh. This should be set unless all elements have been explicitly
+ *      assigned a shape.
  */
 int Fieldml_SetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, const char * shape );
+
+
+/**
+ *      Gets the default shape for the mesh.
+ */
+const char *Fieldml_GetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh );
+int Fieldml_CopyMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, char * buffer, int bufferLength );
 
 
 /**
@@ -572,9 +577,7 @@ int Fieldml_SetSwizzle( FmlHandle handle, FmlObjectHandle objectHandle, const in
 
 
 /**
- * Gets the swizzle indexes for the given parameter set.
- * 
- * NOTE: This will be removed. The swizzle count should equal the cardinality of the innermost dense index.
+ * Gets the number of swizzle indexes for the given parameter set, or zero if no swizzle is defined.
  */
 int Fieldml_GetSwizzleCount( FmlHandle handle, FmlObjectHandle objectHandle );
 
@@ -639,9 +642,10 @@ FmlObjectHandle Fieldml_GetEvaluator( FmlHandle handle, FmlObjectHandle objectHa
 
 
 /**
- * Returns the evaluator for the given element number, or FML_INVALID_HANDLE if there is none defined.
+ * Returns the evaluator for the given element number in the given piecewise or aggregate
+ * evaluator, or FML_INVALID_HANDLE if there is none defined.
  */
-FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber );
+FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault );
 
 
 /**
@@ -701,6 +705,12 @@ FmlObjectHandle Fieldml_GetAliasLocal( FmlHandle handle, FmlObjectHandle objectH
  *  Returns the remote object used by the nth alias of the given evaluator. 
  */
 FmlObjectHandle Fieldml_GetAliasRemote( FmlHandle handle, FmlObjectHandle objectHandle, int aliasIndex );
+
+
+/**
+ * Returns the alias of the given remote object.
+ */
+FmlObjectHandle Fieldml_GetAliasByRemote( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteHandle );
 
 
 /**

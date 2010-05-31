@@ -147,27 +147,34 @@ void setIntTableEntry( IntTable *table, int name, void *data, TABLE_DATA_DISCARD
 }
 
 
-void *getIntTableEntry( IntTable *table, int name )
+void *getIntTableEntry( IntTable *table, int name, int allowDefault )
 {
     int index = getIntTableEntryIndex( table, name );
 
     if( index < 0 )
     {
-        return table->defaultValue;
+        if( allowDefault )
+        {
+            return table->defaultValue;
+        }
+        return NULL;
     }
 
     return table->data[index];
 }
 
 
-int getIntTableIntEntry( IntTable *table, int name )
+int getIntTableIntEntry( IntTable *table, int name, int allowDefault )
 {
     int *entry;
     
-    entry = getIntTableEntry( table, name );
+    entry = getIntTableEntry( table, name, allowDefault );
     if( entry == NULL )
     {
-        entry = table->defaultValue;
+        if( allowDefault )
+        {
+            entry = table->defaultValue;
+        }
     }
     if( entry != NULL )
     {
