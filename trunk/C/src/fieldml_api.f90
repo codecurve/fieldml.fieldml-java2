@@ -1,4 +1,4 @@
-!This file was automatically generated from fieldml_api.h on 2010-05-28 13:07
+!This file was automatically generated from fieldml_api.h on 2010-05-31 13:48
 MODULE FIELDML_API
 
   USE ISO_C_BINDING
@@ -6,6 +6,12 @@ MODULE FIELDML_API
   IMPLICIT NONE
 
   INTEGER(C_INT), PARAMETER :: FML_INVALID_HANDLE = -1
+
+  INTEGER(C_INT), PARAMETER :: FML_MAJOR_VERSION = 0
+
+  INTEGER(C_INT), PARAMETER :: FML_MINOR_VERSION = 2
+
+  INTEGER(C_INT), PARAMETER :: FML_DOT_VERSION = 0
 
   INTEGER(C_INT), PARAMETER :: FML_ERR_NO_ERROR = 0
 
@@ -172,6 +178,16 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_GetNamedObject
     END FUNCTION Fieldml_GetNamedObject
 
+    FUNCTION Fieldml_CopyObjectName( handle, objectHandle, buffer, bufferLength ) &
+      & BIND(C,NAME="Fieldml_CopyObjectName")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      CHARACTER(KIND=C_CHAR) :: buffer(*)
+      INTEGER(C_INT), VALUE :: bufferLength
+      INTEGER(C_INT) :: Fieldml_CopyObjectName
+    END FUNCTION Fieldml_CopyObjectName
+
     FUNCTION Fieldml_GetMarkupCount( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_GetMarkupCount")
       USE ISO_C_BINDING
@@ -179,14 +195,6 @@ MODULE FIELDML_API
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT) :: Fieldml_GetMarkupCount
     END FUNCTION Fieldml_GetMarkupCount
-
-    FUNCTION Fieldml_ValidateObject( handle, objectHandle ) &
-      & BIND(C,NAME="Fieldml_ValidateObject")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT) :: Fieldml_ValidateObject
-    END FUNCTION Fieldml_ValidateObject
 
     FUNCTION Fieldml_CopyMarkupAttribute( handle, objectHandle, markupIndex, buffer, bufferLength ) &
       & BIND(C,NAME="Fieldml_CopyMarkupAttribute")
@@ -230,6 +238,14 @@ MODULE FIELDML_API
       CHARACTER(KIND=C_CHAR) :: value(*)
       INTEGER(C_INT) :: Fieldml_SetMarkup
     END FUNCTION Fieldml_SetMarkup
+
+    FUNCTION Fieldml_ValidateObject( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_ValidateObject")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT) :: Fieldml_ValidateObject
+    END FUNCTION Fieldml_ValidateObject
 
     FUNCTION Fieldml_GetDomainComponentEnsemble( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_GetDomainComponentEnsemble")
@@ -282,12 +298,13 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_GetMeshElementDomain
     END FUNCTION Fieldml_GetMeshElementDomain
 
-    FUNCTION Fieldml_CopyMeshElementShape( handle, objectHandle, elementNumber, buffer, bufferLength ) &
+    FUNCTION Fieldml_CopyMeshElementShape( handle, objectHandle, elementNumber, allowDefault, buffer, bufferLength ) &
       & BIND(C,NAME="Fieldml_CopyMeshElementShape")
       USE ISO_C_BINDING
       TYPE(C_PTR), VALUE :: handle
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT), VALUE :: elementNumber
+      INTEGER(C_INT), VALUE :: allowDefault
       CHARACTER(KIND=C_CHAR) :: buffer(*)
       INTEGER(C_INT), VALUE :: bufferLength
       INTEGER(C_INT) :: Fieldml_CopyMeshElementShape
@@ -301,6 +318,16 @@ MODULE FIELDML_API
       CHARACTER(KIND=C_CHAR) :: shape(*)
       INTEGER(C_INT) :: Fieldml_SetMeshDefaultShape
     END FUNCTION Fieldml_SetMeshDefaultShape
+
+    FUNCTION Fieldml_CopyMeshDefaultShape( handle, mesh, buffer, bufferLength ) &
+      & BIND(C,NAME="Fieldml_CopyMeshDefaultShape")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: mesh
+      CHARACTER(KIND=C_CHAR) :: buffer(*)
+      INTEGER(C_INT), VALUE :: bufferLength
+      INTEGER(C_INT) :: Fieldml_CopyMeshDefaultShape
+    END FUNCTION Fieldml_CopyMeshDefaultShape
 
     FUNCTION Fieldml_SetMeshElementShape( handle, mesh, elementNumber, shape ) &
       & BIND(C,NAME="Fieldml_SetMeshElementShape")
@@ -391,16 +418,6 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_SetContiguousBoundsCount
     END FUNCTION Fieldml_SetContiguousBoundsCount
 
-    FUNCTION Fieldml_CopyObjectName( handle, objectHandle, buffer, bufferLength ) &
-      & BIND(C,NAME="Fieldml_CopyObjectName")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      CHARACTER(KIND=C_CHAR) :: buffer(*)
-      INTEGER(C_INT), VALUE :: bufferLength
-      INTEGER(C_INT) :: Fieldml_CopyObjectName
-    END FUNCTION Fieldml_CopyObjectName
-
     FUNCTION Fieldml_GetValueDomain( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_GetValueDomain")
       USE ISO_C_BINDING
@@ -444,23 +461,6 @@ MODULE FIELDML_API
       INTEGER(C_INT), VALUE :: valueDomain
       INTEGER(C_INT) :: Fieldml_CreateContinuousParameters
     END FUNCTION Fieldml_CreateContinuousParameters
-
-    FUNCTION Fieldml_SetParameterDataDescription( handle, objectHandle, description ) &
-      & BIND(C,NAME="Fieldml_SetParameterDataDescription")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT), VALUE :: description
-      INTEGER(C_INT) :: Fieldml_SetParameterDataDescription
-    END FUNCTION Fieldml_SetParameterDataDescription
-
-    FUNCTION Fieldml_GetParameterDataDescription( handle, objectHandle ) &
-      & BIND(C,NAME="Fieldml_GetParameterDataDescription")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT) :: Fieldml_GetParameterDataDescription
-    END FUNCTION Fieldml_GetParameterDataDescription
 
     FUNCTION Fieldml_GetParameterDataLocation( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_GetParameterDataLocation")
@@ -525,6 +525,23 @@ MODULE FIELDML_API
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT) :: Fieldml_GetParameterDataFileType
     END FUNCTION Fieldml_GetParameterDataFileType
+
+    FUNCTION Fieldml_SetParameterDataDescription( handle, objectHandle, description ) &
+      & BIND(C,NAME="Fieldml_SetParameterDataDescription")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT), VALUE :: description
+      INTEGER(C_INT) :: Fieldml_SetParameterDataDescription
+    END FUNCTION Fieldml_SetParameterDataDescription
+
+    FUNCTION Fieldml_GetParameterDataDescription( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_GetParameterDataDescription")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT) :: Fieldml_GetParameterDataDescription
+    END FUNCTION Fieldml_GetParameterDataDescription
 
     FUNCTION Fieldml_AddSemidenseIndex( handle, objectHandle, indexHandle, isSparse ) &
       & BIND(C,NAME="Fieldml_AddSemidenseIndex")
@@ -647,14 +664,32 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_GetEvaluator
     END FUNCTION Fieldml_GetEvaluator
 
-    FUNCTION Fieldml_GetElementEvaluator( handle, objectHandle, elementNumber ) &
+    FUNCTION Fieldml_GetElementEvaluator( handle, objectHandle, elementNumber, allowDefault ) &
       & BIND(C,NAME="Fieldml_GetElementEvaluator")
       USE ISO_C_BINDING
       TYPE(C_PTR), VALUE :: handle
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT), VALUE :: elementNumber
+      INTEGER(C_INT), VALUE :: allowDefault
       INTEGER(C_INT) :: Fieldml_GetElementEvaluator
     END FUNCTION Fieldml_GetElementEvaluator
+
+    FUNCTION Fieldml_GetIndexCount( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_GetIndexCount")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT) :: Fieldml_GetIndexCount
+    END FUNCTION Fieldml_GetIndexCount
+
+    FUNCTION Fieldml_GetIndexDomain( handle, objectHandle, indexIndex ) &
+      & BIND(C,NAME="Fieldml_GetIndexDomain")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT), VALUE :: indexIndex
+      INTEGER(C_INT) :: Fieldml_GetIndexDomain
+    END FUNCTION Fieldml_GetIndexDomain
 
     FUNCTION Fieldml_CreateContinuousImport( handle, name, remoteEvaluator, valueDomain ) &
       & BIND(C,NAME="Fieldml_CreateContinuousImport")
@@ -673,6 +708,16 @@ MODULE FIELDML_API
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT) :: Fieldml_GetImportRemoteEvaluator
     END FUNCTION Fieldml_GetImportRemoteEvaluator
+
+    FUNCTION Fieldml_SetAlias( handle, objectHandle, remoteDomain, localSource ) &
+      & BIND(C,NAME="Fieldml_SetAlias")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT), VALUE :: remoteDomain
+      INTEGER(C_INT), VALUE :: localSource
+      INTEGER(C_INT) :: Fieldml_SetAlias
+    END FUNCTION Fieldml_SetAlias
 
     FUNCTION Fieldml_GetAliasCount( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_GetAliasCount")
@@ -700,32 +745,14 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_GetAliasRemote
     END FUNCTION Fieldml_GetAliasRemote
 
-    FUNCTION Fieldml_SetAlias( handle, objectHandle, remoteDomain, localSource ) &
-      & BIND(C,NAME="Fieldml_SetAlias")
+    FUNCTION Fieldml_GetAliasByRemote( handle, objectHandle, remoteHandle ) &
+      & BIND(C,NAME="Fieldml_GetAliasByRemote")
       USE ISO_C_BINDING
       TYPE(C_PTR), VALUE :: handle
       INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT), VALUE :: remoteDomain
-      INTEGER(C_INT), VALUE :: localSource
-      INTEGER(C_INT) :: Fieldml_SetAlias
-    END FUNCTION Fieldml_SetAlias
-
-    FUNCTION Fieldml_GetIndexCount( handle, objectHandle ) &
-      & BIND(C,NAME="Fieldml_GetIndexCount")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT) :: Fieldml_GetIndexCount
-    END FUNCTION Fieldml_GetIndexCount
-
-    FUNCTION Fieldml_GetIndexDomain( handle, objectHandle, indexIndex ) &
-      & BIND(C,NAME="Fieldml_GetIndexDomain")
-      USE ISO_C_BINDING
-      TYPE(C_PTR), VALUE :: handle
-      INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT), VALUE :: indexIndex
-      INTEGER(C_INT) :: Fieldml_GetIndexDomain
-    END FUNCTION Fieldml_GetIndexDomain
+      INTEGER(C_INT), VALUE :: remoteHandle
+      INTEGER(C_INT) :: Fieldml_GetAliasByRemote
+    END FUNCTION Fieldml_GetAliasByRemote
 
     FUNCTION Fieldml_OpenReader( handle, objectHandle ) &
       & BIND(C,NAME="Fieldml_OpenReader")
@@ -804,26 +831,27 @@ MODULE FIELDML_API
 
   PUBLIC Fieldml_CreateFromFile, Fieldml_Create, Fieldml_SetDebug, Fieldml_GetLastError, Fieldml_WriteFile, &
     & Fieldml_Destroy, Fieldml_GetErrorCount, Fieldml_CopyError, Fieldml_GetObjectCount, Fieldml_GetObject, &
-    & Fieldml_GetObjectType, Fieldml_GetNamedObject, Fieldml_GetMarkupCount, Fieldml_ValidateObject, &
+    & Fieldml_GetObjectType, Fieldml_GetNamedObject, Fieldml_CopyObjectName, Fieldml_GetMarkupCount, &
     & Fieldml_CopyMarkupAttribute, Fieldml_CopyMarkupValue, Fieldml_CopyMarkupAttributeValue, Fieldml_SetMarkup, &
-    & Fieldml_GetDomainComponentEnsemble, Fieldml_CreateEnsembleDomain, Fieldml_CreateContinuousDomain, &
-    & Fieldml_CreateMeshDomain, Fieldml_GetMeshXiDomain, Fieldml_GetMeshElementDomain, Fieldml_CopyMeshElementShape, &
-    & Fieldml_SetMeshDefaultShape, Fieldml_SetMeshElementShape, Fieldml_GetMeshConnectivityCount, &
-    & Fieldml_GetMeshConnectivityDomain, Fieldml_GetMeshConnectivitySource, Fieldml_SetMeshConnectivity, &
-    & Fieldml_GetDomainBoundsType, Fieldml_GetEnsembleDomainElementCount, Fieldml_GetEnsembleDomainElementNames, &
-    & Fieldml_GetContiguousBoundsCount, Fieldml_SetContiguousBoundsCount, Fieldml_CopyObjectName, Fieldml_GetValueDomain, &
-    & Fieldml_CreateEnsembleVariable, Fieldml_CreateContinuousVariable, Fieldml_CreateEnsembleParameters, &
-    & Fieldml_CreateContinuousParameters, Fieldml_SetParameterDataDescription, Fieldml_GetParameterDataDescription, &
-    & Fieldml_GetParameterDataLocation, Fieldml_SetParameterDataLocation, Fieldml_AddInlineParameterData, &
-    & Fieldml_SetParameterFileData, Fieldml_CopyParameterDataFilename, Fieldml_GetParameterDataOffset, &
-    & Fieldml_GetParameterDataFileType, Fieldml_AddSemidenseIndex, Fieldml_GetSemidenseIndexCount, &
-    & Fieldml_GetSemidenseIndex, Fieldml_SetSwizzle, Fieldml_GetSwizzleCount, Fieldml_CopySwizzleData, &
-    & Fieldml_CreateContinuousPiecewise, Fieldml_CreateContinuousAggregate, Fieldml_SetDefaultEvaluator, &
-    & Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, Fieldml_GetEvaluatorElement, Fieldml_GetEvaluator, &
-    & Fieldml_GetElementEvaluator, Fieldml_CreateContinuousImport, Fieldml_GetImportRemoteEvaluator, Fieldml_GetAliasCount, &
-    & Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_SetAlias, Fieldml_GetIndexCount, Fieldml_GetIndexDomain, &
-    & Fieldml_OpenReader, Fieldml_ReadIntSlice, Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, &
-    & Fieldml_WriteIntSlice, Fieldml_WriteDoubleSlice, Fieldml_CloseWriter
+    & Fieldml_ValidateObject, Fieldml_GetDomainComponentEnsemble, Fieldml_CreateEnsembleDomain, &
+    & Fieldml_CreateContinuousDomain, Fieldml_CreateMeshDomain, Fieldml_GetMeshXiDomain, Fieldml_GetMeshElementDomain, &
+    & Fieldml_CopyMeshElementShape, Fieldml_SetMeshDefaultShape, Fieldml_CopyMeshDefaultShape, Fieldml_SetMeshElementShape, &
+    & Fieldml_GetMeshConnectivityCount, Fieldml_GetMeshConnectivityDomain, Fieldml_GetMeshConnectivitySource, &
+    & Fieldml_SetMeshConnectivity, Fieldml_GetDomainBoundsType, Fieldml_GetEnsembleDomainElementCount, &
+    & Fieldml_GetEnsembleDomainElementNames, Fieldml_GetContiguousBoundsCount, Fieldml_SetContiguousBoundsCount, &
+    & Fieldml_GetValueDomain, Fieldml_CreateEnsembleVariable, Fieldml_CreateContinuousVariable, &
+    & Fieldml_CreateEnsembleParameters, Fieldml_CreateContinuousParameters, Fieldml_GetParameterDataLocation, &
+    & Fieldml_SetParameterDataLocation, Fieldml_AddInlineParameterData, Fieldml_SetParameterFileData, &
+    & Fieldml_CopyParameterDataFilename, Fieldml_GetParameterDataOffset, Fieldml_GetParameterDataFileType, &
+    & Fieldml_SetParameterDataDescription, Fieldml_GetParameterDataDescription, Fieldml_AddSemidenseIndex, &
+    & Fieldml_GetSemidenseIndexCount, Fieldml_GetSemidenseIndex, Fieldml_SetSwizzle, Fieldml_GetSwizzleCount, &
+    & Fieldml_CopySwizzleData, Fieldml_CreateContinuousPiecewise, Fieldml_CreateContinuousAggregate, &
+    & Fieldml_SetDefaultEvaluator, Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, Fieldml_GetEvaluatorElement, &
+    & Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, Fieldml_GetIndexCount, Fieldml_GetIndexDomain, &
+    & Fieldml_CreateContinuousImport, Fieldml_GetImportRemoteEvaluator, Fieldml_SetAlias, Fieldml_GetAliasCount, &
+    & Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, Fieldml_ReadIntSlice, &
+    & Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, Fieldml_WriteDoubleSlice, &
+    & Fieldml_CloseWriter
 
   PUBLIC BOUNDS_UNKNOWN, BOUNDS_DISCRETE_CONTIGUOUS, BOUNDS_DISCRETE_ARBITRARY
 
@@ -840,10 +868,10 @@ MODULE FIELDML_API
     & FHT_UNKNOWN_CONTINUOUS_DOMAIN, FHT_UNKNOWN_ENSEMBLE_EVALUATOR, FHT_UNKNOWN_CONTINUOUS_EVALUATOR, &
     & FHT_UNKNOWN_ENSEMBLE_SOURCE, FHT_UNKNOWN_CONTINUOUS_SOURCE
 
-  PUBLIC FML_INVALID_HANDLE, FML_ERR_NO_ERROR, FML_ERR_UNKNOWN_OBJECT, FML_ERR_INVALID_OBJECT, FML_ERR_INCOMPLETE_OBJECT, &
-    & FML_ERR_MISCONFIGURED_OBJECT, FML_ERR_ACCESS_VIOLATION, FML_ERR_FILE_READ, FML_ERR_FILE_WRITE, &
-    & FML_ERR_INVALID_PARAMETER_1, FML_ERR_INVALID_PARAMETER_2, FML_ERR_INVALID_PARAMETER_3, FML_ERR_INVALID_PARAMETER_4, &
-    & FML_ERR_INVALID_PARAMETER_5, FML_ERR_INVALID_PARAMETER_6, FML_ERR_INVALID_PARAMETER_7, FML_ERR_INVALID_PARAMETER_8, &
-    & FML_ERR_UNSUPPORTED
+  PUBLIC FML_INVALID_HANDLE, FML_MAJOR_VERSION, FML_MINOR_VERSION, FML_DOT_VERSION, FML_ERR_NO_ERROR, &
+    & FML_ERR_UNKNOWN_OBJECT, FML_ERR_INVALID_OBJECT, FML_ERR_INCOMPLETE_OBJECT, FML_ERR_MISCONFIGURED_OBJECT, &
+    & FML_ERR_ACCESS_VIOLATION, FML_ERR_FILE_READ, FML_ERR_FILE_WRITE, FML_ERR_INVALID_PARAMETER_1, &
+    & FML_ERR_INVALID_PARAMETER_2, FML_ERR_INVALID_PARAMETER_3, FML_ERR_INVALID_PARAMETER_4, FML_ERR_INVALID_PARAMETER_5, &
+    & FML_ERR_INVALID_PARAMETER_6, FML_ERR_INVALID_PARAMETER_7, FML_ERR_INVALID_PARAMETER_8, FML_ERR_UNSUPPORTED
 
 END MODULE FIELDML_API

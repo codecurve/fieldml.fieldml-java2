@@ -226,6 +226,7 @@ def processFile():
       pos = line.find( "*/" )
       if( pos == -1 ):
         continue
+      inComment = False
       startSegment = pos + 2
 
     #Does not cope with mixing line and block comments.
@@ -238,7 +239,7 @@ def processFile():
       endSegment = line.find( "/*", startSegment )
 
     if( startSegment == -1 ):
-      inHeader = True
+      inComment = True
     else:
       state = processLine( line[ startSegment : ], state )
 
