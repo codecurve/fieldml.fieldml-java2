@@ -801,13 +801,11 @@ static void startContinuousPiecewise( SaxContext *context, SaxAttributes *attrib
     const char *name;
     const char *valueDomain;
     const char *indexDomain;
-    const char *defaultValue;
     FmlObjectHandle valueHandle, indexHandle;
     
     name = getAttribute( attributes, NAME_ATTRIB );
     valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
     indexDomain = getAttribute( attributes, INDEX_DOMAIN_ATTRIB );
-    defaultValue = getAttribute( attributes, DEFAULT_ATTRIB );
     
     if( name == NULL )
     {
@@ -831,13 +829,20 @@ static void startContinuousPiecewise( SaxContext *context, SaxAttributes *attrib
     indexHandle = getOrCreateObjectHandle( context->region, indexDomain, FHT_UNKNOWN_ENSEMBLE_DOMAIN );
     
     context->currentObject = Fieldml_CreateContinuousPiecewise( context->region, name, indexHandle, valueHandle );
+}
+
+
+static void onContinuousPiecewiseEvaluators( SaxContext *context, SaxAttributes *attributes )
+{
+    const char *defaultValue;
+    
+    defaultValue = getAttribute( attributes, DEFAULT_ATTRIB );
     if( defaultValue != NULL )
     {
         int defaultHandle = getOrCreateObjectHandle( context->region, defaultValue, FHT_UNKNOWN_CONTINUOUS_EVALUATOR );
         Fieldml_SetDefaultEvaluator( context->region, context->currentObject, defaultHandle );
     }
 }
-
 
 static void onContinuousPiecewiseEntry( SaxContext *context, SaxAttributes *attributes )
 {
@@ -1260,6 +1265,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
         if( strcmp( name, ELEMENT_EVALUATORS_TAG ) == 0 )
         {
             intStackPush( saxContext->state, FML_ELEMENT_EVALUATORS );
+            onContinuousPiecewiseEvaluators( saxContext, saxAttributes );
         }
         else if( strcmp( name, ALIASES_TAG ) == 0 )
         {

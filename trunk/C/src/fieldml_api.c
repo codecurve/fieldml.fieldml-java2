@@ -482,7 +482,7 @@ static int getNamedHandle( FieldmlRegion *region, const char *name )
 }
 
 
-static IntTable *getEntryIntTable( FieldmlObject *object )
+static IntTable *getEvaluatorTable( FieldmlObject *object )
 {
     if( object == NULL )
     {
@@ -495,6 +495,29 @@ static IntTable *getEntryIntTable( FieldmlObject *object )
     else if( object->type == FHT_CONTINUOUS_PIECEWISE )
     {
         return object->object.piecewise->evaluators;
+    }
+
+    return NULL;
+}
+
+
+static IntTable *getAliasTable( FieldmlObject *object )
+{
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
+    {
+        return object->object.aggregate->aliases;
+    }
+    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        return object->object.piecewise->aliases;
+    }
+    else if( object->type == FHT_CONTINUOUS_IMPORT )
+    {
+        return object->object.continuousImport->aliases;
     }
 
     return NULL;
@@ -631,7 +654,7 @@ FieldmlHandleType Fieldml_GetObjectType( FmlHandle handle, FmlObjectHandle objec
 }
 
 
-int Fieldml_SetMarkup(  FmlHandle handle, FmlObjectHandle objectHandle, const char * attribute, const char * value )
+int Fieldml_SetMarkup( FmlHandle handle, FmlObjectHandle objectHandle, const char * attribute, const char * value )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     
@@ -914,7 +937,7 @@ FmlObjectHandle Fieldml_GetMeshElementDomain( FmlHandle handle, FmlObjectHandle 
 }
 
 
-const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber )
+const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
@@ -926,7 +949,7 @@ const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle obje
     if( object->type == FHT_MESH_DOMAIN ) 
     {
         setError( handle, FML_ERR_NO_ERROR );  
-        return (char*)getIntTableEntry( object->object.meshDomain->shapes, elementNumber );
+        return (char*)getIntTableEntry( object->object.meshDomain->shapes, elementNumber, allowDefault );
     }
 
     setError( handle, FML_ERR_INVALID_OBJECT );
@@ -934,9 +957,9 @@ const char * Fieldml_GetMeshElementShape( FmlHandle handle, FmlObjectHandle obje
 }
 
 
-int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, char *buffer, int bufferLength )
+int Fieldml_CopyMeshElementShape( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault, char *buffer, int bufferLength )
 {
-    return cappedCopy( Fieldml_GetMeshElementShape( handle, objectHandle, elementNumber ), buffer, bufferLength );
+    return cappedCopy( Fieldml_GetMeshElementShape( handle, objectHandle, elementNumber, allowDefault ), buffer, bufferLength );
 }
 
 
@@ -1580,6 +1603,7 @@ int Fieldml_SetSwizzle( FmlHandle handle, FmlObjectHandle objectHandle, const in
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     int *ints;
+    int ensembleHandle, ensembleCount;
     
     if( object == NULL )
     {
@@ -1594,6 +1618,14 @@ int Fieldml_SetSwizzle( FmlHandle handle, FmlObjectHandle objectHandle, const in
     if( object->object.parameters->descriptionType != DESCRIPTION_SEMIDENSE )
     {
         return setError( handle, FML_ERR_UNSUPPORTED );
+    }
+    
+    ensembleHandle = Fieldml_GetSemidenseIndex( handle, objectHandle, 1, 0 );
+    ensembleCount = Fieldml_GetEnsembleDomainElementCount( handle, ensembleHandle );
+    
+    if( ensembleCount != count )
+    {
+        return setError( handle, FML_ERR_INVALID_PARAMETER_4 );
     }
     
     if( object->object.parameters->dataDescription.semidense->swizzle != NULL )
@@ -1732,7 +1764,33 @@ FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlHandle handle, const char 
 }
 
 
-int Fieldml_SetDefaultEvaluator(  FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle evaluator )
+int Fieldml_SetDefaultEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle evaluator )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    IntTable *table;
+    
+    if( object == NULL )
+    {
+        return setError( handle, FML_ERR_UNKNOWN_OBJECT );
+    }
+
+    table = getEvaluatorTable( object );
+    if( table == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
+    if( object->type == FHT_CONTINUOUS_PIECEWISE )
+    {
+        setIntTableDefaultInt( table, evaluator );
+        return setError( handle, FML_ERR_NO_ERROR );
+    }
+
+    return setError( handle, FML_ERR_INVALID_OBJECT );
+}
+
+
+int Fieldml_GetDefaultEvaluator( FmlHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table;
@@ -1743,20 +1801,21 @@ int Fieldml_SetDefaultEvaluator(  FmlHandle handle, FmlObjectHandle objectHandle
         return FML_INVALID_HANDLE;
     }
 
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
-        return -1;
+        return FML_INVALID_HANDLE;
     }
 
     if( object->type == FHT_CONTINUOUS_PIECEWISE )
     {
-        setIntTableDefaultInt( table, evaluator );
-        return setError( handle, FML_ERR_NO_ERROR );
+        setError( handle, FML_ERR_NO_ERROR );
+        return getIntTableDefaultInt( table );
     }
 
-    return setError( handle, FML_ERR_INVALID_OBJECT );
+    setError( handle, FML_ERR_INVALID_OBJECT );
+    return FML_INVALID_HANDLE;
 }
 
 
@@ -1771,7 +1830,7 @@ int Fieldml_SetEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int el
         return FML_INVALID_HANDLE;
     }
 
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
@@ -1794,7 +1853,7 @@ int Fieldml_GetEvaluatorCount( FmlHandle handle, FmlObjectHandle objectHandle )
         return FML_INVALID_HANDLE;
     }
 
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
@@ -1817,7 +1876,7 @@ int Fieldml_GetEvaluatorElement( FmlHandle handle, FmlObjectHandle objectHandle,
         return FML_INVALID_HANDLE;
     }
 
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
@@ -1840,7 +1899,7 @@ FmlObjectHandle Fieldml_GetEvaluator( FmlHandle handle, FmlObjectHandle objectHa
         return FML_INVALID_HANDLE;
     }
 
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
@@ -1852,7 +1911,7 @@ FmlObjectHandle Fieldml_GetEvaluator( FmlHandle handle, FmlObjectHandle objectHa
 }
 
 
-FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber )
+FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, int elementNumber, int allowDefault )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     IntTable *table;
@@ -1863,7 +1922,7 @@ FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle o
         return FML_INVALID_HANDLE;
     }
     
-    table = getEntryIntTable( object );
+    table = getEvaluatorTable( object );
     if( table == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
@@ -1871,7 +1930,7 @@ FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle o
     }
 
     setError( handle, FML_ERR_NO_ERROR );
-    return getIntTableIntEntry( table, elementNumber );
+    return getIntTableIntEntry( table, elementNumber, allowDefault );
 }
 
 
@@ -1911,93 +1970,91 @@ FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlHandle handle, FmlObjectHan
 int Fieldml_GetAliasCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-
+    IntTable *table;
+    
     if( object == NULL )
     {
         setError( handle, FML_ERR_UNKNOWN_OBJECT );
         return -1;
     }
-
-    if( object->type == FHT_CONTINUOUS_IMPORT )
+    
+    table = getAliasTable( object );
+    if( table == NULL )
     {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableCount( object->object.continuousImport->aliases );
-    }
-    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableCount( object->object.piecewise->aliases );
-    }
-    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableCount( object->object.aggregate->aliases );
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return -1;
     }
     
-    setError( handle, FML_ERR_INVALID_OBJECT );
-    return -1;
-
+    setError( handle, FML_ERR_NO_ERROR );
+    return getIntTableCount( table );
 }
 
 
 FmlObjectHandle Fieldml_GetAliasLocal( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-
+    IntTable *table;
+    
     if( object == NULL )
     {
         setError( handle, FML_ERR_UNKNOWN_OBJECT );
         return FML_INVALID_HANDLE;
     }
-
-    if( object->type == FHT_CONTINUOUS_IMPORT )
+    
+    table = getAliasTable( object );
+    if( table == NULL )
     {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryIntData( object->object.continuousImport->aliases, index - 1 );
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return FML_INVALID_HANDLE;
     }
-    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryIntData( object->object.piecewise->aliases, index - 1 );
-    }
-    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryIntData( object->object.aggregate->aliases, index - 1 );
-    }
-
-    setError( handle, FML_ERR_INVALID_OBJECT );
-    return FML_INVALID_HANDLE; 
+    
+    setError( handle, FML_ERR_NO_ERROR );
+    return getIntTableEntryIntData( table, index - 1 );
 }
 
 
 FmlObjectHandle Fieldml_GetAliasRemote( FmlHandle handle, FmlObjectHandle objectHandle, int index )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-
+    IntTable *table;
+    
     if( object == NULL )
     {
         setError( handle, FML_ERR_UNKNOWN_OBJECT );
         return FML_INVALID_HANDLE;
     }
+    
+    table = getAliasTable( object );
+    if( table == NULL )
+    {
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return FML_INVALID_HANDLE;
+    }
+    
+    setError( handle, FML_ERR_NO_ERROR );
+    return getIntTableEntryName( table, index - 1 );
+}
 
-    if( object->type == FHT_CONTINUOUS_IMPORT )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryName( object->object.continuousImport->aliases, index - 1 );
-    }
-    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryName( object->object.piecewise->aliases, index - 1 );
-    }
-    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return getIntTableEntryName( object->object.aggregate->aliases, index - 1 );
-    }
 
-    setError( handle, FML_ERR_INVALID_OBJECT );
+FmlObjectHandle Fieldml_GetAliasByRemote( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteHandle )
+{
+    int count, i, aliasHandle;
+    
+    count = Fieldml_GetAliasCount( handle, objectHandle );
+    if( count == -1 )
+    {
+        return FML_INVALID_HANDLE;
+    }
+    
+    for( i = 1; i <= count; i++ )
+    {
+        aliasHandle = Fieldml_GetAliasRemote( handle, objectHandle, i );
+        if( aliasHandle == remoteHandle )
+        {
+            return Fieldml_GetAliasLocal( handle, objectHandle, i );
+        }
+    }
+    
     return FML_INVALID_HANDLE;
 }
 
@@ -2005,30 +2062,21 @@ FmlObjectHandle Fieldml_GetAliasRemote( FmlHandle handle, FmlObjectHandle object
 int Fieldml_SetAlias( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-    IntTable *table = NULL;
+    IntTable *table;
     
-    if( remoteDomain == FML_INVALID_HANDLE )
+    if( object == NULL )
     {
         return setError( handle, FML_ERR_UNKNOWN_OBJECT );
     }
     
-    if( object->type == FHT_CONTINUOUS_IMPORT )
+    table = getAliasTable( object );
+    if( table == NULL )
     {
-        setIntTableIntEntry( object->object.continuousImport->aliases, remoteDomain, localSource );
-        return setError( handle, FML_ERR_NO_ERROR );
-    }
-    else if( object->type == FHT_CONTINUOUS_AGGREGATE )
-    {
-        setIntTableIntEntry( object->object.aggregate->aliases, remoteDomain, localSource );
-        return setError( handle, FML_ERR_NO_ERROR );
-    }
-    else if( object->type == FHT_CONTINUOUS_PIECEWISE )
-    {
-        setIntTableIntEntry( object->object.continuousImport->aliases, remoteDomain, localSource );
-        return setError( handle, FML_ERR_NO_ERROR );
+        return setError( handle, FML_ERR_INVALID_OBJECT );
     }
     
-    return setError( handle, FML_ERR_INVALID_OBJECT );
+    setIntTableIntEntry( table, remoteDomain, localSource );
+    return setError( handle, FML_ERR_NO_ERROR );
 }
 
 
@@ -2234,6 +2282,33 @@ int Fieldml_SetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, const c
     }
     
     return setError( handle, FML_ERR_INVALID_OBJECT );
+}
+
+
+const char *Fieldml_GetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, mesh );
+
+    if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return NULL;
+    }
+
+    if( object->type == FHT_MESH_DOMAIN )
+    {
+        setError( handle, FML_ERR_NO_ERROR );
+        return (char*)getIntTableDefault( object->object.meshDomain->shapes );
+    }
+    
+    setError( handle, FML_ERR_INVALID_OBJECT );
+    return NULL;
+}
+
+
+int Fieldml_CopyMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, char * buffer, int bufferLength )
+{
+    return cappedCopy( Fieldml_GetMeshDefaultShape( handle, mesh ), buffer, bufferLength );
 }
 
 

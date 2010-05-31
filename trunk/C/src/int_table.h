@@ -90,8 +90,8 @@ void setIntTableIntEntry( IntTable *table, int name, int data );
 
     NOTE: NULL may also be returned if the data is actually NULL.
 */
-void *getIntTableEntry( IntTable *table, int name );
-int getIntTableIntEntry( IntTable *table, int name );
+void *getIntTableEntry( IntTable *table, int name, int allowDefault );
+int getIntTableIntEntry( IntTable *table, int name, int allowDefault );
 
 /*
     Get the number of entries in the table.
