@@ -94,6 +94,8 @@ const char * const SWIZZLE_TAG                      = "swizzle";
 
 
 
+const char * const VERSION_ATTRIB                   = "version";
+
 const char * const NAME_ATTRIB                      = "name";
 
 const char * const COMPONENT_DOMAIN_ATTRIB          = "componentDomain";
