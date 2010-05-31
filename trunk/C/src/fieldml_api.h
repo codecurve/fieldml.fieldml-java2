@@ -143,7 +143,7 @@ typedef enum _FieldmlHandleType
     FHT_ENSEMBLE_DOMAIN,
     FHT_CONTINUOUS_DOMAIN,
     FHT_MESH_DOMAIN,
-    FHT_CONTINUOUS_IMPORT,
+    FHT_CONTINUOUS_REFERENCE,
     FHT_ENSEMBLE_PARAMETERS,
     FHT_CONTINUOUS_PARAMETERS,
     FHT_CONTINUOUS_PIECEWISE,
@@ -668,22 +668,22 @@ FmlObjectHandle Fieldml_GetIndexDomain( FmlHandle handle, FmlObjectHandle object
 
 
 /**
- * Creates a continuous import. Imports delegate their evaluation to another evaluator, and may alias domains and evaluators
- * before doing so.
+ * Creates a continuous reference evaluator. Reference evaluators delegate their evaluation to another evaluator, and may alias
+ * domains and evaluators before doing so.
  * 
- * NOTE: Ensemble imports are not yet supported.
+ * NOTE: Ensemble references are not yet supported.
  */
-FmlObjectHandle Fieldml_CreateContinuousImport( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain );
+FmlObjectHandle Fieldml_CreateContinuousReference( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain );
 
 
 /**
- * Gets the remote evaluator which the given import evaluator references.
+ * Gets the remote evaluator which the given evaluator references.
  */
-FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlHandle handle, FmlObjectHandle objectHandle );
+FmlObjectHandle Fieldml_GetReferenceRemoteEvaluator( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
 /**
- * Adds an alias to the given import evaluator. Domains in the remote evaluator may be aliased by domains, evaluators
+ * Adds an alias to the given reference evaluator. Domains in the remote evaluator may be aliased by domains, evaluators
  * or variables. Variables in the remote evaluator may be aliases by evaluators or variables. 
  */
 int Fieldml_SetAlias( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle remoteDomain, FmlObjectHandle localSource );

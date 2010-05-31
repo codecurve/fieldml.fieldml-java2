@@ -259,15 +259,15 @@ void testRead( const char * filename )
         }
     }
 
-    count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_IMPORT );
-    fprintf( stdout, "ContinuousImports: %d\n", count ); 
+    count = Fieldml_GetObjectCount( handle, FHT_CONTINUOUS_REFERENCE );
+    fprintf( stdout, "ContinuousReferences: %d\n", count ); 
     for( i = 1; i <= count; i++ )
     {
-        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_IMPORT, i );
+        oHandle = Fieldml_GetObject( handle, FHT_CONTINUOUS_REFERENCE, i );
         
         fprintf( stdout, "  %d: %s (%s)\n", i, Fieldml_GetObjectName( handle, oHandle ),
             Fieldml_GetObjectName( handle, Fieldml_GetValueDomain( handle, oHandle ) ) );
-        fprintf( stdout, "    Remote name: %s\n", Fieldml_GetObjectName( handle, Fieldml_GetImportRemoteEvaluator( handle, oHandle ) ) );
+        fprintf( stdout, "    Remote name: %s\n", Fieldml_GetObjectName( handle, Fieldml_GetReferenceRemoteEvaluator( handle, oHandle ) ) );
         
         count2 = Fieldml_GetAliasCount( handle, oHandle );
         for( j = 1; j <= count2; j++ )

@@ -1,4 +1,4 @@
-!This file was automatically generated from fieldml_api.h on 2010-05-31 13:48
+!This file was automatically generated from fieldml_api.h on 2010-05-31 14:28
 MODULE FIELDML_API
 
   USE ISO_C_BINDING
@@ -66,7 +66,7 @@ MODULE FIELDML_API
   INTEGER(C_INT), PARAMETER :: FHT_ENSEMBLE_DOMAIN = 1
   INTEGER(C_INT), PARAMETER :: FHT_CONTINUOUS_DOMAIN = 2
   INTEGER(C_INT), PARAMETER :: FHT_MESH_DOMAIN = 3
-  INTEGER(C_INT), PARAMETER :: FHT_CONTINUOUS_IMPORT = 4
+  INTEGER(C_INT), PARAMETER :: FHT_CONTINUOUS_REFERENCE = 4
   INTEGER(C_INT), PARAMETER :: FHT_ENSEMBLE_PARAMETERS = 5
   INTEGER(C_INT), PARAMETER :: FHT_CONTINUOUS_PARAMETERS = 6
   INTEGER(C_INT), PARAMETER :: FHT_CONTINUOUS_PIECEWISE = 7
@@ -691,23 +691,23 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_GetIndexDomain
     END FUNCTION Fieldml_GetIndexDomain
 
-    FUNCTION Fieldml_CreateContinuousImport( handle, name, remoteEvaluator, valueDomain ) &
-      & BIND(C,NAME="Fieldml_CreateContinuousImport")
+    FUNCTION Fieldml_CreateContinuousReference( handle, name, remoteEvaluator, valueDomain ) &
+      & BIND(C,NAME="Fieldml_CreateContinuousReference")
       USE ISO_C_BINDING
       TYPE(C_PTR), VALUE :: handle
       CHARACTER(KIND=C_CHAR) :: name(*)
       INTEGER(C_INT), VALUE :: remoteEvaluator
       INTEGER(C_INT), VALUE :: valueDomain
-      INTEGER(C_INT) :: Fieldml_CreateContinuousImport
-    END FUNCTION Fieldml_CreateContinuousImport
+      INTEGER(C_INT) :: Fieldml_CreateContinuousReference
+    END FUNCTION Fieldml_CreateContinuousReference
 
-    FUNCTION Fieldml_GetImportRemoteEvaluator( handle, objectHandle ) &
-      & BIND(C,NAME="Fieldml_GetImportRemoteEvaluator")
+    FUNCTION Fieldml_GetReferenceRemoteEvaluator( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_GetReferenceRemoteEvaluator")
       USE ISO_C_BINDING
       TYPE(C_PTR), VALUE :: handle
       INTEGER(C_INT), VALUE :: objectHandle
-      INTEGER(C_INT) :: Fieldml_GetImportRemoteEvaluator
-    END FUNCTION Fieldml_GetImportRemoteEvaluator
+      INTEGER(C_INT) :: Fieldml_GetReferenceRemoteEvaluator
+    END FUNCTION Fieldml_GetReferenceRemoteEvaluator
 
     FUNCTION Fieldml_SetAlias( handle, objectHandle, remoteDomain, localSource ) &
       & BIND(C,NAME="Fieldml_SetAlias")
@@ -848,7 +848,7 @@ MODULE FIELDML_API
     & Fieldml_CopySwizzleData, Fieldml_CreateContinuousPiecewise, Fieldml_CreateContinuousAggregate, &
     & Fieldml_SetDefaultEvaluator, Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, Fieldml_GetEvaluatorElement, &
     & Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, Fieldml_GetIndexCount, Fieldml_GetIndexDomain, &
-    & Fieldml_CreateContinuousImport, Fieldml_GetImportRemoteEvaluator, Fieldml_SetAlias, Fieldml_GetAliasCount, &
+    & Fieldml_CreateContinuousReference, Fieldml_GetReferenceRemoteEvaluator, Fieldml_SetAlias, Fieldml_GetAliasCount, &
     & Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, Fieldml_ReadIntSlice, &
     & Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, Fieldml_WriteDoubleSlice, &
     & Fieldml_CloseWriter
@@ -861,7 +861,7 @@ MODULE FIELDML_API
 
   PUBLIC LOCATION_UNKNOWN, LOCATION_INLINE, LOCATION_FILE
 
-  PUBLIC FHT_UNKNOWN, FHT_ENSEMBLE_DOMAIN, FHT_CONTINUOUS_DOMAIN, FHT_MESH_DOMAIN, FHT_CONTINUOUS_IMPORT, &
+  PUBLIC FHT_UNKNOWN, FHT_ENSEMBLE_DOMAIN, FHT_CONTINUOUS_DOMAIN, FHT_MESH_DOMAIN, FHT_CONTINUOUS_REFERENCE, &
     & FHT_ENSEMBLE_PARAMETERS, FHT_CONTINUOUS_PARAMETERS, FHT_CONTINUOUS_PIECEWISE, FHT_CONTINUOUS_AGGREGATE, &
     & FHT_CONTINUOUS_VARIABLE, FHT_ENSEMBLE_VARIABLE, FHT_REMOTE_ENSEMBLE_DOMAIN, FHT_REMOTE_CONTINUOUS_DOMAIN, &
     & FHT_REMOTE_ENSEMBLE_EVALUATOR, FHT_REMOTE_CONTINUOUS_EVALUATOR, FHT_UNKNOWN_ENSEMBLE_DOMAIN, &

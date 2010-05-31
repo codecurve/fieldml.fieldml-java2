@@ -138,15 +138,15 @@ FieldmlObject *createMeshDomain( const char *name, int region, FmlObjectHandle x
 }
 
 
-FieldmlObject *createContinuousImport( const char *name, int region, FmlObjectHandle evaluator, FmlObjectHandle valueDomain )
+FieldmlObject *createContinuousReference( const char *name, int region, FmlObjectHandle evaluator, FmlObjectHandle valueDomain )
 {
-    FieldmlObject *object = createFieldmlObject( name, FHT_CONTINUOUS_IMPORT, region );
-    ContinuousImport *import = calloc( 1, sizeof( ContinuousImport ) );
-    import->remoteEvaluator = evaluator;
-    import->valueDomain = valueDomain;
-    import->aliases = createIntTable();
+    FieldmlObject *object = createFieldmlObject( name, FHT_CONTINUOUS_REFERENCE, region );
+    ContinuousReference *reference = calloc( 1, sizeof( ContinuousReference ) );
+    reference->remoteEvaluator = evaluator;
+    reference->valueDomain = valueDomain;
+    reference->aliases = createIntTable();
 
-    object->object.continuousImport = import;
+    object->object.continuousReference = reference;
     
     return object;
 }
@@ -412,10 +412,10 @@ void destroyMeshDomain( MeshDomain *domain )
 }
 
 
-void destroyContinuousImport( ContinuousImport *import )
+void destroyContinuousReference( ContinuousReference *reference )
 {
-    destroyIntTable( import->aliases, NULL );
-    free( import );
+    destroyIntTable( reference->aliases, NULL );
+    free( reference );
 }
 
 
@@ -492,8 +492,8 @@ void destroyFieldmlObject( FieldmlObject *object )
     case FHT_MESH_DOMAIN:
         destroyMeshDomain( object->object.meshDomain );
         break;
-    case FHT_CONTINUOUS_IMPORT:
-        destroyContinuousImport( object->object.continuousImport );
+    case FHT_CONTINUOUS_REFERENCE:
+        destroyContinuousReference( object->object.continuousReference );
         break;
     case FHT_CONTINUOUS_PARAMETERS:
     case FHT_ENSEMBLE_PARAMETERS:
@@ -650,7 +650,7 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
     {
         if( ( object->type == FHT_CONTINUOUS_DOMAIN ) ||
             ( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
-            ( object->type == FHT_CONTINUOUS_IMPORT ) ||
+            ( object->type == FHT_CONTINUOUS_REFERENCE ) ||
             ( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
             ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
             ( object->type == FHT_CONTINUOUS_VARIABLE ) )
@@ -661,7 +661,7 @@ FmlObjectHandle addFieldmlObject( FieldmlRegion *region, FieldmlObject *object )
     else if( oldObject->type == FHT_UNKNOWN_CONTINUOUS_EVALUATOR )
     {
         if( ( object->type == FHT_CONTINUOUS_PIECEWISE ) ||
-            ( object->type == FHT_CONTINUOUS_IMPORT ) ||
+            ( object->type == FHT_CONTINUOUS_REFERENCE ) ||
             ( object->type == FHT_CONTINUOUS_AGGREGATE ) ||
             ( object->type == FHT_CONTINUOUS_PARAMETERS ) ||
             ( object->type == FHT_CONTINUOUS_VARIABLE ) )
