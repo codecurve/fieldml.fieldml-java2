@@ -17,13 +17,11 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * The Original Code is OpenCMISS
+ * The Original Code is FieldML
  *
- * The Initial Developer of the Original Code is University of Auckland,
- * Auckland, New Zealand and University of Oxford, Oxford, United
- * Kingdom. Portions created by the University of Auckland and University
- * of Oxford are Copyright (C) 2007 by the University of Auckland and
- * the University of Oxford. All Rights Reserved.
+ * The Initial Developer of the Original Code is Auckland Uniservices Ltd,
+ * Auckland, New Zealand. Portions created by the Initial Developer are
+ * Copyright (C) 2010 the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
  *
@@ -612,6 +610,12 @@ FmlObjectHandle Fieldml_CreateContinuousAggregate( FmlHandle handle, const char 
  * Sets the default evaluator for the given piecewise evaluator.
  */
 int Fieldml_SetDefaultEvaluator( FmlHandle handle, FmlObjectHandle objectHandle, FmlObjectHandle evaluator );
+
+
+/**
+ * Returns the default evaluator for the given piecewise evaluator.
+ */
+int Fieldml_GetDefaultEvaluator( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
 /**
