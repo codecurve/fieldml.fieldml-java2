@@ -75,7 +75,7 @@ static int validate( char *filename )
 
     xmlSubstituteEntitiesDefault( 1 );
 
-    schema = "Fieldml.xsd";
+    schema = "Fieldml_0.2.xsd";
 
     buffer = xmlParserInputBufferCreateFilename( filename, XML_CHAR_ENCODING_NONE );
     if( buffer == NULL )

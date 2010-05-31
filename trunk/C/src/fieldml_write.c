@@ -533,7 +533,8 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     xmlTextWriterStartDocument( writer, NULL, MY_ENCODING, NULL );
 
     xmlTextWriterStartElement( writer, FIELDML_TAG );
-    xmlTextWriterWriteAttribute( writer, "xsi:noNamespaceSchemaLocation", "Fieldml.xsd" );
+    xmlTextWriterWriteAttribute( writer, VERSION_ATTRIB, FML_VERSION_STRING );
+    xmlTextWriterWriteAttribute( writer, "xsi:noNamespaceSchemaLocation", "Fieldml_0.2.xsd" );
     xmlTextWriterWriteAttribute( writer, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );        
     xmlTextWriterStartElement( writer, REGION_TAG );
     

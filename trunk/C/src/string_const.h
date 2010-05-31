@@ -121,6 +121,8 @@ extern const char * const FILE_ATTRIB;
 extern const char * const TYPE_ATTRIB;
 extern const char * const OFFSET_ATTRIB;
 
+extern const char * const VERSION_ATTRIB;
+
 
 extern const char * const STRING_TYPE_TEXT;
 extern const char * const STRING_TYPE_LINES;
