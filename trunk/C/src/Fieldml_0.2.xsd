@@ -72,7 +72,7 @@
 		<xs:attribute name="valueDomain" type="xs:string" />
 	</xs:complexType>
 
-	<xs:complexType name="ImportedContinuousEvaluatorType">
+	<xs:complexType name="ContinuousReferenceEvaluatorType">
 		<xs:all>
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
@@ -154,7 +154,7 @@
 			<xs:element name="MeshDomain" type="MeshDomainType" />
 			<xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
             <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
-			<xs:element name="ImportedContinuousEvaluator" type="ImportedContinuousEvaluatorType" />
+			<xs:element name="ContinuousReferenceEvaluator" type="ContinuousReferenceEvaluatorType" />
             <xs:element name="ContinuousPiecewiseEvaluator" type="PiecewiseEvaluatorType" />
             <xs:element name="EnsemblePiecewiseEvaluator" type="PiecewiseEvaluatorType" />
             <xs:element name="ContinuousParameters" type="ParametersType" />

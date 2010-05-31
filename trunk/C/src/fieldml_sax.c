@@ -81,7 +81,7 @@ typedef enum _SaxState
     FML_MESH_SHAPES,
     FML_MESH_CONNECTIVITY,
     
-    FML_CONTINUOUS_IMPORT,
+    FML_CONTINUOUS_REFERENCE,
     FML_ALIASES,
 
     FML_ENSEMBLE_PARAMETERS,
@@ -518,7 +518,7 @@ static void endMeshDomain( SaxContext *context )
 }
 
 
-static void startContinuousImport( SaxContext *context, SaxAttributes *attributes )
+static void startContinuousReference( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *remoteName;
@@ -528,28 +528,28 @@ static void startContinuousImport( SaxContext *context, SaxAttributes *attribute
     name = getAttribute( attributes, NAME_ATTRIB );
     if( name == NULL )
     {
-        logError( context->region, "ImportedContinuousEvaluator has no name", NULL, NULL );
+        logError( context->region, "ContinuousReferenceEvaluator has no name", NULL, NULL );
         return;
     }
     
     remoteName = getAttribute( attributes, EVALUATOR_ATTRIB );
     if( remoteName == NULL )
     {
-        logError( context->region, "ImportedContinuousEvaluator has no remote name", name, NULL );
+        logError( context->region, "ContinuousReferenceEvaluator has no remote name", name, NULL );
         return;
     }
     
     valueDomain = getAttribute( attributes, VALUE_DOMAIN_ATTRIB );
     if( valueDomain == NULL )
     {
-        logError( context->region, "ImportedContinuousEvaluator has no value domain", name, NULL );
+        logError( context->region, "ContinuousReferenceEvaluator has no value domain", name, NULL );
         return;
     }
     
     handle = getOrCreateObjectHandle( context->region, valueDomain, FHT_UNKNOWN_CONTINUOUS_DOMAIN );
     remoteHandle = getOrCreateObjectHandle( context->region, remoteName, FHT_UNKNOWN_CONTINUOUS_EVALUATOR );
 
-    context->currentObject = Fieldml_CreateContinuousImport( context->region, name, remoteHandle, handle );
+    context->currentObject = Fieldml_CreateContinuousReference( context->region, name, remoteHandle, handle );
 }
 
 
@@ -574,7 +574,7 @@ static void onAlias( SaxContext *context, SaxAttributes *attributes )
 }
 
 
-static void endContinuousImport( SaxContext *context )
+static void endContinuousReference( SaxContext *context )
 {
     Fieldml_ValidateObject( context->region, context->currentObject );
     
@@ -1247,7 +1247,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             onMeshConnectivity( saxContext, saxAttributes );
         }
         break;
-    case FML_CONTINUOUS_IMPORT:
+    case FML_CONTINUOUS_REFERENCE:
         if( strcmp( name, ALIASES_TAG ) == 0 )
         {
             intStackPush( saxContext->state, FML_ALIASES );
@@ -1358,10 +1358,10 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
             startMeshDomain( saxContext, saxAttributes );
             intStackPush( saxContext->state, FML_MESH_DOMAIN );
         }
-        else if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
+        else if( strcmp( name, CONTINUOUS_REFERENCE_TAG ) == 0 )
         {
-            startContinuousImport( saxContext, saxAttributes );
-            intStackPush( saxContext->state, FML_CONTINUOUS_IMPORT );
+            startContinuousReference( saxContext, saxAttributes );
+            intStackPush( saxContext->state, FML_CONTINUOUS_REFERENCE );
         }
         else if( strcmp( name, ENSEMBLE_PARAMETERS_TAG ) == 0 )
         {
@@ -1460,10 +1460,10 @@ static void onEndElementNs( void *context, const xmlChar *name, const xmlChar *p
             intStackPop( saxContext->state );
         }
         break;
-    case FML_CONTINUOUS_IMPORT:
-        if( strcmp( name, IMPORTED_CONTINUOUS_TAG ) == 0 )
+    case FML_CONTINUOUS_REFERENCE:
+        if( strcmp( name, CONTINUOUS_REFERENCE_TAG ) == 0 )
         {
-            endContinuousImport( saxContext );
+            endContinuousReference( saxContext );
             intStackPop( saxContext->state );
         }
         break;

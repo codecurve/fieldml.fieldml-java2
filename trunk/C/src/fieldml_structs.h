@@ -96,14 +96,14 @@ typedef struct _MeshDomain
 MeshDomain;
 
 
-typedef struct _ContinuousImport
+typedef struct _ContinuousReference
 {
     int remoteEvaluator;
     int valueDomain;
 
     IntTable *aliases;
 }
-ContinuousImport;
+ContinuousReference;
 
 
 typedef struct _ContinuousPiecewise
@@ -198,7 +198,7 @@ typedef struct _FieldmlObject
         EnsembleDomain *ensembleDomain;
         ContinuousDomain *continuousDomain;
         MeshDomain *meshDomain;
-        ContinuousImport *continuousImport;
+        ContinuousReference *continuousReference;
         Parameters *parameters;
         Variable* variable;
         ContinuousPiecewise *piecewise;
@@ -244,7 +244,7 @@ FieldmlObject *createContinuousDomain( const char * name, int region, FmlObjectH
 
 FieldmlObject *createMeshDomain( const char *name, int region, FmlObjectHandle xiDomain, FmlObjectHandle elementDomain );
 
-FieldmlObject *createContinuousImport( const char *name, int region, FmlObjectHandle evaluator, FmlObjectHandle valueDomain );
+FieldmlObject *createContinuousReference( const char *name, int region, FmlObjectHandle evaluator, FmlObjectHandle valueDomain );
 
 FieldmlObject *createEnsembleVariable( const char *name, int region, FmlObjectHandle valueDomain );
 

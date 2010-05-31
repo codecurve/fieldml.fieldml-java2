@@ -61,7 +61,7 @@ extern const char * const MESH_DOMAIN_TAG;
 extern const char * const MESH_SHAPES_TAG;
 extern const char * const MESH_CONNECTIVITY_TAG;
 
-extern const char * const IMPORTED_CONTINUOUS_TAG;
+extern const char * const CONTINUOUS_REFERENCE_TAG;
 extern const char * const ALIASES_TAG;
 
 extern const char * const CONTINUOUS_VARIABLE_TAG;

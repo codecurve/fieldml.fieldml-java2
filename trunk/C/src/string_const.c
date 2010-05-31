@@ -58,7 +58,7 @@ const char * const MESH_DOMAIN_TAG                  = "MeshDomain";
 const char * const MESH_SHAPES_TAG                  = "shapes";
 const char * const MESH_CONNECTIVITY_TAG            = "pointConnectivity";
 
-const char * const IMPORTED_CONTINUOUS_TAG          = "ImportedContinuousEvaluator";
+const char * const CONTINUOUS_REFERENCE_TAG         = "ContinuousReferenceEvaluator";
 const char * const ALIASES_TAG                      = "aliases";
 
 const char * const CONTINUOUS_VARIABLE_TAG          = "ContinuousVariableEvaluator";

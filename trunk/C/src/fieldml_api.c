@@ -515,9 +515,9 @@ static IntTable *getAliasTable( FieldmlObject *object )
     {
         return object->object.piecewise->aliases;
     }
-    else if( object->type == FHT_CONTINUOUS_IMPORT )
+    else if( object->type == FHT_CONTINUOUS_REFERENCE )
     {
-        return object->object.continuousImport->aliases;
+        return object->object.continuousReference->aliases;
     }
 
     return NULL;
@@ -1079,9 +1079,9 @@ FmlObjectHandle Fieldml_GetValueDomain( FmlHandle handle, FmlObjectHandle object
     {
         return object->object.parameters->valueDomain;
     }
-    else if( object->type == FHT_CONTINUOUS_IMPORT )
+    else if( object->type == FHT_CONTINUOUS_REFERENCE )
     {
-        return object->object.continuousImport->valueDomain;
+        return object->object.continuousReference->valueDomain;
     }
     else if( object->type == FHT_CONTINUOUS_AGGREGATE )
     {
@@ -1934,18 +1934,18 @@ FmlObjectHandle Fieldml_GetElementEvaluator( FmlHandle handle, FmlObjectHandle o
 }
 
 
-FmlObjectHandle Fieldml_CreateContinuousImport( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain )
+FmlObjectHandle Fieldml_CreateContinuousReference( FmlHandle handle, const char * name, FmlObjectHandle remoteEvaluator, FmlObjectHandle valueDomain )
 {
     FieldmlObject *object;
     
-    object = createContinuousImport( name, FILE_REGION_HANDLE, remoteEvaluator, valueDomain );
+    object = createContinuousReference( name, FILE_REGION_HANDLE, remoteEvaluator, valueDomain );
     
     setError( handle, FML_ERR_NO_ERROR );
     return addFieldmlObject( handle, object );
 }
 
 
-FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlHandle handle, FmlObjectHandle objectHandle )
+FmlObjectHandle Fieldml_GetReferenceRemoteEvaluator( FmlHandle handle, FmlObjectHandle objectHandle )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
 
@@ -1955,10 +1955,10 @@ FmlObjectHandle Fieldml_GetImportRemoteEvaluator( FmlHandle handle, FmlObjectHan
         return FML_INVALID_HANDLE;
     }
 
-    if( object->type == FHT_CONTINUOUS_IMPORT )
+    if( object->type == FHT_CONTINUOUS_REFERENCE )
     {
         setError( handle, FML_ERR_NO_ERROR );
-        return object->object.continuousImport->remoteEvaluator;
+        return object->object.continuousReference->remoteEvaluator;
     }
     
     

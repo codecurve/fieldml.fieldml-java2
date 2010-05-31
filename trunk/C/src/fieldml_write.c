@@ -359,19 +359,19 @@ static int writeVariable( xmlTextWriterPtr writer, FieldmlRegion *region, Fieldm
 }
 
 
-static writeContinuousImport( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
+static writeContinuousReference( xmlTextWriterPtr writer, FieldmlRegion *region, FieldmlObject *object )
 {
-    ContinuousImport *import = object->object.continuousImport;
+    ContinuousReference *reference = object->object.continuousReference;
 
-    xmlTextWriterStartElement( writer, IMPORTED_CONTINUOUS_TAG );
+    xmlTextWriterStartElement( writer, CONTINUOUS_REFERENCE_TAG );
     
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
-    writeObjectName( writer, region, EVALUATOR_ATTRIB, import->remoteEvaluator );
-    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, import->valueDomain );
+    writeObjectName( writer, region, EVALUATOR_ATTRIB, reference->remoteEvaluator );
+    writeObjectName( writer, region, VALUE_DOMAIN_ATTRIB, reference->valueDomain );
 
     writeStringTable( writer, MARKUP_TAG, object->markup );
     
-    writeObjectObjectTable( writer, region, ALIASES_TAG, import->aliases );
+    writeObjectObjectTable( writer, region, ALIASES_TAG, reference->aliases );
 
     xmlTextWriterEndElement( writer );
     
@@ -499,8 +499,8 @@ static int writeFieldmlObject( xmlTextWriterPtr writer, FieldmlRegion *region, F
     case FHT_CONTINUOUS_VARIABLE:
     case FHT_ENSEMBLE_VARIABLE:
         return writeVariable( writer, region, object );
-    case FHT_CONTINUOUS_IMPORT:
-        return writeContinuousImport( writer, region, object );
+    case FHT_CONTINUOUS_REFERENCE:
+        return writeContinuousReference( writer, region, object );
     case FHT_CONTINUOUS_PIECEWISE:
         return writeContinuousPiecewise( writer, region, object );
     case FHT_CONTINUOUS_PARAMETERS:
