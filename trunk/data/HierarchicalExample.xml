@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1____2____3____4____5
+-->
+  <Region name="Hierarchical_Test">
+    <ContinuousDomain name="hierarchical_mesh.domain.xi" componentDomain="library.ensemble.xi.1d" />
+    
+
+    <EnsembleDomain baseDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="2" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="hierarchical_mesh.dofs" name="hierarchical_mesh.dofs">
+      <ContiguousEnsembleBounds valueCount="12" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain xiComponents="library.ensemble.xi.1d" name="hierarchical_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.line.0_1" />
+        <entry key="2" value="library.shape.line.0_1" />
+      </shapes>
+      <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="2" />
+    </MeshDomain>
+    
+
+    <ContinuousParameters name="hierarchical_mesh.dofs.z" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.954915  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>1.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>-0.427051  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>-1.190983  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>-0.427051  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>1.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.954915  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>8  </key>
+          <values>0.663119  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>9  </key>
+          <values>-0.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>10  </key>
+          <values>-0.572949  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>11  </key>
+          <values>-1.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>12  </key>
+          <values>-0.954915  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="hierarchical_mesh.element_dof_weights" valueDomain="library.weighting.list" />
+    
+
+    <ContinuousVariableEvaluator name="hierarchical_mesh.dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>
+        <entry value="hierarchical_mesh.dofs" />
+      </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <MapEvaluator valueIndexes="hierarchical_mesh.element_dof_indexes" valueWeights="hierarchical_mesh.element_dof_weights" valueSource="hierarchical_mesh.dofs" name="hierarchical_mesh.element.local_dofs" valueDomain="library.coordinates.rc.1d" />
+    
+
+    <ImportedContinuousEvaluator evaluator="hierarchical_mesh.delegated" name="hierarchical_mesh.submesh_evaluator" valueDomain="library.coordinates.rc.1d">
+      <meshAliases>
+        <SimpleMapEntry key="test_mesh.domain" value="hierarchical_mesh.submesh_atlas" />
+      </meshAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="hierarchical_mesh.domain.elements" name="hierarchical_mesh.coordinates" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="hierarchical_mesh.submesh_evaluator" />
+        <TemplateMap index="2" evaluator="hierarchical_mesh.submesh_evaluator" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <PiecewiseField template="test_mesh.coordinates" name="hierarchical_mesh.delegated" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.dofs" value="hierarchical_mesh.element.local_dofs" />
+      </variables>
+    </PiecewiseField>
+    
+
+    <PiecewiseField template="hierarchical_mesh.coordinates" name="hierarchical_mesh.coordinates.z" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="hierarchical_mesh.dofs" value="hierarchical_mesh.dofs.z" />
+      </variables>
+    </PiecewiseField>
+    
+
+  </Region>
+</fieldml>
+
