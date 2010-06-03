@@ -2396,7 +2396,14 @@ FmlReaderHandle Fieldml_OpenReader( FmlHandle handle, FmlObjectHandle objectHand
 
 int Fieldml_ReadIntSlice( FmlHandle handle, FmlReaderHandle reader, int *indexBuffer, int *valueBuffer )
 {
-    int err = readIntSlice( reader, indexBuffer, valueBuffer );
+    int err;
+    
+    if( reader == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
+    err = readIntSlice( reader, indexBuffer, valueBuffer );
     
     return setError( handle, err );
 }
@@ -2404,7 +2411,14 @@ int Fieldml_ReadIntSlice( FmlHandle handle, FmlReaderHandle reader, int *indexBu
 
 int Fieldml_ReadDoubleSlice( FmlHandle handle, FmlReaderHandle reader, int *indexBuffer, double *valueBuffer )
 {
-    int err = readDoubleSlice( reader, indexBuffer, valueBuffer );
+    int err;
+    
+    if( reader == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
+    err = readDoubleSlice( reader, indexBuffer, valueBuffer );
     
     return setError( handle, err );
 }
@@ -2412,6 +2426,13 @@ int Fieldml_ReadDoubleSlice( FmlHandle handle, FmlReaderHandle reader, int *inde
 
 int Fieldml_CloseReader( FmlHandle handle, FmlReaderHandle reader )
 {
+    int err;
+    
+    if( reader == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
     destroyReader( reader );
     
     return setError( handle, FML_ERR_NO_ERROR );
@@ -2455,7 +2476,14 @@ FmlWriterHandle Fieldml_OpenWriter( FmlHandle handle, FmlObjectHandle objectHand
 
 int Fieldml_WriteIntSlice( FmlHandle handle, FmlWriterHandle writer, int *indexBuffer, int *valueBuffer )
 {
-    int err = writeIntSlice( writer, indexBuffer, valueBuffer );
+    int err;
+    
+    if( writer == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+    
+    err = writeIntSlice( writer, indexBuffer, valueBuffer );
     
     return setError( handle, err );
 }
@@ -2463,7 +2491,14 @@ int Fieldml_WriteIntSlice( FmlHandle handle, FmlWriterHandle writer, int *indexB
 
 int Fieldml_WriteDoubleSlice( FmlHandle handle, FmlWriterHandle writer, int *indexBuffer, double *valueBuffer )
 {
-    int err = writeDoubleSlice( writer, indexBuffer, valueBuffer );
+    int err;
+    
+    if( writer == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
+    err = writeDoubleSlice( writer, indexBuffer, valueBuffer );
     
     return setError( handle, err );
 }
@@ -2471,6 +2506,11 @@ int Fieldml_WriteDoubleSlice( FmlHandle handle, FmlWriterHandle writer, int *ind
 
 int Fieldml_CloseWriter( FmlHandle handle, FmlWriterHandle writer )
 {
+    if( writer == NULL )
+    {
+        return setError( handle, FML_ERR_INVALID_OBJECT );
+    }
+
     destroyWriter( writer );
     
     return setError( handle, FML_ERR_NO_ERROR );

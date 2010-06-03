@@ -98,6 +98,9 @@ FieldmlOutputStream;
 
 static const int BUFFER_SIZE = 1024;
 
+//Using a #define because the relevant buffer is allocated on stack.
+#define NBUFFER_SIZE 64
+
 static int loadBuffer( FmlInputStream stream )
 {
     int len;
@@ -178,13 +181,10 @@ int FmlInputStreamReadInt( FmlInputStream stream )
 
 double FmlInputStreamReadDouble( FmlInputStream stream )
 {
-    double lValue = 0;
-    double dValue = 1;
-    double rValue = 0;
-    int gotDot = 0;
-    int invert = 0;
-    int gotDigit = 0;
     int d;
+    int count = 0;
+    int skipping = 1;
+    char nBuffer[NBUFFER_SIZE];
     
     while( 1 )
     {
@@ -199,41 +199,25 @@ double FmlInputStreamReadDouble( FmlInputStream stream )
         while( stream->bufferPos < stream->bufferCount )
         {
             d = stream->buffer[stream->bufferPos++];
-            if( ( d >= '0' ) && ( d <= '9' ) )
+            if( ( ( d >= '0' ) && ( d <= '9' ) ) || ( d == 'e' ) || ( d == 'E' ) || ( d == '-' ) || ( d == '+') || ( d == '.' ) )
             {
-                gotDigit = 1;
+                skipping = 0;
                 
-                if( gotDot )
+                if( count < NBUFFER_SIZE - 1 )
                 {
-                    dValue /= 10.0;
-                    
-                    rValue += ( d - '0' ) * dValue;
-                }
-                else
-                {
-                    lValue *= 10;
-                    lValue += ( d - '0' );
+                    //Yes, this will truncate ridiculously long numbers that can't fit into a double anyway.
+                    nBuffer[count++] = d;
                 }
             }
-            else if( ( d == '-' ) && ( !gotDigit ) )
+            else if( skipping )
             {
-                invert = 1 - invert;
+                continue;
             }
-            else if( d == '.' )
-            {
-                gotDot = 1;
-                gotDigit = 1;
-            }
-            else if( gotDigit )
+            else
             {
                 stream->bufferPos--;
-
-                if( invert )
-                {
-                    lValue = -lValue;
-                    rValue = -rValue;
-                }
-                return lValue + rValue;
+                nBuffer[count] = 0;
+                return strtod( nBuffer, NULL );
             }
         }
     }

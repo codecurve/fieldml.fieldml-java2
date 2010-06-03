@@ -1,4 +1,4 @@
-!This file was automatically generated from fieldml_api.h on 2010-05-31 14:28
+!This file was automatically generated from fieldml_api.h on 2010-06-02 10:04
 MODULE FIELDML_API
 
   USE ISO_C_BINDING
@@ -628,6 +628,14 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_SetDefaultEvaluator
     END FUNCTION Fieldml_SetDefaultEvaluator
 
+    FUNCTION Fieldml_GetDefaultEvaluator( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_GetDefaultEvaluator")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT) :: Fieldml_GetDefaultEvaluator
+    END FUNCTION Fieldml_GetDefaultEvaluator
+
     FUNCTION Fieldml_SetEvaluator( handle, objectHandle, element, evaluator ) &
       & BIND(C,NAME="Fieldml_SetEvaluator")
       USE ISO_C_BINDING
@@ -846,12 +854,12 @@ MODULE FIELDML_API
     & Fieldml_SetParameterDataDescription, Fieldml_GetParameterDataDescription, Fieldml_AddSemidenseIndex, &
     & Fieldml_GetSemidenseIndexCount, Fieldml_GetSemidenseIndex, Fieldml_SetSwizzle, Fieldml_GetSwizzleCount, &
     & Fieldml_CopySwizzleData, Fieldml_CreateContinuousPiecewise, Fieldml_CreateContinuousAggregate, &
-    & Fieldml_SetDefaultEvaluator, Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, Fieldml_GetEvaluatorElement, &
-    & Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, Fieldml_GetIndexCount, Fieldml_GetIndexDomain, &
-    & Fieldml_CreateContinuousReference, Fieldml_GetReferenceRemoteEvaluator, Fieldml_SetAlias, Fieldml_GetAliasCount, &
-    & Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, Fieldml_ReadIntSlice, &
-    & Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, Fieldml_WriteDoubleSlice, &
-    & Fieldml_CloseWriter
+    & Fieldml_SetDefaultEvaluator, Fieldml_GetDefaultEvaluator, Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, &
+    & Fieldml_GetEvaluatorElement, Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, Fieldml_GetIndexCount, &
+    & Fieldml_GetIndexDomain, Fieldml_CreateContinuousReference, Fieldml_GetReferenceRemoteEvaluator, Fieldml_SetAlias, &
+    & Fieldml_GetAliasCount, Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, &
+    & Fieldml_ReadIntSlice, Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, &
+    & Fieldml_WriteDoubleSlice, Fieldml_CloseWriter
 
   PUBLIC BOUNDS_UNKNOWN, BOUNDS_DISCRETE_CONTIGUOUS, BOUNDS_DISCRETE_ARBITRARY
 
