@@ -98,7 +98,7 @@ typedef struct _ParameterWriter
 ParameterWriter;
 
 
-static ParameterReader *createFileReader( FmlHandle handle, FmlObjectHandle parameters )
+static ParameterReader *createParameterReader( FmlHandle handle, FmlObjectHandle parameters )
 {
     ParameterReader *reader;
     int i, offset;
@@ -110,6 +110,7 @@ static ParameterReader *createFileReader( FmlHandle handle, FmlObjectHandle para
         int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
         int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
         int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
+        DataLocationType location = Fieldml_GetParameterDataLocation( handle, parameters );
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -125,7 +126,14 @@ static ParameterReader *createFileReader( FmlHandle handle, FmlObjectHandle para
             return NULL;
         }
         
-        streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( handle, parameters ) );
+        if( location == LOCATION_FILE )
+        {
+            streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( handle, parameters ) );
+        }
+        else if( location == LOCATION_INLINE )
+        {
+            streamHandle = FmlCreateStringInputStream( Fieldml_GetParameterInlineData( handle, parameters ) );
+        }
         if( streamHandle == NULL )
         {
             setError( handle, FML_ERR_FILE_READ );
@@ -267,7 +275,7 @@ static void destroyReader( ParameterReader *reader )
 }
 
 
-static ParameterWriter *createFileWriter( FmlHandle handle, FmlObjectHandle parameters, int append )
+static ParameterWriter *createParameterWriter( FmlHandle handle, FmlObjectHandle parameters, int append )
 {
     ParameterWriter *writer;
     FmlOutputStream streamHandle;
@@ -278,6 +286,7 @@ static ParameterWriter *createFileWriter( FmlHandle handle, FmlObjectHandle para
         int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
         int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
         int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
+        DataLocationType location = Fieldml_GetParameterDataLocation( handle, parameters );
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -300,7 +309,11 @@ static ParameterWriter *createFileWriter( FmlHandle handle, FmlObjectHandle para
             return NULL;
         }
         
-        streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( handle, parameters ), append );
+        if( location == LOCATION_FILE )
+        {
+            streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( handle, parameters ), append );
+        }
+
         if( streamHandle == NULL )
         {
             setError( handle, FML_ERR_FILE_WRITE );
@@ -542,6 +555,74 @@ static int cappedCopy( const char *source, char *buffer, int bufferLength )
     buffer[length] = 0;
     
     return length;
+}
+
+
+static StringDataSource *getStringDataSource( FieldmlObject *object )
+{
+    Parameters *parameters;
+
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    if( ( object->type == FHT_CONTINUOUS_PARAMETERS ) || ( object->type == FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        parameters = object->object.parameters;
+        
+        if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( parameters->dataDescription.semidense->locationType == LOCATION_INLINE )
+            {
+                return &(parameters->dataDescription.semidense->dataLocation.stringData);
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    return NULL;
+}
+
+
+static FileDataSource *getFileDataSource( FieldmlObject *object )
+{
+    Parameters *parameters;
+
+    if( object == NULL )
+    {
+        return NULL;
+    }
+    
+    if( ( object->type == FHT_CONTINUOUS_PARAMETERS ) || ( object->type == FHT_ENSEMBLE_PARAMETERS ) )
+    {
+        parameters = object->object.parameters;
+        
+        if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
+        {
+            if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+            {
+                return &(parameters->dataDescription.semidense->dataLocation.fileData);
+            }
+            else
+            {
+                return NULL;
+            }
+        }
+        else
+        {
+            return NULL;
+        }
+    }
+
+    return NULL;
 }
 
 //========================================================================
@@ -1262,10 +1343,9 @@ int Fieldml_SetParameterDataLocation( FmlHandle handle, FmlObjectHandle objectHa
 }
 
 
-int Fieldml_AddInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length )
+int Fieldml_AddParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-    Parameters *parameters;
     StringDataSource *source;
     char *newString;
     
@@ -1274,27 +1354,10 @@ int Fieldml_AddInlineParameterData( FmlHandle handle, FmlObjectHandle objectHand
         return setError( handle, FML_ERR_UNKNOWN_OBJECT );
     }
     
-    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    source = getStringDataSource( object );
+    if( source == NULL )
     {
         return setError( handle, FML_ERR_INVALID_OBJECT );
-    }
-    
-    parameters = object->object.parameters;
-    
-    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
-    {
-        if( parameters->dataDescription.semidense->locationType == LOCATION_INLINE )
-        {
-            source = &(parameters->dataDescription.semidense->dataLocation.stringData);
-        }
-        else
-        {
-            return setError( handle, FML_ERR_MISCONFIGURED_OBJECT );
-        }
-    }
-    else
-    {
-        return setError( handle, FML_ERR_UNSUPPORTED );
     }
 
     newString = malloc( source->length + length + 1 );
@@ -1309,10 +1372,82 @@ int Fieldml_AddInlineParameterData( FmlHandle handle, FmlObjectHandle objectHand
 }
 
 
+int Fieldml_GetParameterInlineDataLength( FmlHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    StringDataSource *source;
+
+    if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return -1;
+    }
+    
+    source = getStringDataSource( object );
+    if( source == NULL )
+    {
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return -1;
+    }
+    
+    setError( handle, FML_ERR_NO_ERROR );
+    return source->length;
+}
+
+
+const char *Fieldml_GetParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    StringDataSource *source;
+    
+    if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return NULL;
+    }
+    
+    source = getStringDataSource( object );
+    if( source == NULL )
+    {
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return NULL;
+    }
+    
+    setError( handle, FML_ERR_NO_ERROR );
+    return source->string;
+}
+
+
+int Fieldml_CopyInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength, int offset )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+    StringDataSource *source;
+
+    if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return -1;
+    }
+    
+    source = getStringDataSource( object );
+    if( source == NULL )
+    {
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return -1;
+    }
+    
+    if( offset >= source->length )
+    {
+        return 0;
+    }
+    
+    return cappedCopy( source->string + offset, buffer, bufferLength );
+}
+
+
 int Fieldml_SetParameterFileData( FmlHandle handle, FmlObjectHandle objectHandle, const char * filename, DataFileType type, int offset )
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
-    Parameters *parameters;
     FileDataSource *source;
     
     if( object == NULL )
@@ -1320,29 +1455,12 @@ int Fieldml_SetParameterFileData( FmlHandle handle, FmlObjectHandle objectHandle
         return setError( handle, FML_ERR_UNKNOWN_OBJECT );
     }
     
-    if( ( object->type != FHT_CONTINUOUS_PARAMETERS ) && ( object->type != FHT_ENSEMBLE_PARAMETERS ) )
+    source = getFileDataSource( object );
+    if( source == NULL )
     {
         return setError( handle, FML_ERR_INVALID_OBJECT );
     }
-    
-    parameters = object->object.parameters;
-    
-    if( parameters->descriptionType == DESCRIPTION_SEMIDENSE )
-    {
-        if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
-        {
-            source = &(parameters->dataDescription.semidense->dataLocation.fileData);
-        }
-        else
-        {
-            return setError( handle, FML_ERR_MISCONFIGURED_OBJECT );
-        }
-    }
-    else
-    {
-        return setError( handle, FML_ERR_UNSUPPORTED );
-    }
-    
+
     if( source->filename != NULL )
     {
         free( source->filename );
@@ -1360,44 +1478,22 @@ const char *Fieldml_GetParameterDataFilename( FmlHandle handle, FmlObjectHandle 
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
-
+    
     if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return NULL;
+    }
+    
+    source = getFileDataSource( object );
+    if( source == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
         return NULL;
     }
 
-    source = NULL;
-    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
-    {
-        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
-        {
-            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
-            {
-                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
-            }
-            else
-            {
-                setError( handle, FML_ERR_UNSUPPORTED );
-            }
-        }
-        else
-        {
-            setError( handle, FML_ERR_UNSUPPORTED );
-        }
-    }
-    else
-    {
-        setError( handle, FML_ERR_INVALID_OBJECT);
-    }
-    
-    if( source != NULL )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return source->filename;
-    }
-    
-    return NULL;
+    setError( handle, FML_ERR_NO_ERROR );
+    return source->filename;
 }
 
 
@@ -1411,44 +1507,22 @@ int Fieldml_GetParameterDataOffset( FmlHandle handle, FmlObjectHandle objectHand
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
-
+    
     if( object == NULL )
     {
-        setError( handle, FML_ERR_INVALID_OBJECT );
-        return TYPE_UNKNOWN;
-    }
-
-    source = NULL;
-    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
-    {
-        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
-        {
-            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
-            {
-                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
-            }
-            else
-            {
-                setError( handle, FML_ERR_UNSUPPORTED );
-            }
-        }
-        else
-        {
-            setError( handle, FML_ERR_UNSUPPORTED );
-        }
-    }
-    else
-    {
-        setError( handle, FML_ERR_INVALID_OBJECT);
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return -1;
     }
     
-    if( source != NULL )
+    source = getFileDataSource( object );
+    if( source == NULL )
     {
-        setError( handle, FML_ERR_NO_ERROR );
-        return source->offset;
+        setError( handle, FML_ERR_INVALID_OBJECT );
+        return -1;
     }
 
-    return 0;
+    setError( handle, FML_ERR_NO_ERROR );
+    return source->offset;
 }
 
 
@@ -1456,44 +1530,22 @@ DataFileType Fieldml_GetParameterDataFileType( FmlHandle handle, FmlObjectHandle
 {
     FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
     FileDataSource *source;
-
+    
     if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return TYPE_UNKNOWN;
+    }
+    
+    source = getFileDataSource( object );
+    if( source == NULL )
     {
         setError( handle, FML_ERR_INVALID_OBJECT );
         return TYPE_UNKNOWN;
     }
 
-    source = NULL;
-    if( ( object->type == FHT_ENSEMBLE_PARAMETERS ) || ( object->type == FHT_CONTINUOUS_PARAMETERS ) ) 
-    {
-        if( object->object.parameters->descriptionType == DESCRIPTION_SEMIDENSE )
-        {
-            if( object->object.parameters->dataDescription.semidense->locationType == LOCATION_FILE )
-            {
-                source = &object->object.parameters->dataDescription.semidense->dataLocation.fileData;
-            }
-            else
-            {
-                setError( handle, FML_ERR_UNSUPPORTED );
-            }
-        }
-        else
-        {
-            setError( handle, FML_ERR_UNSUPPORTED );
-        }
-    }
-    else
-    {
-        setError( handle, FML_ERR_INVALID_OBJECT);
-    }
-    
-    if( source != NULL )
-    {
-        setError( handle, FML_ERR_NO_ERROR );
-        return source->fileType;
-    }
-
-    return TYPE_UNKNOWN;
+    setError( handle, FML_ERR_NO_ERROR );
+    return source->fileType;
 }
 
 
@@ -2381,9 +2433,10 @@ FmlReaderHandle Fieldml_OpenReader( FmlHandle handle, FmlObjectHandle objectHand
     
     parameters = object->object.parameters;
     
-    if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+    if( ( parameters->dataDescription.semidense->locationType == LOCATION_FILE ) ||
+        ( parameters->dataDescription.semidense->locationType == LOCATION_INLINE ) )
     {
-        reader = createFileReader( handle, objectHandle );
+        reader = createParameterReader( handle, objectHandle );
     }
     else
     {
@@ -2426,8 +2479,6 @@ int Fieldml_ReadDoubleSlice( FmlHandle handle, FmlReaderHandle reader, int *inde
 
 int Fieldml_CloseReader( FmlHandle handle, FmlReaderHandle reader )
 {
-    int err;
-    
     if( reader == NULL )
     {
         return setError( handle, FML_ERR_INVALID_OBJECT );
@@ -2461,9 +2512,10 @@ FmlWriterHandle Fieldml_OpenWriter( FmlHandle handle, FmlObjectHandle objectHand
     
     parameters = object->object.parameters;
     
-    if( parameters->dataDescription.semidense->locationType == LOCATION_FILE )
+    if( ( parameters->dataDescription.semidense->locationType == LOCATION_FILE ) )
+//        ( parameters->dataDescription.semidense->locationType == LOCATION_INLINE ) ) TODO
     {
-        writer = createFileWriter( handle, objectHandle, append );
+        writer = createParameterWriter( handle, objectHandle, append );
     }
     else
     {

@@ -446,6 +446,48 @@ void testStream()
 }
 
 
+void testMisc()
+{
+    int i;
+    FmlHandle handle;
+    FmlObjectHandle o1, o2, o3;
+    FmlReaderHandle reader;
+    FmlWriterHandle writer;
+    double values[] = { 45.3, 67.0, -12.8 };
+    int dummy[] = { 0 };
+    double readValues[3] = { 0xdeadbeef, 0xdeadbeef, 0xdeadbeef };
+    
+    handle = Fieldml_Create();
+    
+    o1 = Fieldml_GetNamedObject( handle, "library.ensemble.rc.3d" );
+    o2 = Fieldml_GetNamedObject( handle, "library.real.1d" );
+    
+    o3 = Fieldml_CreateEnsembleParameters( handle, "test.ensemble_parameters", o2 );
+    Fieldml_SetParameterDataDescription( handle, o3, DESCRIPTION_SEMIDENSE );
+    Fieldml_SetParameterDataLocation( handle, o3, LOCATION_INLINE );
+    Fieldml_AddSemidenseIndex( handle, o3, o1, 0 );
+    
+    Fieldml_AddParameterInlineData( handle, o3, "45.3 67.0 -12.8", 15 );
+//    writer = Fieldml_OpenWriter( handle, o3, 1 );
+//    Fieldml_WriteDoubleSlice( handle, writer, dummy, values );
+//    Fieldml_CloseWriter( handle, writer );
+    
+    reader = Fieldml_OpenReader( handle, o3 );
+    Fieldml_ReadDoubleSlice( handle, reader, dummy, readValues );
+    Fieldml_CloseReader( handle, reader );
+    
+    for( i = 0; i < 3; i++ )
+    {
+        if( values[i] != readValues[i] ) 
+        {
+            printf("Parameter stream test failed: %d %g != %g\n", i, values[i], readValues[i] );
+        }
+    }
+    
+    Fieldml_Destroy( handle );
+}
+
+
 int main( int argc, char **argv )
 {
     if( !validate( argv[1] ) )
@@ -456,6 +498,8 @@ int main( int argc, char **argv )
     testRead( argv[1] );
     
     testWrite( argv[1] );
+    
+    testMisc();
 
     testStream();
     

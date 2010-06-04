@@ -652,7 +652,7 @@ static void startInlineData( SaxContext *context, SaxAttributes *attributes )
 
 static void onInlineData( SaxContext *context, const char *const characters, const int length )
 {
-    Fieldml_AddInlineParameterData( context->region, context->currentObject, characters, length );
+    Fieldml_AddParameterInlineData( context->region, context->currentObject, characters, length );
 }
 
 
