@@ -413,7 +413,7 @@ void testStream()
     FmlInputStream stream;
     int iActual;
     int iExpected[7] = { 129, 24, 333, 456, -512, 6324, 123 };
-    double dExpected[9] = { 129, 24.1, -78.239, -21.34, 65.12, 3.0, 3.2, 0.092, -0.873 };
+    double dExpected[10] = { 129, 24.1, -78.239, -21.34, 65.12, 3.0, 3.2, 0.092, -0.873, 0.005 };
     double dActual; 
     int i;
     
@@ -430,9 +430,9 @@ void testStream()
     
     FmlInputStreamDestroy( stream );
     
-    stream = FmlCreateStringInputStream( "129 ,, 24.1 -78.239 -21.34 65.12,,\r\n\t asf3asf3.2asf.092xxx-.873" );
+    stream = FmlCreateStringInputStream( "129 ,, 24.1 -78.239 -21.34 65.12,,\r\n\t asf3asf3.2asf.092xxx-.873 0.5e-02" );
 
-    for( i = 0; i < 7; i++ )
+    for( i = 0; i < 10; i++ )
     {
         dActual = FmlInputStreamReadDouble( stream );
         
@@ -446,6 +446,48 @@ void testStream()
 }
 
 
+void testMisc()
+{
+    int i;
+    FmlHandle handle;
+    FmlObjectHandle o1, o2, o3;
+    FmlReaderHandle reader;
+    FmlWriterHandle writer;
+    double values[] = { 45.3, 67.0, -12.8 };
+    int dummy[] = { 0 };
+    double readValues[3] = { 0xdeadbeef, 0xdeadbeef, 0xdeadbeef };
+    
+    handle = Fieldml_Create();
+    
+    o1 = Fieldml_GetNamedObject( handle, "library.ensemble.rc.3d" );
+    o2 = Fieldml_GetNamedObject( handle, "library.real.1d" );
+    
+    o3 = Fieldml_CreateEnsembleParameters( handle, "test.ensemble_parameters", o2 );
+    Fieldml_SetParameterDataDescription( handle, o3, DESCRIPTION_SEMIDENSE );
+    Fieldml_SetParameterDataLocation( handle, o3, LOCATION_INLINE );
+    Fieldml_AddSemidenseIndex( handle, o3, o1, 0 );
+    
+    Fieldml_AddParameterInlineData( handle, o3, "45.3 67.0 -12.8", 15 );
+//    writer = Fieldml_OpenWriter( handle, o3, 1 );
+//    Fieldml_WriteDoubleSlice( handle, writer, dummy, values );
+//    Fieldml_CloseWriter( handle, writer );
+    
+    reader = Fieldml_OpenReader( handle, o3 );
+    Fieldml_ReadDoubleSlice( handle, reader, dummy, readValues );
+    Fieldml_CloseReader( handle, reader );
+    
+    for( i = 0; i < 3; i++ )
+    {
+        if( values[i] != readValues[i] ) 
+        {
+            printf("Parameter stream test failed: %d %g != %g\n", i, values[i], readValues[i] );
+        }
+    }
+    
+    Fieldml_Destroy( handle );
+}
+
+
 int main( int argc, char **argv )
 {
     if( !validate( argv[1] ) )
@@ -456,12 +498,10 @@ int main( int argc, char **argv )
     testRead( argv[1] );
     
     testWrite( argv[1] );
+    
+    testMisc();
 
     testStream();
     
     return 0;
 }
-/**
- ?lvl=31&code=g12:2f3;g12:3f3;c6:4f2;c6:5f1;c6:6f1;c6:7f1;c6:8f1;c6:9f1;c6:10f1;c6:11f1;b6:12f1;c6:13f1;c7:4f2;r7:5f1;y7:6f1;q7:9f0;c7:10f3;c7:11f2;g7:12f3;c7:13f0;c8:4f2;q8:6f1;g8:7f1;q8:8f2;p8:9f0;q8:10f6;g8:11f3;q8:12f7;c8:13f0;b9:5f1;y9:6f1;b9:8f3;c9:9f0;r9:10f1;y9:12f3;c9:13f0;q11:4f3;c15:9f2;p16:9f2;b15:10f1;r15:8f3;q16:8f4;q17:9f2;g16:7f1;c17:8f1;c17:7f0;q16:10f0;g16:11f3;q16:12f7;y17:12f3;g15:12f3;c18:13f1;b18:12f1;c18:11f1;c18:10f1;c18:9f1;c18:8f1;c18:7f1;c18:6f1;c18:5f1;c18:4f0;c17:4f0;c16:4f0;c15:4f0;p14:4f0;b14:3f3;r14:5f1;q13:4f7;q16:6f5;g17:6f1;g15:6f1;r17:5f1;b15:5f1;g10:7f3;g14:7f3;c10:8f3;c10:9f0;c14:9f2;c14:8f3;c12:12f3;q12:10f7;g12:4f3;b11:5f2;q11:6f1;c12:5f3;p12:6f3;r13:5f0;q13:6f5;c10:6f3;c14:6f3;b11:8f2;q12:7f6;p12:8f3;r13:8f0;q12:9f6;c11:10f3;b13:10f3;p13:11f6;c11:11f2;c12:11f2;q14:11f6;c14:12f3;c14:13f0;c13:13f0;c15:13f2;c16:13f2;c17:13f2;r13:12f1;p9:4f2;r9:3f3;c10:4f2;
- */
- */

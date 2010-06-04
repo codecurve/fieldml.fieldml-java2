@@ -147,6 +147,10 @@ int FmlInputStreamReadInt( FmlInputStream stream )
         {
             if( !loadBuffer( stream ) )
             {
+                if( gotDigit )
+                {
+                    return value;
+                }
                 return 0;
             }
         }
@@ -192,6 +196,11 @@ double FmlInputStreamReadDouble( FmlInputStream stream )
         {
             if( !loadBuffer( stream ) )
             {
+                if( count > 0 )
+                {
+                    nBuffer[count] = 0;
+                    return strtod( nBuffer, NULL );
+                }
                 return 0;
             }
         }
