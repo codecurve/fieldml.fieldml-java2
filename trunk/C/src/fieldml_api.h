@@ -503,8 +503,16 @@ int Fieldml_SetParameterDataLocation( FmlHandle handle, FmlObjectHandle objectHa
  * Appends some data to the parameter set's inline data. The parameter set's data location must have previously
  * been set to LOCATION_INLINE.
  */
-int Fieldml_AddInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length );
+int Fieldml_AddParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length );
 
+
+int Fieldml_GetParameterInlineDataLength( FmlHandle handle, FmlObjectHandle objectHandle );
+
+
+const char *Fieldml_GetParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle );
+
+
+int Fieldml_CopyInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength, int offset );
 
 /**
  * Sets the information for the parameter set's file data. The parameter set's data location must have previously
