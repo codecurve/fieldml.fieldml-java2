@@ -58,6 +58,12 @@
 #include "fieldml_structs.h"
 #include "fieldml_api.h"
 
+#ifdef WIN32
+#define SLASH '\\'
+#else
+#define SLASH '/'
+#endif
+
 //========================================================================
 //
 // Structs
@@ -143,39 +149,6 @@ SaxContext;
 // Utils
 //
 //========================================================================
-
-// strndup not available on all platforms.
-static char *strdupN( const xmlChar *str, unsigned int n )
-{
-    char *dup;
-    
-    if( str == NULL )
-    {
-        return NULL;
-    }
-
-    if( strlen( str ) < n )
-    {
-        return strdup( str );
-    }
-
-    dup = malloc( n + 1 );
-    memcpy( dup, str, n );
-    dup[n] = 0;
-
-    return dup;
-}
-
-
-static char *strdupS( const xmlChar *str )
-{
-    if( str == NULL )
-    {
-        return NULL;
-    }
-    
-    return strdup( str );
-}
 
 
 static SaxAttributes *createAttributes( const int attributeCount, const xmlChar ** attributes )
@@ -1624,6 +1597,7 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
     int res, state;
     SaxContext context;
     FieldmlRegion *region;
+    const char *c, *lastSlash;
 
     region = Fieldml_Create();
 
@@ -1638,6 +1612,21 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
     LIBXML_TEST_VERSION
 
     xmlSubstituteEntitiesDefault( 1 );
+    
+    lastSlash = NULL;
+    for( c = filename; *c != 0; c++ )
+    {
+        if( *c == SLASH )
+        {
+            lastSlash = c;
+        }
+    }
+    
+    if( lastSlash != NULL )
+    {
+        free( region->root );
+        region->root = strdupN( filename, lastSlash - filename );
+    }
 
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
     if( res != 0 )
@@ -1653,6 +1642,8 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
 
     xmlCleanupParser();
     xmlMemoryDump();
+    
+    destroyIntStack( context.state );
 
     finalizeFieldmlRegion( region );
 

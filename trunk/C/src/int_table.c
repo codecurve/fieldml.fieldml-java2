@@ -199,6 +199,10 @@ void destroyIntTable( IntTable *table, TABLE_DATA_DISCARD discard )
             }
         }
     }
+    if( ( discard != NULL ) && ( table->defaultValue != NULL ) )
+    {
+        discard( table->defaultValue );
+    }
     free( table->names );
     free( table->data );
     free( table );

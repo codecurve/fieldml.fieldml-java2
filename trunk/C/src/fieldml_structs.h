@@ -190,6 +190,7 @@ typedef struct _FieldmlObject
     FieldmlHandleType type;
     StringTable *markup;
     char *name;
+    int intValue;
     int regionHandle; // One day this will be meaningful. For now, 0 = library, 1 = not library.
     union
     {
@@ -214,6 +215,8 @@ typedef struct _FieldmlRegion
     int debug;
     
     const char *name;
+    
+    char *root;
     
     SimpleList *errors;
     

@@ -266,6 +266,19 @@ int Fieldml_CopyObjectName( FmlHandle handle, FmlObjectHandle objectHandle, char
 
 
 /**
+ * Associate a client-defined integer with the given object. This value is initialized to 0 when
+ * the object is created, but is otherwise ignored by the API.
+ */
+int Fieldml_SetObjectInt( FmlHandle handle, FmlObjectHandle object, int value );
+
+
+/**
+ * Returns the client-defined integer value associated with the given object.
+ */
+int Fieldml_GetObjectInt( FmlHandle handle, FmlObjectHandle object );
+
+
+/**
  *      Returns the number of markup entries (attribute/value pairs) for the given object.
  */
 int Fieldml_GetMarkupCount( FmlHandle handle, FmlObjectHandle objectHandle );
@@ -310,6 +323,13 @@ int Fieldml_ValidateObject( FmlHandle handle, FmlObjectHandle objectHandle );
  *      Returns the handle of the given domain's component ensemble.
  */
 FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlHandle handle, FmlObjectHandle objectHandle );
+
+
+/**
+ * Helper function that returns the element count of the component domain of the
+ * given domain.
+ */
+int Fieldml_GetDomainComponentCount( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
 /**

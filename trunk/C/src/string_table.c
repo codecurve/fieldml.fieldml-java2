@@ -40,9 +40,9 @@
  */
 
 #include <stdlib.h>
-
 #include <string.h>
 
+#include "string_const.h"
 #include "string_table.h"
 
 static const int CAPACITY_INCREMENT = 32;
@@ -129,7 +129,7 @@ void setStringTableEntry( StringTable *table, const char *name, void *data, TABL
         free( oldData );
     }
 
-    table->names[table->entries] = strdup( name );
+    table->names[table->entries] = strdupS( name );
     table->data[table->entries] = data;
     table->entries++;
 }
@@ -165,6 +165,10 @@ void destroyStringTable( StringTable *table, TABLE_DATA_DISCARD discard )
                 discard( table->data[i] );
             }
         }
+    }
+    if( ( discard != NULL ) && ( table->defaultValue != NULL ) )
+    {
+        discard( table->defaultValue );
     }
     free( table->names );
     free( table->data );

@@ -87,8 +87,9 @@ FieldmlObject *createFieldmlObject( const char *name, FieldmlHandleType type, in
 {
     FieldmlObject *object = calloc( 1, sizeof( FieldmlObject ) );
     object->regionHandle = regionHandle;
-    object->name = strdup( name );
+    object->name = strdupS( name );
     object->type = type;
+    object->intValue = 0;
     object->markup = createStringTable();
     
     return object;
@@ -372,9 +373,10 @@ FieldmlRegion *createFieldmlRegion( const char *name )
 {
     FieldmlRegion *region = calloc( 1, sizeof( FieldmlRegion ) );
 
-    region->name = strdup( name );
+    region->name = strdupS( name );
     region->objects = createSimpleList();
     region->errors = createSimpleList();
+    region->root = strdupS( "" );
     
     addLibraryDomains( region );
     
@@ -405,14 +407,14 @@ void destroyContinuousDomain( ContinuousDomain *domain )
 void destroyMeshDomain( MeshDomain *domain )
 {
     destroyIntTable( domain->shapes, free );
-    destroyIntTable( domain->connectivity, NULL );
+    destroyIntTable( domain->connectivity, free );
     free( domain );
 }
 
 
 void destroyContinuousReference( ContinuousReference *reference )
 {
-    destroyIntTable( reference->aliases, NULL );
+    destroyIntTable( reference->aliases, free );
     free( reference );
 }
 
@@ -455,16 +457,16 @@ void destroyParameters( Parameters *parameters )
 
 void destroyContinuousPiecewise( ContinuousPiecewise *piecewise )
 {
-    destroyIntTable( piecewise->aliases, NULL );
-    destroyIntTable( piecewise->evaluators, NULL );
+    destroyIntTable( piecewise->aliases, free );
+    destroyIntTable( piecewise->evaluators, free );
     free( piecewise );
 }
 
 
 void destroyContinuousAggregate( ContinuousAggregate *aggregate )
 {
-    destroyIntTable( aggregate->aliases, NULL );
-    destroyIntTable( aggregate->evaluators, NULL );
+    destroyIntTable( aggregate->aliases, free );
+    destroyIntTable( aggregate->evaluators, free );
     free( aggregate );
 }
 
@@ -520,7 +522,8 @@ void destroyFieldmlRegion( FieldmlRegion *region )
 {
     destroySimpleList( region->objects, destroyFieldmlObject );
     destroySimpleList( region->errors, free );
-    free( region->name );
+    free( region->root );
+    free( (void*)region->name );
 
     free( region );
 }
@@ -537,7 +540,7 @@ static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char
 {
     FieldmlObject *object = (FieldmlObject*)getSimpleListEntry( region->objects, handle );
 
-    setStringTableEntry( object->markup, attribute, strdup( value ), free );
+    setStringTableEntry( object->markup, attribute, strdupS( value ), free );
 }
 
 

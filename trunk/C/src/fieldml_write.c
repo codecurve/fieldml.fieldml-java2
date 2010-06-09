@@ -41,6 +41,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <libxml/encoding.h>
 #include <libxml/xmlwriter.h>
 
@@ -50,6 +51,11 @@
 #include "fieldml_structs.h"
 #include "fieldml_api.h"
 
+#ifdef WIN32
+#define SLASH '\\'
+#else
+#define SLASH '/'
+#endif
 
 const char * MY_ENCODING = "ISO-8859-1";
 
@@ -520,6 +526,27 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     int i, count;
     int rc = 0;
     xmlTextWriterPtr writer;
+    const char *lastSlash, *c;
+
+    lastSlash = NULL;
+    for( c = filename; *c != 0; c++ )
+    {
+        if( *c == SLASH )
+        {
+            lastSlash = c;
+        }
+    }
+    
+    if( lastSlash != NULL )
+    {
+        free( region->root );
+        region->root = strdupN( filename, lastSlash - filename );
+    }
+    else
+    {
+        free( region->root );
+        region->root = strdupS( "" );
+    }
 
     writer = xmlNewTextWriterFilename( filename, 0 );
     if( writer == NULL )

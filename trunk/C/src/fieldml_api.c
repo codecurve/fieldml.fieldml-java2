@@ -51,6 +51,7 @@
 #include "fieldml_write.h"
 #include "fieldml_validate.h"
 #include "fieldml_io.h"
+#include "string_const.h"
 
 typedef struct _SemidenseStream
 {
@@ -103,6 +104,7 @@ static ParameterReader *createParameterReader( FmlHandle handle, FmlObjectHandle
     ParameterReader *reader;
     int i, offset;
     FmlInputStream streamHandle;
+    const char *filename;
     
     if( Fieldml_GetParameterDataDescription( handle, parameters ) == DESCRIPTION_SEMIDENSE )
     {
@@ -128,7 +130,9 @@ static ParameterReader *createParameterReader( FmlHandle handle, FmlObjectHandle
         
         if( location == LOCATION_FILE )
         {
-            streamHandle = FmlCreateFileInputStream( Fieldml_GetParameterDataFilename( handle, parameters ) );
+            filename = makeFilename( handle->root, Fieldml_GetParameterDataFilename( handle, parameters ) );
+            streamHandle = FmlCreateFileInputStream( filename );
+            free( (void*)filename );
         }
         else if( location == LOCATION_INLINE )
         {
@@ -287,6 +291,7 @@ static ParameterWriter *createParameterWriter( FmlHandle handle, FmlObjectHandle
         int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
         int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
         DataLocationType location = Fieldml_GetParameterDataLocation( handle, parameters );
+        const char *filename;
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -311,7 +316,9 @@ static ParameterWriter *createParameterWriter( FmlHandle handle, FmlObjectHandle
         
         if( location == LOCATION_FILE )
         {
-            streamHandle = FmlCreateFileOutputStream( Fieldml_GetParameterDataFilename( handle, parameters ), append );
+            filename = makeFilename( handle->root, Fieldml_GetParameterDataFilename( handle, parameters ) );
+            streamHandle = FmlCreateFileOutputStream( filename, append );
+            free( (void*)filename );
         }
 
         if( streamHandle == NULL )
@@ -653,7 +660,9 @@ int Fieldml_SetDebug( FmlHandle handle, int debug )
 
 int Fieldml_WriteFile( FmlHandle handle, const char *filename )
 {
-    return writeFieldmlFile( handle, filename );
+    int err;
+    err = writeFieldmlFile( handle, filename );
+    return err;
 }
 
 
@@ -742,7 +751,7 @@ int Fieldml_SetMarkup( FmlHandle handle, FmlObjectHandle objectHandle, const cha
         return setError( handle, FML_ERR_UNKNOWN_OBJECT );
     }
     
-    setStringTableEntry( object->markup, attribute, strdup( value ), free );
+    setStringTableEntry( object->markup, attribute, strdupS( value ), free );
 
     return setError( handle, FML_ERR_NO_ERROR );
 }
@@ -861,6 +870,25 @@ FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlHandle handle, FmlObjectH
 
     setError( handle, FML_ERR_INVALID_OBJECT );  
     return FML_INVALID_HANDLE;
+}
+
+
+int Fieldml_GetDomainComponentCount( FmlHandle handle, FmlObjectHandle objectHandle )
+{
+    FmlObjectHandle componentDomainHandle;
+    FieldmlObject *object;
+    
+    componentDomainHandle = Fieldml_GetDomainComponentEnsemble( handle, objectHandle );
+    if( componentDomainHandle == FML_INVALID_HANDLE )
+    {
+        if( getError( handle ) == FML_ERR_NO_ERROR )
+        {
+            return 1;
+        }
+        return 0;
+    }
+    
+    return Fieldml_GetEnsembleDomainElementCount( handle, componentDomainHandle );
 }
 
 
@@ -1140,6 +1168,34 @@ const char * Fieldml_GetObjectName( FmlHandle handle, FmlObjectHandle objectHand
 int Fieldml_CopyObjectName( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength )
 {
     return cappedCopy( Fieldml_GetObjectName( handle, objectHandle ), buffer, bufferLength );
+}
+
+
+int Fieldml_SetObjectInt( FmlHandle handle, FmlObjectHandle objectHandle, int value )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        return setError( handle, FML_ERR_UNKNOWN_OBJECT );  
+    }
+
+    object->intValue = value;
+}
+
+
+int Fieldml_GetObjectInt( FmlHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+
+    if( object == NULL )
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return 0;
+    }
+
+    setError( handle, FML_ERR_NO_ERROR );
+    return object->intValue;
 }
 
 
@@ -1466,7 +1522,7 @@ int Fieldml_SetParameterFileData( FmlHandle handle, FmlObjectHandle objectHandle
         free( source->filename );
     }
     
-    source->filename = strdup( filename );
+    source->filename = strdupS( filename );
     source->fileType = type;
     source->offset = offset;
     
@@ -2308,6 +2364,8 @@ FmlObjectHandle Fieldml_CreateMeshDomain( FmlHandle handle, const char * name, F
     elementObject = createEnsembleDomain( subName, VIRTUAL_REGION_HANDLE, FML_INVALID_HANDLE );
     elementHandle = addFieldmlObject( handle, elementObject );
     
+    free( subName );
+    
     object = createMeshDomain( name, FILE_REGION_HANDLE, xiHandle, elementHandle );
 
     setError( handle, FML_ERR_NO_ERROR );
@@ -2327,7 +2385,7 @@ int Fieldml_SetMeshDefaultShape( FmlHandle handle, FmlObjectHandle mesh, const c
 
     if( object->type == FHT_MESH_DOMAIN )
     {
-        setIntTableDefault( object->object.meshDomain->shapes, strdup( shape ), free );
+        setIntTableDefault( object->object.meshDomain->shapes, strdupS( shape ), free );
         return setError( handle, FML_ERR_NO_ERROR );
     }
     
@@ -2373,7 +2431,7 @@ int Fieldml_SetMeshElementShape( FmlHandle handle, FmlObjectHandle mesh, int ele
 
     if( object->type == FHT_MESH_DOMAIN )
     {
-        setIntTableEntry( object->object.meshDomain->shapes, elementNumber, strdup( shape ), free );
+        setIntTableEntry( object->object.meshDomain->shapes, elementNumber, strdupS( shape ), free );
         return setError( handle, FML_ERR_NO_ERROR );
     }
     
