@@ -38,6 +38,14 @@
  * the terms of any one of the MPL, the GPL or the LGPL.
  *
  */
+#include <stdlib.h>
+#include <string.h>
+
+#ifdef WIN32
+#define SLASH '\\'
+#else
+#define SLASH '/'
+#endif
 
 const char * const FML_VERSION_STRING               = "0.2_alpha";
 
@@ -121,3 +129,73 @@ const char *const OFFSET_ATTRIB                     = "offset";
 
 const char * const STRING_TYPE_TEXT                 = "text";
 const char * const STRING_TYPE_LINES                = "lines";
+
+// strndup not available on all platforms.
+char *strdupN( const char *str, unsigned int n )
+{
+    char *dup;
+    
+    if( str == NULL )
+    {
+        return NULL;
+    }
+
+    if( strlen( str ) < n )
+    {
+        return strdup( str );
+    }
+
+    dup = malloc( n + 1 );
+    memcpy( dup, str, n );
+    dup[n] = 0;
+
+    return dup;
+}
+
+
+char *strdupS( const char *str )
+{
+    if( str == NULL )
+    {
+        return NULL;
+    }
+    
+    return strdup( str );
+}
+
+
+char *makeFilename( const char *dir, const char *file )
+{
+    int len = 0;
+    char *filename;
+    
+    if( dir != NULL )
+    {
+        len += strlen( dir );
+        len++;
+    }
+    if( file != NULL )
+    {
+        len += strlen( file );
+    }
+    
+    filename = malloc( len + 1 );
+    filename[0] = 0;
+    len = 0;
+    
+    if( dir != NULL )
+    {
+        memcpy( filename, dir, strlen( dir ) );
+        len += strlen( dir );
+        filename[len] = SLASH;
+    }
+    if( file != NULL )
+    {
+        memcpy( filename + len, file, strlen( file ) );
+        len += strlen( file );
+    }
+    
+    filename[len] = 0;
+    
+    return filename;
+}

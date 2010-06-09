@@ -125,4 +125,12 @@ extern const char * const VERSION_ATTRIB;
 extern const char * const STRING_TYPE_TEXT;
 extern const char * const STRING_TYPE_LINES;
 
+
+// strndup not available on all platforms.
+char *strdupN( const char *str, unsigned int n );
+
+char *strdupS( const char *str );
+
+char *makeFilename( const char *dir, const char *file );
+
 #endif // H_STRING_CONST
