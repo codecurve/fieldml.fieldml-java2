@@ -79,11 +79,11 @@
         <xs:all>
             <xs:element name="denseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
             <xs:element name="sparseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="dataLocation" type="DataLocationType" minOccurs="0" maxOccurs="1" />
             <xs:element name="swizzle" type="SwizzleType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="inlineData" minOccurs="0">
+            <xs:element name="inlineData" minOccurs="0" maxOccurs="1">
                 <xs:simpleType>
-                    <xs:restriction base="xs:string" />
+                    <xs:list itemType="xs:decimal"/>
                 </xs:simpleType>
             </xs:element>
         </xs:all>
