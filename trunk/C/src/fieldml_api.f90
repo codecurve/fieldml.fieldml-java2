@@ -1,4 +1,4 @@
-!This file was automatically generated from fieldml_api.h on 2010-06-09 11:22
+!This file was automatically generated from fieldml_api.h on 2010-06-17 14:32
 MODULE FIELDML_API
 
   USE ISO_C_BINDING
@@ -92,9 +92,11 @@ MODULE FIELDML_API
       TYPE(C_PTR) :: Fieldml_CreateFromFile
     END FUNCTION Fieldml_CreateFromFile
 
-    FUNCTION Fieldml_Create( ) &
+    FUNCTION Fieldml_Create( location, name ) &
       & BIND(C,NAME="Fieldml_Create")
       USE ISO_C_BINDING
+      CHARACTER(KIND=C_CHAR) :: location(*)
+      CHARACTER(KIND=C_CHAR) :: name(*)
       TYPE(C_PTR) :: Fieldml_Create
     END FUNCTION Fieldml_Create
 
@@ -289,6 +291,14 @@ MODULE FIELDML_API
       INTEGER(C_INT) :: Fieldml_CreateEnsembleDomain
     END FUNCTION Fieldml_CreateEnsembleDomain
 
+    FUNCTION Fieldml_CreateComponentEnsembleDomain( handle, name ) &
+      & BIND(C,NAME="Fieldml_CreateComponentEnsembleDomain")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      CHARACTER(KIND=C_CHAR) :: name(*)
+      INTEGER(C_INT) :: Fieldml_CreateComponentEnsembleDomain
+    END FUNCTION Fieldml_CreateComponentEnsembleDomain
+
     FUNCTION Fieldml_CreateContinuousDomain( handle, name, componentHandle ) &
       & BIND(C,NAME="Fieldml_CreateContinuousDomain")
       USE ISO_C_BINDING
@@ -415,6 +425,14 @@ MODULE FIELDML_API
       INTEGER(C_INT), VALUE :: objectHandle
       INTEGER(C_INT) :: Fieldml_GetEnsembleDomainElementCount
     END FUNCTION Fieldml_GetEnsembleDomainElementCount
+
+    FUNCTION Fieldml_IsEnsembleComponentDomain( handle, objectHandle ) &
+      & BIND(C,NAME="Fieldml_IsEnsembleComponentDomain")
+      USE ISO_C_BINDING
+      TYPE(C_PTR), VALUE :: handle
+      INTEGER(C_INT), VALUE :: objectHandle
+      INTEGER(C_INT) :: Fieldml_IsEnsembleComponentDomain
+    END FUNCTION Fieldml_IsEnsembleComponentDomain
 
     FUNCTION Fieldml_GetEnsembleDomainElementNames( handle, objectHandle, array, arrayLength ) &
       & BIND(C,NAME="Fieldml_GetEnsembleDomainElementNames")
@@ -886,25 +904,26 @@ MODULE FIELDML_API
     & Fieldml_GetObjectType, Fieldml_GetNamedObject, Fieldml_CopyObjectName, Fieldml_SetObjectInt, Fieldml_GetObjectInt, &
     & Fieldml_GetMarkupCount, Fieldml_CopyMarkupAttribute, Fieldml_CopyMarkupValue, Fieldml_CopyMarkupAttributeValue, &
     & Fieldml_SetMarkup, Fieldml_ValidateObject, Fieldml_GetDomainComponentEnsemble, Fieldml_GetDomainComponentCount, &
-    & Fieldml_CreateEnsembleDomain, Fieldml_CreateContinuousDomain, Fieldml_CreateMeshDomain, Fieldml_GetMeshXiDomain, &
-    & Fieldml_GetMeshElementDomain, Fieldml_CopyMeshElementShape, Fieldml_SetMeshDefaultShape, &
-    & Fieldml_CopyMeshDefaultShape, Fieldml_SetMeshElementShape, Fieldml_GetMeshConnectivityCount, &
-    & Fieldml_GetMeshConnectivityDomain, Fieldml_GetMeshConnectivitySource, Fieldml_SetMeshConnectivity, &
-    & Fieldml_GetDomainBoundsType, Fieldml_GetEnsembleDomainElementCount, Fieldml_GetEnsembleDomainElementNames, &
-    & Fieldml_GetContiguousBoundsCount, Fieldml_SetContiguousBoundsCount, Fieldml_GetValueDomain, &
-    & Fieldml_CreateEnsembleVariable, Fieldml_CreateContinuousVariable, Fieldml_CreateEnsembleParameters, &
-    & Fieldml_CreateContinuousParameters, Fieldml_GetParameterDataLocation, Fieldml_SetParameterDataLocation, &
-    & Fieldml_AddParameterInlineData, Fieldml_GetParameterInlineDataLength, Fieldml_CopyInlineParameterData, &
-    & Fieldml_SetParameterFileData, Fieldml_CopyParameterDataFilename, Fieldml_GetParameterDataOffset, &
-    & Fieldml_GetParameterDataFileType, Fieldml_SetParameterDataDescription, Fieldml_GetParameterDataDescription, &
-    & Fieldml_AddSemidenseIndex, Fieldml_GetSemidenseIndexCount, Fieldml_GetSemidenseIndex, Fieldml_SetSwizzle, &
-    & Fieldml_GetSwizzleCount, Fieldml_CopySwizzleData, Fieldml_CreateContinuousPiecewise, &
-    & Fieldml_CreateContinuousAggregate, Fieldml_SetDefaultEvaluator, Fieldml_GetDefaultEvaluator, Fieldml_SetEvaluator, &
-    & Fieldml_GetEvaluatorCount, Fieldml_GetEvaluatorElement, Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, &
-    & Fieldml_GetIndexCount, Fieldml_GetIndexDomain, Fieldml_CreateContinuousReference, &
-    & Fieldml_GetReferenceRemoteEvaluator, Fieldml_SetAlias, Fieldml_GetAliasCount, Fieldml_GetAliasLocal, &
-    & Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, Fieldml_ReadIntSlice, Fieldml_ReadDoubleSlice, &
-    & Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, Fieldml_WriteDoubleSlice, Fieldml_CloseWriter
+    & Fieldml_CreateEnsembleDomain, Fieldml_CreateComponentEnsembleDomain, Fieldml_CreateContinuousDomain, &
+    & Fieldml_CreateMeshDomain, Fieldml_GetMeshXiDomain, Fieldml_GetMeshElementDomain, Fieldml_CopyMeshElementShape, &
+    & Fieldml_SetMeshDefaultShape, Fieldml_CopyMeshDefaultShape, Fieldml_SetMeshElementShape, &
+    & Fieldml_GetMeshConnectivityCount, Fieldml_GetMeshConnectivityDomain, Fieldml_GetMeshConnectivitySource, &
+    & Fieldml_SetMeshConnectivity, Fieldml_GetDomainBoundsType, Fieldml_GetEnsembleDomainElementCount, &
+    & Fieldml_IsEnsembleComponentDomain, Fieldml_GetEnsembleDomainElementNames, Fieldml_GetContiguousBoundsCount, &
+    & Fieldml_SetContiguousBoundsCount, Fieldml_GetValueDomain, Fieldml_CreateEnsembleVariable, &
+    & Fieldml_CreateContinuousVariable, Fieldml_CreateEnsembleParameters, Fieldml_CreateContinuousParameters, &
+    & Fieldml_GetParameterDataLocation, Fieldml_SetParameterDataLocation, Fieldml_AddParameterInlineData, &
+    & Fieldml_GetParameterInlineDataLength, Fieldml_CopyInlineParameterData, Fieldml_SetParameterFileData, &
+    & Fieldml_CopyParameterDataFilename, Fieldml_GetParameterDataOffset, Fieldml_GetParameterDataFileType, &
+    & Fieldml_SetParameterDataDescription, Fieldml_GetParameterDataDescription, Fieldml_AddSemidenseIndex, &
+    & Fieldml_GetSemidenseIndexCount, Fieldml_GetSemidenseIndex, Fieldml_SetSwizzle, Fieldml_GetSwizzleCount, &
+    & Fieldml_CopySwizzleData, Fieldml_CreateContinuousPiecewise, Fieldml_CreateContinuousAggregate, &
+    & Fieldml_SetDefaultEvaluator, Fieldml_GetDefaultEvaluator, Fieldml_SetEvaluator, Fieldml_GetEvaluatorCount, &
+    & Fieldml_GetEvaluatorElement, Fieldml_GetEvaluator, Fieldml_GetElementEvaluator, Fieldml_GetIndexCount, &
+    & Fieldml_GetIndexDomain, Fieldml_CreateContinuousReference, Fieldml_GetReferenceRemoteEvaluator, Fieldml_SetAlias, &
+    & Fieldml_GetAliasCount, Fieldml_GetAliasLocal, Fieldml_GetAliasRemote, Fieldml_GetAliasByRemote, Fieldml_OpenReader, &
+    & Fieldml_ReadIntSlice, Fieldml_ReadDoubleSlice, Fieldml_CloseReader, Fieldml_OpenWriter, Fieldml_WriteIntSlice, &
+    & Fieldml_WriteDoubleSlice, Fieldml_CloseWriter
 
   PUBLIC BOUNDS_UNKNOWN, BOUNDS_DISCRETE_CONTIGUOUS, BOUNDS_DISCRETE_ARBITRARY
 

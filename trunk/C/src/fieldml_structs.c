@@ -96,12 +96,13 @@ FieldmlObject *createFieldmlObject( const char *name, FieldmlHandleType type, in
 }
 
 
-FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHandle componentDomain )
+FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHandle componentDomain, int isComponentEnsemble )
 {
     FieldmlObject *object = createFieldmlObject( name, FHT_ENSEMBLE_DOMAIN, region );
     EnsembleDomain *domain = calloc( 1, sizeof( EnsembleDomain ) );
     domain->boundsType = BOUNDS_UNKNOWN;
     domain->componentDomain = FML_INVALID_HANDLE;
+    domain->isComponentDomain = isComponentEnsemble;
     //TODO Support (or remove) multi-component ensemble domains.
 
     object->object.ensembleDomain = domain;
@@ -245,11 +246,18 @@ SemidenseData *createSemidenseData()
 }
 
 
-static FmlObjectHandle addEnsembleDomain( FieldmlRegion *region, int regionHandle, const char *name, int count )
+static FmlObjectHandle addEnsembleDomain( FieldmlRegion *region, int regionHandle, const char *name, int count, int isComponentDomain )
 {
     int handle;
-    
-    handle = Fieldml_CreateEnsembleDomain( region, name, FML_INVALID_HANDLE );
+
+    if( isComponentDomain )
+    {
+        handle = Fieldml_CreateComponentEnsembleDomain( region, name );
+    }
+    else
+    {
+        handle = Fieldml_CreateEnsembleDomain( region, name, FML_INVALID_HANDLE );
+    }
     Fieldml_SetContiguousBoundsCount( region, handle, count );
     setRegionHandle( region, handle, regionHandle );
     
@@ -299,49 +307,49 @@ static void addLibraryDomains( FieldmlRegion *region )
 {
     FmlObjectHandle handle;
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.1d", 1 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.1d", 1, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.1d", handle );
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.2d", 2 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.2d", 2, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.2d", handle );
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.3d", 3 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.3d", 3, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.3d", handle );
     
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.1d", 1 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.1d", 1, 1 );
     handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.1d", handle );
     addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.2d", 2 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.2d", 2, 1 );
     handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.2d", handle );
     addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.3d", 3 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.xi.3d", 3, 1 );
     handle = addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.xi.3d", handle );
     addMarkup( region, handle, "xi", "true" );
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.2", 2 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.2", 2, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.linear_lagrange", handle ); 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.quadratic_lagrange", handle ); 
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.2x2", 4 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.2x2", 4, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle ); 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.3x3", 9 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.3x3", 9, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.biquadratic_lagrange", handle ); 
 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.trilinear_lagrange", handle ); 
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.3x3x3", 27 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.3x3x3", 27, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.triquadratic_lagrange", handle ); 
     
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.1d", 1 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.1d", 1, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.1d", handle );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.1d", handle );
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.2d", 2 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.2d", 2, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.2d", handle );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.2d", handle );
-    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.3d", 3 );
+    handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.3d", 3, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.3d", handle );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.3d", handle );
 
@@ -369,14 +377,14 @@ static void addLibraryEvaluators( FieldmlRegion *region )
 }
 
 
-FieldmlRegion *createFieldmlRegion( const char *name )
+FieldmlRegion *createFieldmlRegion( const char *location, const char *name )
 {
     FieldmlRegion *region = calloc( 1, sizeof( FieldmlRegion ) );
 
     region->name = strdupS( name );
     region->objects = createSimpleList();
     region->errors = createSimpleList();
-    region->root = strdupS( "" );
+    region->root = strdupS( location );
     
     addLibraryDomains( region );
     

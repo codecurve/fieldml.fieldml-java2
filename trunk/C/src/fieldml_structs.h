@@ -65,6 +65,7 @@ ContiguousBounds;
 typedef struct _EnsembleDomain
 {
     int componentDomain;
+    int isComponentDomain;
 
     DomainBoundsType boundsType;
     union
@@ -239,7 +240,7 @@ void destroyFieldmlRegion( FieldmlRegion *region );
 
 FieldmlObject *createFieldmlObject( const char *name, FieldmlHandleType type, int regionHandle );
 
-FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHandle componentDomain );
+FieldmlObject *createEnsembleDomain( const char * name, int region, FmlObjectHandle componentDomain, int isComponentEnsemble );
 
 FieldmlObject *createContinuousDomain( const char * name, int region, FmlObjectHandle componentDomain );
 

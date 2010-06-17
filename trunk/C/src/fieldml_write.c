@@ -51,12 +51,6 @@
 #include "fieldml_structs.h"
 #include "fieldml_api.h"
 
-#ifdef WIN32
-#define SLASH '\\'
-#else
-#define SLASH '/'
-#endif
-
 const char * MY_ENCODING = "ISO-8859-1";
 
 
@@ -292,6 +286,10 @@ static int writeEnsembleDomain( xmlTextWriterPtr writer, FieldmlRegion *region, 
 
     xmlTextWriterStartElement( writer, ENSEMBLE_DOMAIN_TAG );
     xmlTextWriterWriteAttribute( writer, NAME_ATTRIB, object->name );
+    if( object->object.ensembleDomain->isComponentDomain )
+    {
+        xmlTextWriterWriteAttribute( writer, IS_COMPONENT_DOMAIN_ATTRIB, STRING_TRUE );
+    }
     
     if( domain->componentDomain != FML_INVALID_HANDLE )
     {
@@ -526,27 +524,9 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     int i, count;
     int rc = 0;
     xmlTextWriterPtr writer;
-    const char *lastSlash, *c;
 
-    lastSlash = NULL;
-    for( c = filename; *c != 0; c++ )
-    {
-        if( *c == SLASH )
-        {
-            lastSlash = c;
-        }
-    }
-    
-    if( lastSlash != NULL )
-    {
-        free( region->root );
-        region->root = strdupN( filename, lastSlash - filename );
-    }
-    else
-    {
-        free( region->root );
-        region->root = strdupS( "" );
-    }
+    free( region->root );
+    region->root = strdupDir( filename );
 
     writer = xmlNewTextWriterFilename( filename, 0 );
     if( writer == NULL )
@@ -555,6 +535,7 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
         return 1;
     }
 
+    xmlTextWriterSetIndent( writer, 1 );
     xmlTextWriterStartDocument( writer, NULL, MY_ENCODING, NULL );
 
     xmlTextWriterStartElement( writer, FIELDML_TAG );
@@ -562,6 +543,10 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     xmlTextWriterWriteAttribute( writer, "xsi:noNamespaceSchemaLocation", "Fieldml_0.2.xsd" );
     xmlTextWriterWriteAttribute( writer, "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );        
     xmlTextWriterStartElement( writer, REGION_TAG );
+    if( ( region->name != NULL ) && ( strlen( region->name ) > 0 ) ) 
+    {
+        xmlTextWriterWriteAttribute( writer, "name", region->name );        
+    }
     
     count = getSimpleListCount( region->objects );
     for( i = 0; i < count; i++ )

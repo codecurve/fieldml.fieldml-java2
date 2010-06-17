@@ -110,9 +110,18 @@ static ParameterReader *createParameterReader( FmlHandle handle, FmlObjectHandle
     {
         int indexCount = Fieldml_GetSemidenseIndexCount( handle, parameters, 1 );
         int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
-        int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
         int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
         DataLocationType location = Fieldml_GetParameterDataLocation( handle, parameters );
+        int valueCount;
+        
+        if( Fieldml_IsEnsembleComponentDomain( handle, firstIndex ) == 1 )
+        {
+            valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
+        }
+        else
+        {
+            valueCount = 1;
+        }
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -288,10 +297,19 @@ static ParameterWriter *createParameterWriter( FmlHandle handle, FmlObjectHandle
     {
         int indexCount = Fieldml_GetSemidenseIndexCount( handle, parameters, 1 );
         int firstIndex = Fieldml_GetSemidenseIndex( handle, parameters, 1, 0 );
-        int valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
         int swizzleCount = Fieldml_GetSwizzleCount( handle, parameters );
         DataLocationType location = Fieldml_GetParameterDataLocation( handle, parameters );
         const char *filename;
+        int valueCount;
+        
+        if( Fieldml_IsEnsembleComponentDomain( handle, firstIndex ) == 1 )
+        {
+            valueCount = Fieldml_GetEnsembleDomainElementCount( handle, firstIndex );
+        }
+        else
+        {
+            valueCount = 1;
+        }
         
         if( ( indexCount < 0 ) ||
             ( firstIndex == FML_INVALID_HANDLE ) ||
@@ -644,9 +662,9 @@ FmlHandle Fieldml_CreateFromFile( const char *filename )
 }
 
 
-FmlHandle Fieldml_Create()
+FmlHandle Fieldml_Create( const char *location, const char *name )
 {
-    return createFieldmlRegion( "" );
+    return createFieldmlRegion( location, name );
 }
 
 
@@ -876,7 +894,6 @@ FmlObjectHandle Fieldml_GetDomainComponentEnsemble( FmlHandle handle, FmlObjectH
 int Fieldml_GetDomainComponentCount( FmlHandle handle, FmlObjectHandle objectHandle )
 {
     FmlObjectHandle componentDomainHandle;
-    FieldmlObject *object;
     
     componentDomainHandle = Fieldml_GetDomainComponentEnsemble( handle, objectHandle );
     if( componentDomainHandle == FML_INVALID_HANDLE )
@@ -931,6 +948,25 @@ int Fieldml_GetEnsembleDomainElementCount( FmlHandle handle, FmlObjectHandle obj
         
         setError( handle, FML_ERR_UNSUPPORTED );  
         return -1;
+    }
+
+    setError( handle, FML_ERR_INVALID_OBJECT );  
+    return -1;
+}
+
+
+int Fieldml_IsEnsembleComponentDomain( FmlHandle handle, FmlObjectHandle objectHandle )
+{
+    FieldmlObject *object = getSimpleListEntry( handle->objects, objectHandle );
+
+    if( object == NULL ) 
+    {
+        setError( handle, FML_ERR_UNKNOWN_OBJECT );
+        return -1;
+    }
+    if( object->type == FHT_ENSEMBLE_DOMAIN )
+    {
+        return object->object.ensembleDomain->isComponentDomain;
     }
 
     setError( handle, FML_ERR_INVALID_OBJECT );  
@@ -1181,6 +1217,8 @@ int Fieldml_SetObjectInt( FmlHandle handle, FmlObjectHandle objectHandle, int va
     }
 
     object->intValue = value;
+    
+    return FML_ERR_NO_ERROR;
 }
 
 
@@ -2296,6 +2334,14 @@ FmlObjectHandle Fieldml_CreateContinuousDomain( FmlHandle handle, const char * n
     {
         return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
     }
+    
+    if( componentHandle != FML_INVALID_HANDLE )
+    {
+        if( Fieldml_IsEnsembleComponentDomain( handle, componentHandle ) != 1 )
+        {
+            return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+        }
+    }
 
     object = createContinuousDomain( name, FILE_REGION_HANDLE, componentHandle );
     
@@ -2315,7 +2361,19 @@ FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlHandle handle, const char * nam
         return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
     }
 
-    object = createEnsembleDomain( name, FILE_REGION_HANDLE, componentHandle );
+    object = createEnsembleDomain( name, FILE_REGION_HANDLE, componentHandle, 0 );
+    
+    setError( handle, FML_ERR_NO_ERROR );
+
+    return addFieldmlObject( handle, object );
+}
+
+
+FmlObjectHandle Fieldml_CreateComponentEnsembleDomain( FmlHandle handle, const char * name )
+{
+    FieldmlObject *object;
+
+    object = createEnsembleDomain( name, FILE_REGION_HANDLE, FML_INVALID_HANDLE, 1 );
     
     setError( handle, FML_ERR_NO_ERROR );
 
@@ -2361,7 +2419,7 @@ FmlObjectHandle Fieldml_CreateMeshDomain( FmlHandle handle, const char * name, F
     
     strcpy( subName, name );
     strcat( subName, ".elements" );
-    elementObject = createEnsembleDomain( subName, VIRTUAL_REGION_HANDLE, FML_INVALID_HANDLE );
+    elementObject = createEnsembleDomain( subName, VIRTUAL_REGION_HANDLE, FML_INVALID_HANDLE, 0 );
     elementHandle = addFieldmlObject( handle, elementObject );
     
     free( subName );

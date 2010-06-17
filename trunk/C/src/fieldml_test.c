@@ -457,7 +457,18 @@ void testMisc()
     int dummy[] = { 0 };
     double readValues[3] = { 0xdeadbeef, 0xdeadbeef, 0xdeadbeef };
     
-    handle = Fieldml_Create();
+    handle = Fieldml_Create( "", "test" );
+    
+    o1 = Fieldml_CreateComponentEnsembleDomain( handle, "example.component_ensemble" );
+    Fieldml_SetContiguousBoundsCount( handle, o1, 3 );
+    
+    o2 = Fieldml_CreateContinuousDomain( handle, "example.continuous_domain", o1 );
+    
+    Fieldml_WriteFile( handle, "foo.xml" );
+    
+    Fieldml_Destroy( handle );
+    
+    handle = Fieldml_Create( "", "test" );
     
     o1 = Fieldml_GetNamedObject( handle, "library.ensemble.rc.3d" );
     o2 = Fieldml_GetNamedObject( handle, "library.real.1d" );

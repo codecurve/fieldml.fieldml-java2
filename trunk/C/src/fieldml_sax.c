@@ -58,12 +58,6 @@
 #include "fieldml_structs.h"
 #include "fieldml_api.h"
 
-#ifdef WIN32
-#define SLASH '\\'
-#else
-#define SLASH '/'
-#endif
-
 //========================================================================
 //
 // Structs
@@ -138,6 +132,7 @@ typedef struct _SaxContext
     
     int bufferLength;
     char *buffer;
+    const char *source;
     
     FieldmlRegion *region;
 }
@@ -318,10 +313,29 @@ static void finalizeFieldmlRegion( FieldmlRegion *region )
 }
 
 
+static void startRegion( SaxContext *context, SaxAttributes *attributes )
+{
+    const char *location;
+    const char *name;
+    
+    name = getAttribute( attributes, NAME_ATTRIB );
+    if( name == NULL )
+    {
+        //HACK Allow nameless regions for now.
+        name = "";
+    }
+
+    location = strdupDir( context->source );
+    context->region = Fieldml_Create( location, name );
+    free( location );
+}
+
+
 static void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes )
 {
     const char *name;
     const char *componentEnsemble;
+    const char *isComponentEnsemble;
     FmlObjectHandle handle;
         
     name = getAttribute( attributes, NAME_ATTRIB );
@@ -340,8 +354,23 @@ static void startEnsembleDomain( SaxContext *context, SaxAttributes *attributes 
     {
         handle = FML_INVALID_HANDLE;
     }
-
-    context->currentObject = Fieldml_CreateEnsembleDomain( context->region, name, handle );
+    
+    isComponentEnsemble = getAttribute( attributes, IS_COMPONENT_DOMAIN_ATTRIB );
+    if( ( isComponentEnsemble != NULL ) && ( strcmp( isComponentEnsemble, STRING_TRUE ) == 0 ) )
+    {
+        if( handle != FML_INVALID_HANDLE )
+        {
+            logError( context->region, "Component EnsembleDomain cannot be multi-component itself", name, NULL );
+        }
+        else
+        {
+            context->currentObject = Fieldml_CreateComponentEnsembleDomain( context->region, name );
+        }
+    }
+    else
+    {
+        context->currentObject = Fieldml_CreateEnsembleDomain( context->region, name, handle );
+    }
 }
 
 
@@ -1180,6 +1209,7 @@ static void onStartElementNs( void *context, const xmlChar *name, const xmlChar 
     case FML_FIELDML:
         if( strcmp( name, REGION_TAG ) == 0 )
         {
+            startRegion( saxContext, saxAttributes );
             intStackPush( saxContext->state, FML_REGION );
         }
         break;
@@ -1596,16 +1626,13 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
 {
     int res, state;
     SaxContext context;
-    FieldmlRegion *region;
-    const char *c, *lastSlash;
-
-    region = Fieldml_Create();
 
     context.state = createIntStack();
-    context.region = region;
+    context.region = NULL;
     context.currentObject = FML_INVALID_HANDLE;
     context.bufferLength = 0;
     context.buffer = NULL;
+    context.source = filename;
 
     intStackPush( context.state, FML_ROOT );
 
@@ -1613,31 +1640,16 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
 
     xmlSubstituteEntitiesDefault( 1 );
     
-    lastSlash = NULL;
-    for( c = filename; *c != 0; c++ )
-    {
-        if( *c == SLASH )
-        {
-            lastSlash = c;
-        }
-    }
-    
-    if( lastSlash != NULL )
-    {
-        free( region->root );
-        region->root = strdupN( filename, lastSlash - filename );
-    }
-
     res = xmlSAXUserParseFile( SAX2Handler, &context, filename );
     if( res != 0 )
     {
-        logError( region, "xmlSAXUserParseFile returned error", NULL, NULL );
+        logError( context.region, "xmlSAXUserParseFile returned error", NULL, NULL );
     }
 
     state = intStackPeek( context.state );
     if( state != FML_ROOT )
     {
-        logError( region, "Parser state not empty", NULL, NULL );
+        logError( context.region, "Parser state not empty", NULL, NULL );
     }
 
     xmlCleanupParser();
@@ -1645,7 +1657,7 @@ FieldmlRegion *parseFieldmlFile( const char *filename )
     
     destroyIntStack( context.state );
 
-    finalizeFieldmlRegion( region );
+    finalizeFieldmlRegion( context.region );
 
-    return region;
+    return context.region;
 }
