@@ -41,10 +41,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define WIN_PATH_SEP '\\'
+#define PATH_SEP '/'
+
 #ifdef WIN32
-#define SLASH '\\'
+#define DEFAULT_SEP WIN_PATH_SEP
 #else
-#define SLASH '/'
+#define DEFAULT_SEP PATH_SEP
 #endif
 
 const char * const FML_VERSION_STRING               = "0.2_alpha";
@@ -106,6 +109,8 @@ const char * const NAME_ATTRIB                      = "name";
 
 const char * const COMPONENT_DOMAIN_ATTRIB          = "componentDomain";
 
+const char * const IS_COMPONENT_DOMAIN_ATTRIB       = "isComponentDomain";
+
 const char * const VALUE_DOMAIN_ATTRIB              = "valueDomain";
 
 const char * const KEY_ATTRIB                       = "key";
@@ -129,6 +134,8 @@ const char *const OFFSET_ATTRIB                     = "offset";
 
 const char * const STRING_TYPE_TEXT                 = "text";
 const char * const STRING_TYPE_LINES                = "lines";
+
+const char * const STRING_TRUE                      = "true";
 
 // strndup not available on all platforms.
 char *strdupN( const char *str, unsigned int n )
@@ -164,36 +171,74 @@ char *strdupS( const char *str )
 }
 
 
+char *strdupDir( const char *filename )
+{
+    const char *lastSep = NULL;
+    const char *c;
+    
+    for( c = filename; *c != 0; c++ )
+    {
+        if( *c == PATH_SEP )
+        {
+            lastSep = c;
+        }
+#ifdef WIN32
+        else if( *c == WIN_PATH_SEP )
+        {
+            lastSep = c;
+        }
+#endif
+    }
+    
+    if( lastSep != NULL )
+    {
+        return strdupN( filename, lastSep - filename );
+    }
+    else
+    {
+        return strdup( "" );
+    }
+}
+
+
 char *makeFilename( const char *dir, const char *file )
 {
     int len = 0;
     char *filename;
-    
-    if( dir != NULL )
+
+    if( file == NULL )
     {
-        len += strlen( dir );
-        len++;
-    }
-    if( file != NULL )
-    {
-        len += strlen( file );
+        return NULL;
     }
     
-    filename = malloc( len + 1 );
-    filename[0] = 0;
+    if( dir == NULL )
+    {
+        //HACK
+        dir = "";
+    }
+    
+    //Directory
+    len += strlen( dir );
+    //Path separator
+    len++;
+    //File
+    len += strlen( file );
+    //NUL terminator
+    len++;
+    
+    filename = malloc( len );
     len = 0;
-    
-    if( dir != NULL )
+
+    if( strlen( dir ) > 0 )
     {
         memcpy( filename, dir, strlen( dir ) );
         len += strlen( dir );
-        filename[len] = SLASH;
+        
+        filename[len++] = DEFAULT_SEP;
     }
-    if( file != NULL )
-    {
-        memcpy( filename + len, file, strlen( file ) );
-        len += strlen( file );
-    }
+
+    memcpy( filename + len, file, strlen( file ) );
+    len += strlen( file );
     
     filename[len] = 0;
     

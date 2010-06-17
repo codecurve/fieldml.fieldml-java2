@@ -191,9 +191,9 @@ FmlHandle Fieldml_CreateFromFile( const char *filename );
 
 /**
  *      Creates an empty FieldML handle. The built-in library is still implicitly
- *      included.
+ *      included. Data files will be created at the given location.
  */
-FmlHandle Fieldml_Create();
+FmlHandle Fieldml_Create( const char *location, const char *name );
 
 /**
  *      Sets/clears the debug flag. If non-zero, errors are logged to stdout.
@@ -339,6 +339,15 @@ FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlHandle handle, const char * nam
 
 
 /**
+ *  Creates an component ensemble domain with the given name.
+ *      
+ *  NOTE: A component ensemble domain is identical to an ensemble domain except that only component
+ *  ensembles can be used when creating multi-component domains.     
+ */
+FmlObjectHandle Fieldml_CreateComponentEnsembleDomain( FmlHandle handle, const char * name );
+
+
+/**
  *      Creates a continuous domain with the given name and component domain.
  */
 FmlObjectHandle Fieldml_CreateContinuousDomain( FmlHandle handle, const char * name, FmlObjectHandle componentHandle );
@@ -437,6 +446,12 @@ int Fieldml_GetEnsembleDomainElementCount( FmlHandle handle, FmlObjectHandle obj
 
 
 /**
+ * Returns 1 if the ensemble domain is a component domain, 0 if not, -1 on error.
+ */
+int Fieldml_IsEnsembleComponentDomain( FmlHandle handle, FmlObjectHandle objectHandle );
+
+
+/**
  * Returns the names of the elements in the given ensemble domain. For now, the only supported element names are
  * positive integers.
  * 
@@ -526,12 +541,22 @@ int Fieldml_SetParameterDataLocation( FmlHandle handle, FmlObjectHandle objectHa
 int Fieldml_AddParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle, const char *data, int length );
 
 
+/**
+ * Returns the number of characters in the parameter set's inline data.
+ */
 int Fieldml_GetParameterInlineDataLength( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
+/**
+ * Returns a pointer to the parameter set's inline data.
+ */
 const char *Fieldml_GetParameterInlineData( FmlHandle handle, FmlObjectHandle objectHandle );
 
 
+/**
+ * Copies a section of the parameter set's inline data into the given buffer, starting from the given offset, and ending
+ * either when the buffer is full, or the end of the inline data is reached.
+ */
 int Fieldml_CopyInlineParameterData( FmlHandle handle, FmlObjectHandle objectHandle, char *buffer, int bufferLength, int offset );
 
 /**

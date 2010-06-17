@@ -100,6 +100,8 @@ extern const char * const VALUE_DOMAIN_ATTRIB;
 
 extern const char * const COMPONENT_DOMAIN_ATTRIB;
 
+extern const char * const IS_COMPONENT_DOMAIN_ATTRIB;
+
 extern const char * const KEY_ATTRIB;
 extern const char * const VALUE_ATTRIB;
 extern const char * const DEFAULT_ATTRIB;
@@ -125,11 +127,14 @@ extern const char * const VERSION_ATTRIB;
 extern const char * const STRING_TYPE_TEXT;
 extern const char * const STRING_TYPE_LINES;
 
+extern const char * const STRING_TRUE;
 
 // strndup not available on all platforms.
 char *strdupN( const char *str, unsigned int n );
 
 char *strdupS( const char *str );
+
+char *strdupDir( const char *filename );
 
 char *makeFilename( const char *dir, const char *file );
 
