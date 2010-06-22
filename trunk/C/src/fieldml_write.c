@@ -433,6 +433,13 @@ static void writeSemidenseData( xmlTextWriterPtr writer, FieldmlRegion *region, 
         xmlTextWriterEndElement( writer );
         
     }
+    else
+    {
+        xmlTextWriterStartElement( writer, INLINE_DATA_TAG );
+        xmlTextWriterWriteString( writer, data->dataLocation.stringData.string );
+        xmlTextWriterEndElement( writer );
+    }
+    
     xmlTextWriterEndElement( writer );
 
     xmlTextWriterEndElement( writer );
@@ -552,7 +559,7 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     for( i = 0; i < count; i++ )
     {
         object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
-        if( object->regionHandle == FILE_REGION_HANDLE )
+        if( object->regionHandle == LIBRARY_REGION_HANDLE )
         {
             writeFieldmlObject( writer, region, object );
         }
