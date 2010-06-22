@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<fieldml version="0.2_alpha" xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <Region name="test">
+  <EnsembleDomain name="library.ensemble.generic.1d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="1"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.real.1d" componentDomain="library.ensemble.generic.1d"/>
+  <EnsembleDomain name="library.ensemble.generic.2d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="2"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.real.2d" componentDomain="library.ensemble.generic.2d"/>
+  <EnsembleDomain name="library.ensemble.generic.3d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.real.3d" componentDomain="library.ensemble.generic.3d"/>
+  <EnsembleDomain name="library.ensemble.xi.1d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="1"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.xi.1d" componentDomain="library.ensemble.xi.1d">
+   <markup>
+    <SimpleMapEntry key="xi" value="true"/>
+   </markup>
+  </ContinuousDomain>
+  <EnsembleDomain name="library.ensemble.xi.2d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="2"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.xi.2d" componentDomain="library.ensemble.xi.2d">
+   <markup>
+    <SimpleMapEntry key="xi" value="true"/>
+   </markup>
+  </ContinuousDomain>
+  <EnsembleDomain name="library.ensemble.xi.3d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.xi.3d" componentDomain="library.ensemble.xi.3d">
+   <markup>
+    <SimpleMapEntry key="xi" value="true"/>
+   </markup>
+  </ContinuousDomain>
+  <EnsembleDomain name="library.local_nodes.line.2" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="2"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.linear_lagrange" componentDomain="library.local_nodes.line.2"/>
+  <EnsembleDomain name="library.local_nodes.line.3" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.quadratic_lagrange" componentDomain="library.local_nodes.line.3"/>
+  <EnsembleDomain name="library.local_nodes.square.2x2" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="4"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.bilinear_lagrange" componentDomain="library.local_nodes.square.2x2"/>
+  <EnsembleDomain name="library.local_nodes.square.3x3" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="9"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.biquadratic_lagrange" componentDomain="library.local_nodes.square.3x3"/>
+  <EnsembleDomain name="library.local_nodes.cube.2x2x2" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="8"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.trilinear_lagrange" componentDomain="library.local_nodes.cube.2x2x2"/>
+  <EnsembleDomain name="library.local_nodes.cube.3x3x3" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="27"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.parameters.triquadratic_lagrange" componentDomain="library.local_nodes.cube.3x3x3"/>
+  <EnsembleDomain name="library.ensemble.rc.1d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="1"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.coordinates.rc.1d" componentDomain="library.ensemble.rc.1d"/>
+  <ContinuousDomain name="library.velocity.rc.1d" componentDomain="library.ensemble.rc.1d"/>
+  <EnsembleDomain name="library.ensemble.rc.2d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="2"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.coordinates.rc.2d" componentDomain="library.ensemble.rc.2d"/>
+  <ContinuousDomain name="library.velocity.rc.2d" componentDomain="library.ensemble.rc.2d"/>
+  <EnsembleDomain name="library.ensemble.rc.3d" isComponentDomain="true">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousDomain name="library.coordinates.rc.3d" componentDomain="library.ensemble.rc.3d"/>
+  <ContinuousDomain name="library.velocity.rc.3d" componentDomain="library.ensemble.rc.3d"/>
+  <ContinuousDomain name="library.pressure"/>
+ </Region>
+</fieldml>
