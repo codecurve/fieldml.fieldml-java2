@@ -40,11 +40,20 @@
 
 	<xs:complexType name="EnsembleDomainType">
 		<xs:all>
+            <xs:element name="isComponentDomain" type="xs:boolean" minOccurs="0" maxOccurs="1" />
 			<xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
 		</xs:all>
 		<xs:attribute name="name" type="xs:string" />
 	</xs:complexType>
+
+    <xs:complexType name="ContinuousDomainType">
+        <xs:all>
+            <xs:element name="componentDomain" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+        </xs:all>
+        <xs:attribute name="name" type="xs:string" />
+    </xs:complexType>
 
 	<xs:complexType name="ConnectivityType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
