@@ -40,10 +40,10 @@
 
 	<xs:complexType name="EnsembleDomainType">
 		<xs:all>
-            <xs:element name="isComponentDomain" type="xs:boolean" minOccurs="0" maxOccurs="1" />
 			<xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
 			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
 		</xs:all>
+        <xs:attribute name="isComponentDomain" type="xs:boolean" use="optional" />
 		<xs:attribute name="name" type="xs:string" />
 	</xs:complexType>
 
@@ -53,6 +53,7 @@
             <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" />
+        <xs:attribute name="componentDomain" type="xs:string" />
     </xs:complexType>
 
 	<xs:complexType name="ConnectivityType">
@@ -160,6 +161,7 @@
 	<xs:complexType name="RegionType">
 		<xs:choice minOccurs="0" maxOccurs="unbounded">
 			<xs:element name="EnsembleDomain" type="EnsembleDomainType" />
+            <xs:element name="ContinuousDomain" type="ContinuousDomainType" />
 			<xs:element name="MeshDomain" type="MeshDomainType" />
 			<xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
             <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
@@ -178,6 +180,7 @@
 			<xs:choice minOccurs="1" maxOccurs="1">
 				<xs:element name="Region" type="RegionType" />
 			</xs:choice>
+            <xs:attribute name="version" type="xs:string" />
 		</xs:complexType>
 	</xs:element>
 </xs:schema>
