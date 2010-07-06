@@ -559,7 +559,7 @@ int writeFieldmlFile( FieldmlRegion *region, const char *filename )
     for( i = 0; i < count; i++ )
     {
         object = (FieldmlObject*)getSimpleListEntry( region->objects, i );
-        if( object->regionHandle == LIBRARY_REGION_HANDLE )
+        if( object->regionHandle != LIBRARY_REGION_HANDLE )
         {
             writeFieldmlObject( writer, region, object );
         }
