@@ -61,6 +61,36 @@ const int VIRTUAL_REGION_HANDLE = -1; //For derived objects, e.g. mesh domain xi
 const int LIBRARY_REGION_HANDLE = 0;
 const int FILE_REGION_HANDLE = 1;
 
+const char * const collapse2d[4] = {
+    "_xi1C_xi20",
+    "_xi1C_xi21",
+    "_xi10_xi2C",
+    "_xi11_xi2C"
+};
+
+const char * const collapse3d_wedge[12] = {
+    "_xi1C_xi20",
+    "_xi1C_xi21",
+    "_xi1C_xi30",
+    "_xi1C_xi31",
+    "_xi10_xi2C",
+    "_xi11_xi2C",
+    "_xi2C_xi30",
+    "_xi2C_xi31",
+    "_xi10_xi3C",
+    "_xi11_xi3C",
+    "_xi20_xi3C",
+    "_xi21_xi3C"
+};
+
+const char * const collapse3d_pyramid[6] = {
+    "_xi10_xi2C_xi3C",
+    "_xi11_xi2C_xi3C",
+    "_xi1C_xi20_xi3C",
+    "_xi1C_xi21_xi3C",
+    "_xi1C_xi2C_xi30",
+    "_xi1C_xi2C_xi31",
+};
 
 //========================================================================
 //
@@ -306,6 +336,8 @@ static void addMarkup( FieldmlRegion *region, FmlObjectHandle handle, const char
 static void addLibraryDomains( FieldmlRegion *region )
 {
     FmlObjectHandle handle;
+    int i;
+    char buffer[256];
 
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.generic.1d", 1, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.real.1d", handle );
@@ -333,16 +365,88 @@ static void addLibraryDomains( FieldmlRegion *region )
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.line.3", 3, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.quadratic_lagrange", handle ); 
 
+    // 2x2 quad
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.2x2", 4, 1 );
-    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle ); 
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.bilinear_lagrange", handle );
+
+    for( i = 0; i < 4; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.square.2x2" );
+        strcat( buffer, collapse2d[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 3, 1 );
+
+        strcpy( buffer, "library.parameters.bilinear_lagrange" );
+        strcat( buffer, collapse2d[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+    
+    // 3x3 quad
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.square.3x3", 9, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.biquadratic_lagrange", handle ); 
 
+    for( i = 0; i < 4; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.square.3x3" );
+        strcat( buffer, collapse2d[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 7, 1 );
+
+        strcpy( buffer, "library.parameters.biquadratic_lagrange" );
+        strcat( buffer, collapse2d[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+
+    // 2x2x2 cube
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.2x2x2", 8, 1 );
-    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.trilinear_lagrange", handle ); 
+    addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.trilinear_lagrange", handle );
+
+    for( i = 0; i < 12; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.cube.2x2x2" );
+        strcat( buffer, collapse3d_wedge[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 6, 1 );
+
+        strcpy( buffer, "library.parameters.trilinear_lagrange" );
+        strcat( buffer, collapse3d_wedge[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+
+    for( i = 0; i < 6; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.cube.2x2x2" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 5, 1 );
+
+        strcpy( buffer, "library.parameters.trilinear_lagrange" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+
+    // 3x3x3 cube
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.local_nodes.cube.3x3x3", 27, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.parameters.triquadratic_lagrange", handle ); 
-    
+
+    for( i = 0; i < 12; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.cube.3x3x3" );
+        strcat( buffer, collapse3d_wedge[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 21, 1 );
+
+        strcpy( buffer, "library.parameters.triquadratic_lagrange" );
+        strcat( buffer, collapse3d_wedge[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+
+    for( i = 0; i < 6; i++ )
+    {
+        strcpy( buffer, "library.local_nodes.cube.3x3x3" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, buffer, 19, 1 );
+
+        strcpy( buffer, "library.parameters.triquadratic_lagrange" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        addContinuousDomain( region, LIBRARY_REGION_HANDLE, buffer, handle );
+    }
+
     handle = addEnsembleDomain( region, LIBRARY_REGION_HANDLE, "library.ensemble.rc.1d", 1, 1 );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.coordinates.rc.1d", handle );
     addContinuousDomain( region, LIBRARY_REGION_HANDLE, "library.velocity.rc.1d", handle );
@@ -360,20 +464,82 @@ static void addLibraryDomains( FieldmlRegion *region )
 static void addLibraryEvaluators( FieldmlRegion *region )
 {
     FmlObjectHandle domainHandle;
+    int i;
+    char buffer[256];
     
     domainHandle = Fieldml_GetNamedObject( region, "library.real.1d" );
     
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.linear_lagrange", domainHandle );
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.bilinear_lagrange", domainHandle );
+    for( i = 0; i < 4; i++ )
+    {
+        strcpy( buffer, "library.fem.bilinear_lagrange" );
+        strcat( buffer, collapse2d[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.trilinear_lagrange", domainHandle );
+    for( i = 0; i < 12; i++ )
+    {
+        strcpy( buffer, "library.fem.trilinear_lagrange" );
+        strcat( buffer, collapse3d_wedge[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    for( i = 0; i < 6; i++ )
+    {
+        strcpy( buffer, "library.fem.trilinear_lagrange" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
 
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.quadratic_lagrange", domainHandle );
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.biquadratic_lagrange", domainHandle );
+    for( i = 0; i < 4; i++ )
+    {
+        strcpy( buffer, "library.fem.biquadratic_lagrange" );
+        strcat( buffer, collapse2d[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.triquadratic_lagrange", domainHandle );
+    for( i = 0; i < 12; i++ )
+    {
+        strcpy( buffer, "library.fem.triquadratic_lagrange" );
+        strcat( buffer, collapse3d_wedge[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    for( i = 0; i < 6; i++ )
+    {
+        strcpy( buffer, "library.fem.triquadratic_lagrange" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
 
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.cubic_lagrange", domainHandle );
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.bicubic_lagrange", domainHandle );
+    for( i = 0; i < 4; i++ )
+    {
+        strcpy( buffer, "library.fem.bicubic_lagrange" );
+        strcat( buffer, collapse2d[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    
     addEvaluator( region, LIBRARY_REGION_HANDLE, "library.fem.tricubic_lagrange", domainHandle );
+    for( i = 0; i < 12; i++ )
+    {
+        strcpy( buffer, "library.fem.tricubic_lagrange" );
+        strcat( buffer, collapse3d_wedge[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
+    for( i = 0; i < 6; i++ )
+    {
+        strcpy( buffer, "library.fem.tricubic_lagrange" );
+        strcat( buffer, collapse3d_pyramid[i] );
+        addEvaluator( region, LIBRARY_REGION_HANDLE, buffer, domainHandle );
+    }
 }
 
 
