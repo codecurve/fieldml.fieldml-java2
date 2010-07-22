@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fieldml version="0.2_alpha" xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <!--
+ A single-component field defined over a three element mesh.
+ The first element is bilinear-Lagrange.
+ The second element is element-constant.
+ The third element is globally constant.
+ 
+ In this version, there is a separate parameter store for each type of dof.  
+  -->
+ <Region name="dof_example_1">
+  <EnsembleDomain name="test.mesh_nodes">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="8"/>
+   </bounds>
+  </EnsembleDomain>
+  <MeshDomain name="test.mesh" xiComponentDomain="library.ensemble.xi.2d">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+   <shapes default="library.shape.square"/>
+   <pointConnectivity>
+    <SimpleMapEntry key="test.bilinear_connectivity" value="library.local_nodes.square.2x2"/>
+   </pointConnectivity>
+  </MeshDomain>
+  <EnsembleParameters name="test.bilinear_connectivity" valueDomain="test.mesh_nodes">
+   <SemidenseData>
+    <denseIndexes>
+     <entry value="library.local_nodes.square.2x2"/>
+     <entry value="test.mesh.elements"/>
+    </denseIndexes>
+    <dataLocation>
+     <inlineData>
+1 2 5 6
+2 3 6 7
+3 4 7 8</inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </EnsembleParameters>
+  <ContinuousParameters name="test.nodal_params" valueDomain="library.real.1d">
+   <SemidenseData>
+    <sparseIndexes>
+     <entry value="test.mesh_nodes"/>
+    </sparseIndexes>
+    <dataLocation>
+     <inlineData>1 0.0 2 0.5 3 1.0 4 1.5 </inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </ContinuousParameters>
+  <ContinuousParameters name="test.element_params" valueDomain="library.real.1d">
+   <SemidenseData>
+    <sparseIndexes>
+     <entry value="test.mesh.elements"/>
+    </sparseIndexes>
+    <dataLocation>
+     <inlineData>2 2.0 </inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </ContinuousParameters>
+  <ContinuousParameters name="test.global_params" valueDomain="library.real.1d">
+   <SemidenseData>
+    <dataLocation>
+     <inlineData>3.0 </inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </ContinuousParameters>
+  <ContinuousReferenceEvaluator name="test.bilinear_nodal_params" evaluator="test.nodal_params" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="test.mesh_nodes" value="test.bilinear_connectivity"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.bilinear_interpolator" evaluator="library.fem.bilinear_lagrange" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="library.xi.2d" value="test.mesh.xi"/>
+    <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test.bilinear_nodal_params"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousPiecewiseEvaluator name="test.field" indexDomain="test.mesh.elements" valueDomain="library.real.1d">
+   <elementEvaluators>
+    <SimpleMapEntry key="1" value="test.bilinear_interpolator"/>
+    <SimpleMapEntry key="2" value="test.element_params"/>
+    <SimpleMapEntry key="3" value="test.global_params"/>
+   </elementEvaluators>
+  </ContinuousPiecewiseEvaluator>
+ </Region>
+</fieldml>
