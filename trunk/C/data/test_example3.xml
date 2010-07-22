@@ -116,28 +116,25 @@
     </dataLocation>
    </SemidenseData>
   </EnsembleParameters>
-  <ContinuousDomain name="1"/>
-  <ContinuousDomain name="2"/>
-  <ContinuousDomain name="3"/>
-  <ContinuousReferenceEvaluator name="test.nodal_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+  <EnsembleReferenceEvaluator name="test.nodal_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
    <aliases>
     <SimpleMapEntry key="test.dof_type" value="1"/>
     <SimpleMapEntry key="test.mesh.elements" value="1"/>
    </aliases>
-  </ContinuousReferenceEvaluator>
-  <ContinuousReferenceEvaluator name="test.element_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+  </EnsembleReferenceEvaluator>
+  <EnsembleReferenceEvaluator name="test.element_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
    <aliases>
     <SimpleMapEntry key="test.dof_type" value="2"/>
     <SimpleMapEntry key="test.mesh_nodes" value="1"/>
    </aliases>
-  </ContinuousReferenceEvaluator>
-  <ContinuousReferenceEvaluator name="test.global_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+  </EnsembleReferenceEvaluator>
+  <EnsembleReferenceEvaluator name="test.global_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
    <aliases>
     <SimpleMapEntry key="test.dof_type" value="3"/>
     <SimpleMapEntry key="test.mesh_nodes" value="1"/>
     <SimpleMapEntry key="test.mesh.elements" value="1"/>
    </aliases>
-  </ContinuousReferenceEvaluator>
+  </EnsembleReferenceEvaluator>
   <ContinuousReferenceEvaluator name="test.nodal_params" evaluator="test.dof_params" valueDomain="library.real.1d">
    <aliases>
     <SimpleMapEntry key="test.dof_number" value="test.nodal_indexes"/>
