@@ -1,115 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xs:schema id="fieldml" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-	<xs:complexType name="SimpleMapEntryType">
-		<xs:attribute name="key" type="xs:string" />
-		<xs:attribute name="value" type="xs:string" />
-	</xs:complexType>
+<xs:schema id="fieldml"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:fmlmeta="http://www.fieldml.org/metadata/0.2#"
+    >
+    
+    <xs:import schemaLocation="Fieldml_0.2_meta.xsd" namespace="http://www.fieldml.org/metadata/0.2#"/>
 
-	<xs:complexType name="SimpleMapType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="SimpleMapEntry" type="SimpleMapEntryType" />
-		</xs:choice>
-	</xs:complexType>
+    <xs:complexType name="FieldmlObjectType">
+        <xs:complexContent >
+            <xs:extension base="fmlmeta:FieldmlRdfTargetType">
+                <xs:sequence>
+                    <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="name" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-    <xs:complexType name="DefaultSimpleMapType">
+    <xs:complexType name="SimpleMapEntryType">
+        <xs:attribute name="key" type="xs:string" />
+        <xs:attribute name="value" type="xs:string" />
+    </xs:complexType>
+
+    <xs:complexType name="SimpleMapType">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:element name="SimpleMapEntry" type="SimpleMapEntryType" />
         </xs:choice>
-        <xs:attribute name="default" type="xs:string" use="optional"/>
     </xs:complexType>
 
-	<xs:complexType name="SimpleListEntryType">
-		<xs:attribute name="value" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="DefaultSimpleMapType">
+        <xs:complexContent>
+            <xs:extension base="SimpleMapType">
+                <xs:attribute name="default" type="xs:string" use="optional"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="SimpleListType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="entry" type="SimpleListEntryType" />
-		</xs:choice>
-	</xs:complexType>
+    <xs:complexType name="SimpleListEntryType">
+        <xs:attribute name="value" type="xs:string" />
+    </xs:complexType>
 
-	<xs:complexType name="ContiguousEnsembleBoundsType">
-		<xs:attribute name="valueCount" type="xs:positiveInteger" />
-	</xs:complexType>
+    <xs:complexType name="SimpleListType">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="entry" type="SimpleListEntryType" />
+        </xs:choice>
+    </xs:complexType>
 
-	<xs:complexType name="EnsembleDomainBoundsType">
-		<xs:choice minOccurs="1" maxOccurs="1">
-			<xs:element name="ContiguousEnsembleBounds" type="ContiguousEnsembleBoundsType" />
-		</xs:choice>
-	</xs:complexType>
+    <xs:complexType name="ContiguousEnsembleBoundsType">
+        <xs:attribute name="valueCount" type="xs:positiveInteger" />
+    </xs:complexType>
 
-	<xs:complexType name="EnsembleDomainType">
-		<xs:all>
-			<xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
-			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-		</xs:all>
-        <xs:attribute name="isComponentDomain" type="xs:boolean" use="optional" />
-		<xs:attribute name="name" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="EnsembleDomainBoundsType">
+        <xs:choice minOccurs="1" maxOccurs="1">
+            <xs:element name="ContiguousEnsembleBounds" type="ContiguousEnsembleBoundsType" />
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="EnsembleDomainType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlObjectType">
+                <xs:sequence>
+                    <xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="isComponentDomain" type="xs:boolean" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
     <xs:complexType name="ContinuousDomainType">
-        <xs:all>
-            <xs:element name="componentDomain" type="xs:string" minOccurs="0" maxOccurs="1" />
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-        </xs:all>
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="componentDomain" type="xs:string" />
+        <xs:complexContent>
+            <xs:extension base="FieldmlObjectType">
+                <xs:attribute name="componentDomain" type="xs:string" use="optional" />
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
-	<xs:complexType name="ConnectivityType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="SimpleMapEntry" type="SimpleMapEntryType" />
-		</xs:choice>
-	</xs:complexType>
+    <xs:complexType name="MeshDomainType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlObjectType">
+                <xs:sequence>
+                    <xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="shapes" type="DefaultSimpleMapType" minOccurs="1" maxOccurs="1" />
+                    <xs:element name="pointConnectivity" type="DefaultSimpleMapType" minOccurs="1" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="xiComponentDomain" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="MeshDomainType">
-		<xs:all>
-			<xs:element name="bounds" type="EnsembleDomainBoundsType" minOccurs="1" maxOccurs="1" />
-			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="shapes" type="DefaultSimpleMapType" minOccurs="1" maxOccurs="1" />
-			<xs:element name="pointConnectivity" type="ConnectivityType" minOccurs="1" maxOccurs="1" />
-		</xs:all>
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="xiComponentDomain" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="FieldmlEvaluatorType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlObjectType">
+                <xs:attribute name="valueDomain" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="VariableEvaluatorType">
-		<xs:all>
-			<xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="parameterDomains" type="SimpleListType" minOccurs="0" maxOccurs="1" />
-		</xs:all>
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="valueDomain" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="VariableEvaluatorType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlEvaluatorType" />
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:complexType name="ContinuousReferenceEvaluatorType">
-		<xs:all>
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-			<xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-		</xs:all>
-		<xs:attribute name="name" type="xs:string" />
-		<xs:attribute name="valueDomain" type="xs:string" />
-        <xs:attribute name="evaluator" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="ContinuousReferenceEvaluatorType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlEvaluatorType">
+                <xs:sequence>
+                    <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="evaluator" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
     <xs:complexType name="PiecewiseEvaluatorType">
-        <xs:all>
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="elementEvaluators" type="DefaultSimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-        </xs:all>
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="valueDomain" type="xs:string" />
-        <xs:attribute name="indexDomain" type="xs:string" />
-    </xs:complexType>
-
-    <xs:complexType name="SemidenseDataType">
-        <xs:all>
-            <xs:element name="denseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="sparseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
-            <xs:element name="swizzle" type="SwizzleType" minOccurs="0" maxOccurs="1" />
-        </xs:all>
+        <xs:complexContent>
+            <xs:extension base="FieldmlEvaluatorType">
+                <xs:sequence>
+                    <xs:element name="elementEvaluators" type="DefaultSimpleMapType" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+                </xs:sequence>
+                <xs:attribute name="indexDomain" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="FileDataType">
@@ -139,48 +152,68 @@
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="ParametersType">
-        <xs:all>
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="SemidenseData" type="SemidenseDataType" minOccurs="1" maxOccurs="1" />
-        </xs:all>
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="valueDomain" type="xs:string" />
+    <xs:complexType name="SemidenseDataType">
+        <xs:sequence>
+            <xs:element name="denseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="sparseIndexes" type="SimpleListType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="dataLocation" type="DataLocationType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="swizzle" type="SwizzleType" minOccurs="0" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ParameterEvaluatorType">
+        <xs:complexContent>
+            <xs:extension base="FieldmlEvaluatorType">
+                <xs:choice>
+                    <xs:element name="SemidenseData" type="SemidenseDataType" minOccurs="1" maxOccurs="1" />
+                </xs:choice>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="AggregateEvaluatorType">
-        <xs:all>
-            <xs:element name="markup" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-            <xs:element name="sourceFields" type="SimpleMapType" minOccurs="1" maxOccurs="1" />
-            <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
-        </xs:all>
-        <xs:attribute name="name" type="xs:string" />
-        <xs:attribute name="valueDomain" type="xs:string" />
+        <xs:complexContent>
+            <xs:extension base="FieldmlEvaluatorType">
+                <xs:sequence>
+                    <xs:element name="aliases" type="SimpleMapType" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="sourceFields" type="SimpleMapType" minOccurs="1" maxOccurs="1" />
+                </xs:sequence>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
-	<xs:complexType name="RegionType">
-		<xs:choice minOccurs="0" maxOccurs="unbounded">
-			<xs:element name="EnsembleDomain" type="EnsembleDomainType" />
-            <xs:element name="ContinuousDomain" type="ContinuousDomainType" />
-			<xs:element name="MeshDomain" type="MeshDomainType" />
-			<xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
-            <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
-			<xs:element name="ContinuousReferenceEvaluator" type="ContinuousReferenceEvaluatorType" />
-            <xs:element name="ContinuousPiecewiseEvaluator" type="PiecewiseEvaluatorType" />
-            <xs:element name="EnsemblePiecewiseEvaluator" type="PiecewiseEvaluatorType" />
-            <xs:element name="ContinuousParameters" type="ParametersType" />
-            <xs:element name="EnsembleParameters" type="ParametersType" />
-            <xs:element name="ContinuousAggregateEvaluator" type="AggregateEvaluatorType" />
-		</xs:choice>
-		<xs:attribute name="name" type="xs:string" />
-	</xs:complexType>
+    <xs:complexType name="RegionType">
+        <xs:complexContent >
+            <xs:extension base="fmlmeta:FieldmlRdfTargetType">
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="EnsembleDomain" type="EnsembleDomainType" />
+                    <xs:element name="ContinuousDomain" type="ContinuousDomainType" />
+                    <xs:element name="MeshDomain" type="MeshDomainType" />
+                    <xs:element name="ContinuousVariableEvaluator" type="VariableEvaluatorType" />
+                    <xs:element name="EnsembleVariableEvaluator" type="VariableEvaluatorType" />
+                    <xs:element name="ContinuousReferenceEvaluator" type="ContinuousReferenceEvaluatorType" />
+                    <xs:element name="ContinuousPiecewiseEvaluator" type="PiecewiseEvaluatorType" />
+                    <xs:element name="EnsemblePiecewiseEvaluator" type="PiecewiseEvaluatorType" />
+                    <xs:element name="ContinuousParameters" type="ParameterEvaluatorType" />
+                    <xs:element name="EnsembleParameters" type="ParameterEvaluatorType" />
+                    <xs:element name="ContinuousAggregateEvaluator" type="AggregateEvaluatorType" />
+                </xs:choice>
+                <xs:attribute name="name" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
 
-	<xs:element name="fieldml">
-		<xs:complexType>
-			<xs:choice minOccurs="1" maxOccurs="1">
-				<xs:element name="Region" type="RegionType" />
-			</xs:choice>
-            <xs:attribute name="version" type="xs:string" />
-		</xs:complexType>
-	</xs:element>
+    <xs:complexType name="FieldmlType">
+        <xs:complexContent >
+            <xs:extension base="fmlmeta:FieldmlRdfTargetType">
+                <xs:choice minOccurs="1" maxOccurs="1">
+                    <xs:element name="Region" type="RegionType" />
+                </xs:choice>
+                <xs:attribute name="version" type="xs:string" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    
+    <xs:element name="fieldml" type="FieldmlType"/>
+    
 </xs:schema>
