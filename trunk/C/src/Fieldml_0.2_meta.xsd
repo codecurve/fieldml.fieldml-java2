@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<xs:schema targetNamespace="http://www.fieldml.org/metadata/0.2#"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           >
+  
+    <xs:complexType name="FieldmlRdfTargetType">
+        <xs:attribute name="id" type="xs:string" form="qualified"/>
+    </xs:complexType>
+
+</xs:schema> 

@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+x____x____x____x____x____x
+-->
+  <Region name="QuadraticBSpline_Test">
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.ensemble.xi.1d" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="5" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dofs">
+      <ContiguousEnsembleBounds valueCount="7" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.nodes">
+      <ContiguousEnsembleBounds valueCount="6" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.nodes" name="test_mesh.line_nodes.domain" componentDomain="library.local_nodes.line.2">
+      <ContiguousEnsembleBounds valueCount="6" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.dofs" name="test_mesh.dof_indexes" componentDomain="library.interpolation.bspline.quadratic">
+      <ContiguousEnsembleBounds valueCount="7" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain xiComponents="library.ensemble.xi.1d" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.line.0_1" />
+        <entry key="2" value="library.shape.line.0_1" />
+        <entry key="3" value="library.shape.line.0_1" />
+        <entry key="4" value="library.shape.line.0_1" />
+        <entry key="5" value="library.shape.line.0_1" />
+      </shapes>
+      <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="5" />
+    </MeshDomain>
+    
+
+    <ContinuousParameters name="test_mesh.dofs.z" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.954915  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>1.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>-0.427051  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>-1.190983  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>-0.427051  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>1.045085  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.954915  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>
+        <entry value="test_mesh.dofs" />
+      </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="test_mesh.dofs" name="test_mesh.element.quadratic_bspline.params" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.element_dof_indexes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.quadratic_bspline" name="test_mesh.quadratic_bspline" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.1d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.quadratic_bspline" value="test_mesh.element.quadratic_bspline.params" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.coordinates" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="2" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="3" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="4" evaluator="test_mesh.quadratic_bspline" />
+        <TemplateMap index="5" evaluator="test_mesh.quadratic_bspline" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <EnsembleParameters name="test_mesh.line_nodes" valueDomain="test_mesh.line_nodes.domain">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>1  2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>2  3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>3  4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>4  5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>5  6  </values>
+        </SimpleMapEntry>
+      </table>
+    </EnsembleParameters>
+    
+
+    <EnsembleParameters name="test_mesh.element_dof_indexes" valueDomain="test_mesh.dof_indexes">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>1  2  3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>2  3  4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>3  4  5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>4  5  6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>5  6  7  </values>
+        </SimpleMapEntry>
+      </table>
+    </EnsembleParameters>
+    
+
+    <PiecewiseField template="test_mesh.coordinates" name="test_mesh.coordinates.z" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.dofs.z" />
+      </variables>
+    </PiecewiseField>
+    
+
+  </Region>
+</fieldml>
+

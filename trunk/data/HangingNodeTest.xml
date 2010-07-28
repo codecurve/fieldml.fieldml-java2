@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fieldml>
+  <!--
+1______2____3
+|      |    |
+|      | *2 |
+|      |    |
+|  *1  4____5
+|      |    |
+|      | *3 |
+6______7____8
+-->
+  <Region name="HangingNode_Test">
+    <ContinuousDomain name="test_mesh.domain.xi" componentDomain="library.ensemble.xi.2d" />
+    
+
+    <EnsembleDomain baseDomain="test_mesh.domain.elements" name="test_mesh.domain.elements">
+      <ContiguousEnsembleBounds valueCount="3" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dofs_index">
+      <ContiguousEnsembleBounds valueCount="7" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.global_dofs_index" name="test_mesh.global_dof_index_list" componentDomain="library.anonymous">
+      <ContiguousEnsembleBounds valueCount="7" />
+    </EnsembleDomain>
+    
+
+    <EnsembleDomain baseDomain="test_mesh.local_dof_index" name="test_mesh.local_dof_index">
+      <ContiguousEnsembleBounds valueCount="8" />
+    </EnsembleDomain>
+    
+
+    <MeshDomain xiComponents="library.ensemble.xi.2d" name="test_mesh.domain">
+      <shapes>
+        <entry key="1" value="library.shape.quad.00_10_01_11" />
+        <entry key="2" value="library.shape.quad.00_10_01_11" />
+        <entry key="3" value="library.shape.quad.00_10_01_11" />
+      </shapes>
+      <pointConnectivity />
+      <ContiguousEnsembleBounds valueCount="3" />
+    </MeshDomain>
+    
+
+    <ContinuousParameters name="test_mesh.global_to_local.weights" valueDomain="library.weighting.list">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>0.5  0.5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>8  </key>
+          <values>1.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.point.x" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>20.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>30.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>30.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>20.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>30.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousParameters name="test_mesh.point.y" valueDomain="library.coordinates.rc.1d">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>20.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>20.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>20.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>10.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>0.0  </values>
+        </SimpleMapEntry>
+      </table>
+    </ContinuousParameters>
+    
+
+    <ContinuousVariableEvaluator name="test_mesh.dofs" valueDomain="library.coordinates.rc.1d">
+      <parameterDomains>
+        <entry value="test_mesh.global_dofs_index" />
+      </parameterDomains>
+    </ContinuousVariableEvaluator>
+    
+
+    <MapEvaluator valueIndexes="test_mesh.global_to_local.indexes" valueWeights="test_mesh.global_to_local.weights" valueSource="test_mesh.dofs" name="test_mesh.local_dofs_map" valueDomain="library.coordinates.rc.1d" />
+    
+
+    <ImportedContinuousEvaluator evaluator="test_mesh.local_dofs_map" name="test_mesh.element.bilinear_lagrange.parameters" valueDomain="library.coordinates.rc.1d">
+      <ensembleAliases>
+        <SimpleMapEntry key="test_mesh.local_dof_index" value="test_mesh.quad_nodes" />
+      </ensembleAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ImportedContinuousEvaluator evaluator="library.fem.bilinear_lagrange" name="test_mesh.element.bilinear_lagrange" valueDomain="library.real.1d">
+      <continuousAliases>
+        <SimpleMapEntry key="library.xi.2d" value="test_mesh.domain.xi" />
+        <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test_mesh.element.bilinear_lagrange.parameters" />
+      </continuousAliases>
+    </ImportedContinuousEvaluator>
+    
+
+    <ContinuousPiecewiseEvaluator indexDomain="test_mesh.domain.elements" name="test_mesh.template.bilinear_lagrange" valueDomain="library.coordinates.rc.1d">
+      <elementMaps>
+        <TemplateMap index="1" evaluator="test_mesh.element.bilinear_lagrange" />
+        <TemplateMap index="2" evaluator="test_mesh.element.bilinear_lagrange" />
+        <TemplateMap index="3" evaluator="test_mesh.element.bilinear_lagrange" />
+      </elementMaps>
+    </ContinuousPiecewiseEvaluator>
+    
+
+    <ContinuousAggregateEvaluator name="test_mesh.coordinates.xy" valueDomain="library.coordinates.rc.2d">
+      <sourceFields>
+        <entry value="test_mesh.coordinates.x" />
+        <entry value="test_mesh.coordinates.y" />
+      </sourceFields>
+    </ContinuousAggregateEvaluator>
+    
+
+    <EnsembleParameters name="test_mesh.global_to_local.indexes" valueDomain="test_mesh.global_dof_index_list">
+      <table>
+        <SimpleMapEntry>
+          <key>1  </key>
+          <values>1  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>4  </key>
+          <values>2  6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>5  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>6  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>7  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>8  </key>
+          <values>7  </values>
+        </SimpleMapEntry>
+      </table>
+    </EnsembleParameters>
+    
+
+    <EnsembleParameters name="test_mesh.quad_nodes" valueDomain="test_mesh.local_dof_index">
+      <table>
+        <SimpleMapEntry>
+          <key>1  1  </key>
+          <values>6  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  2  </key>
+          <values>7  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  3  </key>
+          <values>1  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>1  4  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  1  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  2  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  3  </key>
+          <values>2  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>2  4  </key>
+          <values>3  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  1  </key>
+          <values>7  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  2  </key>
+          <values>8  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  3  </key>
+          <values>4  </values>
+        </SimpleMapEntry>
+        <SimpleMapEntry>
+          <key>3  4  </key>
+          <values>5  </values>
+        </SimpleMapEntry>
+      </table>
+    </EnsembleParameters>
+    
+
+    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.x" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.x" />
+      </variables>
+    </PiecewiseField>
+    
+
+    <PiecewiseField template="test_mesh.template.bilinear_lagrange" name="test_mesh.coordinates.y" valueDomain="library.coordinates.rc.1d">
+      <variables>
+        <SimpleMapEntry key="test_mesh.dofs" value="test_mesh.point.y" />
+      </variables>
+    </PiecewiseField>
+    
+
+  </Region>
+</fieldml>
+

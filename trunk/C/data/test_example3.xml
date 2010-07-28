@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<fieldml version="0.2_alpha" xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+ <!--
+ A single-component field defined over a three element mesh.
+ The first element is bilinear-Lagrange.
+ The second element is element-constant.
+ The third element is globally constant.
+ 
+ In this version, there is a common dof store indexed by common dof map, which is wrapped
+ in interpolation-specific parameter evaluators.
+  -->
+ <Region name="dof_example_3">
+  <EnsembleDomain name="test.mesh_nodes">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="8"/>
+   </bounds>
+  </EnsembleDomain>
+  <MeshDomain name="test.mesh" xiComponentDomain="library.ensemble.xi.2d">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+   <shapes default="library.shape.square"/>
+   <pointConnectivity>
+    <SimpleMapEntry key="test.bilinear_connectivity" value="library.local_nodes.square.2x2"/>
+   </pointConnectivity>
+  </MeshDomain>
+  <EnsembleParameters name="test.bilinear_connectivity" valueDomain="test.mesh_nodes">
+   <SemidenseData>
+    <denseIndexes>
+     <entry value="library.local_nodes.square.2x2"/>
+     <entry value="test.mesh.elements"/>
+    </denseIndexes>
+    <dataLocation>
+     <inlineData>
+1 2 5 6
+2 3 6 7
+3 4 7 8</inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </EnsembleParameters>
+  <EnsembleDomain name="test.dof_number">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="6"/>
+   </bounds>
+  </EnsembleDomain>
+  <ContinuousParameters name="test.dof_params" valueDomain="library.real.1d">
+   <SemidenseData>
+    <denseIndexes>
+     <entry value="test.dof_number"/>
+    </denseIndexes>
+    <dataLocation>
+     <inlineData>0.0 0.5 1.0 1.5 2.0 3.0 </inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </ContinuousParameters>
+  <EnsembleDomain name="test.dof_type">
+   <bounds>
+    <ContiguousEnsembleBounds valueCount="3"/>
+   </bounds>
+  </EnsembleDomain>
+  <EnsembleParameters name="test.dof_indexes" valueDomain="test.dof_number">
+   <SemidenseData>
+    <sparseIndexes>
+     <entry value="test.dof_type"/>
+     <entry value="test.mesh_nodes"/>
+     <entry value="test.mesh.elements"/>
+    </sparseIndexes>
+    <dataLocation>
+     <inlineData>
+1 1 1 2
+1 1 2 2
+1 1 3 2
+1 2 1 3
+1 2 2 3
+1 2 3 3
+1 3 1 4
+1 3 2 4
+1 3 3 4
+1 4 1 5
+1 4 2 5
+1 4 3 5
+
+2 1 2 6
+2 2 2 6
+2 3 2 6
+2 4 2 6
+2 5 2 6
+2 6 2 6
+2 7 2 6
+2 8 2 6
+
+3 1 1 1
+3 2 1 1
+3 3 1 1
+3 4 1 1
+3 5 1 1
+3 6 1 1
+3 7 1 1
+3 8 1 1
+3 1 2 1
+3 2 2 1
+3 3 2 1
+3 4 2 1
+3 5 2 1
+3 6 2 1
+3 7 2 1
+3 8 2 1
+3 1 3 1
+3 2 3 1
+3 3 3 1
+3 4 3 1
+3 5 3 1
+3 6 3 1
+3 7 3 1
+3 8 3 1</inlineData>
+    </dataLocation>
+   </SemidenseData>
+  </EnsembleParameters>
+  <EnsembleReferenceEvaluator name="test.nodal_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+   <aliases>
+    <SimpleMapEntry key="test.dof_type" value="1"/>
+    <SimpleMapEntry key="test.mesh.elements" value="1"/>
+   </aliases>
+  </EnsembleReferenceEvaluator>
+  <EnsembleReferenceEvaluator name="test.element_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+   <aliases>
+    <SimpleMapEntry key="test.dof_type" value="2"/>
+    <SimpleMapEntry key="test.mesh_nodes" value="1"/>
+   </aliases>
+  </EnsembleReferenceEvaluator>
+  <EnsembleReferenceEvaluator name="test.global_indexes" evaluator="test.dof_indexes" valueDomain="test.dof_number">
+   <aliases>
+    <SimpleMapEntry key="test.dof_type" value="3"/>
+    <SimpleMapEntry key="test.mesh_nodes" value="1"/>
+    <SimpleMapEntry key="test.mesh.elements" value="1"/>
+   </aliases>
+  </EnsembleReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.nodal_params" evaluator="test.dof_params" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="test.dof_number" value="test.nodal_indexes"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.element_params" evaluator="test.dof_params" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="test.dof_number" value="test.element_indexes"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.global_params" evaluator="test.dof_params" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="test.dof_number" value="test.global_indexes"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.bilinear_nodal_params" evaluator="test.nodal_params" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="test.mesh_nodes" value="test.bilinear_connectivity"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousReferenceEvaluator name="test.bilinear_interpolator" evaluator="library.fem.bilinear_lagrange" valueDomain="library.real.1d">
+   <aliases>
+    <SimpleMapEntry key="library.xi.2d" value="test.mesh.xi"/>
+    <SimpleMapEntry key="library.parameters.bilinear_lagrange" value="test.bilinear_nodal_params"/>
+   </aliases>
+  </ContinuousReferenceEvaluator>
+  <ContinuousPiecewiseEvaluator name="test.field" indexDomain="test.mesh.elements" valueDomain="library.real.1d">
+   <elementEvaluators>
+    <SimpleMapEntry key="1" value="test.bilinear_interpolator"/>
+    <SimpleMapEntry key="2" value="test.element_params"/>
+    <SimpleMapEntry key="3" value="test.global_params"/>
+   </elementEvaluators>
+  </ContinuousPiecewiseEvaluator>
+ </Region>
+</fieldml>
