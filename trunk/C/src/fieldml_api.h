@@ -457,7 +457,7 @@ int Fieldml_IsEnsembleComponentDomain( FmlHandle handle, FmlObjectHandle objectH
  * 
  * NOTE: If the bounds are contiguous, the names will simply be 1, 2, 3... n. 
  */
-int Fieldml_GetEnsembleDomainElementNames( FmlHandle handle, FmlObjectHandle objectHandle, const int *array, int arrayLength );
+//NYI int Fieldml_GetEnsembleDomainElementNames( FmlHandle handle, FmlObjectHandle objectHandle, const int *array, int arrayLength );
 
 
 /**

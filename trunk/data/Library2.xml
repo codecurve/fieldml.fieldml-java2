@@ -9,7 +9,7 @@
     
     No explicit extrema means that it covers the entire real domain.
    -->
-  <continuous_domain id="library::phi_4" ">
+  <continuous_domain id="library::phi_4" >
     <component id="phi1" />
     <component id="phi2" />
     <component id="phi3" />

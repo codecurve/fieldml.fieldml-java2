@@ -2332,21 +2332,22 @@ FmlObjectHandle Fieldml_CreateContinuousDomain( FmlHandle handle, const char * n
     if( ( componentHandle != FML_INVALID_HANDLE ) &&
         ( Fieldml_GetObjectType( handle, componentHandle ) != FHT_ENSEMBLE_DOMAIN ) )
     {
-        return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+        setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+        return FML_INVALID_HANDLE;
     }
     
     if( componentHandle != FML_INVALID_HANDLE )
     {
         if( Fieldml_IsEnsembleComponentDomain( handle, componentHandle ) != 1 )
         {
-            return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+            setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+            return FML_INVALID_HANDLE;
         }
     }
 
     object = createContinuousDomain( name, FILE_REGION_HANDLE, componentHandle );
     
     setError( handle, FML_ERR_NO_ERROR );
-
     return addFieldmlObject( handle, object );
 }
 
@@ -2358,13 +2359,13 @@ FmlObjectHandle Fieldml_CreateEnsembleDomain( FmlHandle handle, const char * nam
     if( ( componentHandle != FML_INVALID_HANDLE ) &&
         ( Fieldml_GetObjectType( handle, componentHandle ) != FHT_ENSEMBLE_DOMAIN ) )
     {
-        return setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+        setError( handle, FML_ERR_INVALID_PARAMETER_3 );
+        return FML_INVALID_HANDLE;
     }
 
     object = createEnsembleDomain( name, FILE_REGION_HANDLE, componentHandle, 0 );
     
     setError( handle, FML_ERR_NO_ERROR );
-
     return addFieldmlObject( handle, object );
 }
 
@@ -2376,7 +2377,6 @@ FmlObjectHandle Fieldml_CreateComponentEnsembleDomain( FmlHandle handle, const c
     object = createEnsembleDomain( name, FILE_REGION_HANDLE, FML_INVALID_HANDLE, 1 );
     
     setError( handle, FML_ERR_NO_ERROR );
-
     return addFieldmlObject( handle, object );
 }
 

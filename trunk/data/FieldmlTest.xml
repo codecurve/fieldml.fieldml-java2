@@ -30,9 +30,9 @@
         <entry key="4" value="library.shape.quad" />
       </shapes>
       <pointConnectivity>
+        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
         <entry key="library.local_nodes.quad.3x3" value="test_mesh.quad3x3_nodes" />
         <entry key="library.local_nodes.triangle.2x2" value="test_mesh.triangle2x2_nodes" />
-        <entry key="library.local_nodes.quad.2x2" value="test_mesh.quad2x2_nodes" />
       </pointConnectivity>
       <ContiguousEnsembleBounds valueCount="4" />
     </MeshDomain>
