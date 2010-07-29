@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <fieldml version="0.2_alpha" xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
- <!--
- A single-component field defined over a three element mesh.
- The first element is bilinear-Lagrange.
- The second element is element-constant.
- The third element is globally constant.
- 
- In this version, there is a separate parameter store for each type of dof.  
-  -->
  <Region name="dof_example_1">
   <EnsembleDomain name="test.mesh_nodes">
    <bounds>

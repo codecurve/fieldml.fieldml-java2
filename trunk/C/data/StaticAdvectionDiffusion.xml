@@ -22,10 +22,10 @@
                 <SimpleMapEntry key="static_advection_diffusion.component1.square.2x2" value="library.local_nodes.square.2x2" />
             </pointConnectivity>
         </MeshDomain>
-        <ContinuousVariableEvaluator name="advection.dofs.node" valueDomain="library.real.1d" />
-        <ContinuousVariableEvaluator name="advection.dofs.element" valueDomain="library.real.1d" />
-        <ContinuousVariableEvaluator name="advection.dofs.constant" valueDomain="library.real.1d" />
-        <ContinuousPiecewiseEvaluator name="static_advection_diffusion.component1.template" indexDomain="advection.mesh.elements" valueDomain="library.real.1d">
+		<ContinuousVariableEvaluator name="advection.dofs.node" valueDomain="library.real.1d" fmlmeta:id="nodal_parameters"/>
+		<ContinuousVariableEvaluator name="advection.dofs.element" valueDomain="library.real.1d" fmlmeta:id="elemental_parameters"/>
+		<ContinuousVariableEvaluator name="advection.dofs.constant" valueDomain="library.real.1d" fmlmeta:id="global_parameters"/>
+		<ContinuousPiecewiseEvaluator name="static_advection_diffusion.component1.template" indexDomain="advection.mesh.elements" valueDomain="library.real.1d" fmlmeta:id="template_field_component1">
             <elementEvaluators default="static_advection_diffusion.component1.bilinear_lagrange.evaluator" />
         </ContinuousPiecewiseEvaluator>
         <EnsembleParameters name="static_advection_diffusion.component1.square.2x2" valueDomain="advection.nodes">
