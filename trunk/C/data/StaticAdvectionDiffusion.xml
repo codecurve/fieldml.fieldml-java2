@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<fieldml version="0.2_alpha" xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<fieldml version="0.2_alpha"
+    xsi:noNamespaceSchemaLocation="Fieldml_0.2.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:fmlmeta="http://www.fieldml.org/Fieldml_0.2_meta/#"
+    >
 	<Region>
-		<EnsembleDomain name="advection.nodes">
+		<EnsembleDomain name="advection.nodes" fmlmeta:id="mesh_nodes">
 			<markup>
 				<SimpleMapEntry key="geometric" value="point" />
 			</markup>
@@ -9,7 +13,7 @@
 				<ContiguousEnsembleBounds valueCount="5151" />
 			</bounds>
 		</EnsembleDomain>
-		<MeshDomain name="advection.mesh" xiComponentDomain="library.ensemble.xi.2d">
+		<MeshDomain name="advection.mesh" xiComponentDomain="library.ensemble.xi.2d" fmlmeta:id="primary_mesh">
 			<bounds>
 				<ContiguousEnsembleBounds valueCount="5000" />
 			</bounds>
@@ -18,10 +22,10 @@
 				<SimpleMapEntry key="static_advection_diffusion.component1.square.2x2" value="library.local_nodes.square.2x2" />
 			</pointConnectivity>
 		</MeshDomain>
-		<ContinuousVariableEvaluator name="advection.dofs.node" valueDomain="library.real.1d" />
-		<ContinuousVariableEvaluator name="advection.dofs.element" valueDomain="library.real.1d" />
-		<ContinuousVariableEvaluator name="advection.dofs.constant" valueDomain="library.real.1d" />
-		<ContinuousPiecewiseEvaluator name="static_advection_diffusion.component1.template" indexDomain="advection.mesh.elements" valueDomain="library.real.1d">
+		<ContinuousVariableEvaluator name="advection.dofs.node" valueDomain="library.real.1d" fmlmeta:id="nodal_parameters"/>
+		<ContinuousVariableEvaluator name="advection.dofs.element" valueDomain="library.real.1d" fmlmeta:id="elemental_parameters"/>
+		<ContinuousVariableEvaluator name="advection.dofs.constant" valueDomain="library.real.1d" fmlmeta:id="global_parameters"/>
+		<ContinuousPiecewiseEvaluator name="static_advection_diffusion.component1.template" indexDomain="advection.mesh.elements" valueDomain="library.real.1d" fmlmeta:id="template_field_component1">
 			<elementEvaluators default="static_advection_diffusion.component1.bilinear_lagrange.evaluator" />
 		</ContinuousPiecewiseEvaluator>
 		<EnsembleParameters name="static_advection_diffusion.component1.square.2x2" valueDomain="advection.nodes">
@@ -46,7 +50,7 @@
 				<SimpleMapEntry key="library.parameters.bilinear_lagrange" value="static_advection_diffusion.component1.bilinear_lagrange.parameters" />
 			</aliases>
 		</ContinuousReferenceEvaluator>
-		<ContinuousAggregateEvaluator name="static_advection_diffusion.geometric" valueDomain="library.coordinates.rc.2d">
+		<ContinuousAggregateEvaluator name="static_advection_diffusion.geometric" valueDomain="library.coordinates.rc.2d" fmlmeta:id="geometric_field">
 			<markup>
 				<SimpleMapEntry key="field" value="true" />
 			</markup>
@@ -69,7 +73,7 @@
 				</dataLocation>
 			</SemidenseData>
 		</ContinuousParameters>
-		<ContinuousAggregateEvaluator name="static_advection_diffusion.dependent" valueDomain="library.real.1d">
+		<ContinuousAggregateEvaluator name="static_advection_diffusion.dependent" valueDomain="library.real.1d" fmlmeta:id="dependant_field">
 			<markup>
 				<SimpleMapEntry key="field" value="true" />
 			</markup>
@@ -91,7 +95,7 @@
 				</dataLocation>
 			</SemidenseData>
 		</ContinuousParameters>
-		<ContinuousAggregateEvaluator name="static_advection_diffusion.independent" valueDomain="library.real.2d">
+		<ContinuousAggregateEvaluator name="static_advection_diffusion.independent" valueDomain="library.real.2d" fmlmeta:id="independant_field">
 			<markup>
 				<SimpleMapEntry key="field" value="true" />
 			</markup>
@@ -114,7 +118,7 @@
 				</dataLocation>
 			</SemidenseData>
 		</ContinuousParameters>
-		<ContinuousAggregateEvaluator name="static_advection_diffusion.source" valueDomain="library.real.1d">
+		<ContinuousAggregateEvaluator name="static_advection_diffusion.source" valueDomain="library.real.1d" fmlmeta:id="source_field">
 			<markup>
 				<SimpleMapEntry key="field" value="true" />
 			</markup>
@@ -136,7 +140,7 @@
 				</dataLocation>
 			</SemidenseData>
 		</ContinuousParameters>
-		<ContinuousAggregateEvaluator name="static_advection_diffusion.materials" valueDomain="library.real.2d">
+		<ContinuousAggregateEvaluator name="static_advection_diffusion.materials" valueDomain="library.real.2d" fmlmeta:id="material_field">
 			<markup>
 				<SimpleMapEntry key="field" value="true" />
 			</markup>
